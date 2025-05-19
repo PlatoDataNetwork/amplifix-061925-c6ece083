@@ -1,7 +1,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Mail, Inbox, Send, Archive, Trash, Logs } from "lucide-react";
-import MoltenArcIcon from "@/components/MoltenArcIcon";
 
 interface SidebarProps {
   activeTab: string;
@@ -21,7 +20,6 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
     <div className="w-64 bg-[#252A38] border-r border-gray-700 flex flex-col h-full">
       {/* Logo Area */}
       <div className="p-6 flex items-center">
-        <MoltenArcIcon className="h-7 w-7 mr-2" />
         <h1 className="font-bold text-lg">MoltenArc</h1>
       </div>
       

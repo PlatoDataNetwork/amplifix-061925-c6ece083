@@ -10,7 +10,6 @@ const Index = () => {
       {/* Navigation */}
       <nav className="container mx-auto flex items-center justify-between py-6">
         <div className="flex items-center gap-2">
-          <Zap className="h-6 w-6 text-[#9b87f5]" />
           <h1 className="text-2xl font-bold">MoltenArc</h1>
         </div>
         <div className="flex items-center gap-6">
@@ -32,7 +31,6 @@ const Index = () => {
           <div>
             <div className="inline-block bg-gradient-to-r from-[#9b87f5] to-[#61dafb] bg-clip-text text-transparent">
               <div className="bg-[#2A2F3C] rounded-full px-6 py-2 mb-8 inline-flex items-center">
-                <Zap className="h-5 w-5 mr-2" />
                 Military-Grade Encrypted Communications
               </div>
             </div>
@@ -61,7 +59,6 @@ const Index = () => {
             <div className="bg-[#1E2230] rounded-xl p-4">
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-2">
-                  <Zap className="h-5 w-5 text-[#9b87f5]" />
                   <span>Message Encryption Status</span>
                 </div>
                 <div className="bg-green-600 text-green-100 px-3 py-1 rounded-full text-sm">
