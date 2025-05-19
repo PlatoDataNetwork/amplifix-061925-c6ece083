@@ -11,7 +11,7 @@ const Index = () => {
       <nav className="container mx-auto flex items-center justify-between py-6">
         <div className="flex items-center gap-2">
           <Zap className="h-6 w-6 text-[#9b87f5]" />
-          <h1 className="text-2xl font-bold">SecureFlowMail</h1>
+          <h1 className="text-2xl font-bold">MoltenArc</h1>
         </div>
         <div className="flex items-center gap-6">
           <Link to="/" className="hover:text-[#9b87f5] transition-colors">Features</Link>
@@ -20,7 +20,7 @@ const Index = () => {
           <Link to="/" className="hover:text-[#9b87f5] transition-colors">Testimonials</Link>
           <Link to="/dashboard">
             <Button className="bg-gradient-to-r from-[#9b87f5] to-[#61dafb] hover:opacity-90 transition-opacity">
-              Try SecureFlowMail
+              Try MoltenArc
             </Button>
           </Link>
         </div>
@@ -42,7 +42,7 @@ const Index = () => {
               & Communications
             </h2>
             <p className="text-lg text-gray-300 mb-8">
-              SecureFlowMail combines military-grade encryption with intuitive design to deliver
+              MoltenArc combines military-grade encryption with intuitive design to deliver
               secure communications, helping you protect your privacy in an increasingly
               vulnerable digital landscape.
             </p>

@@ -20,7 +20,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
       {/* Logo Area */}
       <div className="p-4 border-b border-gray-700 flex items-center">
         <Zap className="h-6 w-6 text-[#9b87f5] mr-2" />
-        <h1 className="font-bold text-lg">SecureFlowMail</h1>
+        <h1 className="font-bold text-lg">MoltenArc</h1>
       </div>
       
       {/* Navigation Links */}
