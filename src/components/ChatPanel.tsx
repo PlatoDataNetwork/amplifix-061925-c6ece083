@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Send, X, Home } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import MoltenShieldIcon from "@/components/MoltenShieldIcon";
 import MoltenArcIcon from "@/components/MoltenArcIcon";
 import { Link } from "react-router-dom";
 
@@ -206,7 +205,7 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
           </Button>
         </div>
         <div className="flex items-center mt-2 text-xs text-gray-400">
-          <MoltenShieldIcon className="h-3 w-3 mr-1" letter="" />
+          <MoltenArcIcon className="h-3 w-3 mr-1" />
           End-to-end encrypted messaging
         </div>
       </div>
