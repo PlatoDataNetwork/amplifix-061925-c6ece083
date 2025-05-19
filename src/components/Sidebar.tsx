@@ -1,18 +1,27 @@
 
 import { Button } from "@/components/ui/button";
 import { Mail, Inbox, Send, Archive, Trash, Logs, MessageCircle } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 
 interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
 }
 
+// Define the correct type for the sidebar items
+interface SidebarItem {
+  id: string;
+  label: string;
+  icon: LucideIcon; // This is the key change - using LucideIcon type
+}
+
 const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
-  const sidebarItems = [
+  // Now with proper typing for the array
+  const sidebarItems: SidebarItem[] = [
     { id: 'inbox', label: 'Inbox', icon: Inbox },
     { id: 'sent', label: 'Sent', icon: Send },
     { id: 'archive', label: 'Archive', icon: Archive },
-    { id: 'chat', label: 'Chat', icon: MessageCircle }, // Using MessageCircle from lucide-react
+    { id: 'chat', label: 'Chat', icon: MessageCircle },
     { id: 'trash', label: 'Trash', icon: Trash },
     { id: 'logs', label: 'Logs', icon: Logs },
   ];
