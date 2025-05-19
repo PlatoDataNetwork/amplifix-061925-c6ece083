@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,11 +40,11 @@ const Dashboard = () => {
 
   return (
     <div className="h-screen bg-[#1A1F2C] text-white flex overflow-hidden">
+      {/* Chat Panel - positioned with highest z-index to overlay sidebar when open */}
+      <ChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      
       {/* Sidebar */}
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      
-      {/* Chat Panel */}
-      <ChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -51,7 +52,7 @@ const Dashboard = () => {
         <header className="bg-[#252A38] border-b border-gray-700 p-2 px-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              {/* Chat Button - Keep on left side */}
+              {/* Chat Button */}
               <Button 
                 onClick={() => setIsChatOpen(!isChatOpen)}
                 className="h-8 w-8 rounded-full bg-transparent hover:bg-[#1E2230] p-0 flex items-center justify-center"
