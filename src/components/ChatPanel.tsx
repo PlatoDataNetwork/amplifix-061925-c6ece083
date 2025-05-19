@@ -2,10 +2,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, X } from "lucide-react";
+import { Send, X, Home } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import MoltenShieldIcon from "@/components/MoltenShieldIcon";
+import { Link } from "react-router-dom";
 
 interface Message {
   content: string;
@@ -137,15 +138,27 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
           <MoltenShieldIcon className="h-5 w-5 mr-2" />
           <h2 className="font-semibold">Encrypted Chat</h2>
         </div>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="h-8 w-8 p-0" 
-          onClick={onClose}
-        >
-          <X className="h-4 w-4" />
-          <span className="sr-only">Close</span>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Link to="/">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+            >
+              <Home className="h-4 w-4" />
+              <span className="sr-only">Go to homepage</span>
+            </Button>
+          </Link>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-8 w-8 p-0" 
+            onClick={onClose}
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </Button>
+        </div>
       </div>
       
       {/* Chat Messages */}

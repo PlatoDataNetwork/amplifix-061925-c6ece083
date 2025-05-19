@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Search, User, MessageCircle, ArrowLeft, ArrowRight, RefreshCw, Maximize } from "lucide-react";
+import { Search, User, MessageCircle, ArrowLeft, ArrowRight, RefreshCw, Maximize, Home } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/hooks/use-toast";
 import EmailList from "@/components/EmailList";
@@ -13,6 +12,7 @@ import Sidebar from "@/components/Sidebar";
 import SecureChat from "@/components/SecureChat";
 import MoltenArcIcon from "@/components/MoltenArcIcon";
 import ChatPanel from "@/components/ChatPanel";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("inbox");
@@ -61,6 +61,11 @@ const Dashboard = () => {
               </Button>
               
               <div className="flex items-center gap-2">
+                <Link to="/">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-[#9b87f5]">
+                    <Home className="h-4 w-4" />
+                  </Button>
+                </Link>
                 <Button variant="ghost" size="icon" className="h-8 w-8">
                   <ArrowLeft className="h-4 w-4" />
                 </Button>

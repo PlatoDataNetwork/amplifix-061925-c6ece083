@@ -34,18 +34,20 @@ const MoltenShieldIcon: React.FC<MoltenShieldIconProps> = ({
       />
       
       {/* Letter inside the shield */}
-      <text
-        x="12"
-        y="15"
-        fill="white"
-        fontFamily="Arial, sans-serif"
-        fontSize="10"
-        fontWeight="bold"
-        textAnchor="middle"
-        dominantBaseline="middle"
-      >
-        {letter}
-      </text>
+      {letter && (
+        <text
+          x="12"
+          y="15"
+          fill="white"
+          fontFamily="Arial, sans-serif"
+          fontSize="10"
+          fontWeight="bold"
+          textAnchor="middle"
+          dominantBaseline="middle"
+        >
+          {letter}
+        </text>
+      )}
       
       {/* Gradient definitions */}
       <defs>
