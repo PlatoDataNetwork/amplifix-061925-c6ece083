@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Send, X, Home, Shield } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import MoltenArcIcon from "@/components/MoltenArcIcon";
 import { Link } from "react-router-dom";
 
 interface Message {
