@@ -7,6 +7,24 @@ import { Zap } from "lucide-react";
 const Index = () => {
   return (
     <div className="min-h-screen bg-[#1A1F2C] text-white">
+      {/* Navigation */}
+      <nav className="container mx-auto flex items-center justify-between py-6">
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl font-bold">MoltenArc</h1>
+        </div>
+        <div className="flex items-center gap-6">
+          <Link to="/" className="hover:text-[#61dafb] transition-colors">Features</Link>
+          <Link to="/" className="hover:text-[#61dafb] transition-colors">Security</Link>
+          <Link to="/" className="hover:text-[#61dafb] transition-colors">Pricing</Link>
+          <Link to="/" className="hover:text-[#61dafb] transition-colors">Testimonials</Link>
+          <Link to="/dashboard">
+            <Button className="bg-gradient-to-r from-[#9b87f5] to-[#61dafb] hover:opacity-90 transition-opacity">
+              Try MoltenArc
+            </Button>
+          </Link>
+        </div>
+      </nav>
+
       {/* Hero Section */}
       <div className="container mx-auto py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
