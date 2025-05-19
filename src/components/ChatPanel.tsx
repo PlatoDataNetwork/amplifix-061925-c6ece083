@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, X, Home, Shield } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import MoltenArcIcon from "@/components/MoltenArcIcon";
 import { Link } from "react-router-dom";
 
 interface Message {
@@ -18,10 +18,47 @@ interface ChatPanelProps {
   onClose: () => void;
 }
 
+// Colorful Guard Icon component - kept for reference
+const ColorfulGuardIcon = ({ className = "h-5 w-5" }) => {
+  return (
+    <svg 
+      viewBox="0 0 24 24" 
+      className={className} 
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Shield shape */}
+      <path 
+        d="M12 2L3 7V13C3 17.9706 7.02944 22 12 22C16.9706 22 21 17.9706 21 13V7L12 2Z" 
+        fill="url(#guardGradient)"
+        stroke="#9b87f5"
+        strokeWidth="1.5"
+      />
+      
+      {/* Lock symbol */}
+      <path 
+        d="M12 12C13.1046 12 14 11.1046 14 10C14 8.89543 13.1046 8 12 8C10.8954 8 10 8.89543 10 10C10 11.1046 10.8954 12 12 12Z" 
+        fill="white" 
+      />
+      <path 
+        d="M9 14H15V18H9V14Z" 
+        fill="white" 
+      />
+      
+      {/* Gradient definition */}
+      <defs>
+        <linearGradient id="guardGradient" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#9b87f5" />
+          <stop offset="100%" stopColor="#6E59A5" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};
+
 const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
   const [messages, setMessages] = useState<Message[]>([
     {
-      content: "Welcome to MoltenArc's secure government communications platform. How can I assist you today?",
+      content: "Welcome to MoltenArc's encrypted chat. How can I assist you today?",
       sender: 'assistant',
       timestamp: new Date()
     }
@@ -55,7 +92,7 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
     // Simulate encryption notification
     toast({
       title: "Encrypted Message",
-      description: "Your message has been securely encrypted to FIPS 140-2 standards.",
+      description: "Your message has been securely encrypted.",
     });
 
     // Simulate processing time for encryption
@@ -73,11 +110,11 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
   // Simple response generator
   const generateResponse = (query: string): string => {
     const responses = [
-      "Your encrypted message has been received and logged per compliance requirements. I'm processing your request securely.",
-      "Thank you for using MoltenArc's FedRAMP-authorized communication channel. Your agency's privacy is our priority.",
-      "I've analyzed your request and am preparing a compliant response. Is there any specific information you need for your mission?",
-      "Your message was securely transmitted through our FIPS 140-2 certified encryption layer.",
-      `I understand your inquiry about "${query.substring(0, 20)}...". Let me process that according to agency protocols.`
+      "Your encrypted message has been received. I'm processing your request securely.",
+      "Thanks for using our secure communication channel. Your privacy is our priority.",
+      "I've analyzed your encrypted message. Is there anything specific you need assistance with?",
+      "Your message was securely transmitted through our military-grade encryption layer.",
+      `I understand you're asking about "${query.substring(0, 20)}...". Let me process that securely.`
     ];
     
     return responses[Math.floor(Math.random() * responses.length)];
@@ -97,7 +134,7 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
       {/* Header */}
       <div className="border-b border-gray-700 p-4 flex justify-between items-center">
         <div className="flex items-center">
-          <h2 className="font-semibold">Secure Government Channel</h2>
+          <h2 className="font-semibold">Encrypted Chat</h2>
         </div>
         <div className="flex items-center gap-2">
           <Link to="/">
@@ -168,7 +205,7 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
         </div>
         <div className="flex items-center mt-2 text-xs text-gray-400">
           <Shield className="h-3 w-3 mr-1" />
-          FIPS 140-2 end-to-end encrypted messaging
+          End-to-end encrypted messaging
         </div>
       </div>
     </div>

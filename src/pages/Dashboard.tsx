@@ -10,6 +10,7 @@ import EmailList from "@/components/EmailList";
 import EmailContent from "@/components/EmailContent";
 import Sidebar from "@/components/Sidebar";
 import SecureChat from "@/components/SecureChat";
+import MoltenArcIcon from "@/components/MoltenArcIcon";
 import ChatPanel from "@/components/ChatPanel";
 import { Link } from "react-router-dom";
 
@@ -88,7 +89,7 @@ const Dashboard = () => {
               <Button 
                 className="bg-[#9b87f5] hover:bg-[#7E69AB] rounded-md px-3 py-1 h-8"
               >
-                Submit for Authorization
+                Publish
               </Button>
             </div>
           </div>
