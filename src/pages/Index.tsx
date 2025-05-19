@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
-import { Zap } from "lucide-react";
 
 const Index = () => {
   return (
@@ -13,13 +12,13 @@ const Index = () => {
           <h1 className="text-2xl font-bold">MoltenArc</h1>
         </div>
         <div className="flex items-center gap-6">
-          <Link to="/" className="hover:text-[#9b87f5] transition-colors">Features</Link>
+          <Link to="/" className="hover:text-[#9b87f5] transition-colors">Government Solutions</Link>
+          <Link to="/" className="hover:text-[#9b87f5] transition-colors">Compliance</Link>
           <Link to="/" className="hover:text-[#9b87f5] transition-colors">Security</Link>
-          <Link to="/" className="hover:text-[#9b87f5] transition-colors">Pricing</Link>
-          <Link to="/" className="hover:text-[#9b87f5] transition-colors">Testimonials</Link>
+          <Link to="/" className="hover:text-[#9b87f5] transition-colors">Case Studies</Link>
           <Link to="/dashboard">
             <Button className="bg-gradient-to-r from-[#9b87f5] to-[#61dafb] hover:opacity-90 transition-opacity">
-              Try MoltenArc
+              Request Demo
             </Button>
           </Link>
         </div>
@@ -31,27 +30,27 @@ const Index = () => {
           <div>
             <div className="inline-block bg-gradient-to-r from-[#9b87f5] to-[#61dafb] bg-clip-text text-transparent">
               <div className="bg-[#2A2F3C] rounded-full px-6 py-2 mb-8 inline-flex items-center">
-                Military-Grade Encrypted Communications
+                FIPS 140-2 Compliant Communications
               </div>
             </div>
             <h2 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
-              AI-Enhanced <br />
-              Secure Messaging <br />
-              & Communications
+              Secure Governmental <br />
+              Communications <br />
+              Platform
             </h2>
             <p className="text-lg text-gray-300 mb-8">
-              MoltenArc combines military-grade encryption with intuitive design to deliver
-              secure communications, helping you protect your privacy in an increasingly
-              vulnerable digital landscape.
+              MoltenArc provides government agencies with military-grade encrypted communications,
+              meeting the highest security standards while ensuring operational efficiency
+              and compliance with federal regulations.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/dashboard">
                 <Button size="lg" className="bg-gradient-to-r from-[#9b87f5] to-[#61dafb] hover:opacity-90 transition-opacity">
-                  Get Started Free
+                  Schedule Consultation
                 </Button>
               </Link>
               <Button size="lg" variant="outline" className="border-gray-600 hover:bg-gray-800">
-                View Demo
+                View Security Whitepaper
               </Button>
             </div>
           </div>
@@ -59,10 +58,10 @@ const Index = () => {
             <div className="bg-[#1E2230] rounded-xl p-4">
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-2">
-                  <span>Message Encryption Status</span>
+                  <span>Authorization Status</span>
                 </div>
                 <div className="bg-green-600 text-green-100 px-3 py-1 rounded-full text-sm">
-                  Secure
+                  FedRAMP Authorized
                 </div>
               </div>
               <div className="h-[300px] bg-[#1A1F2C] rounded-lg p-4 mb-4">
@@ -87,12 +86,12 @@ const Index = () => {
                   <div className="font-mono font-medium">AES-256</div>
                 </div>
                 <div>
-                  <div className="text-gray-400 text-sm mb-1">Protocol</div>
-                  <div className="font-mono font-medium">E2EE</div>
+                  <div className="text-gray-400 text-sm mb-1">Compliance</div>
+                  <div className="font-mono font-medium">FISMA</div>
                 </div>
                 <div>
-                  <div className="text-gray-400 text-sm mb-1">Status</div>
-                  <div className="font-mono font-medium">Active</div>
+                  <div className="text-gray-400 text-sm mb-1">Hosting</div>
+                  <div className="font-mono font-medium">FedRAMP</div>
                 </div>
               </div>
             </div>
@@ -104,16 +103,16 @@ const Index = () => {
       <div className="container mx-auto py-16 border-t border-gray-800">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div>
-            <div className="text-4xl font-bold text-[#9b87f5]">256-bit</div>
-            <div className="text-gray-400">Military-Grade Encryption</div>
+            <div className="text-4xl font-bold text-[#9b87f5]">FIPS 140-2</div>
+            <div className="text-gray-400">Certified Encryption</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-[#9b87f5]">24/7</div>
-            <div className="text-gray-400">Secure Server Protection</div>
+            <div className="text-4xl font-bold text-[#9b87f5]">IL4/IL5</div>
+            <div className="text-gray-400">Impact Level Compliant</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-[#9b87f5]">30+</div>
-            <div className="text-gray-400">Security Features</div>
+            <div className="text-4xl font-bold text-[#9b87f5]">99.99%</div>
+            <div className="text-gray-400">Guaranteed Uptime</div>
           </div>
           <div>
             <div className="text-4xl font-bold text-[#9b87f5]">Zero</div>

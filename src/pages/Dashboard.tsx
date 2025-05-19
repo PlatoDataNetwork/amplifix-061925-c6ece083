@@ -89,7 +89,7 @@ const Dashboard = () => {
               <Button 
                 className="bg-[#9b87f5] hover:bg-[#7E69AB] rounded-md px-3 py-1 h-8"
               >
-                Publish
+                Submit for Authorization
               </Button>
             </div>
           </div>
