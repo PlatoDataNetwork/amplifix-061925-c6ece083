@@ -1,6 +1,5 @@
-
 import { Button } from "@/components/ui/button";
-import { Mail, Inbox, Send, Archive, Trash, Logs } from "lucide-react";
+import { Mail, Inbox, Send, Archive, Trash, Logs, MessageSquare } from "lucide-react";
 
 interface SidebarProps {
   activeTab: string;
@@ -12,6 +11,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
     { id: 'inbox', label: 'Inbox', icon: Inbox },
     { id: 'sent', label: 'Sent', icon: Send },
     { id: 'archive', label: 'Archive', icon: Archive },
+    { id: 'chat', label: 'Chat', icon: MessageSquare },
     { id: 'trash', label: 'Trash', icon: Trash },
     { id: 'logs', label: 'Logs', icon: Logs },
   ];
