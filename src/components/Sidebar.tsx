@@ -61,7 +61,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
         <div className="bg-[#1E2230] rounded-lg p-3">
           <div className="flex justify-between items-center">
             <div className="text-sm font-medium">Security Status</div>
-            <div className="text-xs text-[#61dafb]">Protected</div>
+            <div className="text-sm text-[#33C3F0]">Protected</div>
           </div>
         </div>
       </div>
