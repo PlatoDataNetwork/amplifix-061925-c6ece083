@@ -13,12 +13,12 @@ const Index = () => {
           <h1 className="text-2xl font-bold">MoltenArc</h1>
         </div>
         <div className="flex items-center gap-6">
-          <Link to="/" className="hover:text-[#61dafb] transition-colors">Features</Link>
-          <Link to="/" className="hover:text-[#61dafb] transition-colors">Security</Link>
-          <Link to="/" className="hover:text-[#61dafb] transition-colors">Pricing</Link>
-          <Link to="/" className="hover:text-[#61dafb] transition-colors">Testimonials</Link>
+          <Link to="/" className="hover:text-secondary transition-colors">Features</Link>
+          <Link to="/" className="hover:text-secondary transition-colors">Security</Link>
+          <Link to="/" className="hover:text-secondary transition-colors">Pricing</Link>
+          <Link to="/" className="hover:text-secondary transition-colors">Testimonials</Link>
           <Link to="/dashboard">
-            <Button className="bg-gradient-to-r from-[#9b87f5] to-[#61dafb] hover:opacity-90 transition-opacity">
+            <Button className="bg-gradient-to-r from-[#9b87f5] to-secondary hover:opacity-90 transition-opacity">
               Try MoltenArc
             </Button>
           </Link>
@@ -29,7 +29,7 @@ const Index = () => {
       <div className="container mx-auto py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
-            <div className="inline-block bg-gradient-to-r from-[#9b87f5] to-[#61dafb] bg-clip-text text-transparent">
+            <div className="inline-block bg-gradient-to-r from-[#9b87f5] to-secondary bg-clip-text text-transparent">
               <div className="bg-[#2A2F3C] rounded-full px-6 py-2 mb-8 inline-flex items-center">
                 Military-Grade Encrypted Communications
               </div>
@@ -46,7 +46,7 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/dashboard">
-                <Button size="lg" className="bg-gradient-to-r from-[#9b87f5] to-[#61dafb] hover:opacity-90 transition-opacity">
+                <Button size="lg" className="bg-gradient-to-r from-[#9b87f5] to-secondary hover:opacity-90 transition-opacity">
                   Get Started Free
                 </Button>
               </Link>
@@ -77,7 +77,7 @@ const Index = () => {
                       />
                     </svg>
                   </div>
-                  <div className="absolute w-2 h-2 bg-[#61dafb] rounded-full" style={{ left: "30%", top: "60%" }}></div>
+                  <div className="absolute w-2 h-2 bg-secondary rounded-full" style={{ left: "30%", top: "60%" }}></div>
                   <div className="absolute w-3 h-3 bg-[#9b87f5] rounded-full" style={{ left: "70%", top: "40%" }}></div>
                 </div>
               </div>
@@ -104,19 +104,19 @@ const Index = () => {
       <div className="container mx-auto py-16 border-t border-gray-800">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div>
-            <div className="text-4xl font-bold text-[#61dafb]">256-bit</div>
+            <div className="text-4xl font-bold text-secondary">256-bit</div>
             <div className="text-gray-400">Military-Grade Encryption</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-[#61dafb]">24/7</div>
+            <div className="text-4xl font-bold text-secondary">24/7</div>
             <div className="text-gray-400">Secure Server Protection</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-[#61dafb]">30+</div>
+            <div className="text-4xl font-bold text-secondary">30+</div>
             <div className="text-gray-400">Security Features</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-[#61dafb]">Zero</div>
+            <div className="text-4xl font-bold text-secondary">Zero</div>
             <div className="text-gray-400">Data Breaches</div>
           </div>
         </div>
