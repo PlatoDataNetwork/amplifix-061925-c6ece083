@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-// This is now just a placeholder component as we've moved the functionality to ChatPanel
+// This is a placeholder component as functionality has been moved to ChatPanel
 const SecureChat = () => {
   return null;
 };

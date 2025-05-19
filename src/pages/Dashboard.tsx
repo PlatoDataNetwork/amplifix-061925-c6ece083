@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Search, User, MessageCircle } from "lucide-react";
+import { Search, User, MessageCircle, ArrowLeft, ArrowRight, RefreshCw, Maximize } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/hooks/use-toast";
 import EmailList from "@/components/EmailList";
@@ -40,33 +40,52 @@ const Dashboard = () => {
 
   return (
     <div className="h-screen bg-[#1A1F2C] text-white flex overflow-hidden">
+      {/* Chat Panel */}
+      <ChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      
       {/* Sidebar */}
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-[#252A38] border-b border-gray-700 p-4">
+        <header className="bg-[#252A38] border-b border-gray-700 p-2 px-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center">
+            <div className="flex items-center gap-3">
+              {/* Chat Button - Moved to left side */}
               <Button 
-                variant="ghost" 
-                size="icon"
-                className="mr-2 rounded-full h-8 w-8"
+                onClick={() => setIsChatOpen(!isChatOpen)}
+                className="h-8 w-8 rounded-full bg-transparent hover:bg-[#1E2230] p-0 flex items-center justify-center"
               >
-                <span className="sr-only">Switch account</span>
-                <User className="h-4 w-4" />
+                <MessageCircle className="h-5 w-5" />
               </Button>
+              
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              <div className="bg-[#1E2230] rounded-md px-2 py-1 flex items-center">
+                <span className="text-sm">/dashboard</span>
+              </div>
             </div>
-            <div className="relative w-1/3">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search secure messages..."
-                className="pl-10 bg-[#1E2230] border-gray-700 focus-visible:ring-[#9b87f5] rounded-full"
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              {/* Right header elements */}
+            
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Maximize className="h-4 w-4" />
+              </Button>
+              <Button 
+                className="bg-[#9b87f5] hover:bg-[#7E69AB] rounded-md px-3 py-1 h-8"
+              >
+                Publish
+              </Button>
             </div>
           </div>
         </header>
@@ -148,17 +167,6 @@ const Dashboard = () => {
           </div>
         </div>
       )}
-      
-      {/* Chat Button - Fixed to bottom right */}
-      <Button 
-        onClick={() => setIsChatOpen(!isChatOpen)}
-        className="fixed bottom-5 right-5 h-12 w-12 rounded-full bg-gradient-to-r from-[#9b87f5] to-[#61dafb] hover:opacity-90 shadow-lg p-0 flex items-center justify-center z-40"
-      >
-        <MessageCircle className="h-6 w-6" />
-      </Button>
-      
-      {/* Chat Panel Component */}
-      <ChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       
       <Toaster />
     </div>
