@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Mail, Inbox, Send, Archive, Trash, Logs } from "lucide-react";
+import { Mail, Inbox, Send, Archive, Trash, Logs, MessageCircle } from "lucide-react";
 
 interface SidebarProps {
   activeTab: string;
@@ -12,13 +12,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
     { id: 'inbox', label: 'Inbox', icon: Inbox },
     { id: 'sent', label: 'Sent', icon: Send },
     { id: 'archive', label: 'Archive', icon: Archive },
-    { id: 'chat', label: 'Chat', icon: () => (
-      <div className="relative flex items-center justify-center w-5 h-5">
-        <div className="absolute flex items-center justify-center rounded-full">
-          <span className="text-xs font-bold text-[#33C3F0]">AI</span>
-        </div>
-      </div>
-    )},
+    { id: 'chat', label: 'Chat', icon: MessageCircle }, // Using MessageCircle from lucide-react
     { id: 'trash', label: 'Trash', icon: Trash },
     { id: 'logs', label: 'Logs', icon: Logs },
   ];
@@ -55,11 +49,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
               }`}
               onClick={() => setActiveTab(item.id)}
             >
-              {typeof item.icon === 'function' ? (
-                <item.icon />
-              ) : (
-                <item.icon className="mr-2 h-5 w-5" />
-              )}
+              <item.icon className="mr-2 h-5 w-5" />
               {item.label}
             </Button>
           ))}
