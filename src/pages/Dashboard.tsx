@@ -40,14 +40,16 @@ const Dashboard = () => {
 
   return (
     <div className="h-screen bg-[#1A1F2C] text-white flex overflow-hidden">
-      {/* Chat Panel - positioned with highest z-index to overlay sidebar when open */}
-      <ChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-      
       {/* Sidebar */}
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Chat Panel - positioned to be next to sidebar */}
+      <ChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      
+      {/* Main Content - will adjust when chat is open */}
+      <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
+        isChatOpen ? 'ml-[350px]' : 'ml-0'
+      }`}>
         {/* Header */}
         <header className="bg-[#252A38] border-b border-gray-700 p-2 px-4">
           <div className="flex items-center justify-between">

@@ -90,8 +90,8 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
 
   return (
     <div 
-      className={`fixed inset-y-0 left-0 w-[350px] bg-[#1A1F2C] border-r border-gray-700 shadow-xl transition-transform duration-300 ease-in-out z-30 ${
-        isOpen ? 'translate-x-0' : 'translate-x-[-100%]'
+      className={`fixed top-0 bottom-0 left-[264px] w-[350px] bg-[#1A1F2C] border-r border-gray-700 shadow-xl transition-transform duration-300 ease-in-out z-20 ${
+        isOpen ? 'translate-x-0' : 'translate-x-[-350px]'
       }`}
     >
       {/* Header */}
