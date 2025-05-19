@@ -26,7 +26,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
       {/* New Message Button */}
       <div className="px-4 mb-6">
         <Button 
-          className="w-full bg-gradient-to-r from-[#9b87f5] to-[#61dafb] hover:opacity-90 shadow-sm"
+          className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
           onClick={() => window.dispatchEvent(new CustomEvent("open-compose"))}
         >
           <Mail className="mr-2 h-4 w-4" />

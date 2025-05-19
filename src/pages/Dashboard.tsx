@@ -87,7 +87,7 @@ const Dashboard = () => {
                 <Maximize className="h-4 w-4" />
               </Button>
               <Button 
-                className="bg-[#61dafb] hover:bg-[#4ABED9] text-[#1A1F2C] rounded-md px-3 py-1 h-8"
+                className="bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors rounded-md px-3 py-1 h-8"
               >
                 Publish
               </Button>
@@ -106,7 +106,7 @@ const Dashboard = () => {
                 variant="outline" 
                 size="sm" 
                 onClick={() => setShowCompose(true)}
-                className="text-[#61dafb] border-[#61dafb] hover:bg-[#2A2F3C] hover:text-[#61dafb]"
+                className="text-secondary-foreground bg-secondary border-secondary hover:bg-secondary/80 hover:text-secondary-foreground"
               >
                 Compose
               </Button>
@@ -163,7 +163,7 @@ const Dashboard = () => {
               <div className="mt-4 flex justify-end">
                 <Button 
                   type="submit" 
-                  className="bg-gradient-to-r from-[#9b87f5] to-[#61dafb] hover:opacity-90"
+                  className="bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
                 >
                   Send Secure Message
                 </Button>
