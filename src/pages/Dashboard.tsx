@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Search, User, MessageCircle, ArrowLeft, ArrowRight, RefreshCw, Maximize, Home, Send, Shield } from "lucide-react";
+import { Search, User, MessageCircle, ArrowLeft, ArrowRight, RefreshCw, Maximize, Home, Send, Shield, Wallet } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/hooks/use-toast";
 import EmailList from "@/components/EmailList";
@@ -56,7 +55,7 @@ const Dashboard = () => {
             {/* Chat Header */}
             <div className="border-b border-gray-700 p-4 flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#9b87f5] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-[#61dafb] flex items-center justify-center">
                   <MessageCircle className="h-5 w-5 text-white" />
                 </div>
                 <div>
@@ -81,7 +80,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="flex justify-end">
-                <div className="max-w-md p-3 rounded-xl text-sm bg-[#9b87f5] text-white rounded-tr-none">
+                <div className="max-w-md p-3 rounded-xl text-sm bg-[#61dafb] text-white rounded-tr-none">
                   Can you help me with secure file transfers?
                   <div className="text-xs mt-1 text-white/70">09:32</div>
                 </div>
@@ -212,7 +211,8 @@ const Dashboard = () => {
                 <Button 
                   className="bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors rounded-md px-3 py-1 h-8"
                 >
-                  Publish
+                  <Wallet className="h-4 w-4 mr-1" />
+                  Wallet
                 </Button>
               </div>
             </div>
