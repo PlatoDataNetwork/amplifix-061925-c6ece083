@@ -10,7 +10,6 @@ import EmailList from "@/components/EmailList";
 import EmailContent from "@/components/EmailContent";
 import Sidebar from "@/components/Sidebar";
 import SecureChat from "@/components/SecureChat";
-import MoltenArcIcon from "@/components/MoltenArcIcon";
 import ChatPanel from "@/components/ChatPanel";
 import { Link } from "react-router-dom";
 
