@@ -1,10 +1,10 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Search, User } from "lucide-react";
+import { Search, User, MessageCircle } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/hooks/use-toast";
 import EmailList from "@/components/EmailList";
@@ -12,11 +12,13 @@ import EmailContent from "@/components/EmailContent";
 import Sidebar from "@/components/Sidebar";
 import SecureChat from "@/components/SecureChat";
 import MoltenArcIcon from "@/components/MoltenArcIcon";
+import ChatPanel from "@/components/ChatPanel";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("inbox");
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
   const [showCompose, setShowCompose] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   
   const handleComposeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,13 +30,13 @@ const Dashboard = () => {
   };
   
   // Handle compose modal opening
-  useState(() => {
+  useEffect(() => {
     const openComposeHandler = () => setShowCompose(true);
     window.addEventListener("open-compose", openComposeHandler);
     return () => {
       window.removeEventListener("open-compose", openComposeHandler);
     };
-  });
+  }, []);
 
   return (
     <div className="h-screen bg-[#1A1F2C] text-white flex overflow-hidden">
@@ -147,8 +149,16 @@ const Dashboard = () => {
         </div>
       )}
       
-      {/* Chat Component */}
-      <SecureChat />
+      {/* Chat Button - Fixed to bottom right */}
+      <Button 
+        onClick={() => setIsChatOpen(!isChatOpen)}
+        className="fixed bottom-5 right-5 h-12 w-12 rounded-full bg-gradient-to-r from-[#9b87f5] to-[#61dafb] hover:opacity-90 shadow-lg p-0 flex items-center justify-center z-40"
+      >
+        <MessageCircle className="h-6 w-6" />
+      </Button>
+      
+      {/* Chat Panel Component */}
+      <ChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       
       <Toaster />
     </div>
