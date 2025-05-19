@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Mail, Inbox, Send, Archive, Trash, Logs, MessageCircle } from "lucide-react";
+import { Mail, Inbox, Send, Archive, Trash, Logs, MessageCircle, Bot } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
 interface SidebarProps {
@@ -21,6 +21,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
     { id: 'inbox', label: 'Inbox', icon: Inbox },
     { id: 'sent', label: 'Sent', icon: Send },
     { id: 'archive', label: 'Archive', icon: Archive },
+    { id: 'ai', label: 'AI', icon: Bot },
     { id: 'chat', label: 'Chat', icon: MessageCircle },
     { id: 'trash', label: 'Trash', icon: Trash },
     { id: 'logs', label: 'Logs', icon: Logs },
@@ -56,7 +57,14 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
                   ? "bg-[#2A2F3C] text-[#61dafb]" 
                   : "text-gray-300 hover:text-white hover:bg-[#2A2F3C]"
               }`}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => {
+                // Special handling for AI item - set activeTab to 'chat'
+                if (item.id === 'ai') {
+                  setActiveTab('chat');
+                } else {
+                  setActiveTab(item.id);
+                }
+              }}
             >
               <item.icon className="mr-2 h-5 w-5" />
               {item.label}
