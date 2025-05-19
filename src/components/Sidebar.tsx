@@ -16,15 +16,14 @@ interface SidebarItem {
 }
 
 const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
-  // Now with proper typing for the array
+  // Now with proper typing for the array and reordered items
   const sidebarItems: SidebarItem[] = [
     { id: 'inbox', label: 'Inbox', icon: Inbox },
     { id: 'sent', label: 'Sent', icon: Send },
-    { id: 'archive', label: 'Archive', icon: Archive },
-    { id: 'ai', label: 'AI', icon: Bot },
+    { id: 'draft', label: 'Draft', icon: Mail },
     { id: 'chat', label: 'Chat', icon: MessageCircle },
-    { id: 'trash', label: 'Trash', icon: Trash },
     { id: 'logs', label: 'Logs', icon: Logs },
+    { id: 'trash', label: 'Trash', icon: Trash },
   ];
 
   return (
@@ -57,14 +56,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
                   ? "bg-[#2A2F3C] text-[#61dafb]" 
                   : "text-gray-300 hover:text-white hover:bg-[#2A2F3C]"
               }`}
-              onClick={() => {
-                // Special handling for AI item - set activeTab to 'chat'
-                if (item.id === 'ai') {
-                  setActiveTab('chat');
-                } else {
-                  setActiveTab(item.id);
-                }
-              }}
+              onClick={() => setActiveTab(item.id)}
             >
               <item.icon className="mr-2 h-5 w-5" />
               {item.label}
