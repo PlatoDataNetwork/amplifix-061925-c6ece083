@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Mail, Inbox, Send, Archive, Trash, Shield } from "lucide-react";
+import { Mail, Inbox, Send, Archive, Trash, Shield, Logs } from "lucide-react";
 import MoltenArcIcon from "@/components/MoltenArcIcon";
 
 interface SidebarProps {
@@ -14,6 +14,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
     { id: 'sent', label: 'Sent', icon: Send },
     { id: 'archive', label: 'Archive', icon: Archive },
     { id: 'trash', label: 'Trash', icon: Trash },
+    { id: 'logs', label: 'Logs', icon: Logs },
   ];
 
   return (
@@ -57,8 +58,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
       {/* Security Status */}
       <div className="p-4 border-t border-gray-700">
         <div className="bg-[#1E2230] rounded-lg p-3 flex items-center">
-          <Shield className="h-5 w-5 text-green-500 mr-3" />
-          <div>
+          <div className="w-full">
             <div className="text-sm font-medium">Security Status</div>
             <div className="text-xs text-green-500">Protected</div>
           </div>
