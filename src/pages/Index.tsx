@@ -18,7 +18,7 @@ const Index = () => {
           <Link to="/" className="hover:text-secondary transition-colors">Pricing</Link>
           <Link to="/" className="hover:text-secondary transition-colors">Testimonials</Link>
           <Link to="/dashboard">
-            <Button className="bg-gradient-to-r from-[#9b87f5] to-secondary hover:opacity-90 transition-opacity">
+            <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors">
               Try MoltenArc
             </Button>
           </Link>
@@ -46,11 +46,11 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/dashboard">
-                <Button size="lg" className="bg-gradient-to-r from-[#9b87f5] to-secondary hover:opacity-90 transition-opacity">
+                <Button size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors">
                   Get Started Free
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="border-gray-600 hover:bg-gray-800">
+              <Button size="lg" variant="outline" className="border-gray-600 bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors">
                 View Demo
               </Button>
             </div>
@@ -61,7 +61,7 @@ const Index = () => {
                 <div className="flex items-center gap-2">
                   <span>Message Encryption Status</span>
                 </div>
-                <div className="bg-green-600 text-green-100 px-3 py-1 rounded-full text-sm">
+                <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm">
                   Secure
                 </div>
               </div>
