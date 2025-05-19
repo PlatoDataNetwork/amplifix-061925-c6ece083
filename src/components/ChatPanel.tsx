@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Send, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import MoltenShieldIcon from "@/components/MoltenShieldIcon";
 
 interface Message {
   content: string;
@@ -17,7 +18,7 @@ interface ChatPanelProps {
   onClose: () => void;
 }
 
-// Colorful Guard Icon component
+// Colorful Guard Icon component - kept for reference
 const ColorfulGuardIcon = ({ className = "h-5 w-5" }) => {
   return (
     <svg 
@@ -133,7 +134,7 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
       {/* Header */}
       <div className="border-b border-gray-700 p-4 flex justify-between items-center">
         <div className="flex items-center">
-          <ColorfulGuardIcon className="h-5 w-5 mr-2" />
+          <MoltenShieldIcon className="h-5 w-5 mr-2" />
           <h2 className="font-semibold">Encrypted Chat</h2>
         </div>
         <Button 
@@ -192,7 +193,7 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
           </Button>
         </div>
         <div className="flex items-center mt-2 text-xs text-gray-400">
-          <ColorfulGuardIcon className="h-3 w-3 mr-1" />
+          <MoltenShieldIcon className="h-3 w-3 mr-1" letter="" />
           End-to-end encrypted messaging
         </div>
       </div>
