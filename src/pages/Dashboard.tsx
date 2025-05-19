@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +10,8 @@ import { toast } from "@/hooks/use-toast";
 import EmailList from "@/components/EmailList";
 import EmailContent from "@/components/EmailContent";
 import Sidebar from "@/components/Sidebar";
+import SecureChat from "@/components/SecureChat";
+import MoltenArcIcon from "@/components/MoltenArcIcon";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("inbox");
@@ -74,7 +75,9 @@ const Dashboard = () => {
           </div>
         </header>
 
+        {/* Browser or Email interface */}
         {showBrowser ? (
+          // ... keep existing code (browser view)
           <div className="flex-1 p-4 overflow-auto">
             <Card className="h-full">
               <CardHeader className="flex flex-row items-center justify-between bg-[#252A38] border-b border-gray-700">
@@ -221,6 +224,9 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+      
+      {/* Chat Component */}
+      <SecureChat />
       
       <Toaster />
     </div>
