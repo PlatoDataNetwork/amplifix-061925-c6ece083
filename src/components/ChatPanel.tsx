@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Shield, Send, X } from "lucide-react";
+import { Send, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -16,6 +16,43 @@ interface ChatPanelProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+// Colorful Guard Icon component
+const ColorfulGuardIcon = ({ className = "h-5 w-5" }) => {
+  return (
+    <svg 
+      viewBox="0 0 24 24" 
+      className={className} 
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Shield shape */}
+      <path 
+        d="M12 2L3 7V13C3 17.9706 7.02944 22 12 22C16.9706 22 21 17.9706 21 13V7L12 2Z" 
+        fill="url(#guardGradient)"
+        stroke="#9b87f5"
+        strokeWidth="1.5"
+      />
+      
+      {/* Lock symbol */}
+      <path 
+        d="M12 12C13.1046 12 14 11.1046 14 10C14 8.89543 13.1046 8 12 8C10.8954 8 10 8.89543 10 10C10 11.1046 10.8954 12 12 12Z" 
+        fill="white" 
+      />
+      <path 
+        d="M9 14H15V18H9V14Z" 
+        fill="white" 
+      />
+      
+      {/* Gradient definition */}
+      <defs>
+        <linearGradient id="guardGradient" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#9b87f5" />
+          <stop offset="100%" stopColor="#6E59A5" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};
 
 const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
   const [messages, setMessages] = useState<Message[]>([
@@ -96,7 +133,7 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
       {/* Header */}
       <div className="border-b border-gray-700 p-4 flex justify-between items-center">
         <div className="flex items-center">
-          <Shield className="h-5 w-5 text-[#9b87f5] mr-2" />
+          <ColorfulGuardIcon className="h-5 w-5 mr-2" />
           <h2 className="font-semibold">Encrypted Chat</h2>
         </div>
         <Button 
@@ -155,7 +192,7 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
           </Button>
         </div>
         <div className="flex items-center mt-2 text-xs text-gray-400">
-          <Shield className="h-3 w-3 mr-1" />
+          <ColorfulGuardIcon className="h-3 w-3 mr-1" />
           End-to-end encrypted messaging
         </div>
       </div>
