@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Mail, Inbox, Send, Archive, Trash, Shield, Logs } from "lucide-react";
+import { Mail, Inbox, Send, Archive, Trash, Logs } from "lucide-react";
 import MoltenArcIcon from "@/components/MoltenArcIcon";
 
 interface SidebarProps {
@@ -18,37 +18,39 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
   ];
 
   return (
-    <div className="w-64 bg-[#252A38] border-r border-gray-700 flex flex-col">
+    <div className="w-64 bg-[#252A38] border-r border-gray-700 flex flex-col h-full">
       {/* Logo Area */}
-      <div className="p-4 border-b border-gray-700 flex items-center">
-        <MoltenArcIcon className="h-6 w-6 mr-2" />
+      <div className="p-6 flex items-center">
+        <MoltenArcIcon className="h-7 w-7 mr-2" />
         <h1 className="font-bold text-lg">MoltenArc</h1>
       </div>
       
+      {/* New Message Button */}
+      <div className="px-4 mb-6">
+        <Button 
+          className="w-full bg-gradient-to-r from-indigo-500 to-blue-400 hover:opacity-90 shadow-sm"
+          onClick={() => window.dispatchEvent(new CustomEvent("open-compose"))}
+        >
+          <Mail className="mr-2 h-4 w-4" />
+          New Message
+        </Button>
+      </div>
+      
       {/* Navigation Links */}
-      <div className="flex-1 overflow-y-auto py-4">
-        <div className="px-3 mb-6">
-          <Button 
-            className="w-full bg-gradient-to-r from-[#9b87f5] to-[#61dafb] hover:opacity-90"
-          >
-            <Mail className="mr-2 h-4 w-4" />
-            New Message
-          </Button>
-        </div>
-        
-        <nav>
+      <div className="flex-1 overflow-y-auto">
+        <nav className="space-y-1 px-2">
           {sidebarItems.map((item) => (
             <Button
               key={item.id}
               variant="ghost"
-              className={`w-full justify-start mb-1 ${
+              className={`w-full justify-start ${
                 activeTab === item.id 
                   ? "bg-[#2A2F3C] text-[#9b87f5]" 
                   : "text-gray-300 hover:text-white hover:bg-[#2A2F3C]"
               }`}
               onClick={() => setActiveTab(item.id)}
             >
-              <item.icon className="mr-2 h-4 w-4" />
+              <item.icon className="mr-2 h-5 w-5" />
               {item.label}
             </Button>
           ))}
@@ -57,8 +59,8 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
       
       {/* Security Status */}
       <div className="p-4 border-t border-gray-700">
-        <div className="bg-[#1E2230] rounded-lg p-3 flex items-center">
-          <div className="w-full">
+        <div className="bg-[#1E2230] rounded-lg p-3">
+          <div className="flex justify-between items-center">
             <div className="text-sm font-medium">Security Status</div>
             <div className="text-xs text-green-500">Protected</div>
           </div>
