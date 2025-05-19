@@ -13,10 +13,10 @@ const Index = () => {
           <h1 className="text-2xl font-bold">MoltenArc</h1>
         </div>
         <div className="flex items-center gap-6">
-          <Link to="/" className="hover:text-[#9b87f5] transition-colors">Features</Link>
-          <Link to="/" className="hover:text-[#9b87f5] transition-colors">Security</Link>
-          <Link to="/" className="hover:text-[#9b87f5] transition-colors">Pricing</Link>
-          <Link to="/" className="hover:text-[#9b87f5] transition-colors">Testimonials</Link>
+          <Link to="/" className="hover:text-[#61dafb] transition-colors">Features</Link>
+          <Link to="/" className="hover:text-[#61dafb] transition-colors">Security</Link>
+          <Link to="/" className="hover:text-[#61dafb] transition-colors">Pricing</Link>
+          <Link to="/" className="hover:text-[#61dafb] transition-colors">Testimonials</Link>
           <Link to="/dashboard">
             <Button className="bg-gradient-to-r from-[#9b87f5] to-[#61dafb] hover:opacity-90 transition-opacity">
               Try MoltenArc
@@ -104,19 +104,19 @@ const Index = () => {
       <div className="container mx-auto py-16 border-t border-gray-800">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div>
-            <div className="text-4xl font-bold text-[#9b87f5]">256-bit</div>
+            <div className="text-4xl font-bold text-[#61dafb]">256-bit</div>
             <div className="text-gray-400">Military-Grade Encryption</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-[#9b87f5]">24/7</div>
+            <div className="text-4xl font-bold text-[#61dafb]">24/7</div>
             <div className="text-gray-400">Secure Server Protection</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-[#9b87f5]">30+</div>
+            <div className="text-4xl font-bold text-[#61dafb]">30+</div>
             <div className="text-gray-400">Security Features</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-[#9b87f5]">Zero</div>
+            <div className="text-4xl font-bold text-[#61dafb]">Zero</div>
             <div className="text-gray-400">Data Breaches</div>
           </div>
         </div>

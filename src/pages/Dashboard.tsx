@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +11,6 @@ import EmailList from "@/components/EmailList";
 import EmailContent from "@/components/EmailContent";
 import Sidebar from "@/components/Sidebar";
 import SecureChat from "@/components/SecureChat";
-import MoltenArcIcon from "@/components/MoltenArcIcon";
 import ChatPanel from "@/components/ChatPanel";
 import { Link } from "react-router-dom";
 
@@ -57,12 +57,12 @@ const Dashboard = () => {
                 onClick={() => setIsChatOpen(!isChatOpen)}
                 className="h-8 w-8 rounded-full bg-transparent hover:bg-[#1E2230] p-0 flex items-center justify-center"
               >
-                <MessageCircle className="h-5 w-5" />
+                <MessageCircle className="h-5 w-5 text-[#61dafb]" />
               </Button>
               
               <div className="flex items-center gap-2">
                 <Link to="/">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-[#9b87f5]">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-[#61dafb]">
                     <Home className="h-4 w-4" />
                   </Button>
                 </Link>
@@ -87,7 +87,7 @@ const Dashboard = () => {
                 <Maximize className="h-4 w-4" />
               </Button>
               <Button 
-                className="bg-[#9b87f5] hover:bg-[#7E69AB] rounded-md px-3 py-1 h-8"
+                className="bg-[#61dafb] hover:bg-[#4ABED9] text-[#1A1F2C] rounded-md px-3 py-1 h-8"
               >
                 Publish
               </Button>
@@ -106,7 +106,7 @@ const Dashboard = () => {
                 variant="outline" 
                 size="sm" 
                 onClick={() => setShowCompose(true)}
-                className="text-[#9b87f5] border-[#9b87f5] hover:bg-[#2A2F3C] hover:text-[#9b87f5]"
+                className="text-[#61dafb] border-[#61dafb] hover:bg-[#2A2F3C] hover:text-[#61dafb]"
               >
                 Compose
               </Button>
@@ -163,7 +163,7 @@ const Dashboard = () => {
               <div className="mt-4 flex justify-end">
                 <Button 
                   type="submit" 
-                  className="bg-gradient-to-r from-indigo-500 to-blue-400 hover:opacity-90"
+                  className="bg-gradient-to-r from-[#9b87f5] to-[#61dafb] hover:opacity-90"
                 >
                   Send Secure Message
                 </Button>

@@ -26,7 +26,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
       {/* New Message Button */}
       <div className="px-4 mb-6">
         <Button 
-          className="w-full bg-gradient-to-r from-indigo-500 to-blue-400 hover:opacity-90 shadow-sm"
+          className="w-full bg-gradient-to-r from-[#9b87f5] to-[#61dafb] hover:opacity-90 shadow-sm"
           onClick={() => window.dispatchEvent(new CustomEvent("open-compose"))}
         >
           <Mail className="mr-2 h-4 w-4" />
@@ -43,7 +43,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
               variant="ghost"
               className={`w-full justify-start ${
                 activeTab === item.id 
-                  ? "bg-[#2A2F3C] text-[#9b87f5]" 
+                  ? "bg-[#2A2F3C] text-[#61dafb]" 
                   : "text-gray-300 hover:text-white hover:bg-[#2A2F3C]"
               }`}
               onClick={() => setActiveTab(item.id)}
@@ -60,7 +60,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
         <div className="bg-[#1E2230] rounded-lg p-3">
           <div className="flex justify-between items-center">
             <div className="text-sm font-medium">Security Status</div>
-            <div className="text-xs text-green-500">Protected</div>
+            <div className="text-xs text-[#61dafb]">Protected</div>
           </div>
         </div>
       </div>
