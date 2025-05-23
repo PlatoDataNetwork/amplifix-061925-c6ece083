@@ -84,14 +84,14 @@ const CalendarPage = () => {
 
     return (
       <div className="bg-[#0A0A0A] text-white rounded-lg border border-gray-800 shadow-lg">
-        <div className="grid grid-cols-7 gap-px bg-gray-800">
+        <div className="grid grid-cols-7 border-b border-gray-800">
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
-            <div key={day} className="text-center py-2 text-sm font-medium">
+            <div key={day} className="text-center py-2 text-sm font-medium border-r border-gray-800 last:border-r-0">
               {day}
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-7 gap-px">
+        <div className="grid grid-cols-7">
           {Array(35)
             .fill(null)
             .map((_, i) => {
@@ -107,7 +107,7 @@ const CalendarPage = () => {
                 <div
                   key={i}
                   className={cn(
-                    "min-h-[100px] p-2 relative hover:bg-[#0F0F0F] transition-colors",
+                    "min-h-[100px] p-2 relative hover:bg-[#0F0F0F] transition-colors border-r border-b border-gray-800 last:border-r-0",
                     isCurrentMonth ? "bg-[#0A0A0A]" : "bg-[#0A0A0A]/50 text-gray-500"
                   )}
                   onClick={() => {
