@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import React, { useState } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addDays, addMonths, subMonths } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
@@ -174,8 +173,8 @@ const CalendarPage = () => {
         </div>
         <div className="grid grid-cols-8 gap-px">
           {hours.map(hour => (
-            <React.Fragment key={hour}>
-              <div className="p-2 border-t border-gray-800 text-right text-xs text-gray-500">
+            <>
+              <div key={hour} className="p-2 border-t border-gray-800 text-right text-xs text-gray-500">
                 {hour % 12 === 0 ? "12" : hour % 12}:00 {hour < 12 ? "AM" : "PM"}
               </div>
               {days.map((day, i) => {
@@ -210,7 +209,7 @@ const CalendarPage = () => {
                   </div>
                 );
               })}
-            </React.Fragment>
+            </>
           ))}
         </div>
       </div>
