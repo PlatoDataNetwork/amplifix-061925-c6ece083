@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,6 +35,7 @@ import { Link } from "react-router-dom";
 import ContactsPage from "@/components/ContactsPage";
 import CalendarPage from "@/components/CalendarPage";
 import CloudDrivePage from "@/components/CloudDrivePage";
+import AppCenterPage from "@/components/AppCenterPage";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("inbox");
@@ -147,6 +147,10 @@ const Dashboard = () => {
     
     if (activeTab === 'clouddrive') {
       return <CloudDrivePage />;
+    }
+    
+    if (activeTab === 'apps') {
+      return <AppCenterPage />;
     }
     
     return (
