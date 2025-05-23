@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
 import { Shield, Zap, LockKeyhole, Star } from "lucide-react";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white">
+    <div className="min-h-screen bg-[#0A0A0A] text-white flex flex-col">
       {/* Navigation */}
       <nav className="container mx-auto flex items-center justify-between py-6">
         <div className="flex items-center gap-2">
@@ -233,6 +234,9 @@ const Index = () => {
           </div>
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
       
       <Toaster />
     </div>
