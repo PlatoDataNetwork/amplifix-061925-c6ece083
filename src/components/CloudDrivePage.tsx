@@ -175,7 +175,7 @@ const CloudDrivePage = () => {
 
       {/* Storage Info */}
       <div className="p-6 border-t border-gray-800">
-        <div className="bg-[#1A1A1A] rounded-lg p-4 border border-gray-800">
+        <div className="bg-transparent rounded-lg p-4 border border-gray-800">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm text-gray-400">Storage Used</span>
             <span className="text-sm bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] bg-clip-text text-transparent font-medium">
