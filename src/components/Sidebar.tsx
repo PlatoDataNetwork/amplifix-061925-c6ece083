@@ -27,10 +27,10 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
   ];
 
   return (
-    <div className="w-64 bg-[#1A1A1A] border-r border-gray-800 flex flex-col h-full">
+    <div className="w-64 bg-[#121218] border-r border-gray-800 flex flex-col h-full">
       {/* Logo Area */}
       <div className="p-6 flex items-center">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#7C3AED] to-[#06B6D4] flex items-center justify-center mr-3">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#7C3AED] to-[#06B6D4] flex items-center justify-center mr-3">
           <span className="text-white font-bold text-lg">M</span>
         </div>
         <h1 className="font-bold text-lg">MoltenArc</h1>
@@ -57,7 +57,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
               className={`w-full justify-start ${
                 activeTab === item.id 
                   ? "bg-gradient-to-r from-[#7C3AED]/20 to-[#06B6D4]/20 text-[#7C3AED] border border-[#7C3AED]/30" 
-                  : "text-gray-300 hover:text-white hover:bg-[#0F0F0F]"
+                  : "text-gray-300 hover:text-white hover:bg-[#0A0A0A]"
               }`}
               onClick={() => setActiveTab(item.id)}
             >
@@ -70,7 +70,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
       
       {/* Security Status */}
       <div className="p-4 border-t border-gray-800">
-        <div className="bg-[#0F0F0F] rounded-lg p-3 border border-gray-800">
+        <div className="bg-[#0A0A0A] rounded-lg p-3 border border-gray-800">
           <div className="flex justify-between items-center">
             <div className="text-sm font-medium">Security Status</div>
             <div className="text-sm bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] bg-clip-text text-transparent font-medium">Protected</div>
