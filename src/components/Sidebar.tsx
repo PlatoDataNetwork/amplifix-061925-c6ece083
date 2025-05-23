@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Mail, Inbox, Calendar, Users, Clock, Cloud, Grid3x3, Chrome, Logs, MessageCircle, Bot, Trash } from "lucide-react";
 import { LucideIcon } from "lucide-react";
@@ -25,7 +24,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
     { id: 'apps', label: 'Apps', icon: Grid3x3 },
     { id: 'browser', label: 'Browser', icon: Chrome },
     { id: 'chat', label: 'Chat', icon: MessageCircle },
-    { id: 'logs', label: 'Logs', icon: Logs },
+    { id: 'logs', label: 'System Logs', icon: Logs },
     { id: 'trash', label: 'Trash', icon: Trash },
   ];
 

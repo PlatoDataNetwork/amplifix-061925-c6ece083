@@ -37,6 +37,7 @@ import CalendarPage from "@/components/CalendarPage";
 import CloudDrivePage from "@/components/CloudDrivePage";
 import AppCenterPage from "@/components/AppCenterPage";
 import BrowserPage from "@/components/BrowserPage";
+import LogsPage from "@/components/LogsPage";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("inbox");
@@ -156,6 +157,10 @@ const Dashboard = () => {
     
     if (activeTab === 'browser') {
       return <BrowserPage />;
+    }
+    
+    if (activeTab === 'logs') {
+      return <LogsPage />;
     }
     
     return (
