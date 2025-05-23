@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,12 +51,12 @@ const Dashboard = () => {
   const renderMainContent = () => {
     if (activeTab === 'chat') {
       return (
-        <div className="flex-1 flex flex-col bg-[#1A1F2C] p-6">
-          <div className="bg-[#252A38] rounded-lg shadow-lg flex flex-col h-full border border-gray-700">
+        <div className="flex-1 flex flex-col bg-[#0A0A0A] p-6">
+          <div className="bg-[#1A1A1A] rounded-lg shadow-lg flex flex-col h-full border border-gray-800">
             {/* Chat Header */}
-            <div className="border-b border-gray-700 p-4 flex justify-between items-center">
+            <div className="border-b border-gray-800 p-4 flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#61dafb] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] flex items-center justify-center">
                   <MessageCircle className="h-5 w-5 text-white" />
                 </div>
                 <div>
@@ -70,23 +71,22 @@ const Dashboard = () => {
               </div>
             </div>
             
-            {/* Chat Messages - Re-use the existing chat panel component's logic */}
+            {/* Chat Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {/* We'll use the same message format as ChatPanel but with a larger display */}
               <div className="flex justify-start">
-                <div className="max-w-md p-3 rounded-xl text-sm bg-[#252A38] text-white rounded-tl-none">
+                <div className="max-w-md p-3 rounded-xl text-sm bg-[#1A1A1A] text-white rounded-tl-none border border-gray-800">
                   Welcome to MoltenArc's encrypted chat. How can I assist you today?
                   <div className="text-xs mt-1 text-gray-400">09:30</div>
                 </div>
               </div>
               <div className="flex justify-end">
-                <div className="max-w-md p-3 rounded-xl text-sm bg-[#61dafb] text-white rounded-tr-none">
+                <div className="max-w-md p-3 rounded-xl text-sm bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] text-white rounded-tr-none">
                   Can you help me with secure file transfers?
                   <div className="text-xs mt-1 text-white/70">09:32</div>
                 </div>
               </div>
               <div className="flex justify-start">
-                <div className="max-w-md p-3 rounded-xl text-sm bg-[#252A38] text-white rounded-tl-none">
+                <div className="max-w-md p-3 rounded-xl text-sm bg-[#1A1A1A] text-white rounded-tl-none border border-gray-800">
                   Absolutely. Our secure file transfer system uses end-to-end encryption. Would you like me to walk you through the process?
                   <div className="text-xs mt-1 text-gray-400">09:33</div>
                 </div>
@@ -94,13 +94,13 @@ const Dashboard = () => {
             </div>
             
             {/* Chat Input */}
-            <div className="border-t border-gray-700 p-4 bg-[#1E2230]">
+            <div className="border-t border-gray-800 p-4 bg-[#0F0F0F]">
               <div className="flex items-center gap-2">
                 <Input
                   placeholder="Type your secure message..."
-                  className="bg-[#252A38] border-gray-700 text-white"
+                  className="bg-[#1A1A1A] border-gray-800 text-white"
                 />
-                <Button className="bg-secondary hover:bg-secondary/80 text-secondary-foreground p-2 h-10 w-10">
+                <Button className="bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] hover:opacity-90 text-white p-2 h-10 w-10">
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
@@ -117,8 +117,8 @@ const Dashboard = () => {
     return (
       <div className="flex-1 flex overflow-hidden">
         {/* Email List Column */}
-        <div className="w-80 border-r border-gray-700 overflow-y-auto">
-          <div className="p-3 flex justify-between items-center border-b border-gray-700">
+        <div className="w-80 border-r border-gray-800 overflow-y-auto">
+          <div className="p-3 flex justify-between items-center border-b border-gray-800">
             <h3 className="font-medium">
               {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
             </h3>
@@ -126,7 +126,7 @@ const Dashboard = () => {
               variant="outline" 
               size="sm" 
               onClick={() => setShowCompose(true)}
-              className="text-secondary-foreground bg-secondary border-secondary hover:bg-secondary/80 hover:text-secondary-foreground"
+              className="text-white bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] border-none hover:opacity-90"
             >
               Compose
             </Button>
@@ -147,8 +147,8 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="h-screen bg-[#1A1F2C] text-white flex overflow-hidden">
-      {/* Chat Panel - positioned on the far left */}
+    <div className="h-screen bg-[#0A0A0A] text-white flex overflow-hidden">
+      {/* Chat Panel */}
       <ChatPanel isOpen={isChatOpen} onClose={() => {
         setIsChatOpen(false);
         if (activeTab === 'chat') {
@@ -166,7 +166,7 @@ const Dashboard = () => {
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Header */}
-          <header className="bg-[#252A38] border-b border-gray-700 p-2 px-4">
+          <header className="bg-[#1A1A1A] border-b border-gray-800 p-2 px-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {/* Chat Button */}
@@ -177,14 +177,14 @@ const Dashboard = () => {
                       setActiveTab('chat');
                     }
                   }}
-                  className="h-8 w-8 rounded-full bg-transparent hover:bg-[#1E2230] p-0 flex items-center justify-center"
+                  className="h-8 w-8 rounded-full bg-transparent hover:bg-[#0F0F0F] p-0 flex items-center justify-center"
                 >
-                  <MessageCircle className={`h-5 w-5 ${activeTab === 'chat' ? 'text-[#61dafb]' : 'text-gray-400'}`} />
+                  <MessageCircle className={`h-5 w-5 ${activeTab === 'chat' ? 'text-[#7C3AED]' : 'text-gray-400'}`} />
                 </Button>
                 
                 <div className="flex items-center gap-2">
                   <Link to="/">
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-[#61dafb]">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-[#7C3AED]">
                       <Home className="h-4 w-4" />
                     </Button>
                   </Link>
@@ -199,7 +199,7 @@ const Dashboard = () => {
                   </Button>
                 </div>
                 
-                <div className="bg-[#1E2230] rounded-md px-2 py-1 flex items-center">
+                <div className="bg-[#0F0F0F] rounded-md px-2 py-1 flex items-center">
                   <span className="text-sm">/dashboard</span>
                 </div>
               </div>
@@ -209,7 +209,7 @@ const Dashboard = () => {
                   <Maximize className="h-4 w-4" />
                 </Button>
                 <Button 
-                  className="bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors rounded-md px-3 py-1 h-8"
+                  className="bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] text-white hover:opacity-90 transition-opacity rounded-md px-3 py-1 h-8"
                 >
                   <Wallet className="h-4 w-4 mr-1" />
                   Wallet
@@ -225,8 +225,8 @@ const Dashboard = () => {
       {/* Compose Modal */}
       {showCompose && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-[#252A38] w-full max-w-2xl rounded-lg shadow-xl">
-            <div className="flex justify-between items-center p-4 border-b border-gray-700">
+          <div className="bg-[#1A1A1A] w-full max-w-2xl rounded-lg shadow-xl border border-gray-800">
+            <div className="flex justify-between items-center p-4 border-b border-gray-800">
               <h3 className="font-medium">New Secure Message</h3>
               <Button 
                 variant="ghost" 
@@ -241,26 +241,26 @@ const Dashboard = () => {
                 <div>
                   <Input 
                     placeholder="To" 
-                    className="bg-[#1E2230] border-gray-700"
+                    className="bg-[#0F0F0F] border-gray-800"
                   />
                 </div>
                 <div>
                   <Input 
                     placeholder="Subject" 
-                    className="bg-[#1E2230] border-gray-700"
+                    className="bg-[#0F0F0F] border-gray-800"
                   />
                 </div>
                 <div>
                   <Textarea 
                     placeholder="Write your secure message here..." 
-                    className="bg-[#1E2230] border-gray-700 min-h-[200px]"
+                    className="bg-[#0F0F0F] border-gray-800 min-h-[200px]"
                   />
                 </div>
               </div>
               <div className="mt-4 flex justify-end">
                 <Button 
                   type="submit" 
-                  className="bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
+                  className="bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] text-white hover:opacity-90 transition-opacity"
                 >
                   Send Secure Message
                 </Button>

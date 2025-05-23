@@ -6,20 +6,27 @@ import { Zap } from "lucide-react";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-[#1A1F2C] text-white">
+    <div className="min-h-screen bg-[#0A0A0A] text-white">
       {/* Navigation */}
       <nav className="container mx-auto flex items-center justify-between py-6">
         <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#7C3AED] to-[#06B6D4] flex items-center justify-center">
+            <span className="text-white font-bold text-lg">M</span>
+          </div>
           <h1 className="text-2xl font-bold">MoltenArc</h1>
         </div>
         <div className="flex items-center gap-6">
-          <Link to="/" className="hover:text-secondary transition-colors">Features</Link>
-          <Link to="/" className="hover:text-secondary transition-colors">Security</Link>
-          <Link to="/" className="hover:text-secondary transition-colors">Pricing</Link>
-          <Link to="/" className="hover:text-secondary transition-colors">Testimonials</Link>
+          <Link to="/" className="hover:text-[#7C3AED] transition-colors">About</Link>
+          <Link to="/" className="hover:text-[#7C3AED] transition-colors">Features</Link>
+          <Link to="/" className="hover:text-[#7C3AED] transition-colors">Security</Link>
+          <Link to="/" className="hover:text-[#7C3AED] transition-colors">Pricing</Link>
+          <Link to="/" className="hover:text-[#7C3AED] transition-colors">Contact</Link>
+          <Button variant="ghost" className="hover:text-[#7C3AED] transition-colors">
+            Sign In
+          </Button>
           <Link to="/dashboard">
-            <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors">
-              Try MoltenArc
+            <Button className="bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] text-white hover:opacity-90 transition-opacity rounded-lg">
+              Get Started
             </Button>
           </Link>
         </div>
@@ -27,75 +34,62 @@ const Index = () => {
 
       {/* Hero Section */}
       <div className="container mx-auto py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div>
-            <div className="inline-block bg-gradient-to-r from-[#9b87f5] to-secondary bg-clip-text text-transparent">
-              <div className="bg-[#2A2F3C] rounded-full px-6 py-2 mb-8 inline-flex items-center">
-                Military-Grade Encrypted Communications
-              </div>
-            </div>
-            <h2 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
-              AI-Enhanced <br />
-              Secure Messaging <br />
-              & Communications
-            </h2>
-            <p className="text-lg text-gray-300 mb-8">
-              MoltenArc combines military-grade encryption with intuitive design to deliver
-              secure communications, helping you protect your privacy in an increasingly
-              vulnerable digital landscape.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/dashboard">
-                <Button size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors">
-                  Get Started Free
-                </Button>
-              </Link>
-              <Button size="lg" variant="outline" className="border-gray-600 bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors">
-                View Demo
-              </Button>
+        <div className="text-center max-w-4xl mx-auto">
+          <div className="inline-block mb-8">
+            <div className="bg-gradient-to-r from-[#7C3AED] to-[#3B82F6] bg-clip-text text-transparent rounded-full px-6 py-2 border border-[#7C3AED]/20 bg-[#7C3AED]/5">
+              Blockchain-Secured Communication
             </div>
           </div>
-          <div className="bg-[#252A38] p-6 rounded-2xl shadow-lg border border-gray-700">
-            <div className="bg-[#1E2230] rounded-xl p-4">
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center gap-2">
-                  <span>Message Encryption Status</span>
-                </div>
-                <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm">
-                  Secure
-                </div>
+          <h2 className="text-6xl md:text-7xl font-bold leading-tight mb-6">
+            Redefining Digital <br />
+            <span className="bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] bg-clip-text text-transparent">
+              Privacy
+            </span>
+          </h2>
+          <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
+            MoltenArc combines the power of blockchain encryption with familiar 
+            interfaces to deliver secure and private communications.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/dashboard">
+              <Button size="lg" className="bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] text-white hover:opacity-90 transition-opacity px-8 py-4 text-lg rounded-lg">
+                Get Started Free →
+              </Button>
+            </Link>
+            <Button size="lg" variant="outline" className="border-gray-600 text-white hover:bg-white/10 transition-colors px-8 py-4 text-lg rounded-lg">
+              View Demo
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Dashboard Preview */}
+      <div className="container mx-auto py-16">
+        <div className="bg-[#1A1A1A] rounded-2xl p-8 border border-gray-800 shadow-2xl">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-3 h-3 rounded-full bg-[#FF5F57]"></div>
+            <div className="w-3 h-3 rounded-full bg-[#FFBD2E]"></div>
+            <div className="w-3 h-3 rounded-full bg-[#28CA42]"></div>
+            <span className="ml-4 text-gray-400 text-sm">MoltenArc Dashboard</span>
+          </div>
+          <div className="bg-[#0A0A0A] rounded-xl p-6 min-h-[400px] relative overflow-hidden">
+            <div className="grid grid-cols-4 gap-4 mb-6">
+              <div className="h-3 bg-gradient-to-r from-[#7C3AED] to-[#3B82F6] rounded"></div>
+              <div className="h-3 bg-gray-700 rounded"></div>
+              <div className="h-3 bg-gray-700 rounded"></div>
+              <div className="h-3 bg-gray-700 rounded"></div>
+            </div>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-[#7C3AED]"></div>
+                <div className="flex-1 h-3 bg-gray-700 rounded"></div>
               </div>
-              <div className="h-[300px] bg-[#1A1F2C] rounded-lg p-4 mb-4">
-                <div className="h-full w-full rounded-lg bg-gradient-to-br from-[#2A2F3C] to-[#1A1F2C] relative overflow-hidden">
-                  <div className="absolute w-full h-full">
-                    <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
-                      <path 
-                        d="M0,100 Q100,50 200,100 T400,100" 
-                        fill="none" 
-                        stroke="#9b87f5" 
-                        strokeWidth="3"
-                      />
-                    </svg>
-                  </div>
-                  <div className="absolute w-2 h-2 bg-secondary rounded-full" style={{ left: "30%", top: "60%" }}></div>
-                  <div className="absolute w-3 h-3 bg-[#9b87f5] rounded-full" style={{ left: "70%", top: "40%" }}></div>
-                </div>
-              </div>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="text-gray-400 text-sm mb-1">Encryption</div>
-                  <div className="font-mono font-medium">AES-256</div>
-                </div>
-                <div>
-                  <div className="text-gray-400 text-sm mb-1">Protocol</div>
-                  <div className="font-mono font-medium">E2EE</div>
-                </div>
-                <div>
-                  <div className="text-gray-400 text-sm mb-1">Status</div>
-                  <div className="font-mono font-medium">Active</div>
-                </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-[#06B6D4]"></div>
+                <div className="flex-1 h-3 bg-gray-700 rounded"></div>
               </div>
             </div>
+            <div className="absolute bottom-6 right-6 w-32 h-32 bg-gradient-to-br from-[#7C3AED]/20 to-[#06B6D4]/20 rounded-full blur-xl"></div>
           </div>
         </div>
       </div>
@@ -104,19 +98,19 @@ const Index = () => {
       <div className="container mx-auto py-16 border-t border-gray-800">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div>
-            <div className="text-4xl font-bold text-secondary">256-bit</div>
-            <div className="text-gray-400">Military-Grade Encryption</div>
+            <div className="text-4xl font-bold bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] bg-clip-text text-transparent">256-bit</div>
+            <div className="text-gray-400">Blockchain Encryption</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-secondary">24/7</div>
+            <div className="text-4xl font-bold bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] bg-clip-text text-transparent">24/7</div>
             <div className="text-gray-400">Secure Server Protection</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-secondary">30+</div>
+            <div className="text-4xl font-bold bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] bg-clip-text text-transparent">30+</div>
             <div className="text-gray-400">Security Features</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-secondary">Zero</div>
+            <div className="text-4xl font-bold bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] bg-clip-text text-transparent">Zero</div>
             <div className="text-gray-400">Data Breaches</div>
           </div>
         </div>
