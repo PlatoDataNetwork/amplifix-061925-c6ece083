@@ -35,6 +35,7 @@ import ChatPanel from "@/components/ChatPanel";
 import { Link } from "react-router-dom";
 import ContactsPage from "@/components/ContactsPage";
 import CalendarPage from "@/components/CalendarPage";
+import CloudDrivePage from "@/components/CloudDrivePage";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("inbox");
@@ -142,6 +143,10 @@ const Dashboard = () => {
     
     if (activeTab === 'calendar' || activeTab === 'scheduler') {
       return <CalendarPage />;
+    }
+    
+    if (activeTab === 'clouddrive') {
+      return <CloudDrivePage />;
     }
     
     return (
