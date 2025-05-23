@@ -32,6 +32,7 @@ import Sidebar from "@/components/Sidebar";
 import SecureChat from "@/components/SecureChat";
 import ChatPanel from "@/components/ChatPanel";
 import { Link } from "react-router-dom";
+import ContactsPage from "@/components/ContactsPage";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("inbox");
@@ -131,6 +132,10 @@ const Dashboard = () => {
           </div>
         </div>
       );
+    }
+    
+    if (activeTab === 'contacts') {
+      return <ContactsPage />;
     }
     
     return (
