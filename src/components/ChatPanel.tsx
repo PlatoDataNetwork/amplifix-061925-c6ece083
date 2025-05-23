@@ -90,12 +90,12 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
 
   return (
     <div 
-      className={`fixed top-0 bottom-0 left-0 w-[264px] bg-[#1A1F2C] border-r border-gray-700 shadow-xl transition-transform duration-300 ease-in-out z-10 ${
+      className={`fixed top-0 bottom-0 left-0 w-[264px] bg-[#121218] border-r border-gray-800 shadow-xl transition-transform duration-300 ease-in-out z-10 ${
         isOpen ? 'translate-x-0' : 'translate-x-[-264px]'
       }`}
     >
       {/* Header */}
-      <div className="border-b border-gray-700 p-4 flex justify-between items-center">
+      <div className="border-b border-gray-800 p-4 flex justify-between items-center">
         <div className="flex items-center">
           <h2 className="font-semibold">Encrypted Chat</h2>
         </div>
@@ -133,8 +133,8 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
               <div 
                 className={`max-w-[80%] p-3 rounded-xl text-sm ${
                   message.sender === 'user' 
-                    ? 'bg-[#9b87f5] text-white rounded-tr-none' 
-                    : 'bg-[#252A38] text-white rounded-tl-none'
+                    ? 'bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white rounded-tr-none' 
+                    : 'bg-[#0A0A0A] text-white rounded-tl-none border border-gray-800'
                 }`}
               >
                 {message.content}
@@ -150,18 +150,18 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
       </ScrollArea>
       
       {/* Input Area */}
-      <div className="border-t border-gray-700 p-4 bg-[#1E2230]">
+      <div className="border-t border-gray-800 p-4 bg-[#0A0A0A]">
         <div className="flex items-center gap-2">
           <Input
             placeholder="Type your secure message..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            className="bg-[#252A38] border-gray-700 text-white"
+            className="bg-[#1A1A1A] border-gray-800 text-white"
           />
           <Button 
             onClick={handleSend} 
-            className="bg-secondary hover:bg-secondary/80 text-secondary-foreground p-2 h-10 w-10"
+            className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] hover:opacity-90 text-white p-2 h-10 w-10"
           >
             <Send className="h-4 w-4" />
           </Button>
