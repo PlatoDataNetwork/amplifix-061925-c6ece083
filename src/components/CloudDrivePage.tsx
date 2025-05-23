@@ -117,7 +117,7 @@ const CloudDrivePage = () => {
           {filteredFiles.map((item) => (
             <ContextMenu key={item.id}>
               <ContextMenuTrigger>
-                <Card className="bg-[#1A1A1A] border-gray-800 hover:bg-[#202026] transition-colors cursor-pointer group">
+                <Card className="bg-transparent border-gray-800 hover:bg-[#202026] transition-colors cursor-pointer group">
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
