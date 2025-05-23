@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,17 +64,32 @@ const Dashboard = () => {
     };
   }, []);
 
-  // Toggle chat when Chat tab is selected
-  useEffect(() => {
-    if (activeTab === 'chat') {
-      setIsChatOpen(true);
-    } else if (isChatOpen && activeTab !== 'chat') {
-      setIsChatOpen(false);
-    }
-  }, [activeTab]);
-
   // Show main content based on active tab
   const renderMainContent = () => {
+    if (activeTab === 'contacts') {
+      return <ContactsPage />;
+    }
+    
+    if (activeTab === 'calendar' || activeTab === 'scheduler') {
+      return <CalendarPage />;
+    }
+    
+    if (activeTab === 'clouddrive') {
+      return <CloudDrivePage />;
+    }
+    
+    if (activeTab === 'apps') {
+      return <AppCenterPage />;
+    }
+    
+    if (activeTab === 'browser') {
+      return <BrowserPage />;
+    }
+    
+    if (activeTab === 'logs') {
+      return <LogsPage />;
+    }
+    
     if (activeTab === 'chat') {
       return (
         <div className="flex-1 flex flex-col bg-[#0A0A0A] p-6">
@@ -139,30 +155,6 @@ const Dashboard = () => {
       );
     }
     
-    if (activeTab === 'contacts') {
-      return <ContactsPage />;
-    }
-    
-    if (activeTab === 'calendar' || activeTab === 'scheduler') {
-      return <CalendarPage />;
-    }
-    
-    if (activeTab === 'clouddrive') {
-      return <CloudDrivePage />;
-    }
-    
-    if (activeTab === 'apps') {
-      return <AppCenterPage />;
-    }
-    
-    if (activeTab === 'browser') {
-      return <BrowserPage />;
-    }
-    
-    if (activeTab === 'logs') {
-      return <LogsPage />;
-    }
-    
     return (
       <div className="flex-1 flex overflow-hidden">
         {/* Email List Column */}
@@ -197,18 +189,11 @@ const Dashboard = () => {
 
   return (
     <div className="h-screen bg-[#0A0A0A] text-white flex overflow-hidden">
-      {/* Chat Panel */}
-      <ChatPanel isOpen={isChatOpen} onClose={() => {
-        setIsChatOpen(false);
-        if (activeTab === 'chat') {
-          setActiveTab('inbox');
-        }
-      }} />
+      {/* Chat Panel - Now as overlay */}
+      <ChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       
-      {/* Container for sidebar and content that shifts right when chat is open */}
-      <div className={`flex flex-1 transition-transform duration-300 ${
-        isChatOpen ? 'translate-x-[264px]' : 'translate-x-0'
-      }`}>
+      {/* Main Dashboard Content */}
+      <div className="flex flex-1">
         {/* Sidebar */}
         <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
         
@@ -218,17 +203,12 @@ const Dashboard = () => {
           <header className="bg-[#1A1A1A] border-b border-gray-800 p-2 px-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                {/* Top Header Icons - Added new icons based on the image */}
+                {/* Chat Button - Always accessible */}
                 <Button 
-                  onClick={() => {
-                    setIsChatOpen(!isChatOpen);
-                    if (!isChatOpen) {
-                      setActiveTab('chat');
-                    }
-                  }}
+                  onClick={() => setIsChatOpen(!isChatOpen)}
                   className="h-8 w-8 rounded-full bg-transparent hover:bg-[#0F0F0F] p-0 flex items-center justify-center"
                 >
-                  <MessageCircle className={`h-5 w-5 ${activeTab === 'chat' ? 'text-[#8A3FFC]' : 'text-gray-400'}`} />
+                  <MessageCircle className={`h-5 w-5 ${isChatOpen ? 'text-[#8A3FFC]' : 'text-gray-400'}`} />
                 </Button>
                 
                 <div className="flex items-center gap-2">
