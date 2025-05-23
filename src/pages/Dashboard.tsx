@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +34,7 @@ import SecureChat from "@/components/SecureChat";
 import ChatPanel from "@/components/ChatPanel";
 import { Link } from "react-router-dom";
 import ContactsPage from "@/components/ContactsPage";
+import CalendarPage from "@/components/CalendarPage";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("inbox");
@@ -136,6 +138,10 @@ const Dashboard = () => {
     
     if (activeTab === 'contacts') {
       return <ContactsPage />;
+    }
+    
+    if (activeTab === 'calendar' || activeTab === 'scheduler') {
+      return <CalendarPage />;
     }
     
     return (
