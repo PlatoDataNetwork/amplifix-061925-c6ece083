@@ -36,6 +36,7 @@ import ContactsPage from "@/components/ContactsPage";
 import CalendarPage from "@/components/CalendarPage";
 import CloudDrivePage from "@/components/CloudDrivePage";
 import AppCenterPage from "@/components/AppCenterPage";
+import BrowserPage from "@/components/BrowserPage";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("inbox");
@@ -151,6 +152,10 @@ const Dashboard = () => {
     
     if (activeTab === 'apps') {
       return <AppCenterPage />;
+    }
+    
+    if (activeTab === 'browser') {
+      return <BrowserPage />;
     }
     
     return (
