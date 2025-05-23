@@ -3,7 +3,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Search, User, MessageCircle, ArrowLeft, ArrowRight, RefreshCw, Maximize, Home, Send, Shield, Wallet } from "lucide-react";
+import { 
+  Search, 
+  User, 
+  MessageCircle, 
+  ArrowLeft, 
+  ArrowRight, 
+  RefreshCw, 
+  Maximize, 
+  Home, 
+  Send, 
+  Shield, 
+  Wallet,
+  Mail,
+  Calendar,
+  Users,
+  Clock,
+  Cloud,
+  Apps,
+  Chrome,
+  Logs 
+} from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/hooks/use-toast";
 import EmailList from "@/components/EmailList";
@@ -168,7 +188,7 @@ const Dashboard = () => {
           <header className="bg-[#1A1A1A] border-b border-gray-800 p-2 px-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                {/* Chat Button */}
+                {/* Top Header Icons - Added new icons based on the image */}
                 <Button 
                   onClick={() => {
                     setIsChatOpen(!isChatOpen);
@@ -187,14 +207,69 @@ const Dashboard = () => {
                       <Home className="h-4 w-4" />
                     </Button>
                   </Link>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <ArrowLeft className="h-4 w-4" />
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className={`h-8 w-8 ${activeTab === 'inbox' ? 'text-[#8A3FFC]' : 'text-gray-400'}`}
+                    onClick={() => setActiveTab('inbox')}
+                  >
+                    <Mail className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <ArrowRight className="h-4 w-4" />
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className={`h-8 w-8 ${activeTab === 'calendar' ? 'text-[#8A3FFC]' : 'text-gray-400'}`}
+                    onClick={() => setActiveTab('calendar')}
+                  >
+                    <Calendar className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <RefreshCw className="h-4 w-4" />
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className={`h-8 w-8 ${activeTab === 'contacts' ? 'text-[#8A3FFC]' : 'text-gray-400'}`}
+                    onClick={() => setActiveTab('contacts')}
+                  >
+                    <Users className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className={`h-8 w-8 ${activeTab === 'scheduler' ? 'text-[#8A3FFC]' : 'text-gray-400'}`}
+                    onClick={() => setActiveTab('scheduler')}
+                  >
+                    <Clock className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className={`h-8 w-8 ${activeTab === 'clouddrive' ? 'text-[#8A3FFC]' : 'text-gray-400'}`}
+                    onClick={() => setActiveTab('clouddrive')}
+                  >
+                    <Cloud className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className={`h-8 w-8 ${activeTab === 'apps' ? 'text-[#8A3FFC]' : 'text-gray-400'}`}
+                    onClick={() => setActiveTab('apps')}
+                  >
+                    <Apps className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className={`h-8 w-8 ${activeTab === 'browser' ? 'text-[#8A3FFC]' : 'text-gray-400'}`}
+                    onClick={() => setActiveTab('browser')}
+                  >
+                    <Chrome className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className={`h-8 w-8 ${activeTab === 'logs' ? 'text-[#8A3FFC]' : 'text-gray-400'}`}
+                    onClick={() => setActiveTab('logs')}
+                  >
+                    <Logs className="h-4 w-4" />
                   </Button>
                 </div>
                 
