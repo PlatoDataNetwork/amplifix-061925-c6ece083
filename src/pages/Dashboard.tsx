@@ -20,7 +20,7 @@ import {
   Users,
   Clock,
   Cloud,
-  Apps,
+  Grid3x3,
   Chrome,
   Logs 
 } from "lucide-react";
@@ -253,7 +253,7 @@ const Dashboard = () => {
                     className={`h-8 w-8 ${activeTab === 'apps' ? 'text-[#8A3FFC]' : 'text-gray-400'}`}
                     onClick={() => setActiveTab('apps')}
                   >
-                    <Apps className="h-4 w-4" />
+                    <Grid3x3 className="h-4 w-4" />
                   </Button>
                   <Button 
                     variant="ghost" 
