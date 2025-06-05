@@ -1,11 +1,22 @@
-
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
 import { Shield, Zap, LockKeyhole, Star, CheckCircle, Users, Globe, Award } from "lucide-react";
 import Footer from "@/components/Footer";
+import SignUpModal from "@/components/SignUpModal";
+import { useState } from "react";
 
 const Index = () => {
+  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+
+  const handleGetStartedClick = () => {
+    setIsSignUpModalOpen(true);
+  };
+
+  const handleCloseSignUpModal = () => {
+    setIsSignUpModalOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white flex flex-col">
       {/* Navigation */}
@@ -25,11 +36,12 @@ const Index = () => {
           <Button variant="ghost" className="hover:text-[#8A3FFC] transition-colors">
             Sign In
           </Button>
-          <Link to="/dashboard">
-            <Button className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity rounded-lg">
-              Get Started
-            </Button>
-          </Link>
+          <Button 
+            onClick={handleGetStartedClick}
+            className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity rounded-lg"
+          >
+            Get Started
+          </Button>
         </div>
       </nav>
 
@@ -52,14 +64,18 @@ const Index = () => {
             interfaces to deliver secure and private communications.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              size="lg" 
+              onClick={handleGetStartedClick}
+              className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity px-8 py-4 text-lg rounded-lg"
+            >
+              Get Started Free →
+            </Button>
             <Link to="/dashboard">
-              <Button size="lg" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity px-8 py-4 text-lg rounded-lg">
-                Get Started Free →
+              <Button size="lg" variant="outline" className="border-gray-600 text-white hover:bg-white/10 transition-colors px-8 py-4 text-lg rounded-lg">
+                Try Demo
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="border-gray-600 text-white hover:bg-white/10 transition-colors px-8 py-4 text-lg rounded-lg">
-              View Demo
-            </Button>
           </div>
         </div>
       </div>
@@ -323,7 +339,7 @@ const Index = () => {
                 <span>Basic support</span>
               </li>
             </ul>
-            <Button className="w-full" variant="outline">Get Started</Button>
+            <Button className="w-full" variant="outline" onClick={handleGetStartedClick}>Get Started</Button>
           </div>
           
           {/* Pro Plan */}
@@ -349,7 +365,7 @@ const Index = () => {
                 <span>Custom domains</span>
               </li>
             </ul>
-            <Button className="w-full bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4]">Get Started</Button>
+            <Button className="w-full bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4]" onClick={handleGetStartedClick}>Get Started</Button>
           </div>
           
           {/* Enterprise Plan */}
@@ -457,6 +473,11 @@ const Index = () => {
       
       {/* Footer */}
       <Footer />
+      
+      <SignUpModal 
+        isOpen={isSignUpModalOpen} 
+        onClose={handleCloseSignUpModal} 
+      />
       
       <Toaster />
     </div>
