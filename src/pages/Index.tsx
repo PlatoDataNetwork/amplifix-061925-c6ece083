@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
-import { Shield, Zap, LockKeyhole, Star } from "lucide-react";
+import { Shield, Zap, LockKeyhole, Star, CheckCircle, Users, Globe, Award } from "lucide-react";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -17,11 +17,11 @@ const Index = () => {
           <h1 className="text-2xl font-bold">MoltenArc</h1>
         </div>
         <div className="flex items-center gap-6">
-          <Link to="/" className="hover:text-[#8A3FFC] transition-colors">About</Link>
-          <Link to="/" className="hover:text-[#8A3FFC] transition-colors">Features</Link>
-          <Link to="/" className="hover:text-[#8A3FFC] transition-colors">Security</Link>
-          <Link to="/" className="hover:text-[#8A3FFC] transition-colors">Pricing</Link>
-          <Link to="/" className="hover:text-[#8A3FFC] transition-colors">Contact</Link>
+          <a href="#about" className="hover:text-[#8A3FFC] transition-colors">About</a>
+          <a href="#features" className="hover:text-[#8A3FFC] transition-colors">Features</a>
+          <a href="#security" className="hover:text-[#8A3FFC] transition-colors">Security</a>
+          <a href="#pricing" className="hover:text-[#8A3FFC] transition-colors">Pricing</a>
+          <a href="#contact" className="hover:text-[#8A3FFC] transition-colors">Contact</a>
           <Button variant="ghost" className="hover:text-[#8A3FFC] transition-colors">
             Sign In
           </Button>
@@ -116,8 +116,53 @@ const Index = () => {
         </div>
       </div>
 
+      {/* About Section */}
+      <section id="about" className="container mx-auto py-16">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-6">About MoltenArc</h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Born from the need for truly secure digital communications, MoltenArc represents 
+            the next evolution in private messaging. We believe privacy is a fundamental right, 
+            not a privilege.
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="bg-[#121218] p-6 rounded-xl border border-gray-800 text-center">
+            <Users className="h-12 w-12 text-[#8A3FFC] mx-auto mb-4" />
+            <h3 className="text-xl font-bold mb-2">Our Mission</h3>
+            <p className="text-gray-400">
+              Democratizing secure communications through cutting-edge blockchain technology.
+            </p>
+          </div>
+          
+          <div className="bg-[#121218] p-6 rounded-xl border border-gray-800 text-center">
+            <Globe className="h-12 w-12 text-[#8A3FFC] mx-auto mb-4" />
+            <h3 className="text-xl font-bold mb-2">Global Reach</h3>
+            <p className="text-gray-400">
+              Serving users worldwide with decentralized, censorship-resistant communication.
+            </p>
+          </div>
+          
+          <div className="bg-[#121218] p-6 rounded-xl border border-gray-800 text-center">
+            <Award className="h-12 w-12 text-[#8A3FFC] mx-auto mb-4" />
+            <h3 className="text-xl font-bold mb-2">Innovation</h3>
+            <p className="text-gray-400">
+              Pioneering the future of digital privacy with advanced cryptographic solutions.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
-      <div className="container mx-auto py-16">
+      <section id="features" className="container mx-auto py-16">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-6">Powerful Features</h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Experience the perfect blend of security, speed, and simplicity with our comprehensive feature set.
+          </p>
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Feature 1 */}
           <div className="bg-[#121218] p-6 rounded-xl border border-gray-800">
@@ -179,7 +224,7 @@ const Index = () => {
             </Button>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Stats Section */}
       <div className="container mx-auto py-16">
@@ -204,7 +249,7 @@ const Index = () => {
       </div>
 
       {/* Security Section */}
-      <div className="container mx-auto py-16">
+      <section id="security" className="container mx-auto py-16">
         <div className="flex flex-col md:flex-row gap-10 items-center">
           <div className="md:w-1/2">
             <h2 className="text-4xl font-bold mb-6">Military-Grade Security<br />For Your Communications</h2>
@@ -216,27 +261,21 @@ const Index = () => {
             <div className="space-y-4">
               <div className="flex items-center">
                 <div className="w-5 h-5 rounded-full bg-[#8A3FFC] flex items-center justify-center mr-3">
-                  <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 5L4.5 8.5L11 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+                  <CheckCircle className="h-3 w-3 text-white" />
                 </div>
                 <span>Blockchain-verified message authenticity</span>
               </div>
               
               <div className="flex items-center">
                 <div className="w-5 h-5 rounded-full bg-[#8A3FFC] flex items-center justify-center mr-3">
-                  <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 5L4.5 8.5L11 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+                  <CheckCircle className="h-3 w-3 text-white" />
                 </div>
                 <span>Immutable record of communication history</span>
               </div>
               
               <div className="flex items-center">
                 <div className="w-5 h-5 rounded-full bg-[#8A3FFC] flex items-center justify-center mr-3">
-                  <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 5L4.5 8.5L11 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+                  <CheckCircle className="h-3 w-3 text-white" />
                 </div>
                 <span>Cross-chain compatibility (Solana & Arbitrum)</span>
               </div>
@@ -254,7 +293,167 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="container mx-auto py-16">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-6">Simple, Transparent Pricing</h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Choose the plan that fits your needs. All plans include our core security features.
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {/* Free Plan */}
+          <div className="bg-[#121218] p-8 rounded-xl border border-gray-800">
+            <h3 className="text-2xl font-bold mb-4">Free</h3>
+            <div className="text-4xl font-bold mb-6">$0<span className="text-lg text-gray-400">/month</span></div>
+            <ul className="space-y-3 mb-8">
+              <li className="flex items-center">
+                <CheckCircle className="h-5 w-5 text-[#8A3FFC] mr-2" />
+                <span>Up to 100 messages/month</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="h-5 w-5 text-[#8A3FFC] mr-2" />
+                <span>End-to-end encryption</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="h-5 w-5 text-[#8A3FFC] mr-2" />
+                <span>Basic support</span>
+              </li>
+            </ul>
+            <Button className="w-full" variant="outline">Get Started</Button>
+          </div>
+          
+          {/* Pro Plan */}
+          <div className="bg-gradient-to-b from-[#8A3FFC]/10 to-[#06B6D4]/10 p-8 rounded-xl border border-[#8A3FFC]/30 relative">
+            <div className="absolute top-4 right-4 bg-[#8A3FFC] text-white px-3 py-1 rounded-full text-sm">Popular</div>
+            <h3 className="text-2xl font-bold mb-4">Pro</h3>
+            <div className="text-4xl font-bold mb-6">$19<span className="text-lg text-gray-400">/month</span></div>
+            <ul className="space-y-3 mb-8">
+              <li className="flex items-center">
+                <CheckCircle className="h-5 w-5 text-[#8A3FFC] mr-2" />
+                <span>Unlimited messages</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="h-5 w-5 text-[#8A3FFC] mr-2" />
+                <span>Advanced encryption</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="h-5 w-5 text-[#8A3FFC] mr-2" />
+                <span>Priority support</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="h-5 w-5 text-[#8A3FFC] mr-2" />
+                <span>Custom domains</span>
+              </li>
+            </ul>
+            <Button className="w-full bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4]">Get Started</Button>
+          </div>
+          
+          {/* Enterprise Plan */}
+          <div className="bg-[#121218] p-8 rounded-xl border border-gray-800">
+            <h3 className="text-2xl font-bold mb-4">Enterprise</h3>
+            <div className="text-4xl font-bold mb-6">Custom</div>
+            <ul className="space-y-3 mb-8">
+              <li className="flex items-center">
+                <CheckCircle className="h-5 w-5 text-[#8A3FFC] mr-2" />
+                <span>Everything in Pro</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="h-5 w-5 text-[#8A3FFC] mr-2" />
+                <span>Custom integrations</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="h-5 w-5 text-[#8A3FFC] mr-2" />
+                <span>Dedicated support</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="h-5 w-5 text-[#8A3FFC] mr-2" />
+                <span>SLA guarantees</span>
+              </li>
+            </ul>
+            <Button className="w-full" variant="outline">Contact Sales</Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="container mx-auto py-16">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-6">Get In Touch</h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Have questions about MoltenArc? We're here to help you secure your communications.
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+          {/* Contact Form */}
+          <div className="bg-[#121218] p-8 rounded-xl border border-gray-800">
+            <h3 className="text-2xl font-bold mb-6">Send us a message</h3>
+            <form className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium mb-2">Name</label>
+                <input 
+                  type="text" 
+                  className="w-full bg-[#0A0A0A] border border-gray-700 rounded-lg px-4 py-3 focus:border-[#8A3FFC] focus:outline-none"
+                  placeholder="Your name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Email</label>
+                <input 
+                  type="email" 
+                  className="w-full bg-[#0A0A0A] border border-gray-700 rounded-lg px-4 py-3 focus:border-[#8A3FFC] focus:outline-none"
+                  placeholder="your@email.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Message</label>
+                <textarea 
+                  rows={4}
+                  className="w-full bg-[#0A0A0A] border border-gray-700 rounded-lg px-4 py-3 focus:border-[#8A3FFC] focus:outline-none"
+                  placeholder="How can we help you?"
+                ></textarea>
+              </div>
+              <Button className="w-full bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4]">
+                Send Message
+              </Button>
+            </form>
+          </div>
+          
+          {/* Contact Info */}
+          <div className="space-y-8">
+            <div className="bg-[#121218] p-6 rounded-xl border border-gray-800">
+              <h4 className="text-lg font-bold mb-2">Email Support</h4>
+              <p className="text-gray-400 mb-2">Get help from our support team</p>
+              <p className="text-[#8A3FFC]">support@moltenarc.com</p>
+            </div>
+            
+            <div className="bg-[#121218] p-6 rounded-xl border border-gray-800">
+              <h4 className="text-lg font-bold mb-2">Sales Inquiries</h4>
+              <p className="text-gray-400 mb-2">Questions about enterprise plans</p>
+              <p className="text-[#8A3FFC]">sales@moltenarc.com</p>
+            </div>
+            
+            <div className="bg-[#121218] p-6 rounded-xl border border-gray-800">
+              <h4 className="text-lg font-bold mb-2">Business Hours</h4>
+              <p className="text-gray-400">Monday - Friday: 9:00 AM - 6:00 PM (UTC)</p>
+              <p className="text-gray-400">Weekend: Emergency support only</p>
+            </div>
+            
+            <div className="bg-[#121218] p-6 rounded-xl border border-gray-800">
+              <h4 className="text-lg font-bold mb-2">Community</h4>
+              <p className="text-gray-400 mb-4">Join our community for discussions and updates</p>
+              <div className="flex space-x-4">
+                <Button variant="outline" size="sm">Discord</Button>
+                <Button variant="outline" size="sm">Telegram</Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       
       {/* Footer */}
       <Footer />
