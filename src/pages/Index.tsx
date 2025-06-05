@@ -1,13 +1,16 @@
+
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
 import { Shield, Zap, LockKeyhole, Star, CheckCircle, Users, Globe, Award } from "lucide-react";
 import Footer from "@/components/Footer";
 import SignUpModal from "@/components/SignUpModal";
+import SignInModal from "@/components/SignInModal";
 import { useState } from "react";
 
 const Index = () => {
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+  const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
 
   const handleGetStartedClick = () => {
     setIsSignUpModalOpen(true);
@@ -15,6 +18,14 @@ const Index = () => {
 
   const handleCloseSignUpModal = () => {
     setIsSignUpModalOpen(false);
+  };
+
+  const handleSignInClick = () => {
+    setIsSignInModalOpen(true);
+  };
+
+  const handleCloseSignInModal = () => {
+    setIsSignInModalOpen(false);
   };
 
   return (
@@ -33,7 +44,11 @@ const Index = () => {
           <a href="#security" className="hover:text-[#8A3FFC] transition-colors">Security</a>
           <a href="#pricing" className="hover:text-[#8A3FFC] transition-colors">Pricing</a>
           <a href="#contact" className="hover:text-[#8A3FFC] transition-colors">Contact</a>
-          <Button variant="ghost" className="hover:text-[#8A3FFC] transition-colors">
+          <Button 
+            variant="ghost" 
+            onClick={handleSignInClick}
+            className="hover:text-[#8A3FFC] transition-colors"
+          >
             Sign In
           </Button>
           <Button 
@@ -477,6 +492,11 @@ const Index = () => {
       <SignUpModal 
         isOpen={isSignUpModalOpen} 
         onClose={handleCloseSignUpModal} 
+      />
+      
+      <SignInModal 
+        isOpen={isSignInModalOpen} 
+        onClose={handleCloseSignInModal} 
       />
       
       <Toaster />
