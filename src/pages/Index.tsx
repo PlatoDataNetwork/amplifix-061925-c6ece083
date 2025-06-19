@@ -84,7 +84,7 @@ const Index = () => {
           </div>
           <h2 className="text-6xl md:text-7xl font-bold leading-tight mb-6">
             Amplifi Your <br />
-            <span className="bg-gradient-to-r from-highlight-blue to-secondary bg-clip-text text-transparent">
+            <span className="text-highlight-blue">
               Communications
             </span>
           </h2>
