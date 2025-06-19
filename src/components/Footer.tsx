@@ -10,7 +10,7 @@ const Footer = () => {
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 flex items-center justify-center">
                 <img 
-                  src="/lovable-uploads/3f8875ae-807d-495a-a5aa-4f3758c25788.png" 
+                  src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
                   alt="AmplifiX Logo" 
                   className="w-8 h-8"
                 />
