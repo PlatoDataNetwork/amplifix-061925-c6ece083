@@ -1,75 +1,78 @@
 
 import { Link } from "react-router-dom";
-import { Shield, Github, Twitter } from "lucide-react";
+import { Linkedin, Twitter, Mail } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#121218] border-t border-gray-800 py-12">
+    <footer className="bg-card border-t border-border py-12">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Logo and description */}
           <div className="md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#8A3FFC] to-[#06B6D4] flex items-center justify-center">
-                <span className="text-white font-bold text-lg">M</span>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 flex items-center justify-center">
+                <img 
+                  src="/lovable-uploads/e322d61f-bd41-4cd3-a72b-5067f513dfc5.png" 
+                  alt="AmplifiX Logo" 
+                  className="w-8 h-8"
+                />
               </div>
-              <h2 className="text-xl font-bold">MoltenArc</h2>
+              <h2 className="text-xl font-bold">AmplifiX</h2>
             </div>
-            <p className="text-gray-400 mb-4">
-              Redefining Digital Privacy with blockchain-secured communications.
+            <p className="text-muted-foreground mb-4">
+              AI-powered investor relations and public relations platform for modern companies.
             </p>
             <div className="flex space-x-4">
-              <Link to="#" className="text-gray-400 hover:text-[#8A3FFC]">
+              <Link to="#" className="text-muted-foreground hover:text-primary">
                 <Twitter size={20} />
               </Link>
-              <Link to="#" className="text-gray-400 hover:text-[#8A3FFC]">
-                <Github size={20} />
+              <Link to="#" className="text-muted-foreground hover:text-primary">
+                <Linkedin size={20} />
+              </Link>
+              <Link to="#" className="text-muted-foreground hover:text-primary">
+                <Mail size={20} />
               </Link>
             </div>
           </div>
           
-          {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-medium mb-4">Quick Links</h3>
+            <h3 className="text-lg font-medium mb-4">Platform</h3>
             <ul className="space-y-2">
-              <li><Link to="/" className="text-gray-400 hover:text-[#8A3FFC]">Home</Link></li>
-              <li><Link to="/dashboard" className="text-gray-400 hover:text-[#8A3FFC]">Dashboard</Link></li>
-              <li><Link to="#" className="text-gray-400 hover:text-[#8A3FFC]">About</Link></li>
-              <li><Link to="#" className="text-gray-400 hover:text-[#8A3FFC]">Features</Link></li>
+              <li><Link to="/" className="text-muted-foreground hover:text-primary">Home</Link></li>
+              <li><Link to="/dashboard" className="text-muted-foreground hover:text-primary">Dashboard</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary">Features</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary">Pricing</Link></li>
             </ul>
           </div>
           
-          {/* Resources */}
           <div>
-            <h3 className="text-lg font-medium mb-4">Resources</h3>
+            <h3 className="text-lg font-medium mb-4">Solutions</h3>
             <ul className="space-y-2">
-              <li><Link to="/documentation" className="text-gray-400 hover:text-[#8A3FFC]">Documentation</Link></li>
-              <li><Link to="/api" className="text-gray-400 hover:text-[#8A3FFC]">API</Link></li>
-              <li><Link to="/blog" className="text-gray-400 hover:text-[#8A3FFC]">Blog</Link></li>
-              <li><Link to="/support" className="text-gray-400 hover:text-[#8A3FFC]">Support</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary">Public Companies</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary">Private Companies</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary">IPO Preparation</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-primary">Fundraising</Link></li>
             </ul>
           </div>
           
-          {/* Contact & Security */}
           <div>
-            <h3 className="text-lg font-medium mb-4">Contact</h3>
+            <h3 className="text-lg font-medium mb-4">Company</h3>
             <ul className="space-y-2">
-              <li className="text-gray-400">hello@moltenarc.com</li>
-              <li className="text-gray-400">+1 (555) 123-4567</li>
+              <li className="text-muted-foreground">hello@amplifix.ai</li>
+              <li className="text-muted-foreground">+1 (555) 123-4567</li>
             </ul>
-            <div className="flex items-center mt-4 p-3 bg-[#0A0A0A] rounded-lg border border-gray-800">
-              <Shield className="text-[#8A3FFC] mr-2 h-5 w-5" />
-              <span className="text-sm">End-to-end Encrypted & Secure</span>
+            <div className="flex items-center mt-4 p-3 bg-background rounded-lg border border-border">
+              <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+              <span className="text-sm">AI Systems Online</span>
             </div>
           </div>
         </div>
         
-        <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">&copy; {new Date().getFullYear()} MoltenArc. All rights reserved.</p>
+        <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-muted-foreground text-sm">&copy; {new Date().getFullYear()} AmplifiX. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="#" className="text-gray-400 hover:text-[#8A3FFC] text-sm">Privacy Policy</Link>
-            <Link to="#" className="text-gray-400 hover:text-[#8A3FFC] text-sm">Terms of Service</Link>
-            <Link to="#" className="text-gray-400 hover:text-[#8A3FFC] text-sm">Cookie Policy</Link>
+            <Link to="#" className="text-muted-foreground hover:text-primary text-sm">Privacy Policy</Link>
+            <Link to="#" className="text-muted-foreground hover:text-primary text-sm">Terms of Service</Link>
+            <Link to="#" className="text-muted-foreground hover:text-primary text-sm">Data Processing</Link>
           </div>
         </div>
       </div>
