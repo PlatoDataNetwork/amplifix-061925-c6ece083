@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
@@ -41,25 +40,27 @@ const Index = () => {
               className="w-10 h-10"
             />
           </div>
-          <h1 className="text-2xl font-bold">AmplifiX</h1>
+          <h1 className="text-2xl font-bold">
+            Amplifi<span className="text-highlight-blue">X</span>
+          </h1>
         </div>
         <div className="flex items-center gap-6">
-          <a href="#about" className="hover:text-primary transition-colors">About</a>
-          <a href="#features" className="hover:text-primary transition-colors">Features</a>
-          <a href="#solutions" className="hover:text-primary transition-colors">Solutions</a>
-          <a href="#pricing" className="hover:text-primary transition-colors">Pricing</a>
-          <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
+          <a href="#about" className="hover:text-highlight-blue transition-colors">About</a>
+          <a href="#features" className="hover:text-highlight-blue transition-colors">Features</a>
+          <a href="#solutions" className="hover:text-highlight-blue transition-colors">Solutions</a>
+          <a href="#pricing" className="hover:text-highlight-blue transition-colors">Pricing</a>
+          <a href="#contact" className="hover:text-highlight-blue transition-colors">Contact</a>
           <ThemeToggle />
           <Button 
             variant="ghost" 
             onClick={handleSignInClick}
-            className="hover:text-primary transition-colors"
+            className="hover:text-highlight-blue transition-colors"
           >
             Sign In
           </Button>
           <Button 
             onClick={handleGetStartedClick}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors rounded-lg"
+            className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors rounded-lg"
           >
             Get Started
           </Button>
@@ -70,13 +71,13 @@ const Index = () => {
       <div className="container mx-auto py-20 px-4">
         <div className="text-center max-w-5xl mx-auto">
           <div className="inline-block mb-8">
-            <div className="bg-primary/10 text-primary rounded-full px-6 py-2 border border-primary/20">
+            <div className="bg-highlight-blue/10 text-highlight-blue rounded-full px-6 py-2 border border-highlight-blue/20">
               AI-Powered Investor Relations & Public Relations
             </div>
           </div>
           <h2 className="text-6xl md:text-7xl font-bold leading-tight mb-6">
             Amplify Your <br />
-            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-highlight-blue to-secondary bg-clip-text text-transparent">
               Corporate Story
             </span>
           </h2>
@@ -88,7 +89,7 @@ const Index = () => {
             <Button 
               size="lg" 
               onClick={handleGetStartedClick}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors px-8 py-4 text-lg rounded-lg"
+              className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors px-8 py-4 text-lg rounded-lg"
             >
               Start Free Trial →
             </Button>
@@ -103,7 +104,7 @@ const Index = () => {
 
       {/* Platform Preview */}
       <div className="container mx-auto py-16 px-4 relative">
-        <div className="absolute -top-20 -left-20 w-64 h-64 bg-primary/20 rounded-full blur-3xl"></div>
+        <div className="absolute -top-20 -left-20 w-64 h-64 bg-highlight-blue/20 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -right-20 w-80 h-80 bg-secondary/20 rounded-full blur-3xl"></div>
         
         <div className="relative bg-card rounded-2xl p-6 border border-border shadow-2xl">
@@ -142,7 +143,7 @@ const Index = () => {
               </div>
             </div>
             
-            <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/10 rounded-full blur-xl"></div>
+            <div className="absolute top-0 left-1/4 w-32 h-32 bg-highlight-blue/10 rounded-full blur-xl"></div>
             <div className="absolute bottom-10 right-10 w-32 h-32 bg-secondary/10 rounded-full blur-xl"></div>
           </div>
         </div>
@@ -160,7 +161,7 @@ const Index = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="bg-card p-6 rounded-xl border border-border text-center">
-            <Brain className="h-12 w-12 text-primary mx-auto mb-4" />
+            <Brain className="h-12 w-12 text-highlight-blue mx-auto mb-4" />
             <h3 className="text-xl font-bold mb-2">AI-Powered Intelligence</h3>
             <p className="text-muted-foreground">
               Advanced machine learning algorithms analyze market sentiment and optimize communications.
@@ -168,7 +169,7 @@ const Index = () => {
           </div>
           
           <div className="bg-card p-6 rounded-xl border border-border text-center">
-            <TrendingUp className="h-12 w-12 text-primary mx-auto mb-4" />
+            <TrendingUp className="h-12 w-12 text-highlight-blue mx-auto mb-4" />
             <h3 className="text-xl font-bold mb-2">Market Leadership</h3>
             <p className="text-muted-foreground">
               Trusted by Fortune 500 companies and emerging growth businesses worldwide.
@@ -176,7 +177,7 @@ const Index = () => {
           </div>
           
           <div className="bg-card p-6 rounded-xl border border-border text-center">
-            <Target className="h-12 w-12 text-primary mx-auto mb-4" />
+            <Target className="h-12 w-12 text-highlight-blue mx-auto mb-4" />
             <h3 className="text-xl font-bold mb-2">Strategic Focus</h3>
             <p className="text-muted-foreground">
               Tailored solutions for both public and private companies at every stage of growth.
@@ -196,57 +197,57 @@ const Index = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-card p-6 rounded-xl border border-border">
-            <div className="mb-4 w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-              <BarChart3 className="h-6 w-6 text-primary" />
+            <div className="mb-4 w-12 h-12 rounded-lg bg-highlight-blue/20 flex items-center justify-center">
+              <BarChart3 className="h-6 w-6 text-highlight-blue" />
             </div>
             <h3 className="text-xl font-bold mb-2">Smart Analytics Dashboard</h3>
             <p className="text-muted-foreground">
               Real-time insights into market sentiment, media coverage, and investor engagement 
               with AI-powered predictive analytics.
             </p>
-            <Button variant="link" className="text-primary mt-4 p-0">
+            <Button variant="link" className="text-highlight-blue mt-4 p-0">
               Learn more →
             </Button>
           </div>
 
           <div className="bg-card p-6 rounded-xl border border-border">
-            <div className="mb-4 w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-              <MessageSquare className="h-6 w-6 text-primary" />
+            <div className="mb-4 w-12 h-12 rounded-lg bg-highlight-blue/20 flex items-center justify-center">
+              <MessageSquare className="h-6 w-6 text-highlight-blue" />
             </div>
             <h3 className="text-xl font-bold mb-2">AI Content Generation</h3>
             <p className="text-muted-foreground">
               Generate compelling press releases, investor updates, and corporate communications 
               tailored to your brand voice and audience.
             </p>
-            <Button variant="link" className="text-primary mt-4 p-0">
+            <Button variant="link" className="text-highlight-blue mt-4 p-0">
               Learn more →
             </Button>
           </div>
 
           <div className="bg-card p-6 rounded-xl border border-border">
-            <div className="mb-4 w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-              <Users className="h-6 w-6 text-primary" />
+            <div className="mb-4 w-12 h-12 rounded-lg bg-highlight-blue/20 flex items-center justify-center">
+              <Users className="h-6 w-6 text-highlight-blue" />
             </div>
             <h3 className="text-xl font-bold mb-2">Stakeholder Management</h3>
             <p className="text-muted-foreground">
               Intelligent CRM for investors, analysts, media contacts, and other key stakeholders 
               with automated engagement tracking.
             </p>
-            <Button variant="link" className="text-primary mt-4 p-0">
+            <Button variant="link" className="text-highlight-blue mt-4 p-0">
               Learn more →
             </Button>
           </div>
 
           <div className="bg-card p-6 rounded-xl border border-border">
-            <div className="mb-4 w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-              <Lightbulb className="h-6 w-6 text-primary" />
+            <div className="mb-4 w-12 h-12 rounded-lg bg-highlight-blue/20 flex items-center justify-center">
+              <Lightbulb className="h-6 w-6 text-highlight-blue" />
             </div>
             <h3 className="text-xl font-bold mb-2">Strategic Insights</h3>
             <p className="text-muted-foreground">
               AI-driven recommendations for timing, messaging, and channel optimization 
               to maximize impact and reach.
             </p>
-            <Button variant="link" className="text-primary mt-4 p-0">
+            <Button variant="link" className="text-highlight-blue mt-4 p-0">
               Learn more →
             </Button>
           </div>
@@ -268,21 +269,21 @@ const Index = () => {
             <h3 className="text-2xl font-bold">Public Companies</h3>
             <div className="space-y-4">
               <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-primary mr-3 mt-1" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
                 <div>
                   <h4 className="font-semibold">Earnings Communications</h4>
                   <p className="text-muted-foreground">Automated earnings call transcripts and investor materials</p>
                 </div>
               </div>
               <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-primary mr-3 mt-1" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
                 <div>
                   <h4 className="font-semibold">Regulatory Compliance</h4>
                   <p className="text-muted-foreground">SEC filing assistance and compliance monitoring</p>
                 </div>
               </div>
               <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-primary mr-3 mt-1" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
                 <div>
                   <h4 className="font-semibold">Analyst Relations</h4>
                   <p className="text-muted-foreground">AI-powered analyst sentiment tracking and engagement</p>
@@ -295,21 +296,21 @@ const Index = () => {
             <h3 className="text-2xl font-bold">Private Companies</h3>
             <div className="space-y-4">
               <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-primary mr-3 mt-1" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
                 <div>
                   <h4 className="font-semibold">Fundraising Support</h4>
                   <p className="text-muted-foreground">Pitch deck optimization and investor outreach automation</p>
                 </div>
               </div>
               <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-primary mr-3 mt-1" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
                 <div>
                   <h4 className="font-semibold">Brand Building</h4>
                   <p className="text-muted-foreground">Strategic PR campaigns and thought leadership content</p>
                 </div>
               </div>
               <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-primary mr-3 mt-1" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
                 <div>
                   <h4 className="font-semibold">IPO Preparation</h4>
                   <p className="text-muted-foreground">Comprehensive readiness assessment and roadmap</p>
@@ -324,19 +325,19 @@ const Index = () => {
       <div className="container mx-auto py-16 px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div className="bg-card p-6 rounded-xl border border-border text-center">
-            <div className="text-4xl font-bold text-primary">500+</div>
+            <div className="text-4xl font-bold text-highlight-blue">500+</div>
             <div className="text-muted-foreground">Companies Served</div>
           </div>
           <div className="bg-card p-6 rounded-xl border border-border text-center">
-            <div className="text-4xl font-bold text-primary">98%</div>
+            <div className="text-4xl font-bold text-highlight-blue">98%</div>
             <div className="text-muted-foreground">Client Satisfaction</div>
           </div>
           <div className="bg-card p-6 rounded-xl border border-border text-center">
-            <div className="text-4xl font-bold text-primary">$50B+</div>
+            <div className="text-4xl font-bold text-highlight-blue">$50B+</div>
             <div className="text-muted-foreground">Market Cap Managed</div>
           </div>
           <div className="bg-card p-6 rounded-xl border border-border text-center">
-            <div className="text-4xl font-bold text-primary">24/7</div>
+            <div className="text-4xl font-bold text-highlight-blue">24/7</div>
             <div className="text-muted-foreground">AI Monitoring</div>
           </div>
         </div>
@@ -357,52 +358,52 @@ const Index = () => {
             <div className="text-4xl font-bold mb-6">$499<span className="text-lg text-muted-foreground">/month</span></div>
             <ul className="space-y-3 mb-8">
               <li className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-2" />
                 <span>AI content generation</span>
               </li>
               <li className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-2" />
                 <span>Basic analytics dashboard</span>
               </li>
               <li className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-2" />
                 <span>Email support</span>
               </li>
               <li className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-2" />
                 <span>Up to 3 users</span>
               </li>
             </ul>
             <Button className="w-full" variant="outline" onClick={handleGetStartedClick}>Get Started</Button>
           </div>
           
-          <div className="bg-gradient-to-b from-primary/10 to-secondary/10 p-8 rounded-xl border border-primary/30 relative">
-            <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm">Popular</div>
+          <div className="bg-gradient-to-b from-highlight-blue/10 to-secondary/10 p-8 rounded-xl border border-highlight-blue/30 relative">
+            <div className="absolute top-4 right-4 bg-highlight-blue text-white px-3 py-1 rounded-full text-sm">Popular</div>
             <h3 className="text-2xl font-bold mb-4">Growth</h3>
             <div className="text-4xl font-bold mb-6">$1,499<span className="text-lg text-muted-foreground">/month</span></div>
             <ul className="space-y-3 mb-8">
               <li className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-2" />
                 <span>Everything in Startup</span>
               </li>
               <li className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-2" />
                 <span>Advanced AI insights</span>
               </li>
               <li className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-2" />
                 <span>Stakeholder CRM</span>
               </li>
               <li className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-2" />
                 <span>Priority support</span>
               </li>
               <li className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-2" />
                 <span>Up to 10 users</span>
               </li>
             </ul>
-            <Button className="w-full bg-primary text-primary-foreground" onClick={handleGetStartedClick}>Get Started</Button>
+            <Button className="w-full bg-highlight-blue text-white" onClick={handleGetStartedClick}>Get Started</Button>
           </div>
           
           <div className="bg-card p-8 rounded-xl border border-border">
@@ -410,23 +411,23 @@ const Index = () => {
             <div className="text-4xl font-bold mb-6">Custom</div>
             <ul className="space-y-3 mb-8">
               <li className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-2" />
                 <span>Everything in Growth</span>
               </li>
               <li className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-2" />
                 <span>Custom AI models</span>
               </li>
               <li className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-2" />
                 <span>White-label options</span>
               </li>
               <li className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-2" />
                 <span>Dedicated support</span>
               </li>
               <li className="flex items-center">
-                <CheckCircle className="h-5 w-5 text-primary mr-2" />
+                <CheckCircle className="h-5 w-5 text-highlight-blue mr-2" />
                 <span>Unlimited users</span>
               </li>
             </ul>
@@ -452,7 +453,7 @@ const Index = () => {
                 <label className="block text-sm font-medium mb-2">Company Name</label>
                 <input 
                   type="text" 
-                  className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-primary focus:outline-none"
+                  className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-highlight-blue focus:outline-none"
                   placeholder="Your company"
                 />
               </div>
@@ -460,13 +461,13 @@ const Index = () => {
                 <label className="block text-sm font-medium mb-2">Contact Email</label>
                 <input 
                   type="email" 
-                  className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-primary focus:outline-none"
+                  className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-highlight-blue focus:outline-none"
                   placeholder="your@company.com"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2">Company Type</label>
-                <select className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-primary focus:outline-none">
+                <select className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-highlight-blue focus:outline-none">
                   <option>Public Company</option>
                   <option>Private Company</option>
                   <option>Pre-IPO Company</option>
@@ -476,11 +477,11 @@ const Index = () => {
                 <label className="block text-sm font-medium mb-2">Message</label>
                 <textarea 
                   rows={4}
-                  className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-primary focus:outline-none"
+                  className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-highlight-blue focus:outline-none"
                   placeholder="Tell us about your needs..."
                 ></textarea>
               </div>
-              <Button className="w-full bg-primary text-primary-foreground">
+              <Button className="w-full bg-highlight-blue text-white">
                 Send Message
               </Button>
             </form>
@@ -490,19 +491,19 @@ const Index = () => {
             <div className="bg-card p-6 rounded-xl border border-border">
               <h4 className="text-lg font-bold mb-2">Sales Inquiries</h4>
               <p className="text-muted-foreground mb-2">Discuss your IR/PR needs with our experts</p>
-              <p className="text-primary">sales@amplifix.ai</p>
+              <p className="text-highlight-blue">sales@amplifix.ai</p>
             </div>
             
             <div className="bg-card p-6 rounded-xl border border-border">
               <h4 className="text-lg font-bold mb-2">Customer Success</h4>
               <p className="text-muted-foreground mb-2">Get help with your existing account</p>
-              <p className="text-primary">success@amplifix.ai</p>
+              <p className="text-highlight-blue">success@amplifix.ai</p>
             </div>
             
             <div className="bg-card p-6 rounded-xl border border-border">
               <h4 className="text-lg font-bold mb-2">Partnership Opportunities</h4>
               <p className="text-muted-foreground mb-2">Explore strategic partnerships</p>
-              <p className="text-primary">partners@amplifix.ai</p>
+              <p className="text-highlight-blue">partners@amplifix.ai</p>
             </div>
             
             <div className="bg-card p-6 rounded-xl border border-border">

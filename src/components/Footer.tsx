@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Linkedin, Twitter, Mail } from "lucide-react";
 
@@ -15,19 +16,21 @@ const Footer = () => {
                   className="w-8 h-8"
                 />
               </div>
-              <h2 className="text-xl font-bold">AmplifiX</h2>
+              <h2 className="text-xl font-bold">
+                Amplifi<span className="text-highlight-blue">X</span>
+              </h2>
             </div>
             <p className="text-muted-foreground mb-4">
               AI-powered investor relations and public relations platform for modern companies.
             </p>
             <div className="flex space-x-4">
-              <Link to="#" className="text-muted-foreground hover:text-primary">
+              <Link to="#" className="text-muted-foreground hover:text-highlight-blue">
                 <Twitter size={20} />
               </Link>
-              <Link to="#" className="text-muted-foreground hover:text-primary">
+              <Link to="#" className="text-muted-foreground hover:text-highlight-blue">
                 <Linkedin size={20} />
               </Link>
-              <Link to="#" className="text-muted-foreground hover:text-primary">
+              <Link to="#" className="text-muted-foreground hover:text-highlight-blue">
                 <Mail size={20} />
               </Link>
             </div>
@@ -36,20 +39,20 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-medium mb-4">Platform</h3>
             <ul className="space-y-2">
-              <li><Link to="/" className="text-muted-foreground hover:text-primary">Home</Link></li>
-              <li><Link to="/dashboard" className="text-muted-foreground hover:text-primary">Dashboard</Link></li>
-              <li><Link to="#" className="text-muted-foreground hover:text-primary">Features</Link></li>
-              <li><Link to="#" className="text-muted-foreground hover:text-primary">Pricing</Link></li>
+              <li><Link to="/" className="text-muted-foreground hover:text-highlight-blue">Home</Link></li>
+              <li><Link to="/dashboard" className="text-muted-foreground hover:text-highlight-blue">Dashboard</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-highlight-blue">Features</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-highlight-blue">Pricing</Link></li>
             </ul>
           </div>
           
           <div>
             <h3 className="text-lg font-medium mb-4">Solutions</h3>
             <ul className="space-y-2">
-              <li><Link to="#" className="text-muted-foreground hover:text-primary">Public Companies</Link></li>
-              <li><Link to="#" className="text-muted-foreground hover:text-primary">Private Companies</Link></li>
-              <li><Link to="#" className="text-muted-foreground hover:text-primary">IPO Preparation</Link></li>
-              <li><Link to="#" className="text-muted-foreground hover:text-primary">Fundraising</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-highlight-blue">Public Companies</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-highlight-blue">Private Companies</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-highlight-blue">IPO Preparation</Link></li>
+              <li><Link to="#" className="text-muted-foreground hover:text-highlight-blue">Fundraising</Link></li>
             </ul>
           </div>
           
@@ -69,9 +72,9 @@ const Footer = () => {
         <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-muted-foreground text-sm">&copy; {new Date().getFullYear()} AmplifiX. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="#" className="text-muted-foreground hover:text-primary text-sm">Privacy Policy</Link>
-            <Link to="#" className="text-muted-foreground hover:text-primary text-sm">Terms of Service</Link>
-            <Link to="#" className="text-muted-foreground hover:text-primary text-sm">Data Processing</Link>
+            <Link to="#" className="text-muted-foreground hover:text-highlight-blue text-sm">Privacy Policy</Link>
+            <Link to="#" className="text-muted-foreground hover:text-highlight-blue text-sm">Terms of Service</Link>
+            <Link to="#" className="text-muted-foreground hover:text-highlight-blue text-sm">Data Processing</Link>
           </div>
         </div>
       </div>
