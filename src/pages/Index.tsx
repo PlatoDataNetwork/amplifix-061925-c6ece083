@@ -76,10 +76,12 @@ const Index = () => {
             </div>
           </div>
           <h2 className="text-6xl md:text-7xl font-bold leading-tight mb-6">
-            Amplify Your <br />
+            Amplifi Your <br />
             <span className="bg-gradient-to-r from-highlight-blue to-secondary bg-clip-text text-transparent">
               Brand
             </span>
+            <br />
+            Supercharge your Communications
           </h2>
           <p className="text-xl text-muted-foreground mb-12 max-w-3xl mx-auto">
             AmplifiX leverages cutting-edge AI to transform how public and private companies 
