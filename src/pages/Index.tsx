@@ -41,7 +41,7 @@ const Index = () => {
             />
           </div>
           <h1 className="text-2xl font-bold">
-            Amplifi<span className="text-highlight-blue">X</span>
+            AmplifiX
           </h1>
         </div>
         <div className="flex items-center gap-6">
