@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Linkedin, Twitter, Mail } from "lucide-react";
 
@@ -11,7 +10,7 @@ const Footer = () => {
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 flex items-center justify-center">
                 <img 
-                  src="/lovable-uploads/e322d61f-bd41-4cd3-a72b-5067f513dfc5.png" 
+                  src="/lovable-uploads/1f9cf53e-b447-4ef9-b4f0-d40bcd1a4e62.png" 
                   alt="AmplifiX Logo" 
                   className="w-8 h-8"
                 />

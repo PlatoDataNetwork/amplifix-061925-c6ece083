@@ -36,7 +36,7 @@ const Index = () => {
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 flex items-center justify-center">
             <img 
-              src="/lovable-uploads/e322d61f-bd41-4cd3-a72b-5067f513dfc5.png" 
+              src="/lovable-uploads/1f9cf53e-b447-4ef9-b4f0-d40bcd1a4e62.png" 
               alt="AmplifiX Logo" 
               className="w-10 h-10"
             />
