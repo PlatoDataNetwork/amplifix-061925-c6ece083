@@ -11,12 +11,12 @@ const Footer = () => {
               <div className="w-10 h-10 flex items-center justify-center">
                 <img 
                   src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
-                  alt="Amplifi Logo" 
+                  alt="AmplifiX Logo" 
                   className="w-8 h-8"
                 />
               </div>
               <h2 className="text-xl font-bold">
-                Amplifi
+                Amplifi<span className="text-highlight-blue">X</span>
               </h2>
             </div>
             <p className="text-muted-foreground mb-4">
@@ -69,7 +69,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-muted-foreground text-sm">&copy; {new Date().getFullYear()} Amplifi. All rights reserved.</p>
+          <p className="text-muted-foreground text-sm">&copy; {new Date().getFullYear()} AmplifiX. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link to="#" className="text-muted-foreground hover:text-highlight-blue text-sm">Privacy Policy</Link>
             <Link to="#" className="text-muted-foreground hover:text-highlight-blue text-sm">Terms of Service</Link>

@@ -36,12 +36,12 @@ const Index = () => {
           <div className="w-12 h-12 flex items-center justify-center">
             <img 
               src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
-              alt="Amplifi Logo" 
+              alt="AmplifiX Logo" 
               className="w-10 h-10"
             />
           </div>
           <h1 className="text-2xl font-bold">
-            Amplifi
+            Amplifi<span className="text-highlight-blue">X</span>
           </h1>
         </div>
         <div className="flex items-center gap-6">
@@ -82,7 +82,7 @@ const Index = () => {
             </span>
           </h2>
           <p className="text-xl text-muted-foreground mb-12 max-w-3xl mx-auto">
-            Amplifi leverages cutting-edge AI to transform how public and private companies 
+            AmplifiX leverages cutting-edge AI to transform how public and private companies 
             manage investor relations, public relations, and corporate communications.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -112,7 +112,7 @@ const Index = () => {
             <div className="w-3 h-3 rounded-full bg-red-500"></div>
             <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
             <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <span className="ml-4 text-muted-foreground text-sm">Amplifi Dashboard</span>
+            <span className="ml-4 text-muted-foreground text-sm">AmplifiX Dashboard</span>
           </div>
           <div className="bg-background rounded-xl p-8 min-h-[400px] relative overflow-hidden">
             <div className="grid grid-cols-12 gap-6">
@@ -152,7 +152,7 @@ const Index = () => {
       {/* About Section */}
       <section id="about" className="container mx-auto py-16 px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-6">About Amplifi</h2>
+          <h2 className="text-4xl font-bold mb-6">About AmplifiX</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             We're revolutionizing corporate communications through AI-driven insights, 
             automated content generation, and intelligent stakeholder engagement platforms.
@@ -260,7 +260,7 @@ const Index = () => {
           <h2 className="text-4xl font-bold mb-6">Solutions for Every Stage</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Whether you're preparing for an IPO or managing ongoing investor relations, 
-            Amplifi adapts to your company's unique needs.
+            AmplifiX adapts to your company's unique needs.
           </p>
         </div>
         
@@ -441,7 +441,7 @@ const Index = () => {
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-6">Get In Touch</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Ready to amplify your corporate communications? Let's discuss how Amplifi can transform your IR and PR strategy.
+            Ready to amplify your corporate communications? Let's discuss how AmplifiX can transform your IR and PR strategy.
           </p>
         </div>
         
