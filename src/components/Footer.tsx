@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Linkedin, Twitter, Mail } from "lucide-react";
 
@@ -12,12 +11,12 @@ const Footer = () => {
               <div className="w-10 h-10 flex items-center justify-center">
                 <img 
                   src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
-                  alt="AmplifiX Logo" 
+                  alt="Amplifi Logo" 
                   className="w-8 h-8"
                 />
               </div>
               <h2 className="text-xl font-bold">
-                Amplifi<span className="text-highlight-blue">X</span>
+                Amplifi
               </h2>
             </div>
             <p className="text-muted-foreground mb-4">
@@ -59,7 +58,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-medium mb-4">Company</h3>
             <ul className="space-y-2">
-              <li className="text-muted-foreground">hello@amplifix.ai</li>
+              <li className="text-muted-foreground">hello@amplifi.ai</li>
               <li className="text-muted-foreground">+1 (555) 123-4567</li>
             </ul>
             <div className="flex items-center mt-4 p-3 bg-background rounded-lg border border-border">
@@ -70,7 +69,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-muted-foreground text-sm">&copy; {new Date().getFullYear()} AmplifiX. All rights reserved.</p>
+          <p className="text-muted-foreground text-sm">&copy; {new Date().getFullYear()} Amplifi. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link to="#" className="text-muted-foreground hover:text-highlight-blue text-sm">Privacy Policy</Link>
             <Link to="#" className="text-muted-foreground hover:text-highlight-blue text-sm">Terms of Service</Link>
