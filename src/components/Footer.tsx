@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Linkedin, Twitter, Mail } from "lucide-react";
 
@@ -16,7 +17,7 @@ const Footer = () => {
                 />
               </div>
               <h2 className="text-xl font-bold">
-                Amplifi<span className="text-highlight-blue">X</span>
+                AmplifiX
               </h2>
             </div>
             <p className="text-muted-foreground mb-4">
@@ -40,8 +41,9 @@ const Footer = () => {
             <ul className="space-y-2">
               <li><Link to="/" className="text-muted-foreground hover:text-highlight-blue">Home</Link></li>
               <li><Link to="/dashboard" className="text-muted-foreground hover:text-highlight-blue">Dashboard</Link></li>
-              <li><Link to="#" className="text-muted-foreground hover:text-highlight-blue">Features</Link></li>
-              <li><Link to="#" className="text-muted-foreground hover:text-highlight-blue">Pricing</Link></li>
+              <li><a href="#features" className="text-muted-foreground hover:text-highlight-blue">Features</a></li>
+              <li><a href="#pricing" className="text-muted-foreground hover:text-highlight-blue">Pricing</a></li>
+              <li><a href="#faq" className="text-muted-foreground hover:text-highlight-blue">FAQ</a></li>
             </ul>
           </div>
           
