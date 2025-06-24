@@ -1,10 +1,8 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import ThemeToggle from "@/components/ThemeToggle";
-import SiloStockChart from "@/components/SiloStockChart";
 
 const SiloPharmaShowcase = () => {
   return (
@@ -45,13 +43,6 @@ const SiloPharmaShowcase = () => {
             </a>
           </div>
         </nav>
-
-        {/* Live Stock Chart Section */}
-        <div className="container mx-auto py-12 px-4">
-          <div className="max-w-6xl mx-auto">
-            <SiloStockChart />
-          </div>
-        </div>
 
         {/* Hero Section */}
         <div className="container mx-auto py-20 px-4">
