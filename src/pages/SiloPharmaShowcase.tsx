@@ -1,7 +1,6 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Flask, Microscope } from "lucide-react";
+import { ArrowLeft, ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -85,7 +84,7 @@ const SiloPharmaShowcase = () => {
                       <div className="text-sm text-muted-foreground">Drug Programs</div>
                     </div>
                     <div className="bg-card p-6 rounded-xl border border-border text-center">
-                      <Flask className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                      <Beaker className="h-8 w-8 text-green-500 mx-auto mb-2" />
                       <div className="text-2xl font-bold">Novel</div>
                       <div className="text-sm text-muted-foreground">Therapeutics</div>
                     </div>
