@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope } from "lucide-react";
+import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope } from "lucide-react";
 import { Helmet } from "react-helmet-async";
-import ThemeToggle from "@/components/ThemeToggle";
+import SharedHeader from "@/components/SharedHeader";
 
 const SiloPharmaShowcase = () => {
   return (
@@ -23,26 +23,7 @@ const SiloPharmaShowcase = () => {
       
       <div className="min-h-screen bg-background text-foreground">
         {/* Navigation */}
-        <nav className="container mx-auto flex items-center justify-between py-6 px-4 border-b border-border">
-          <div className="flex items-center gap-4">
-            <Link to="/" className="flex items-center gap-2 text-highlight-blue hover:text-highlight-blue/80 transition-colors">
-              <ArrowLeft className="h-5 w-5" />
-              <span>Back to AmplifiX</span>
-            </Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
-            <a 
-              href="https://ir.silopharma.com/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-highlight-blue hover:text-highlight-blue/80 transition-colors"
-            >
-              <span>Visit Official Site</span>
-              <ExternalLink className="h-4 w-4" />
-            </a>
-          </div>
-        </nav>
+        <SharedHeader showBackButton={false} />
 
         {/* Hero Section */}
         <div className="container mx-auto py-20 px-4">
@@ -69,9 +50,18 @@ const SiloPharmaShowcase = () => {
                       <ExternalLink className="ml-2 h-4 w-4" />
                     </Button>
                   </a>
-                  <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors">
-                    Learn More
-                  </Button>
+                  <a href="https://ir.silopharma.com/static-files/presentations" target="_blank" rel="noopener noreferrer">
+                    <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors">
+                      SILO Presentation
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Button>
+                  </a>
+                  <a href="https://ir.silopharma.com/static-files/fact-sheet" target="_blank" rel="noopener noreferrer">
+                    <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors">
+                      Investor Fact Sheet
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Button>
+                  </a>
                 </div>
               </div>
               
