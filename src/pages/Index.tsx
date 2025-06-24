@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
@@ -44,7 +45,6 @@ const Index = () => {
           <a href="#about" className="hover:text-highlight-blue transition-colors">About</a>
           <a href="#features" className="hover:text-highlight-blue transition-colors">Features</a>
           <a href="#solutions" className="hover:text-highlight-blue transition-colors">Solutions</a>
-          <a href="#pricing" className="hover:text-highlight-blue transition-colors">Pricing</a>
           <a href="#faq" className="hover:text-highlight-blue transition-colors">FAQ</a>
           <a href="#contact" className="hover:text-highlight-blue transition-colors">Contact</a>
           <ThemeToggle />
