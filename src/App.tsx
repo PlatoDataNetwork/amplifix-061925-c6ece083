@@ -15,6 +15,10 @@ import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
 import SiloPharmaShowcase from "./pages/SiloPharmaShowcase";
 import Features from "./pages/Features";
+import PublicCompanies from "./pages/PublicCompanies";
+import PrivateCompanies from "./pages/PrivateCompanies";
+import IPOPreparation from "./pages/IPOPreparation";
+import Fundraising from "./pages/Fundraising";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +39,10 @@ const App = () => (
               <Route path="/support" element={<Support />} />
               <Route path="/features" element={<Features />} />
               <Route path="/showcase/silo-pharma" element={<SiloPharmaShowcase />} />
+              <Route path="/solutions/public-companies" element={<PublicCompanies />} />
+              <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
+              <Route path="/solutions/ipo-preparation" element={<IPOPreparation />} />
+              <Route path="/solutions/fundraising" element={<Fundraising />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

@@ -50,10 +50,10 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-medium mb-4">Solutions</h3>
             <ul className="space-y-2">
-              <li><Link to="#" className="text-muted-foreground hover:text-highlight-blue">Public Companies</Link></li>
-              <li><Link to="#" className="text-muted-foreground hover:text-highlight-blue">Private Companies</Link></li>
-              <li><Link to="#" className="text-muted-foreground hover:text-highlight-blue">IPO Preparation</Link></li>
-              <li><Link to="#" className="text-muted-foreground hover:text-highlight-blue">Fundraising</Link></li>
+              <li><Link to="/solutions/public-companies" className="text-muted-foreground hover:text-highlight-blue">Public Companies</Link></li>
+              <li><Link to="/solutions/private-companies" className="text-muted-foreground hover:text-highlight-blue">Private Companies</Link></li>
+              <li><Link to="/solutions/ipo-preparation" className="text-muted-foreground hover:text-highlight-blue">IPO Preparation</Link></li>
+              <li><Link to="/solutions/fundraising" className="text-muted-foreground hover:text-highlight-blue">Fundraising</Link></li>
             </ul>
           </div>
           
