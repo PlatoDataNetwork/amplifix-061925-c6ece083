@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { Shield, Zap, LockKeyhole, Star, CheckCircle, Users, Globe, Award, Brain, TrendingUp, BarChart3, MessageSquare, Lightbulb, Target } from "lucide-react";
 import Footer from "@/components/Footer";
 import SignUpModal from "@/components/SignUpModal";
-import SignInModal from "@/components/SignInModal";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useState } from "react";
 import {
@@ -16,7 +15,6 @@ import {
 
 const Index = () => {
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
-  const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
 
   const handleGetStartedClick = () => {
     setIsSignUpModalOpen(true);
@@ -24,14 +22,6 @@ const Index = () => {
 
   const handleCloseSignUpModal = () => {
     setIsSignUpModalOpen(false);
-  };
-
-  const handleSignInClick = () => {
-    setIsSignInModalOpen(true);
-  };
-
-  const handleCloseSignInModal = () => {
-    setIsSignInModalOpen(false);
   };
 
   return (
@@ -66,13 +56,6 @@ const Index = () => {
             </Button>
           </Link>
           <ThemeToggle />
-          <Button 
-            variant="ghost" 
-            onClick={handleSignInClick}
-            className="hover:text-highlight-blue transition-colors"
-          >
-            Sign In
-          </Button>
           <Button 
             onClick={handleGetStartedClick}
             className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors rounded-lg"
@@ -605,11 +588,6 @@ const Index = () => {
       <SignUpModal 
         isOpen={isSignUpModalOpen} 
         onClose={handleCloseSignUpModal} 
-      />
-      
-      <SignInModal 
-        isOpen={isSignInModalOpen} 
-        onClose={handleCloseSignInModal} 
       />
       
       <Toaster />
