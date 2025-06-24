@@ -1,4 +1,5 @@
 
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +24,11 @@ import {
   Cloud,
   Grid3x3,
   Chrome,
-  Logs 
+  Logs,
+  TrendingUp,
+  Bell,
+  FileText,
+  Activity
 } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/hooks/use-toast";
@@ -41,7 +46,7 @@ import BrowserPage from "@/components/BrowserPage";
 import LogsPage from "@/components/LogsPage";
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState("inbox");
+  const [activeTab, setActiveTab] = useState("home");
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
   const [showCompose, setShowCompose] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -64,8 +69,233 @@ const Dashboard = () => {
     };
   }, []);
 
+  // Dashboard Home Content
+  const renderDashboardHome = () => {
+    return (
+      <div className="flex-1 p-6 overflow-y-auto">
+        <div className="max-w-7xl mx-auto">
+          {/* Welcome Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-white mb-2">Welcome to AmplifiX</h1>
+            <p className="text-gray-400">AI-Powered Corporate Communications Dashboard</p>
+          </div>
+
+          {/* Quick Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <Card className="bg-[#1A1A1A] border-gray-800">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-400">Total Campaigns</span>
+                  <TrendingUp className="h-4 w-4 text-green-500" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-white">24</div>
+                <p className="text-xs text-green-500">+12% from last month</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-[#1A1A1A] border-gray-800">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-400">Media Mentions</span>
+                  <Activity className="h-4 w-4 text-blue-500" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-white">847</div>
+                <p className="text-xs text-blue-500">+8% this week</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-[#1A1A1A] border-gray-800">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-400">Investor Contacts</span>
+                  <Users className="h-4 w-4 text-purple-500" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-white">1,234</div>
+                <p className="text-xs text-purple-500">+5% this quarter</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-[#1A1A1A] border-gray-800">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-400">Engagement Rate</span>
+                  <TrendingUp className="h-4 w-4 text-yellow-500" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-white">89.2%</div>
+                <p className="text-xs text-yellow-500">+3.2% improvement</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Recent Activity */}
+            <div className="lg:col-span-2">
+              <Card className="bg-[#1A1A1A] border-gray-800">
+                <CardHeader>
+                  <h3 className="text-lg font-semibold text-white">Recent Activity</h3>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                      <div className="flex-1">
+                        <p className="text-white text-sm">Press release "Q3 Financial Results" published</p>
+                        <p className="text-gray-400 text-xs">2 hours ago</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                      <div className="flex-1">
+                        <p className="text-white text-sm">New investor meeting scheduled with Goldman Sachs</p>
+                        <p className="text-gray-400 text-xs">4 hours ago</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
+                      <div className="flex-1">
+                        <p className="text-white text-sm">AI content analysis completed for tech blog post</p>
+                        <p className="text-gray-400 text-xs">6 hours ago</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                      <div className="flex-1">
+                        <p className="text-white text-sm">Media sentiment report generated</p>
+                        <p className="text-gray-400 text-xs">1 day ago</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
+                      <div className="flex-1">
+                        <p className="text-white text-sm">Crisis communication protocol activated</p>
+                        <p className="text-gray-400 text-xs">2 days ago</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Notifications & Quick Actions */}
+            <div className="space-y-6">
+              {/* Notifications */}
+              <Card className="bg-[#1A1A1A] border-gray-800">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-white">Notifications</h3>
+                    <Bell className="h-4 w-4 text-gray-400" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                      <p className="text-red-400 text-sm font-medium">Media Alert</p>
+                      <p className="text-gray-300 text-xs">Negative sentiment detected in tech news</p>
+                    </div>
+                    <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                      <p className="text-green-400 text-sm font-medium">Campaign Success</p>
+                      <p className="text-gray-300 text-xs">Q3 campaign exceeded targets by 15%</p>
+                    </div>
+                    <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                      <p className="text-blue-400 text-sm font-medium">Meeting Reminder</p>
+                      <p className="text-gray-300 text-xs">Board meeting tomorrow at 2 PM</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Actions */}
+              <Card className="bg-[#1A1A1A] border-gray-800">
+                <CardHeader>
+                  <h3 className="text-lg font-semibold text-white">Quick Actions</h3>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <Button 
+                      className="w-full bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90"
+                      onClick={() => setShowCompose(true)}
+                    >
+                      <FileText className="h-4 w-4 mr-2" />
+                      Create Press Release
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-gray-700 text-white hover:bg-gray-800"
+                      onClick={() => setActiveTab('calendar')}
+                    >
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Schedule Meeting
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-gray-700 text-white hover:bg-gray-800"
+                      onClick={() => setActiveTab('contacts')}
+                    >
+                      <Users className="h-4 w-4 mr-2" />
+                      Manage Contacts
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Upcoming Events */}
+          <div className="mt-8">
+            <Card className="bg-[#1A1A1A] border-gray-800">
+              <CardHeader>
+                <h3 className="text-lg font-semibold text-white">Upcoming Events</h3>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-4 bg-[#0F0F0F] rounded-lg border border-gray-800">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-blue-400 font-medium">Board Meeting</span>
+                      <span className="text-xs text-gray-400">Tomorrow</span>
+                    </div>
+                    <p className="text-white text-sm">Q3 Financial Review</p>
+                    <p className="text-gray-400 text-xs">2:00 PM - 4:00 PM EST</p>
+                  </div>
+                  <div className="p-4 bg-[#0F0F0F] rounded-lg border border-gray-800">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-green-400 font-medium">Investor Call</span>
+                      <span className="text-xs text-gray-400">Dec 15</span>
+                    </div>
+                    <p className="text-white text-sm">Morgan Stanley Meeting</p>
+                    <p className="text-gray-400 text-xs">10:00 AM - 11:00 AM EST</p>
+                  </div>
+                  <div className="p-4 bg-[#0F0F0F] rounded-lg border border-gray-800">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-purple-400 font-medium">Product Launch</span>
+                      <span className="text-xs text-gray-400">Dec 20</span>
+                    </div>
+                    <p className="text-white text-sm">AI Platform 2.0 Announcement</p>
+                    <p className="text-gray-400 text-xs">9:00 AM - 10:30 AM EST</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // Show main content based on active tab
   const renderMainContent = () => {
+    if (activeTab === 'home') {
+      return renderDashboardHome();
+    }
+    
     if (activeTab === 'contacts') {
       return <ContactsPage />;
     }
@@ -149,11 +379,14 @@ const Dashboard = () => {
                 </Button>
                 
                 <div className="flex items-center gap-2">
-                  <Link to="/">
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-[#8A3FFC]">
-                      <Home className="h-4 w-4" />
-                    </Button>
-                  </Link>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className={`h-8 w-8 ${activeTab === 'home' ? 'text-[#8A3FFC]' : 'text-gray-400'}`}
+                    onClick={() => setActiveTab('home')}
+                  >
+                    <Home className="h-4 w-4" />
+                  </Button>
                   <Button 
                     variant="ghost" 
                     size="icon" 
@@ -297,3 +530,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
