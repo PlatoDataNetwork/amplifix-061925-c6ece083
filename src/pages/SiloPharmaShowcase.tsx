@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope } from "lucide-react";
@@ -50,13 +51,13 @@ const SiloPharmaShowcase = () => {
                       <ExternalLink className="ml-2 h-4 w-4" />
                     </Button>
                   </a>
-                  <a href="https://ir.silopharma.com/static-files/presentations" target="_blank" rel="noopener noreferrer">
+                  <a href="https://ir.silopharma.com/assets/uploads/2024/09/SILO-FINAL-presentation_9.4.24.pdf" target="_blank" rel="noopener noreferrer">
                     <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors">
                       SILO Presentation
                       <ExternalLink className="ml-2 h-4 w-4" />
                     </Button>
                   </a>
-                  <a href="https://ir.silopharma.com/static-files/fact-sheet" target="_blank" rel="noopener noreferrer">
+                  <a href="https://ir.silopharma.com/assets/uploads/2025/03/SILO_Fact-Sheet_3.13.25_V4.pdf" target="_blank" rel="noopener noreferrer">
                     <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors">
                       Investor Fact Sheet
                       <ExternalLink className="ml-2 h-4 w-4" />
