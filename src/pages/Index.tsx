@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
-import { Shield, Zap, LockKeyhole, Star, CheckCircle, Users, Globe, Award, Brain, TrendingUp, BarChart3, MessageSquare, Lightbulb, Target } from "lucide-react";
+import { Shield, Zap, LockKeyhole, Star, CheckCircle, Users, Globe, Award, Brain, TrendingUp, BarChart3, MessageSquare, Lightbulb, Target, Menu } from "lucide-react";
 import Footer from "@/components/Footer";
 import SignUpModal from "@/components/SignUpModal";
 import SignInModal from "@/components/SignInModal";
@@ -17,6 +17,7 @@ import {
 const Index = () => {
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleGetStartedClick = () => {
     setIsSignUpModalOpen(true);
@@ -50,36 +51,94 @@ const Index = () => {
             AmplifiX
           </h1>
         </div>
-        <div className="flex items-center gap-6">
+        
+        {/* Desktop Navigation */}
+        <div className="hidden lg:flex items-center gap-6">
           <a href="#about" className="hover:text-highlight-blue transition-colors">About</a>
           <a href="#features" className="hover:text-highlight-blue transition-colors">Features</a>
           <a href="#solutions" className="hover:text-highlight-blue transition-colors">Solutions</a>
           <a href="#pricing" className="hover:text-highlight-blue transition-colors">Pricing</a>
           <a href="#faq" className="hover:text-highlight-blue transition-colors">FAQ</a>
           <a href="#contact" className="hover:text-highlight-blue transition-colors">Contact</a>
+          <ThemeToggle />
           <Link to="/showcase/silo-pharma">
             <Button 
-              variant="outline"
-              className="border-highlight-blue text-highlight-blue hover:bg-highlight-blue hover:text-white transition-colors"
+              className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors rounded-lg"
             >
-              Showcase
+              View Showcase
             </Button>
           </Link>
+        </div>
+
+        {/* Mobile Navigation */}
+        <div className="lg:hidden flex items-center gap-4">
           <ThemeToggle />
-          <Button 
-            variant="ghost" 
-            onClick={handleSignInClick}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="hover:text-highlight-blue transition-colors"
           >
-            Sign In
-          </Button>
-          <Button 
-            onClick={handleGetStartedClick}
-            className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors rounded-lg"
-          >
-            Get Started
+            <Menu className="h-6 w-6" />
           </Button>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="absolute top-20 left-0 right-0 bg-background border-b border-border lg:hidden z-50">
+            <div className="container mx-auto py-6 px-4 space-y-4">
+              <a 
+                href="#about" 
+                className="block hover:text-highlight-blue transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                About
+              </a>
+              <a 
+                href="#features" 
+                className="block hover:text-highlight-blue transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Features
+              </a>
+              <a 
+                href="#solutions" 
+                className="block hover:text-highlight-blue transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Solutions
+              </a>
+              <a 
+                href="#pricing" 
+                className="block hover:text-highlight-blue transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Pricing
+              </a>
+              <a 
+                href="#faq" 
+                className="block hover:text-highlight-blue transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                FAQ
+              </a>
+              <a 
+                href="#contact" 
+                className="block hover:text-highlight-blue transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Contact
+              </a>
+              <Link to="/showcase/silo-pharma" onClick={() => setIsMobileMenuOpen(false)}>
+                <Button 
+                  className="w-full bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors rounded-lg"
+                >
+                  View Showcase
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Hero Section */}
@@ -90,13 +149,13 @@ const Index = () => {
               AI-Powered PR & Content Syndication
             </div>
           </div>
-          <h2 className="text-6xl md:text-7xl font-bold leading-tight mb-6">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
             Amplifi Your <br />
             <span className="text-highlight-blue">
               Communications
             </span>
           </h2>
-          <p className="text-xl text-muted-foreground mb-12 max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl text-muted-foreground mb-12 max-w-3xl mx-auto">
             AmplifiX leverages cutting-edge AI to transform how public and private companies 
             manage investor relations, public relations, and corporate communications.
           </p>
