@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
@@ -22,6 +23,13 @@ const Index = () => {
 
   const handleCloseSignUpModal = () => {
     setIsSignUpModalOpen(false);
+  };
+
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -81,13 +89,16 @@ const Index = () => {
               onClick={handleGetStartedClick}
               className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors px-8 py-4 text-lg rounded-lg"
             >
-              Start Free Trial →
+              Amplifi Your Brand →
             </Button>
-            <Link to="/dashboard">
-              <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors px-8 py-4 text-lg rounded-lg">
-                View Demo
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              onClick={scrollToContact}
+              className="border-border hover:bg-accent transition-colors px-8 py-4 text-lg rounded-lg"
+            >
+              Contact Us
+            </Button>
           </div>
         </div>
       </div>
