@@ -14,6 +14,7 @@ import Blog from "./pages/Blog";
 import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
 import SiloPharmaShowcase from "./pages/SiloPharmaShowcase";
+import Features from "./pages/Features";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
               <Route path="/api" element={<API />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/support" element={<Support />} />
+              <Route path="/features" element={<Features />} />
               <Route path="/showcase/silo-pharma" element={<SiloPharmaShowcase />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
@@ -108,46 +107,49 @@ const Index = () => {
         <div className="absolute -top-20 -left-20 w-64 h-64 bg-highlight-blue/20 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -right-20 w-80 h-80 bg-secondary/20 rounded-full blur-3xl"></div>
         
-        <div className="relative bg-card rounded-2xl p-6 border border-border shadow-2xl">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <span className="ml-4 text-muted-foreground text-sm">AmplifiX Dashboard</span>
-          </div>
-          <div className="bg-background rounded-xl p-8 min-h-[400px] relative overflow-hidden">
-            <div className="grid grid-cols-12 gap-6">
-              <div className="col-span-3">
-                <div className="bg-muted rounded-lg h-12 w-full mb-4"></div>
-                <div className="space-y-3">
-                  <div className="bg-muted rounded-lg h-10 w-full"></div>
-                  <div className="bg-muted rounded-lg h-10 w-full"></div>
-                  <div className="bg-muted rounded-lg h-10 w-full"></div>
-                  <div className="bg-muted rounded-lg h-10 w-full"></div>
+        <Link to="/dashboard" className="block">
+          <div className="relative bg-card rounded-2xl p-6 border border-border shadow-2xl hover:shadow-3xl transition-shadow cursor-pointer group">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-3 h-3 rounded-full bg-red-500"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              <span className="ml-4 text-muted-foreground text-sm">AmplifiX Dashboard</span>
+              <span className="ml-auto text-highlight-blue text-sm opacity-0 group-hover:opacity-100 transition-opacity">Click to view live dashboard →</span>
+            </div>
+            <div className="bg-background rounded-xl p-8 min-h-[400px] relative overflow-hidden">
+              <div className="grid grid-cols-12 gap-6">
+                <div className="col-span-3">
+                  <div className="bg-muted rounded-lg h-12 w-full mb-4"></div>
+                  <div className="space-y-3">
+                    <div className="bg-muted rounded-lg h-10 w-full"></div>
+                    <div className="bg-muted rounded-lg h-10 w-full"></div>
+                    <div className="bg-muted rounded-lg h-10 w-full"></div>
+                    <div className="bg-muted rounded-lg h-10 w-full"></div>
+                  </div>
+                </div>
+                
+                <div className="col-span-9">
+                  <div className="bg-muted rounded-lg h-12 w-full mb-6"></div>
+                  
+                  <div className="space-y-5">
+                    {[1, 2, 3, 4].map((item) => (
+                      <div key={item} className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-primary/40"></div>
+                        <div className="flex-1">
+                          <div className="h-3 bg-muted rounded-lg w-1/4 mb-2"></div>
+                          <div className="h-2 bg-muted rounded-lg w-full"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
               
-              <div className="col-span-9">
-                <div className="bg-muted rounded-lg h-12 w-full mb-6"></div>
-                
-                <div className="space-y-5">
-                  {[1, 2, 3, 4].map((item) => (
-                    <div key={item} className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-primary/40"></div>
-                      <div className="flex-1">
-                        <div className="h-3 bg-muted rounded-lg w-1/4 mb-2"></div>
-                        <div className="h-2 bg-muted rounded-lg w-full"></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <div className="absolute top-0 left-1/4 w-32 h-32 bg-highlight-blue/10 rounded-full blur-xl"></div>
+              <div className="absolute bottom-10 right-10 w-32 h-32 bg-secondary/10 rounded-full blur-xl"></div>
             </div>
-            
-            <div className="absolute top-0 left-1/4 w-32 h-32 bg-highlight-blue/10 rounded-full blur-xl"></div>
-            <div className="absolute bottom-10 right-10 w-32 h-32 bg-secondary/10 rounded-full blur-xl"></div>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* About Section */}
@@ -206,9 +208,11 @@ const Index = () => {
               Real-time insights into market sentiment, media coverage, and investor engagement 
               with AI-powered predictive analytics.
             </p>
-            <Button variant="link" className="text-highlight-blue mt-4 p-0">
-              Learn more →
-            </Button>
+            <Link to="/features">
+              <Button variant="link" className="text-highlight-blue mt-4 p-0">
+                Learn more →
+              </Button>
+            </Link>
           </div>
 
           <div className="bg-card p-6 rounded-xl border border-border">
@@ -220,9 +224,11 @@ const Index = () => {
               Generate compelling press releases, investor updates, and corporate communications 
               tailored to your brand voice and audience.
             </p>
-            <Button variant="link" className="text-highlight-blue mt-4 p-0">
-              Learn more →
-            </Button>
+            <Link to="/features">
+              <Button variant="link" className="text-highlight-blue mt-4 p-0">
+                Learn more →
+              </Button>
+            </Link>
           </div>
 
           <div className="bg-card p-6 rounded-xl border border-border">
@@ -234,9 +240,11 @@ const Index = () => {
               Intelligent CRM for investors, analysts, media contacts, and other key stakeholders 
               with automated engagement tracking.
             </p>
-            <Button variant="link" className="text-highlight-blue mt-4 p-0">
-              Learn more →
-            </Button>
+            <Link to="/features">
+              <Button variant="link" className="text-highlight-blue mt-4 p-0">
+                Learn more →
+              </Button>
+            </Link>
           </div>
 
           <div className="bg-card p-6 rounded-xl border border-border">
@@ -248,9 +256,11 @@ const Index = () => {
               AI-driven recommendations for timing, messaging, and channel optimization 
               to maximize impact and reach.
             </p>
-            <Button variant="link" className="text-highlight-blue mt-4 p-0">
-              Learn more →
-            </Button>
+            <Link to="/features">
+              <Button variant="link" className="text-highlight-blue mt-4 p-0">
+                Learn more →
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
