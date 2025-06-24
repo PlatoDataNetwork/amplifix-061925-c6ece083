@@ -47,21 +47,14 @@ const Index = () => {
           <a href="#pricing" className="hover:text-highlight-blue transition-colors">Pricing</a>
           <a href="#faq" className="hover:text-highlight-blue transition-colors">FAQ</a>
           <a href="#contact" className="hover:text-highlight-blue transition-colors">Contact</a>
+          <ThemeToggle />
           <Link to="/showcase/silo-pharma">
             <Button 
-              variant="outline"
-              className="border-highlight-blue text-highlight-blue hover:bg-highlight-blue hover:text-white transition-colors"
+              className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors rounded-lg"
             >
               Showcase
             </Button>
           </Link>
-          <ThemeToggle />
-          <Button 
-            onClick={handleGetStartedClick}
-            className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors rounded-lg"
-          >
-            Get Started
-          </Button>
         </div>
       </nav>
 
