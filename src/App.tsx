@@ -20,6 +20,9 @@ import PublicCompanies from "./pages/PublicCompanies";
 import PrivateCompanies from "./pages/PrivateCompanies";
 import IPOPreparation from "./pages/IPOPreparation";
 import Fundraising from "./pages/Fundraising";
+import About from "./pages/About";
+import FAQ from "./pages/FAQ";
+import Contact from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +43,9 @@ const App = () => (
               <Route path="/support" element={<Support />} />
               <Route path="/features" element={<Features />} />
               <Route path="/solutions" element={<Solutions />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/showcase/silo-pharma" element={<SiloPharmaShowcase />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
