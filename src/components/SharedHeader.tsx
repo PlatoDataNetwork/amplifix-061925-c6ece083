@@ -15,41 +15,41 @@ const SharedHeader = ({
   backButtonHref = "/"
 }: SharedHeaderProps) => {
   return (
-    <header className="container mx-auto px-4 py-6">
-      <nav className="flex items-center justify-between">
-        <div className="flex items-center space-x-8">
-          <Link to="/" className="text-2xl font-bold text-highlight-blue">
-            AmplifiX
-          </Link>
-          <div className="hidden md:flex items-center space-x-6">
-            <Link to="/features" className="text-foreground hover:text-highlight-blue transition-colors">
-              Features
-            </Link>
-            <Link to="/dashboard" className="text-foreground hover:text-highlight-blue transition-colors">
-              Dashboard
-            </Link>
-            <Link to="/documentation" className="text-foreground hover:text-highlight-blue transition-colors">
-              Documentation
-            </Link>
-            <Link to="/api" className="text-foreground hover:text-highlight-blue transition-colors">
-              API
-            </Link>
-            <Link to="/blog" className="text-foreground hover:text-highlight-blue transition-colors">
-              Blog
-            </Link>
-            <Link to="/support" className="text-foreground hover:text-highlight-blue transition-colors">
-              Support
-            </Link>
-          </div>
-        </div>
-        <div className="flex items-center space-x-4">
-          <ThemeToggle />
-          <Button className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors">
-            Get Started
-          </Button>
-        </div>
-      </nav>
-    </header>
+    <nav className="flex items-center justify-between p-6 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40">
+      <div className="flex items-center space-x-2">
+        <Link to="/" className="text-2xl font-bold text-primary">
+          AmplifiX
+        </Link>
+      </div>
+      
+      <div className="hidden md:flex items-center space-x-6">
+        <Link to="/features" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+          Features
+        </Link>
+        <Link to="/dashboard" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+          Dashboard
+        </Link>
+        <Link to="/documentation" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+          Documentation
+        </Link>
+        <Link to="/api" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+          API
+        </Link>
+        <Link to="/blog" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+          Blog
+        </Link>
+        <Link to="/support" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+          Support
+        </Link>
+      </div>
+      
+      <div className="flex items-center space-x-4">
+        <ThemeToggle />
+        <Button>
+          Get Started
+        </Button>
+      </div>
+    </nav>
   );
 };
 
