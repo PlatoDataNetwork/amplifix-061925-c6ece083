@@ -50,6 +50,9 @@ const SharedHeader = ({
         <Link to="/solutions" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
           Solutions
         </Link>
+        <Link to="/showcase" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          Showcase
+        </Link>
         <Link to="/faq" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
           FAQ
         </Link>
@@ -62,7 +65,7 @@ const SharedHeader = ({
         <ThemeToggle />
         <Link to="/showcase/silo-pharma">
           <Button className="bg-blue-500 hover:bg-blue-600 text-white">
-            Showcase
+            SILO Showcase
           </Button>
         </Link>
       </div>

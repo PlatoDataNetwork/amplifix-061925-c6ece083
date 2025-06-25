@@ -14,6 +14,7 @@ import Blog from "./pages/Blog";
 import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
 import SiloPharmaShowcase from "./pages/SiloPharmaShowcase";
+import Showcase from "./pages/Showcase";
 import Features from "./pages/Features";
 import Solutions from "./pages/Solutions";
 import PublicCompanies from "./pages/PublicCompanies";
@@ -46,6 +47,7 @@ const App = () => (
               <Route path="/about" element={<About />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/showcase" element={<Showcase />} />
               <Route path="/showcase/silo-pharma" element={<SiloPharmaShowcase />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
