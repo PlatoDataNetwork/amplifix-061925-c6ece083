@@ -16,13 +16,26 @@ const SharedHeader = ({
 }: SharedHeaderProps) => {
   return (
     <nav className="flex items-center justify-between p-6 bg-background">
-      <div className="flex items-center space-x-2">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-          <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-          </div>
+      <div className="flex items-center space-x-3">
+        {/* AmplifiX Logo Icon */}
+        <div className="w-10 h-10 flex items-center justify-center">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g>
+              {/* Flower petals */}
+              <ellipse cx="20" cy="12" rx="4" ry="8" fill="#3B82F6" />
+              <ellipse cx="28" cy="20" rx="8" ry="4" fill="#3B82F6" />
+              <ellipse cx="20" cy="28" rx="4" ry="8" fill="#3B82F6" />
+              <ellipse cx="12" cy="20" rx="8" ry="4" fill="#3B82F6" />
+              <ellipse cx="26.5" cy="13.5" rx="4" ry="8" fill="#60A5FA" transform="rotate(45 26.5 13.5)" />
+              <ellipse cx="26.5" cy="26.5" rx="4" ry="8" fill="#60A5FA" transform="rotate(-45 26.5 26.5)" />
+              <ellipse cx="13.5" cy="26.5" rx="4" ry="8" fill="#60A5FA" transform="rotate(45 13.5 26.5)" />
+              <ellipse cx="13.5" cy="13.5" rx="4" ry="8" fill="#60A5FA" transform="rotate(-45 13.5 13.5)" />
+              {/* Center circle */}
+              <circle cx="20" cy="20" r="3" fill="#1E40AF" />
+            </g>
+          </svg>
         </div>
-        <Link to="/" className="text-xl font-bold text-foreground">
+        <Link to="/" className="text-2xl font-bold text-foreground tracking-tight">
           AmplifiX
         </Link>
       </div>
