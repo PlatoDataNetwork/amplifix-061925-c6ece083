@@ -1,8 +1,8 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, ArrowLeft } from "lucide-react";
+import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import SharedHeader from "@/components/SharedHeader";
 
 const SiloPharmaShowcase = () => {
   return (
@@ -22,13 +22,8 @@ const SiloPharmaShowcase = () => {
       </Helmet>
       
       <div className="min-h-screen bg-background text-foreground">
-        {/* Simple Back Navigation */}
-        <nav className="container mx-auto py-6 px-4 border-b border-border">
-          <Link to="/" className="flex items-center gap-2 text-highlight-blue hover:text-highlight-blue/80 transition-colors">
-            <ArrowLeft className="h-4 w-4" />
-            <span>Back to AmplifiX</span>
-          </Link>
-        </nav>
+        {/* Navigation */}
+        <SharedHeader />
 
         {/* Hero Section */}
         <div className="container mx-auto py-20 px-4">
