@@ -15,39 +15,43 @@ const SharedHeader = ({
   backButtonHref = "/"
 }: SharedHeaderProps) => {
   return (
-    <nav className="flex items-center justify-between p-6 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40">
+    <nav className="flex items-center justify-between p-6 bg-background">
       <div className="flex items-center space-x-2">
-        <Link to="/" className="text-2xl font-bold text-primary">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+          <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+          </div>
+        </div>
+        <Link to="/" className="text-xl font-bold text-foreground">
           AmplifiX
         </Link>
       </div>
       
-      <div className="hidden md:flex items-center space-x-6">
-        <Link to="/features" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+      <div className="hidden md:flex items-center space-x-8">
+        <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          About
+        </Link>
+        <Link to="/features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
           Features
         </Link>
-        <Link to="/dashboard" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-          Dashboard
+        <Link to="/solutions" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          Solutions
         </Link>
-        <Link to="/documentation" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-          Documentation
+        <Link to="/faq" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          FAQ
         </Link>
-        <Link to="/api" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-          API
-        </Link>
-        <Link to="/blog" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-          Blog
-        </Link>
-        <Link to="/support" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-          Support
+        <Link to="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          Contact
         </Link>
       </div>
       
       <div className="flex items-center space-x-4">
         <ThemeToggle />
-        <Button>
-          Get Started
-        </Button>
+        <Link to="/showcase/silo-pharma">
+          <Button className="bg-blue-500 hover:bg-blue-600 text-white">
+            Showcase
+          </Button>
+        </Link>
       </div>
     </nav>
   );
