@@ -37,49 +37,49 @@ const MobileMenu = () => {
             <nav className="flex flex-col space-y-4">
               <Link 
                 to="/about" 
-                className="py-2 hover:text-highlight-blue transition-colors"
+                className="py-2 text-foreground hover:text-highlight-blue transition-colors"
                 onClick={closeMenu}
               >
                 About
               </Link>
               <Link 
                 to="/features" 
-                className="py-2 hover:text-highlight-blue transition-colors"
+                className="py-2 text-foreground hover:text-highlight-blue transition-colors"
                 onClick={closeMenu}
               >
                 Features
               </Link>
               <Link 
                 to="/solutions" 
-                className="py-2 hover:text-highlight-blue transition-colors"
+                className="py-2 text-foreground hover:text-highlight-blue transition-colors"
                 onClick={closeMenu}
               >
                 Solutions
               </Link>
               <Link 
                 to="/showcase" 
-                className="py-2 hover:text-highlight-blue transition-colors"
+                className="py-2 text-foreground hover:text-highlight-blue transition-colors"
                 onClick={closeMenu}
               >
                 Showcase
               </Link>
               <Link 
                 to="/blog" 
-                className="py-2 hover:text-highlight-blue transition-colors"
+                className="py-2 text-foreground hover:text-highlight-blue transition-colors"
                 onClick={closeMenu}
               >
                 Intel
               </Link>
               <Link 
                 to="/faq" 
-                className="py-2 hover:text-highlight-blue transition-colors"
+                className="py-2 text-foreground hover:text-highlight-blue transition-colors"
                 onClick={closeMenu}
               >
                 FAQ
               </Link>
               <Link 
                 to="/contact" 
-                className="py-2 hover:text-highlight-blue transition-colors"
+                className="py-2 text-foreground hover:text-highlight-blue transition-colors"
                 onClick={closeMenu}
               >
                 Contact
