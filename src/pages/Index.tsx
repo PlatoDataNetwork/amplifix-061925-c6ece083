@@ -35,21 +35,21 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <MainHeader />
 
-      {/* Hero Section */}
-      <div className="container mx-auto py-20 px-4">
+      {/* Hero Section - Updated with proper top padding */}
+      <div className="pt-24 container mx-auto py-12 md:py-20 px-4">
         <div className="text-center max-w-5xl mx-auto">
-          <div className="inline-block mb-8">
-            <div className="bg-highlight-blue/10 text-highlight-blue rounded-full px-6 py-2 border border-highlight-blue/20">
+          <div className="inline-block mb-6 md:mb-8">
+            <div className="bg-highlight-blue/10 text-highlight-blue rounded-full px-4 md:px-6 py-2 border border-highlight-blue/20 text-sm md:text-base">
               AI-Powered IR & Corporate Communications
             </div>
           </div>
-          <h2 className="text-6xl md:text-7xl font-bold leading-tight mb-6">
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-4 md:mb-6">
             Amplifi Your <br />
             <span className="text-highlight-blue">
               Communications
             </span>
           </h2>
-          <p className="text-xl text-muted-foreground mb-12 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 max-w-3xl mx-auto px-4">
             AmplifiX leverages cutting-edge AI to transform how public and private companies 
             manage investor relations and corporate communications.
           </p>
@@ -57,7 +57,7 @@ const Index = () => {
             <Button 
               size="lg" 
               onClick={handleGetStartedClick}
-              className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors px-8 py-4 text-lg rounded-lg"
+              className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg"
             >
               Amplifi Your Brand →
             </Button>
@@ -65,7 +65,7 @@ const Index = () => {
               size="lg" 
               variant="outline" 
               onClick={scrollToContact}
-              className="border-border hover:bg-accent transition-colors px-8 py-4 text-lg rounded-lg"
+              className="border-border hover:bg-accent transition-colors px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg"
             >
               Contact Us
             </Button>
@@ -74,7 +74,7 @@ const Index = () => {
       </div>
 
       {/* About Section */}
-      <section id="about" className="container mx-auto py-16 px-4">
+      <section id="about" className="container mx-auto py-12 md:py-16 px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-6">About AmplifiX</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -111,7 +111,7 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="container mx-auto py-16 px-4">
+      <section id="features" className="container mx-auto py-12 md:py-16 px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-6">Powerful AI Features</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -187,7 +187,7 @@ const Index = () => {
       </section>
 
       {/* Solutions Section */}
-      <section id="solutions" className="container mx-auto py-16 px-4">
+      <section id="solutions" className="container mx-auto py-12 md:py-16 px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-6">Solutions for Every Stage</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -254,7 +254,7 @@ const Index = () => {
       </section>
 
       {/* Stats Section */}
-      <div className="container mx-auto py-16 px-4">
+      <div className="container mx-auto py-12 md:py-16 px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div className="bg-card p-6 rounded-xl border border-border text-center">
             <div className="text-4xl font-bold text-highlight-blue">500+</div>
@@ -276,7 +276,7 @@ const Index = () => {
       </div>
 
       {/* FAQ Section */}
-      <section id="faq" className="container mx-auto py-16 px-4">
+      <section id="faq" className="container mx-auto py-12 md:py-16 px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-6">Frequently Asked Questions</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -346,7 +346,7 @@ const Index = () => {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="container mx-auto py-16 px-4">
+      <section id="contact" className="container mx-auto py-12 md:py-16 px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-6">Get In Touch</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">

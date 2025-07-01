@@ -1,4 +1,3 @@
-
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -11,13 +10,13 @@ const Contact = () => {
     <div className="min-h-screen bg-background text-foreground">
       <MainHeader />
       
-      {/* Hero Section */}
-      <div className="pt-24 container mx-auto py-20 px-4">
+      {/* Hero Section - Updated with consistent mobile-responsive padding */}
+      <div className="pt-24 container mx-auto py-12 md:py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-5xl font-bold mb-6">
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6">
             Get in <span className="text-highlight-blue">Touch</span>
           </h1>
-          <p className="text-xl text-muted-foreground mb-8">
+          <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-8 px-4">
             Ready to amplify your corporate communications? Let's discuss how AmplifiX can help
             your company achieve its communication and growth objectives.
           </p>
@@ -25,7 +24,7 @@ const Contact = () => {
       </div>
 
       {/* Contact Section */}
-      <section className="container mx-auto py-16 px-4">
+      <section className="container mx-auto py-12 md:py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
