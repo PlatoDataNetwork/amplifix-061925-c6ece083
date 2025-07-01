@@ -1,9 +1,8 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope } from "lucide-react";
 import { Helmet } from "react-helmet-async";
-import SharedHeader from "@/components/SharedHeader";
+import MainHeader from "@/components/MainHeader";
 
 const Showcase = () => {
   return (
@@ -24,10 +23,10 @@ const Showcase = () => {
       
       <div className="min-h-screen bg-background text-foreground">
         {/* Navigation */}
-        <SharedHeader />
+        <MainHeader />
 
         {/* Hero Section */}
-        <div className="container mx-auto py-20 px-4">
+        <div className="pt-24 container mx-auto py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
