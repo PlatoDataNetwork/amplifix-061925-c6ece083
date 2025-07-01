@@ -1,17 +1,16 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { CheckCircle, TrendingUp, FileText, Users, BarChart3, Shield } from "lucide-react";
-import SharedHeader from "@/components/SharedHeader";
+import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 
 const PublicCompanies = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <SharedHeader />
+      <MainHeader />
       
       {/* Hero Section */}
-      <div className="container mx-auto py-20 px-4">
+      <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
             Solutions for <span className="text-highlight-blue">Public Companies</span>
