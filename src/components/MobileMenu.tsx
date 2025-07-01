@@ -33,10 +33,10 @@ const MobileMenu = () => {
                 <X className="h-6 w-6" />
               </Button>
             </div>
-            <nav className="flex flex-col space-y-2 bg-white dark:bg-gray-900">
+            <nav className="flex px-2 flex-col space-y-2 bg-white dark:bg-gray-900">
               <Link 
                 to="/about" 
-                className="py-2 text-foreground hover:text-highlight-blue transition-colors"
+                className="py-1 text-foreground hover:text-highlight-blue transition-colors"
                 onClick={closeMenu}
               >
                 About
