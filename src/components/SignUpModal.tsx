@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { X, Mail, Lock, User } from "lucide-react";
@@ -33,7 +32,7 @@ const SignUpModal = ({ isOpen, onClose }: SignUpModalProps) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-[#121218] border border-gray-800 rounded-xl p-8 max-w-md w-full mx-4">
+      <div className="bg-background border border-gray-800 rounded-xl p-8 max-w-md w-full mx-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-white">Join AmplifiX</h2>
           <Button
