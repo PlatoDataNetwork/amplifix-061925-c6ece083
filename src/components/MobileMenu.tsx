@@ -26,9 +26,9 @@ const MobileMenu = () => {
 
       {/* Mobile menu overlay */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
+        <div className="fixed inset-0 z-[9999] md:hidden">
           <div className="fixed inset-0 bg-black/50" onClick={closeMenu} />
-          <div className="fixed top-0 right-0 h-full w-64 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 p-6 shadow-xl">
+          <div className="fixed top-0 right-0 h-full w-64 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 p-6 shadow-xl z-[10000]">
             <div className="flex justify-end mb-8">
               <Button variant="ghost" size="icon" onClick={closeMenu}>
                 <X className="h-6 w-6" />
