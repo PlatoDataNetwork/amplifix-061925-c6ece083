@@ -29,65 +29,65 @@ const MobileMenu = () => {
         <div className="fixed inset-0 z-[100] md:hidden">
           <div className="fixed inset-0 bg-black/50" onClick={closeMenu} />
           <div className="fixed top-0 right-0 h-full w-64 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 shadow-xl z-[101]">
-            <div className="flex justify-end p-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex justify-end p-4">
               <Button variant="ghost" size="icon" onClick={closeMenu}>
                 <X className="h-6 w-6" />
               </Button>
             </div>
-            <nav className="flex flex-col p-4 bg-white dark:bg-gray-900">
+            <nav className="flex flex-col bg-white dark:bg-gray-900">
               <Link 
                 to="/about" 
-                className="py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
+                className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}
               >
                 About
               </Link>
               <Link 
                 to="/features" 
-                className="py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
+                className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}
               >
                 Features
               </Link>
               <Link 
                 to="/solutions" 
-                className="py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
+                className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}
               >
                 Solutions
               </Link>
               <Link 
                 to="/showcase" 
-                className="py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
+                className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}
               >
                 Showcase
               </Link>
               <Link 
                 to="/blog" 
-                className="py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
+                className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}
               >
                 Intel
               </Link>
               <Link 
                 to="/faq" 
-                className="py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
+                className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}
               >
                 FAQ
               </Link>
               <Link 
                 to="/contact" 
-                className="py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
+                className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}
               >
                 Contact
               </Link>
-              <div className="py-3 border-b border-gray-100 dark:border-gray-800">
+              <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                 <ThemeToggle />
               </div>
-              <div className="pt-4">
+              <div className="p-4">
                 <Link to="/showcase/silo-pharma" onClick={closeMenu}>
                   <Button className="w-full bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors rounded-lg">
                     SILO Showcase
