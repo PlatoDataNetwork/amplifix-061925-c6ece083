@@ -1,12 +1,13 @@
 
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ThemeToggle from "@/components/ThemeToggle";
 import MobileMenu from "@/components/MobileMenu";
 import { useState, useEffect } from "react";
 
 const MainHeader = () => {
   const [isSticky, setIsSticky] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +18,12 @@ const MainHeader = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Scroll to top on route change and reset sticky state
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setIsSticky(false);
+  }, [location.pathname]);
 
   return (
     <nav className={`${
