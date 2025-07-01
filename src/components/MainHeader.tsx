@@ -3,10 +3,25 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import ThemeToggle from "@/components/ThemeToggle";
 import MobileMenu from "@/components/MobileMenu";
+import { useState, useEffect } from "react";
 
 const MainHeader = () => {
+  const [isSticky, setIsSticky] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsSticky(scrollPosition > 100);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/95 backdrop-blur-sm border-b border-gray-800/50">
+    <nav className={`${
+      isSticky ? 'fixed' : 'relative'
+    } top-0 left-0 right-0 z-50 bg-[#0A0A0A]/95 backdrop-blur-sm border-b border-gray-800/50 transition-all duration-300`}>
       <div className="container mx-auto flex items-center justify-between py-3 md:py-4 px-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center">
