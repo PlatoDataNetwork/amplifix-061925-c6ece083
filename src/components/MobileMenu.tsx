@@ -29,7 +29,7 @@ const MobileMenu = () => {
         <div className="fixed inset-0 z-[100] md:hidden">
           <div className="fixed inset-0 bg-black/50" onClick={closeMenu} />
           <div className="fixed top-0 right-0 h-full w-64 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 shadow-xl z-[101]">
-            <div className="flex justify-end p-4">
+            <div className="flex justify-end">
               <Button variant="ghost" size="icon" onClick={closeMenu}>
                 <X className="h-6 w-6" />
               </Button>
