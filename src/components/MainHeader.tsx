@@ -11,7 +11,7 @@ const MainHeader = () => {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
-      setIsSticky(scrollPosition > 100);
+      setIsSticky(scrollPosition > 50);
     };
 
     window.addEventListener('scroll', handleScroll);
