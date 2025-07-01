@@ -47,7 +47,7 @@ const Blog = () => {
     <div className="min-h-screen bg-[#0A0A0A] text-white">
       <MainHeader />
 
-      <div className="container mx-auto py-12">
+      <div className="pt-24 container mx-auto py-12">
         {/* Hero Section */}
         <div className="text-center mb-16">
           <div className="inline-block mb-6">
