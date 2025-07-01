@@ -1,4 +1,3 @@
-
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { CheckCircle, Users, Target, Award } from "lucide-react";
@@ -8,8 +7,8 @@ const About = () => {
     <div className="min-h-screen bg-background text-foreground">
       <MainHeader />
       
-      {/* Hero Section */}
-      <div className="pt-24 container mx-auto py-12 md:py-20 px-4">
+      {/* Hero Section - Increased top padding to account for fixed header */}
+      <div className="pt-32 container mx-auto py-12 md:py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-5xl font-bold mb-6">
             About <span className="text-highlight-blue">AmplifiX</span>

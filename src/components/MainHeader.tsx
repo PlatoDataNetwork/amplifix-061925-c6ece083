@@ -7,7 +7,7 @@ import MobileMenu from "@/components/MobileMenu";
 const MainHeader = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/95 backdrop-blur-sm border-b border-gray-800/50">
-      <div className="container mx-auto flex items-center justify-between py-4 md:py-6 px-4">
+      <div className="container mx-auto flex items-center justify-between py-3 md:py-4 px-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center">
             <img 
