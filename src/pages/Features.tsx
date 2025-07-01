@@ -1,38 +1,16 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowLeft, BarChart3, MessageSquare, Users, Lightbulb, Shield, Zap, Brain, TrendingUp, Target, Globe, Award, CheckCircle, Star, Clock, Database, FileText, Settings, Smartphone, Mail } from "lucide-react";
 import Footer from "@/components/Footer";
-import ThemeToggle from "@/components/ThemeToggle";
+import MainHeader from "@/components/MainHeader";
 
 const Features = () => {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
-      {/* Navigation */}
-      <nav className="container mx-auto flex items-center justify-between py-6 px-4">
-        <div className="flex items-center gap-3">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-12 h-12 flex items-center justify-center">
-              <img 
-                src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
-                alt="AmplifiX Logo" 
-                className="w-10 h-10"
-              />
-            </div>
-            <h1 className="text-2xl font-bold">AmplifiX</h1>
-          </Link>
-        </div>
-        <div className="flex items-center gap-6">
-          <Link to="/" className="hover:text-highlight-blue transition-colors">
-            <ArrowLeft className="h-4 w-4 inline mr-2" />
-            Back to Home
-          </Link>
-          <ThemeToggle />
-        </div>
-      </nav>
+      <MainHeader />
 
       {/* Hero Section */}
-      <div className="container mx-auto py-16 px-4">
+      <div className="pt-24 container mx-auto py-16 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
             Powerful <span className="text-highlight-blue">AI Features</span>

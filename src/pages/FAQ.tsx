@@ -1,15 +1,15 @@
 
-import SharedHeader from "@/components/SharedHeader";
+import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const FAQ = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <SharedHeader />
+      <MainHeader />
       
       {/* Hero Section */}
-      <div className="container mx-auto py-20 px-4">
+      <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
             Frequently Asked <span className="text-highlight-blue">Questions</span>
