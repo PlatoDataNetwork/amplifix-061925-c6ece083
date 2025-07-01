@@ -47,18 +47,18 @@ const Blog = () => {
     <div className="min-h-screen bg-[#0A0A0A] text-white">
       <MainHeader />
 
-      <div className="pt-24 container mx-auto py-12">
+      <div className="pt-24 container mx-auto py-8 md:py-12 px-4">
         {/* Hero Section */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 md:mb-16">
           <div className="inline-block mb-6">
-            <div className="bg-gradient-to-r from-[#8A3FFC]/10 to-[#3B82F6]/10 text-[#8A3FFC] rounded-full px-6 py-2 border border-[#8A3FFC]/20">
+            <div className="bg-gradient-to-r from-[#8A3FFC]/10 to-[#3B82F6]/10 text-[#8A3FFC] rounded-full px-4 md:px-6 py-2 border border-[#8A3FFC]/20 text-sm md:text-base">
               Latest Intelligence
             </div>
           </div>
-          <h1 className="text-5xl font-bold mb-6">
+          <h1 className="text-3xl md:text-5xl font-bold mb-6">
             AmplifiX <span className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] bg-clip-text text-transparent">Intel</span>
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto px-4">
             Stay updated with the latest in AI intelligence, corporate communications insights, and product updates from the AmplifiX team.
           </p>
         </div>
@@ -66,13 +66,14 @@ const Blog = () => {
         <FeaturedPost />
 
         {/* Categories */}
-        <section className="mb-12">
-          <div className="flex flex-wrap gap-3">
+        <section className="mb-8 md:mb-12">
+          <div className="flex flex-wrap gap-2 md:gap-3">
             {categories.map((category) => (
               <Button
                 key={category}
                 variant={category === "All" ? "default" : "outline"}
-                className={category === "All" ? "bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4]" : ""}
+                size="sm"
+                className={category === "All" ? "bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-xs md:text-sm" : "text-xs md:text-sm"}
               >
                 {category}
               </Button>
@@ -81,8 +82,8 @@ const Blog = () => {
         </section>
 
         {/* Blog Posts Grid */}
-        <section className="mb-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <section className="mb-12 md:mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {blogPosts.map((post) => (
               <BlogPostCard key={post.id} post={post} />
             ))}
@@ -93,10 +94,10 @@ const Blog = () => {
 
         {/* Popular Tags */}
         <section>
-          <h2 className="text-2xl font-bold mb-6">Popular Tags</h2>
-          <div className="flex flex-wrap gap-3">
+          <h2 className="text-xl md:text-2xl font-bold mb-6">Popular Tags</h2>
+          <div className="flex flex-wrap gap-2 md:gap-3">
             {popularTags.map((tag) => (
-              <span key={tag} className="bg-[#121218] border border-gray-800 px-4 py-2 rounded-full text-gray-300 hover:border-[#8A3FFC]/30 cursor-pointer transition-colors">
+              <span key={tag} className="bg-[#121218] border border-gray-800 px-3 py-2 rounded-full text-gray-300 hover:border-[#8A3FFC]/30 cursor-pointer transition-colors text-xs md:text-sm">
                 #{tag}
               </span>
             ))}

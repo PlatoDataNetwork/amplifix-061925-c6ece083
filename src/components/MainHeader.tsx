@@ -2,24 +2,27 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import ThemeToggle from "@/components/ThemeToggle";
+import MobileMenu from "@/components/MobileMenu";
 
 const MainHeader = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/95 backdrop-blur-sm border-b border-gray-800/50">
-      <div className="container mx-auto flex items-center justify-between py-6 px-4">
+      <div className="container mx-auto flex items-center justify-between py-4 md:py-6 px-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 flex items-center justify-center">
+          <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center">
             <img 
               src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
               alt="AmplifiX Logo" 
-              className="w-10 h-10"
+              className="w-8 h-8 md:w-10 md:h-10"
             />
           </div>
-          <Link to="/" className="text-2xl font-bold">
+          <Link to="/" className="text-xl md:text-2xl font-bold">
             AmplifiX
           </Link>
         </div>
-        <div className="flex items-center gap-6">
+        
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-6">
           <Link to="/about" className="hover:text-highlight-blue transition-colors">About</Link>
           <Link to="/features" className="hover:text-highlight-blue transition-colors">Features</Link>
           <Link to="/solutions" className="hover:text-highlight-blue transition-colors">Solutions</Link>
@@ -36,6 +39,9 @@ const MainHeader = () => {
             </Button>
           </Link>
         </div>
+
+        {/* Mobile Navigation */}
+        <MobileMenu />
       </div>
     </nav>
   );
