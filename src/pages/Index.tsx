@@ -35,8 +35,8 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <MainHeader />
 
-      {/* Hero Section - Updated with proper top padding */}
-      <div className="pt-24 container mx-auto py-12 md:py-20 px-4">
+      {/* Hero Section - Increased top padding to account for fixed header */}
+      <div className="pt-32 container mx-auto py-12 md:py-20 px-4">
         <div className="text-center max-w-5xl mx-auto">
           <div className="inline-block mb-6 md:mb-8">
             <div className="bg-highlight-blue/10 text-highlight-blue rounded-full px-4 md:px-6 py-2 border border-highlight-blue/20 text-sm md:text-base">
