@@ -1,8 +1,9 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope } from "lucide-react";
 import { Helmet } from "react-helmet-async";
-import SharedHeader from "@/components/SharedHeader";
+import MainHeader from "@/components/MainHeader";
 
 const SiloPharmaShowcase = () => {
   return (
@@ -22,8 +23,7 @@ const SiloPharmaShowcase = () => {
       </Helmet>
       
       <div className="min-h-screen bg-background text-foreground">
-        {/* Navigation */}
-        <SharedHeader />
+        <MainHeader />
 
         {/* Hero Section */}
         <div className="container mx-auto py-20 px-4">

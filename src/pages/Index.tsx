@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Shield, Zap, LockKeyhole, Star, CheckCircle, Users, Globe, Award, Brain, TrendingUp, BarChart3, MessageSquare, Lightbulb, Target } from "lucide-react";
 import Footer from "@/components/Footer";
 import SignUpModal from "@/components/SignUpModal";
-import ThemeToggle from "@/components/ThemeToggle";
+import MainHeader from "@/components/MainHeader";
 import { useState } from "react";
 import {
   Accordion,
@@ -33,36 +33,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
-      {/* Navigation */}
-      <nav className="container mx-auto flex items-center justify-between py-6 px-4">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 flex items-center justify-center">
-            <img 
-              src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
-              alt="AmplifiX Logo" 
-              className="w-10 h-10"
-            />
-          </div>
-          <h1 className="text-2xl font-bold">
-            AmplifiX
-          </h1>
-        </div>
-        <div className="flex items-center gap-6">
-          <a href="#about" className="hover:text-highlight-blue transition-colors">About</a>
-          <a href="#features" className="hover:text-highlight-blue transition-colors">Features</a>
-          <a href="#solutions" className="hover:text-highlight-blue transition-colors">Solutions</a>
-          <a href="#faq" className="hover:text-highlight-blue transition-colors">FAQ</a>
-          <a href="#contact" className="hover:text-highlight-blue transition-colors">Contact</a>
-          <ThemeToggle />
-          <Link to="/showcase/silo-pharma">
-            <Button 
-              className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors rounded-lg"
-            >
-              Showcase
-            </Button>
-          </Link>
-        </div>
-      </nav>
+      <MainHeader />
 
       {/* Hero Section */}
       <div className="container mx-auto py-20 px-4">

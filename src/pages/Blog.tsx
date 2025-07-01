@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
-import BlogHeader from "@/components/BlogHeader";
+import MainHeader from "@/components/MainHeader";
 import FeaturedPost from "@/components/FeaturedPost";
 import BlogPostCard from "@/components/BlogPostCard";
 import NewsletterSignup from "@/components/NewsletterSignup";
@@ -45,7 +45,7 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white">
-      <BlogHeader />
+      <MainHeader />
 
       <div className="container mx-auto py-12">
         {/* Hero Section */}
