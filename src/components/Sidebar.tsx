@@ -32,8 +32,12 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
     <div className="w-64 bg-[#121218] border-r border-gray-800 flex flex-col h-full">
       {/* Logo Area */}
       <div className="p-6 flex items-center">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#8A3FFC] to-[#06B6D4] flex items-center justify-center mr-3">
-          <span className="text-white font-bold text-lg">A</span>
+        <div className="w-8 h-8 flex items-center justify-center mr-3">
+          <img 
+            src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
+            alt="AmplifiX Logo" 
+            className="w-8 h-8"
+          />
         </div>
         <h1 className="font-bold text-lg">AmplifiX</h1>
       </div>
