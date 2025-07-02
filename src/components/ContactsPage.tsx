@@ -96,11 +96,21 @@ const ContactsPage = () => {
                 </div>
 
                 <div className="flex gap-2 mt-4">
-                  <Button variant="ghost" size="sm" className="flex-1 bg-[#1A1A1A] hover:bg-[#2A2A2A] border border-gray-700">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="flex-1 bg-[#1A1A1A] hover:bg-[#2A2A2A] border border-gray-700"
+                    onClick={() => window.open(`mailto:${contact.email}`, '_blank')}
+                  >
                     <Mail className="h-3 w-3 mr-1" />
                     Email
                   </Button>
-                  <Button variant="ghost" size="sm" className="flex-1 bg-[#1A1A1A] hover:bg-[#2A2A2A] border border-gray-700">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="flex-1 bg-[#1A1A1A] hover:bg-[#2A2A2A] border border-gray-700"
+                    onClick={() => window.open(`tel:${contact.phone}`, '_blank')}
+                  >
                     <Phone className="h-3 w-3 mr-1" />
                     Call
                   </Button>
