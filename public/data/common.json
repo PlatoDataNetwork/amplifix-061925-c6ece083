@@ -1,0 +1,67 @@
+{
+  "branding": {
+    "name": "AmplifiX",
+    "description": "AI-powered investor relations and public relations platform for modern companies."
+  },
+  "navigation": {
+    "main_menu": [
+      { "label": "About", "href": "/about" },
+      { "label": "Features", "href": "/features" },
+      { "label": "Solutions", "href": "/solutions" },
+      { "label": "Showcase", "href": "/showcase" },
+      { "label": "Intel", "href": "/blog" },
+      { "label": "FAQ", "href": "/faq" },
+      { "label": "Contact", "href": "/contact" }
+    ],
+    "cta_button": {
+      "label": "SILO Showcase",
+      "href": "/showcase/silo-pharma"
+    }
+  },
+  "footer": {
+    "sections": {
+      "platform": {
+        "title": "Platform",
+        "links": [
+          { "label": "Home", "href": "/" },
+          { "label": "Dashboard", "href": "/dashboard" },
+          { "label": "Features", "href": "#features" },
+          { "label": "Pricing", "href": "#pricing" },
+          { "label": "FAQ", "href": "#faq" }
+        ]
+      },
+      "solutions": {
+        "title": "Solutions",
+        "links": [
+          { "label": "Public Companies", "href": "/solutions/public-companies" },
+          { "label": "Private Companies", "href": "/solutions/private-companies" },
+          { "label": "IPO Preparation", "href": "/solutions/ipo-preparation" },
+          { "label": "Fundraising", "href": "/solutions/fundraising" }
+        ]
+      },
+      "company": {
+        "title": "Company",
+        "contact": {
+          "email": "hello@amplifi.ai",
+          "phone": "+1 (555) 123-4567"
+        },
+        "status": {
+          "text": "AI Systems Online",
+          "indicator": "online"
+        }
+      }
+    },
+    "legal_links": [
+      { "label": "Privacy Policy", "href": "#" },
+      { "label": "Terms of Service", "href": "#" },
+      { "label": "Data Processing", "href": "#" }
+    ],
+    "copyright": "© {year} AmplifiX. All rights reserved."
+  },
+  "blog": {
+    "header": {
+      "title": "AmplifiX Intel",
+      "back_text": "Back to Home"
+    }
+  }
+}
