@@ -1,103 +1,358 @@
 {
+  "seo": {
+    "title": "Documentation - AmplifiX AI-Powered Corporate Communications",
+    "description": "Complete documentation for AmplifiX platform. Learn how to use our AI-powered corporate communications tools, APIs, integrations, and advanced features.",
+    "keywords": "documentation, API documentation, corporate communications guide, AmplifiX tutorials, developer resources, integration guides",
+    "og_title": "AmplifiX Documentation - Complete Platform Guide",
+    "og_description": "Everything you need to know about using AmplifiX for AI-powered corporate communications, investor relations, and public relations.",
+    "twitter_title": "AmplifiX Documentation - Developer & User Guide",
+    "twitter_description": "Complete documentation for AmplifiX platform with tutorials, API references, and integration guides.",
+    "canonical_url": "https://amplifix.ai/documentation"
+  },
   "header": {
-    "back_link": "Back to Home",
-    "title": "AmplifiX Documentation"
+    "title": "Documentation",
+    "subtitle": "Everything you need to know about AmplifiX",
+    "description": "Comprehensive guides, API references, and tutorials to help you get the most out of our AI-powered corporate communications platform."
   },
-  "hero": {
-    "badge_text": "Complete Documentation",
-    "title": "Learn AmplifiX",
-    "description": "Comprehensive guides, tutorials, and references to help you master AI-powered investor relations and public relations."
-  },
-  "quick_start": {
-    "title": "Quick Start Guide",
-    "steps": [
-      {
-        "step": 1,
-        "title": "Create Account",
-        "description": "Sign up and verify your email to get started with secure messaging.",
-        "link_text": "Learn more →"
-      },
-      {
-        "step": 2,
-        "title": "Connect Wallet",
-        "description": "Link your Solana or Arbitrum wallet for blockchain verification.",
-        "link_text": "Learn more →"
-      },
-      {
-        "step": 3,
-        "title": "Send Messages",
-        "description": "Start sending encrypted messages with full blockchain security.",
-        "link_text": "Learn more →"
-      }
-    ]
-  },
-  "documentation_sections": {
-    "title": "Documentation Sections",
+  "navigation": {
     "sections": [
       {
-        "title": "User Guide",
-        "description": "Complete walkthrough of MoltenArc features and functionality.",
+        "id": "getting-started",
+        "title": "Getting Started",
         "items": [
-          "Account setup and verification",
-          "Wallet integration",
-          "Message encryption",
-          "Contact management"
-        ],
-        "button_text": "View Guide"
+          { "id": "quick-start", "title": "Quick Start Guide" },
+          { "id": "setup", "title": "Account Setup" },
+          { "id": "first-campaign", "title": "Your First Campaign" },
+          { "id": "dashboard-overview", "title": "Dashboard Overview" }
+        ]
       },
       {
-        "title": "Developer Docs",
-        "description": "Technical documentation for developers and integrators.",
+        "id": "features",
+        "title": "Features",
         "items": [
-          "API endpoints",
-          "SDK documentation",
-          "Code examples",
-          "Integration guides"
-        ],
-        "button_text": "View Docs"
+          { "id": "ai-content", "title": "AI Content Generation" },
+          { "id": "press-releases", "title": "Press Release Management" },
+          { "id": "investor-relations", "title": "Investor Relations Tools" },
+          { "id": "media-monitoring", "title": "Media Monitoring" },
+          { "id": "analytics", "title": "Analytics & Reporting" }
+        ]
       },
       {
-        "title": "Security Guide",
-        "description": "Understanding MoltenArc's security features and best practices.",
+        "id": "integrations",
+        "title": "Integrations",
         "items": [
-          "Encryption methods",
-          "Blockchain verification",
-          "Security best practices",
-          "Threat protection"
-        ],
-        "button_text": "View Security"
+          { "id": "social-media", "title": "Social Media Platforms" },
+          { "id": "email-platforms", "title": "Email Marketing" },
+          { "id": "crm-systems", "title": "CRM Systems" },
+          { "id": "news-wires", "title": "News Wire Services" }
+        ]
       },
       {
-        "title": "Tutorials",
-        "description": "Step-by-step tutorials for common tasks and advanced features.",
+        "id": "api",
+        "title": "API Reference",
         "items": [
-          "Setting up 2FA",
-          "Group messaging",
-          "File sharing",
-          "Advanced settings"
-        ],
-        "button_text": "View Tutorials"
+          { "id": "authentication", "title": "Authentication" },
+          { "id": "endpoints", "title": "API Endpoints" },
+          { "id": "webhooks", "title": "Webhooks" },
+          { "id": "rate-limits", "title": "Rate Limits" },
+          { "id": "sdks", "title": "SDKs & Libraries" }
+        ]
+      },
+      {
+        "id": "advanced",
+        "title": "Advanced",
+        "items": [
+          { "id": "custom-workflows", "title": "Custom Workflows" },
+          { "id": "white-labeling", "title": "White Labeling" },
+          { "id": "security", "title": "Security & Compliance" },
+          { "id": "troubleshooting", "title": "Troubleshooting" }
+        ]
       }
     ]
   },
-  "downloads": {
-    "title": "Downloads & Resources",
-    "resources": [
-      {
-        "title": "SDK Package",
-        "description": "Complete SDK for developers",
-        "button_text": "Download SDK"
+  "content": {
+    "getting-started": {
+      "quick-start": {
+        "title": "Quick Start Guide",
+        "description": "Get up and running with AmplifiX in under 10 minutes",
+        "content": [
+          {
+            "type": "text",
+            "text": "Welcome to AmplifiX! This guide will help you get started with our AI-powered corporate communications platform in just a few simple steps."
+          },
+          {
+            "type": "steps",
+            "items": [
+              {
+                "step": 1,
+                "title": "Create Your Account",
+                "description": "Sign up for AmplifiX and choose your plan",
+                "details": "Visit our pricing page and select the plan that best fits your needs. You can start with a free trial to explore all features."
+              },
+              {
+                "step": 2,
+                "title": "Set Up Your Profile",
+                "description": "Configure your company information and branding",
+                "details": "Add your company logo, brand colors, and key messaging to ensure all communications align with your brand identity."
+              },
+              {
+                "step": 3,
+                "title": "Import Your Contacts",
+                "description": "Upload your media and investor contact lists",
+                "details": "Use our CSV import tool or integrate with your existing CRM to sync your contact database automatically."
+              },
+              {
+                "step": 4,
+                "title": "Create Your First Campaign",
+                "description": "Launch your first AI-powered communication campaign",
+                "details": "Use our guided campaign builder to create press releases, investor updates, or social media campaigns with AI assistance."
+              }
+            ]
+          }
+        ]
       },
-      {
-        "title": "PDF Guides",
-        "description": "Offline documentation",
-        "button_text": "Download PDFs"
-      },
-      {
-        "title": "Code Examples",
-        "description": "Sample implementations",
-        "button_text": "View GitHub"
+      "setup": {
+        "title": "Account Setup",
+        "description": "Configure your AmplifiX account for optimal performance",
+        "content": [
+          {
+            "type": "text",
+            "text": "Proper account setup is crucial for getting the most out of AmplifiX. Follow these detailed steps to configure your account correctly."
+          },
+          {
+            "type": "subsection",
+            "title": "Company Profile",
+            "content": [
+              {
+                "type": "text",
+                "text": "Your company profile forms the foundation of all your communications. Make sure to provide accurate and complete information."
+              },
+              {
+                "type": "list",
+                "items": [
+                  "Company name and legal entity information",
+                  "Industry classification and business description",
+                  "Stock ticker symbol (if publicly traded)",
+                  "Key executives and board members",
+                  "Company logo and brand assets"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Brand Guidelines",
+            "content": [
+              {
+                "type": "text",
+                "text": "Upload your brand guidelines to ensure AI-generated content maintains consistency with your brand voice and style."
+              },
+              {
+                "type": "code",
+                "language": "json",
+                "code": "{\n  \"brand_voice\": \"professional, confident, innovative\",\n  \"tone\": \"authoritative yet approachable\",\n  \"key_messages\": [\n    \"Leading innovation in fintech\",\n    \"Committed to transparency\",\n    \"Driving shareholder value\"\n  ],\n  \"avoid_terms\": [\"disruptive\", \"revolutionary\"]\n}"
+              }
+            ]
+          }
+        ]
       }
+    },
+    "api": {
+      "authentication": {
+        "title": "Authentication",
+        "description": "Learn how to authenticate with the AmplifiX API",
+        "content": [
+          {
+            "type": "text",
+            "text": "AmplifiX API uses API keys for authentication. All requests must include a valid API key in the Authorization header."
+          },
+          {
+            "type": "subsection",
+            "title": "Getting Your API Key",
+            "content": [
+              {
+                "type": "steps",
+                "items": [
+                  {
+                    "step": 1,
+                    "title": "Navigate to Settings",
+                    "description": "Go to your dashboard and click on 'Settings' in the sidebar"
+                  },
+                  {
+                    "step": 2,
+                    "title": "API Management",
+                    "description": "Select 'API Keys' from the settings menu"
+                  },
+                  {
+                    "step": 3,
+                    "title": "Generate Key",
+                    "description": "Click 'Generate New API Key' and copy the key securely"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "subsection",
+            "title": "Making Authenticated Requests",
+            "content": [
+              {
+                "type": "code",
+                "language": "curl",
+                "code": "curl -X GET 'https://api.amplifix.ai/v1/campaigns' \\\n  -H 'Authorization: Bearer YOUR_API_KEY' \\\n  -H 'Content-Type: application/json'"
+              },
+              {
+                "type": "code",
+                "language": "javascript",
+                "code": "const response = await fetch('https://api.amplifix.ai/v1/campaigns', {\n  headers: {\n    'Authorization': 'Bearer YOUR_API_KEY',\n    'Content-Type': 'application/json'\n  }\n});"
+              },
+              {
+                "type": "code",
+                "language": "python",
+                "code": "import requests\n\nheaders = {\n    'Authorization': 'Bearer YOUR_API_KEY',\n    'Content-Type': 'application/json'\n}\n\nresponse = requests.get(\n    'https://api.amplifix.ai/v1/campaigns',\n    headers=headers\n)"
+              }
+            ]
+          }
+        ]
+      },
+      "endpoints": {
+        "title": "API Endpoints",
+        "description": "Complete reference for all AmplifiX API endpoints",
+        "content": [
+          {
+            "type": "text",
+            "text": "The AmplifiX API provides RESTful endpoints for managing campaigns, content, contacts, and analytics."
+          },
+          {
+            "type": "api_endpoint",
+            "method": "GET",
+            "endpoint": "/v1/campaigns",
+            "description": "Retrieve all campaigns",
+            "parameters": [
+              {
+                "name": "limit",
+                "type": "integer",
+                "required": false,
+                "description": "Number of campaigns to return (default: 20, max: 100)"
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "required": false,
+                "description": "Filter by campaign status: draft, active, completed, paused"
+              }
+            ],
+            "response_example": {
+              "campaigns": [
+                {
+                  "id": "camp_123",
+                  "name": "Q3 Earnings Campaign",
+                  "status": "active",
+                  "created_at": "2024-01-15T10:30:00Z",
+                  "channels": ["email", "social", "press_release"]
+                }
+              ],
+              "total": 15,
+              "page": 1
+            }
+          },
+          {
+            "type": "api_endpoint",
+            "method": "POST",
+            "endpoint": "/v1/campaigns",
+            "description": "Create a new campaign",
+            "parameters": [
+              {
+                "name": "name",
+                "type": "string",
+                "required": true,
+                "description": "Campaign name"
+              },
+              {
+                "name": "type",
+                "type": "string",
+                "required": true,
+                "description": "Campaign type: earnings, product_launch, crisis_management"
+              },
+              {
+                "name": "channels",
+                "type": "array",
+                "required": true,
+                "description": "Distribution channels: email, social, press_release, investor_update"
+              }
+            ],
+            "request_example": {
+              "name": "New Product Launch",
+              "type": "product_launch",
+              "channels": ["email", "social", "press_release"],
+              "target_audience": ["investors", "media", "customers"]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "code_examples": {
+    "javascript": {
+      "title": "JavaScript SDK",
+      "examples": [
+        {
+          "title": "Initialize SDK",
+          "code": "import AmplifiX from '@amplifix/sdk';\n\nconst client = new AmplifiX({\n  apiKey: 'your-api-key',\n  environment: 'production' // or 'sandbox'\n});"
+        },
+        {
+          "title": "Create Campaign",
+          "code": "const campaign = await client.campaigns.create({\n  name: 'Q4 Earnings Release',\n  type: 'earnings',\n  channels: ['email', 'press_release'],\n  scheduledAt: '2024-01-15T09:00:00Z'\n});\n\nconsole.log('Campaign created:', campaign.id);"
+        }
+      ]
+    },
+    "python": {
+      "title": "Python SDK",
+      "examples": [
+        {
+          "title": "Initialize SDK",
+          "code": "from amplifix import AmplifiX\n\nclient = AmplifiX(\n    api_key='your-api-key',\n    environment='production'\n)"
+        },
+        {
+          "title": "Generate Content",
+          "code": "content = client.content.generate(\n    type='press_release',\n    topic='quarterly_earnings',\n    data={\n        'revenue': '$10.2M',\n        'growth': '15%',\n        'period': 'Q3 2024'\n    }\n)\n\nprint(content.title)\nprint(content.body)"
+        }
+      ]
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "items": [
+      {
+        "question": "How do I get started with the API?",
+        "answer": "First, generate an API key from your dashboard settings. Then, make your first request to the /v1/campaigns endpoint to retrieve your campaigns. Check our Quick Start guide for detailed steps."
+      },
+      {
+        "question": "What are the rate limits for the API?",
+        "answer": "Rate limits depend on your plan: Startup (100 requests/hour), Growth (1,000 requests/hour), Enterprise (unlimited). Rate limit headers are included in all responses."
+      },
+      {
+        "question": "Can I customize the AI-generated content?",
+        "answer": "Yes! You can provide custom prompts, brand guidelines, and style preferences. The AI will adapt its output to match your specific requirements and brand voice."
+      },
+      {
+        "question": "How do webhooks work?",
+        "answer": "Webhooks allow real-time notifications when events occur in your account. Configure webhook URLs in your settings to receive notifications for campaign completions, content approvals, and more."
+      },
+      {
+        "question": "Is there a sandbox environment for testing?",
+        "answer": "Yes, we provide a full sandbox environment that mirrors production functionality. Use sandbox API keys to test integrations without affecting your live campaigns."
+      }
+    ]
+  },
+  "search": {
+    "placeholder": "Search documentation...",
+    "popular_searches": [
+      "API authentication",
+      "Create campaign",
+      "Webhook setup",
+      "Rate limits",
+      "Generate content"
     ]
   }
 }
