@@ -1,0 +1,57 @@
+{
+  "hero": {
+    "title": "Solutions for Private Companies",
+    "description": "Scale your communications strategy with AI-powered PR and stakeholder management solutions tailored for private companies and growth-stage businesses.",
+    "cta_button": "Get Started Today"
+  },
+  "key_features": {
+    "title": "Built for Growth-Stage Companies",
+    "features": [
+      {
+        "title": "Fundraising Support",
+        "description": "AI-optimized pitch decks, investor outreach automation, and due diligence preparation."
+      },
+      {
+        "title": "Brand Building",
+        "description": "Strategic PR campaigns, thought leadership content, and market positioning strategies."
+      },
+      {
+        "title": "Stakeholder Engagement",
+        "description": "Investor updates, board communications, and employee engagement platforms."
+      },
+      {
+        "title": "Growth Marketing",
+        "description": "Content marketing automation, media outreach, and digital presence optimization."
+      },
+      {
+        "title": "Strategic Advisory",
+        "description": "AI-powered insights for market timing, messaging optimization, and competitive positioning."
+      },
+      {
+        "title": "IPO Readiness",
+        "description": "Comprehensive preparation for public market transition and regulatory compliance."
+      }
+    ]
+  },
+  "benefits": {
+    "title": "Why Private Companies Love AmplifiX",
+    "items": [
+      {
+        "title": "Cost-Effective Solutions",
+        "description": "Get enterprise-grade communications capabilities at a fraction of traditional agency costs."
+      },
+      {
+        "title": "Rapid Implementation",
+        "description": "Go live in days, not months, with our streamlined onboarding process."
+      },
+      {
+        "title": "Scalable Growth",
+        "description": "Platform grows with your business from startup to IPO and beyond."
+      },
+      {
+        "title": "Expert Guidance",
+        "description": "Access to experienced communications professionals and strategic advisors."
+      }
+    ]
+  }
+}
