@@ -1,0 +1,71 @@
+{
+  "hero": {
+    "title": "Client Showcase",
+    "subtitle": "Success Stories & Case Studies",
+    "description": "Discover how leading companies leverage AmplifiX's AI-powered platform to transform their corporate communications, enhance investor relations, and accelerate business growth."
+  },
+  "showcases": [
+    {
+      "company_name": "SILO Pharma Inc.",
+      "ticker": "NASDAQ: SILO",
+      "description": "Pioneering neuropsychiatric drug development through AI-driven research and innovative therapeutic approaches for mental health conditions.",
+      "tags": ["Pharmaceutical", "Biotech", "CNS Therapeutics"],
+      "button_text": "View Case Study",
+      "link": "/showcase/silo-pharma"
+    },
+    {
+      "company_name": "Coming Soon",
+      "subtitle": "Next Success Story",
+      "description": "More exciting case studies and client success stories are coming soon. Stay tuned for additional showcases.",
+      "button_text": "Coming Soon",
+      "disabled": true
+    },
+    {
+      "company_name": "Your Company",
+      "subtitle": "Next Success Story", 
+      "description": "Could your company be our next showcase? Contact us to learn how AmplifiX can transform your corporate communications.",
+      "button_text": "Get Started",
+      "link": "/contact"
+    }
+  ],
+  "why_choose": {
+    "title": "Why Leading Companies Choose AmplifiX",
+    "description": "Our AI-powered platform delivers measurable results across all aspects of corporate communications and investor relations.",
+    "features": [
+      {
+        "title": "Growth Focus",
+        "description": "Accelerate business growth through strategic communications"
+      },
+      {
+        "title": "AI Innovation", 
+        "description": "Cutting-edge AI technology for content creation and optimization"
+      },
+      {
+        "title": "Expert Team",
+        "description": "Experienced professionals with deep industry knowledge"
+      },
+      {
+        "title": "Proven Results",
+        "description": "Track record of success across multiple industries"
+      }
+    ]
+  },
+  "cta": {
+    "title": "Ready to Amplify Your Success?",
+    "description": "Join the growing list of companies transforming their corporate communications with AmplifiX's AI-powered platform.",
+    "buttons": {
+      "primary": {
+        "text": "Get Started Today",
+        "link": "/contact"
+      },
+      "secondary": {
+        "text": "Explore Features", 
+        "link": "/features"
+      }
+    }
+  },
+  "footer": {
+    "tagline": "AmplifiX - AI-driven corporate communications platform",
+    "description": "Transforming how companies communicate with stakeholders and investors."
+  }
+}
