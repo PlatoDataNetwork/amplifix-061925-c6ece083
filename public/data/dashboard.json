@@ -1,0 +1,201 @@
+{
+  "seo": {
+    "title": "Dashboard - AmplifiX AI-Powered Corporate Communications",
+    "description": "Manage your corporate communications, investor relations, and public relations campaigns with AmplifiX's AI-powered dashboard. Monitor media mentions, track engagement, and streamline your communications workflow.",
+    "keywords": "dashboard, corporate communications, investor relations, AI-powered PR, media monitoring, engagement tracking, campaign management",
+    "og_title": "AmplifiX Dashboard - AI-Powered Corporate Communications Hub",
+    "og_description": "Centralized dashboard for managing all your corporate communications, investor relations, and PR campaigns with AI-powered insights and automation.",
+    "twitter_title": "AmplifiX Dashboard - Corporate Communications Control Center",
+    "twitter_description": "Streamline your corporate communications with AI-powered insights, media monitoring, and campaign management tools.",
+    "canonical_url": "https://amplifix.ai/dashboard"
+  },
+  "header": {
+    "title": "Welcome to AmplifiX",
+    "subtitle": "AI-Powered Corporate Communications Dashboard"
+  },
+  "stats_cards": [
+    {
+      "title": "Total Campaigns",
+      "value": "24",
+      "change": "+12% from last month",
+      "change_type": "positive",
+      "icon": "TrendingUp",
+      "color": "green"
+    },
+    {
+      "title": "Media Mentions",
+      "value": "847",
+      "change": "+8% this week",
+      "change_type": "positive",
+      "icon": "Activity",
+      "color": "blue"
+    },
+    {
+      "title": "Investor Contacts",
+      "value": "1,234",
+      "change": "+5% this quarter",
+      "change_type": "positive",
+      "icon": "Users",
+      "color": "purple"
+    },
+    {
+      "title": "Engagement Rate",
+      "value": "89.2%",
+      "change": "+3.2% improvement",
+      "change_type": "positive",
+      "icon": "TrendingUp",
+      "color": "yellow"
+    }
+  ],
+  "recent_activity": {
+    "title": "Recent Activity",
+    "activities": [
+      {
+        "message": "Press release \"Q3 Financial Results\" published",
+        "timestamp": "2 hours ago",
+        "color": "green"
+      },
+      {
+        "message": "New investor meeting scheduled with Goldman Sachs",
+        "timestamp": "4 hours ago",
+        "color": "blue"
+      },
+      {
+        "message": "AI content analysis completed for tech blog post",
+        "timestamp": "6 hours ago",
+        "color": "yellow"
+      },
+      {
+        "message": "Media sentiment report generated",
+        "timestamp": "1 day ago",
+        "color": "purple"
+      },
+      {
+        "message": "Crisis communication protocol activated",
+        "timestamp": "2 days ago",
+        "color": "red"
+      }
+    ]
+  },
+  "notifications": {
+    "title": "Notifications",
+    "items": [
+      {
+        "title": "Media Alert",
+        "message": "Negative sentiment detected in tech news",
+        "type": "alert",
+        "color": "red"
+      },
+      {
+        "title": "Campaign Success",
+        "message": "Q3 campaign exceeded targets by 15%",
+        "type": "success",
+        "color": "green"
+      },
+      {
+        "title": "Meeting Reminder",
+        "message": "Board meeting tomorrow at 2 PM",
+        "type": "info",
+        "color": "blue"
+      }
+    ]
+  },
+  "quick_actions": {
+    "title": "Quick Actions",
+    "actions": [
+      {
+        "title": "Create Press Release",
+        "icon": "FileText",
+        "action": "compose",
+        "variant": "primary"
+      },
+      {
+        "title": "Schedule Meeting",
+        "icon": "Calendar",
+        "action": "calendar",
+        "variant": "outline"
+      },
+      {
+        "title": "Manage Contacts",
+        "icon": "Users",
+        "action": "contacts",
+        "variant": "outline"
+      }
+    ]
+  },
+  "upcoming_events": {
+    "title": "Upcoming Events",
+    "events": [
+      {
+        "title": "Board Meeting",
+        "description": "Q3 Financial Review",
+        "date": "Tomorrow",
+        "time": "2:00 PM - 4:00 PM EST",
+        "color": "blue"
+      },
+      {
+        "title": "Investor Call",
+        "description": "Morgan Stanley Meeting",
+        "date": "Dec 15",
+        "time": "10:00 AM - 11:00 AM EST",
+        "color": "green"
+      },
+      {
+        "title": "Product Launch",
+        "description": "AI Platform 2.0 Announcement",
+        "date": "Dec 20",
+        "time": "9:00 AM - 10:30 AM EST",
+        "color": "purple"
+      }
+    ]
+  },
+  "navigation": {
+    "sidebar_items": [
+      {
+        "id": "home",
+        "title": "Home",
+        "icon": "Home"
+      },
+      {
+        "id": "inbox",
+        "title": "Inbox",
+        "icon": "Mail"
+      },
+      {
+        "id": "calendar",
+        "title": "Calendar",
+        "icon": "Calendar"
+      },
+      {
+        "id": "contacts",
+        "title": "Contacts",
+        "icon": "Users"
+      },
+      {
+        "id": "scheduler",
+        "title": "Scheduler",
+        "icon": "Clock"
+      },
+      {
+        "id": "clouddrive",
+        "title": "Cloud Drive",
+        "icon": "Cloud"
+      },
+      {
+        "id": "apps",
+        "title": "App Center",
+        "icon": "Grid3x3"
+      },
+      {
+        "id": "browser",
+        "title": "Browser",
+        "icon": "Chrome"
+      },
+      {
+        "id": "logs",
+        "title": "Logs",
+        "icon": "Logs"
+      }
+    ]
+  }
+}
