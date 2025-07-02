@@ -1,0 +1,106 @@
+{
+  "header": {
+    "back_link": "Back to Home",
+    "title": "MoltenArc Support"
+  },
+  "hero": {
+    "badge_text": "24/7 Support",
+    "title": "We're Here to Help",
+    "description": "Get the assistance you need with our comprehensive support resources and dedicated team.",
+    "search_placeholder": "Search for help articles, guides, or FAQs...",
+    "search_button": "Search"
+  },
+  "quick_actions": [
+    {
+      "title": "Documentation",
+      "description": "Complete guides and tutorials"
+    },
+    {
+      "title": "FAQ",
+      "description": "Frequently asked questions"
+    },
+    {
+      "title": "Live Chat",
+      "description": "Chat with support team"
+    },
+    {
+      "title": "Community",
+      "description": "Join our Discord server"
+    }
+  ],
+  "support_channels": {
+    "title": "Contact Support",
+    "channels": [
+      {
+        "title": "Email Support",
+        "description": "Get help from our support team",
+        "contact": "support@moltenarc.com",
+        "response_time": "Within 24 hours",
+        "button_text": "Contact Now"
+      },
+      {
+        "title": "Live Chat",
+        "description": "Chat with us in real-time",
+        "contact": "Available 24/7",
+        "response_time": "Immediate response",
+        "button_text": "Contact Now"
+      },
+      {
+        "title": "Phone Support",
+        "description": "Speak directly with our team",
+        "contact": "+1 (555) 123-4567",
+        "response_time": "Business hours only",
+        "button_text": "Contact Now"
+      }
+    ]
+  },
+  "faqs": {
+    "title": "Frequently Asked Questions",
+    "questions": [
+      {
+        "question": "How do I get started with MoltenArc?",
+        "answer": "Getting started is easy! Simply create an account, verify your email, connect your Solana or Arbitrum wallet, and you're ready to send secure messages."
+      },
+      {
+        "question": "Is my data really secure on the blockchain?",
+        "answer": "Yes! All messages are end-to-end encrypted and verified on the blockchain. Your data is never stored in plain text, and only you and your recipient can decrypt the messages."
+      },
+      {
+        "question": "Which blockchains does MoltenArc support?",
+        "answer": "Currently, we support Solana and Arbitrum networks. We're constantly evaluating new blockchain networks to expand our supported platforms."
+      },
+      {
+        "question": "Can I use MoltenArc without a crypto wallet?",
+        "answer": "While blockchain verification requires a wallet, you can still use basic messaging features with just an email account. However, for full security benefits, we recommend connecting a wallet."
+      },
+      {
+        "question": "What's the difference between free and paid plans?",
+        "answer": "Free plans include basic messaging with monthly limits, while paid plans offer unlimited messages, advanced features, priority support, and custom domains."
+      }
+    ],
+    "view_all_button": "View All FAQs"
+  },
+  "system_status": {
+    "title": "System Status",
+    "services": [
+      {
+        "name": "API Services",
+        "status": "Operational"
+      },
+      {
+        "name": "Blockchain Network",
+        "status": "Operational"
+      },
+      {
+        "name": "Message Delivery",
+        "status": "Operational"
+      }
+    ],
+    "view_detailed": "View Detailed Status →"
+  },
+  "emergency_support": {
+    "title": "Emergency Support",
+    "description": "If you're experiencing a security issue or urgent problem that requires immediate attention, please contact our emergency support line.",
+    "button_text": "Emergency Contact: +1 (555) 911-HELP"
+  }
+}
