@@ -113,6 +113,39 @@ const LogsPage = () => {
     }
   };
 
+  // Filter logs based on search query and selected level
+  const filteredLogs = logEntries.filter(entry => {
+    const matchesSearch = searchQuery === "" || 
+      entry.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.details.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesLevel = selectedLevel === "All Levels" || entry.level === selectedLevel;
+    
+    return matchesSearch && matchesLevel;
+  });
+
+  // Export logs function
+  const exportLogs = () => {
+    const logsToExport = filteredLogs.map(entry => ({
+      timestamp: entry.timestamp,
+      level: entry.level,
+      category: entry.category,
+      message: entry.message,
+      details: entry.details
+    }));
+
+    const dataStr = JSON.stringify(logsToExport, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = `system-logs-${new Date().toISOString().split('T')[0]}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+  };
+
   return (
     <div className="flex-1 flex flex-col bg-[#0A0A0A] p-6">
       <div className="bg-[#121218] rounded-lg shadow-lg flex flex-col h-full border border-gray-800">
@@ -152,7 +185,12 @@ const LogsPage = () => {
               <RefreshCw className="h-4 w-4 mr-2" />
               Refresh
             </Button>
-            <Button variant="outline" size="sm" className="border-gray-800">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="border-gray-800"
+              onClick={exportLogs}
+            >
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>
@@ -162,7 +200,7 @@ const LogsPage = () => {
         {/* Log Entries with Accordion */}
         <div className="flex-1 overflow-y-auto p-4">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-sm text-gray-400">Log Entries ({logEntries.length})</span>
+            <span className="text-sm text-gray-400">Log Entries ({filteredLogs.length})</span>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-green-400"></div>
               <span className="text-sm text-gray-400">Security Verified</span>
@@ -170,7 +208,7 @@ const LogsPage = () => {
           </div>
           
           <Accordion type="single" collapsible className="space-y-2">
-            {logEntries.map((entry) => (
+            {filteredLogs.map((entry) => (
               <AccordionItem 
                 key={entry.id} 
                 value={entry.id}
