@@ -33,9 +33,9 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
       {/* Logo Area */}
       <div className="p-6 flex items-center">
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#8A3FFC] to-[#06B6D4] flex items-center justify-center mr-3">
-          <span className="text-white font-bold text-lg">M</span>
+          <span className="text-white font-bold text-lg">A</span>
         </div>
-        <h1 className="font-bold text-lg">MoltenArc</h1>
+        <h1 className="font-bold text-lg">AmplifiX</h1>
       </div>
       
       {/* New Message Button */}
