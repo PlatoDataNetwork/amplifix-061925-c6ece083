@@ -37,7 +37,7 @@ const ContactsPage = () => {
   );
 
   return (
-    <div className="flex-1 flex flex-col bg-[#0A0A0A] p-6">
+    <div className="h-full flex flex-col bg-[#0A0A0A] p-6 overflow-hidden">
       <div className="bg-[#121218] rounded-lg shadow-lg flex flex-col h-full border border-gray-800">
         {/* Header */}
         <div className="border-b border-gray-800 p-6 flex justify-between items-center">
