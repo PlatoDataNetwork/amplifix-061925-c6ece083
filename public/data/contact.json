@@ -1,0 +1,58 @@
+{
+  "hero": {
+    "title": "Get in Touch",
+    "description": "Ready to amplify your corporate communications? Let's discuss how AmplifiX can help your company achieve its communication and growth objectives."
+  },
+  "contact_form": {
+    "title": "Send us a message",
+    "fields": {
+      "first_name": {
+        "label": "First Name",
+        "placeholder": "John"
+      },
+      "last_name": {
+        "label": "Last Name", 
+        "placeholder": "Doe"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "john@company.com"
+      },
+      "company": {
+        "label": "Company",
+        "placeholder": "Your Company Name"
+      },
+      "message": {
+        "label": "Message",
+        "placeholder": "Tell us about your corporate communications needs..."
+      }
+    },
+    "submit_button": "Send Message"
+  },
+  "contact_info": {
+    "title": "Contact Information",
+    "description": "We're here to help you amplify your corporate communications and achieve your business objectives.",
+    "details": [
+      {
+        "type": "email",
+        "label": "Email",
+        "value": "hello@amplifix.ai"
+      },
+      {
+        "type": "phone", 
+        "label": "Phone",
+        "value": "+1 (555) 123-4567"
+      },
+      {
+        "type": "address",
+        "label": "Office",
+        "value": "123 Business Ave\nSuite 100\nNew York, NY 10001"
+      }
+    ]
+  },
+  "consultation": {
+    "title": "Schedule a Consultation",
+    "description": "Ready to see AmplifiX in action? Schedule a personalized demo to learn how we can help amplify your corporate communications.",
+    "button_text": "Book a Demo"
+  }
+}
