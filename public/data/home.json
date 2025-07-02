@@ -32,23 +32,19 @@
     "items": [
       {
         "title": "Smart Analytics Dashboard",
-        "description": "Real-time insights into market sentiment, media coverage, and investor engagement with AI-powered predictive analytics.",
-        "link": "Learn more →"
+        "description": "Real-time insights into market sentiment, media coverage, and investor engagement with AI-powered predictive analytics."
       },
       {
         "title": "AI Content Generation",
-        "description": "Generate compelling press releases, investor updates, and corporate communications tailored to your brand voice and audience.",
-        "link": "Learn more →"
+        "description": "Generate compelling press releases, investor updates, and corporate communications tailored to your brand voice and audience."
       },
       {
         "title": "Stakeholder Management",
-        "description": "Intelligent CRM for investors, analysts, media contacts, and other key stakeholders with automated engagement tracking.",
-        "link": "Learn more →"
+        "description": "Intelligent CRM for investors, analysts, media contacts, and other key stakeholders with automated engagement tracking."
       },
       {
         "title": "Strategic Insights",
-        "description": "AI-driven recommendations for timing, messaging, and channel optimization to maximize impact and reach.",
-        "link": "Learn more →"
+        "description": "AI-driven recommendations for timing, messaging, and channel optimization to maximize impact and reach."
       }
     ]
   },
