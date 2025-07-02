@@ -48,6 +48,7 @@ const MainHeader = () => {
           <Link to="/about" className="text-foreground hover:text-highlight-blue transition-colors">About</Link>
           <Link to="/features" className="text-foreground hover:text-highlight-blue transition-colors">Features</Link>
           <Link to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">Solutions</Link>
+          <Link to="/pricing" className="text-foreground hover:text-highlight-blue transition-colors">Pricing</Link>
           <Link to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">Showcase</Link>
           <Link to="/blog" className="text-foreground hover:text-highlight-blue transition-colors">Intel</Link>
           <Link to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">FAQ</Link>

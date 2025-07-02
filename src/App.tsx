@@ -24,6 +24,7 @@ import Fundraising from "./pages/Fundraising";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
+import Pricing from "./pages/Pricing";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ const App = () => (
               <Route path="/about" element={<About />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/pricing" element={<Pricing />} />
               <Route path="/showcase" element={<Showcase />} />
               <Route path="/showcase/silo-pharma" element={<SiloPharmaShowcase />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />

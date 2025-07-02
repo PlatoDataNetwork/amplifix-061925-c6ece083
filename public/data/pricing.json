@@ -1,0 +1,250 @@
+{
+  "seo": {
+    "title": "Pricing - AmplifiX AI-Powered Corporate Communications",
+    "description": "Choose the perfect AmplifiX plan for your company. From startups to enterprise organizations, we have AI-powered corporate communications solutions that scale with your needs.",
+    "keywords": "pricing, corporate communications, investor relations, AI-powered PR, startup plans, enterprise solutions, communication platform costs",
+    "og_title": "AmplifiX Pricing - AI-Powered Corporate Communications Plans",
+    "og_description": "Transparent pricing for AI-powered corporate communications. Choose from Startup, Growth, or Enterprise plans designed to scale with your business.",
+    "twitter_title": "AmplifiX Pricing - Corporate Communications That Scale",
+    "twitter_description": "Find the perfect plan for your corporate communications needs. Transparent pricing, powerful AI features.",
+    "canonical_url": "https://amplifix.ai/pricing"
+  },
+  "hero": {
+    "title": "Choose Your Plan",
+    "subtitle": "Transparent pricing for AI-powered corporate communications that scale with your business",
+    "description": "From startups building their first investor deck to Fortune 500 companies managing complex global communications, AmplifiX grows with you."
+  },
+  "plans": [
+    {
+      "id": "startup",
+      "name": "Startup",
+      "description": "Perfect for early-stage companies and growing startups",
+      "price": 499,
+      "billing": "month",
+      "popular": false,
+      "features": [
+        "Up to 5 team members",
+        "AI-powered content generation",
+        "Basic investor relations tools",
+        "Press release templates",
+        "Email campaign management",
+        "Social media scheduling",
+        "Basic analytics dashboard",
+        "Community support",
+        "API access (100 calls/month)"
+      ],
+      "limits": {
+        "team_members": 5,
+        "campaigns_per_month": 10,
+        "press_releases_per_month": 5,
+        "api_calls_per_month": 100,
+        "storage": "10 GB"
+      },
+      "cta": "Start Free Trial",
+      "highlight_color": "blue"
+    },
+    {
+      "id": "growth", 
+      "name": "Growth",
+      "description": "For scaling companies with advanced communication needs",
+      "price": 1499,
+      "billing": "month",
+      "popular": true,
+      "features": [
+        "Up to 25 team members",
+        "Advanced AI content optimization",
+        "Complete investor relations suite",
+        "Custom press release workflows",
+        "Multi-channel campaign management",
+        "Advanced analytics & reporting",
+        "Media monitoring & sentiment analysis",
+        "Priority support",
+        "API access (1,000 calls/month)",
+        "White-label options",
+        "Integration with major platforms",
+        "Custom branding"
+      ],
+      "limits": {
+        "team_members": 25,
+        "campaigns_per_month": 50,
+        "press_releases_per_month": 25,
+        "api_calls_per_month": 1000,
+        "storage": "100 GB"
+      },
+      "cta": "Start Free Trial",
+      "highlight_color": "green"
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise",
+      "description": "For large organizations with complex requirements",
+      "price": null,
+      "billing": "custom",
+      "popular": false,
+      "features": [
+        "Unlimited team members",
+        "Custom AI model training",
+        "Enterprise-grade security",
+        "Dedicated account manager",
+        "Custom integrations",
+        "Advanced compliance tools",
+        "Real-time crisis management",
+        "24/7 dedicated support",
+        "Unlimited API access",
+        "On-premise deployment options",
+        "Custom reporting & dashboards",
+        "Multi-language support",
+        "Advanced user permissions",
+        "Custom SLA agreements"
+      ],
+      "limits": {
+        "team_members": "Unlimited",
+        "campaigns_per_month": "Unlimited",
+        "press_releases_per_month": "Unlimited",
+        "api_calls_per_month": "Unlimited",
+        "storage": "Unlimited"
+      },
+      "cta": "Contact Sales",
+      "highlight_color": "purple"
+    }
+  ],
+  "comparison": {
+    "title": "Compare Plans",
+    "features": [
+      {
+        "category": "Core Features",
+        "items": [
+          {
+            "feature": "AI Content Generation",
+            "startup": true,
+            "growth": true,
+            "enterprise": true
+          },
+          {
+            "feature": "Press Release Management",
+            "startup": true,
+            "growth": true,
+            "enterprise": true
+          },
+          {
+            "feature": "Email Campaigns",
+            "startup": true,
+            "growth": true,
+            "enterprise": true
+          },
+          {
+            "feature": "Social Media Integration",
+            "startup": true,
+            "growth": true,
+            "enterprise": true
+          }
+        ]
+      },
+      {
+        "category": "Advanced Features",
+        "items": [
+          {
+            "feature": "Media Monitoring",
+            "startup": false,
+            "growth": true,
+            "enterprise": true
+          },
+          {
+            "feature": "Sentiment Analysis",
+            "startup": false,
+            "growth": true,
+            "enterprise": true
+          },
+          {
+            "feature": "Custom Workflows",
+            "startup": false,
+            "growth": true,
+            "enterprise": true
+          },
+          {
+            "feature": "White-label Options",
+            "startup": false,
+            "growth": true,
+            "enterprise": true
+          }
+        ]
+      },
+      {
+        "category": "Enterprise Features",
+        "items": [
+          {
+            "feature": "Custom AI Training",
+            "startup": false,
+            "growth": false,
+            "enterprise": true
+          },
+          {
+            "feature": "On-premise Deployment",
+            "startup": false,
+            "growth": false,
+            "enterprise": true
+          },
+          {
+            "feature": "Dedicated Account Manager",
+            "startup": false,
+            "growth": false,
+            "enterprise": true
+          },
+          {
+            "feature": "Custom SLA",
+            "startup": false,
+            "growth": false,
+            "enterprise": true
+          }
+        ]
+      }
+    ]
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "items": [
+      {
+        "question": "Can I switch plans at any time?",
+        "answer": "Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately, and billing is prorated accordingly."
+      },
+      {
+        "question": "Do you offer a free trial?",
+        "answer": "Yes, we offer a 14-day free trial for both Startup and Growth plans. No credit card required to start your trial."
+      },
+      {
+        "question": "What payment methods do you accept?",
+        "answer": "We accept all major credit cards, ACH transfers, and wire transfers for annual subscriptions. Enterprise customers can also pay via purchase orders."
+      },
+      {
+        "question": "Is there a setup fee?",
+        "answer": "No setup fees for Startup and Growth plans. Enterprise plans may include implementation services with associated costs, which will be clearly outlined in your custom proposal."
+      },
+      {
+        "question": "Can I cancel my subscription anytime?",
+        "answer": "Yes, you can cancel your subscription at any time. You'll continue to have access to your plan features until the end of your current billing period."
+      },
+      {
+        "question": "Do you offer discounts for annual payments?",
+        "answer": "Yes, we offer a 20% discount for annual subscriptions on both Startup and Growth plans. Contact our sales team for Enterprise annual pricing."
+      },
+      {
+        "question": "What's included in the Enterprise plan?",
+        "answer": "Enterprise plans are customized based on your specific needs. They include all Growth features plus custom integrations, dedicated support, advanced security, and compliance tools."
+      },
+      {
+        "question": "How does API pricing work?",
+        "answer": "API calls are included in your plan limits. Additional API calls are available at $0.01 per call for Startup and $0.005 per call for Growth plans. Enterprise plans include unlimited API access."
+      }
+    ]
+  },
+  "guarantee": {
+    "title": "30-Day Money-Back Guarantee",
+    "description": "Try AmplifiX risk-free. If you're not completely satisfied within 30 days, we'll refund your money, no questions asked."
+  },
+  "cta": {
+    "title": "Ready to Get Started?",
+    "description": "Join thousands of companies using AmplifiX to transform their corporate communications.",
+    "primary_button": "Start Free Trial",
+    "secondary_button": "Contact Sales"
+  }
+}
