@@ -1,0 +1,247 @@
+{
+  "seo": {
+    "title": "SILO Pharma Inc. - Revolutionizing Neuropsychiatric Drug Development | AmplifiX Showcase",
+    "description": "Discover how SILO Pharma (NASDAQ: SILO) is pioneering next-generation neuropsychiatric treatments through AI-driven drug development and psychedelic medicine research. Learn about their innovative approach to mental health therapeutics.",
+    "keywords": "SILO Pharma, neuropsychiatric drugs, psychedelic medicine, mental health therapeutics, drug development, NASDAQ SILO, pharmaceutical innovation, AI drug discovery",
+    "og_title": "SILO Pharma Inc. - Revolutionizing Neuropsychiatric Drug Development",
+    "og_description": "Leading pharmaceutical company developing breakthrough neuropsychiatric treatments through innovative drug development and psychedelic medicine research.",
+    "twitter_title": "SILO Pharma - Next-Generation Neuropsychiatric Therapeutics",
+    "twitter_description": "Pioneering mental health treatments through AI-driven drug development and psychedelic medicine research.",
+    "canonical_url": "https://amplifix.ai/showcase/silo-pharma"
+  },
+  "hero": {
+    "badge": {
+      "text": "NASDAQ: SILO",
+      "variant": "success"
+    },
+    "title": "SILO Pharma",
+    "subtitle": "Pioneering Mental Health Innovation",
+    "description": "SILO Pharma Inc. is a developmental pharmaceutical company focused on developing next-generation therapeutics that target the pathophysiology of neuropsychiatric and neurological disorders.",
+    "buttons": [
+      {
+        "text": "Investor Relations",
+        "url": "https://ir.silopharma.com/",
+        "variant": "primary",
+        "external": true
+      },
+      {
+        "text": "SILO Presentation",
+        "url": "https://ir.silopharma.com/assets/uploads/2024/09/SILO-FINAL-presentation_9.4.24.pdf",
+        "variant": "outline",
+        "external": true
+      },
+      {
+        "text": "Investor Fact Sheet",
+        "url": "https://ir.silopharma.com/assets/uploads/2025/03/SILO_Fact-Sheet_3.13.25_V4.pdf",
+        "variant": "outline",
+        "external": true
+      }
+    ],
+    "statistics": [
+      {
+        "icon": "Pill",
+        "value": "5+",
+        "label": "Drug Programs",
+        "color": "blue"
+      },
+      {
+        "icon": "Beaker",
+        "value": "Novel",
+        "label": "Therapeutics",
+        "color": "green"
+      },
+      {
+        "icon": "Brain",
+        "value": "CNS",
+        "label": "Focus",
+        "color": "purple"
+      },
+      {
+        "icon": "Microscope",
+        "value": "AI-Driven",
+        "label": "Research",
+        "color": "blue"
+      }
+    ]
+  },
+  "company_overview": {
+    "title": "Company Overview",
+    "description": "SILO Pharma is at the forefront of neuropsychiatric drug development, leveraging cutting-edge research and innovative approaches to address unmet medical needs in mental health.",
+    "pillars": [
+      {
+        "icon": "Building",
+        "title": "Founded",
+        "description": "Established as a leading pharmaceutical company dedicated to developing innovative neuropsychiatric therapeutics for patients worldwide.",
+        "color": "blue"
+      },
+      {
+        "icon": "Target",
+        "title": "Mission",
+        "description": "To develop next-generation therapeutics that target the pathophysiology of neuropsychiatric and neurological disorders.",
+        "color": "green"
+      },
+      {
+        "icon": "Globe",
+        "title": "Vision",
+        "description": "To transform mental healthcare through innovative drug development and breakthrough therapeutic solutions.",
+        "color": "purple"
+      }
+    ]
+  },
+  "development_programs": {
+    "title": "Key Development Programs",
+    "description": "SILO Pharma's pipeline includes innovative approaches to treating depression, ADHD, and other neuropsychiatric conditions through novel therapeutic mechanisms.",
+    "programs": [
+      {
+        "icon": "Stethoscope",
+        "title": "SP-26 (Ketamine)",
+        "description": "An intranasal ketamine product being developed for treatment-resistant depression. This innovative delivery system aims to provide rapid-acting antidepressant effects with improved patient convenience and compliance.",
+        "tags": [
+          {
+            "text": "Treatment-Resistant Depression",
+            "color": "blue"
+          },
+          {
+            "text": "Intranasal Delivery",
+            "color": "green"
+          }
+        ],
+        "color": "blue"
+      },
+      {
+        "icon": "Brain",
+        "title": "SPC-15 (Psilocybin)",
+        "description": "A targeted psilocybin-based therapeutic designed to treat various mental health conditions. This program leverages the growing body of research supporting psychedelic medicine for treatment-resistant psychiatric disorders.",
+        "tags": [
+          {
+            "text": "Psychedelic Medicine",
+            "color": "purple"
+          },
+          {
+            "text": "Mental Health",
+            "color": "blue"
+          }
+        ],
+        "color": "green"
+      },
+      {
+        "icon": "Microscope",
+        "title": "Additional Pipeline Programs",
+        "description": "SILO Pharma continues to advance multiple programs targeting ADHD, anxiety disorders, and other neuropsychiatric conditions through innovative drug development approaches and strategic partnerships.",
+        "tags": [
+          {
+            "text": "ADHD",
+            "color": "orange"
+          },
+          {
+            "text": "Anxiety Disorders",
+            "color": "red"
+          },
+          {
+            "text": "CNS Therapeutics",
+            "color": "indigo"
+          }
+        ],
+        "color": "purple"
+      }
+    ]
+  },
+  "competitive_advantages": {
+    "title": "Competitive Advantages",
+    "description": "SILO Pharma's unique approach combines innovative drug development with cutting-edge research methodologies to create breakthrough therapeutic solutions.",
+    "advantages": [
+      {
+        "icon": "CheckCircle",
+        "title": "Novel Therapeutic Approaches",
+        "description": "Pioneering innovative delivery systems and formulations for established compounds to improve efficacy and patient outcomes.",
+        "color": "blue"
+      },
+      {
+        "icon": "CheckCircle",
+        "title": "Psychedelic Medicine Focus",
+        "description": "Strategic focus on psychedelic-based therapeutics, positioning the company at the forefront of this emerging treatment paradigm.",
+        "color": "green"
+      },
+      {
+        "icon": "CheckCircle",
+        "title": "Experienced Leadership",
+        "description": "Led by industry veterans with extensive experience in pharmaceutical development and regulatory affairs.",
+        "color": "purple"
+      },
+      {
+        "icon": "CheckCircle",
+        "title": "Strategic Partnerships",
+        "description": "Collaborative approach with research institutions and industry partners to accelerate drug development timelines.",
+        "color": "blue"
+      },
+      {
+        "icon": "CheckCircle",
+        "title": "Regulatory Expertise",
+        "description": "Deep understanding of regulatory pathways for neuropsychiatric therapeutics, including novel drug categories.",
+        "color": "orange"
+      },
+      {
+        "icon": "CheckCircle",
+        "title": "Market Opportunity",
+        "description": "Addressing significant unmet medical needs in the multi-billion dollar neuropsychiatric therapeutics market.",
+        "color": "red"
+      }
+    ]
+  },
+  "investment_highlights": {
+    "title": "Investment Highlights",
+    "description": "SILO Pharma represents a compelling investment opportunity in the rapidly growing neuropsychiatric therapeutics sector with multiple value creation catalysts.",
+    "highlights": [
+      {
+        "icon": "TrendingUp",
+        "title": "Growth Market",
+        "description": "Positioned in the rapidly expanding neuropsychiatric therapeutics market",
+        "color": "blue"
+      },
+      {
+        "icon": "Lightbulb",
+        "title": "Innovation",
+        "description": "Novel approaches to established compounds with improved delivery systems",
+        "color": "green"
+      },
+      {
+        "icon": "Award",
+        "title": "Leadership",
+        "description": "Experienced management team with proven track record in pharma",
+        "color": "purple"
+      },
+      {
+        "icon": "BarChart3",
+        "title": "Pipeline Value",
+        "description": "Multiple programs targeting high-value therapeutic areas",
+        "color": "blue"
+      }
+    ]
+  },
+  "call_to_action": {
+    "title": "Stay Connected with SILO Pharma",
+    "description": "Follow SILO Pharma's journey as they continue to advance breakthrough neuropsychiatric therapeutics and create value for patients and shareholders.",
+    "buttons": [
+      {
+        "text": "Visit Investor Relations",
+        "url": "https://ir.silopharma.com/",
+        "variant": "primary",
+        "external": true
+      },
+      {
+        "text": "Learn About AmplifiX",
+        "url": "/",
+        "variant": "outline",
+        "external": false
+      }
+    ]
+  },
+  "footer": {
+    "description": "This showcase is powered by AmplifiX - AI-driven corporate communications platform",
+    "disclaimer": "Information sourced from public filings and company disclosures.",
+    "official_link": {
+      "text": "ir.silopharma.com",
+      "url": "https://ir.silopharma.com/"
+    }
+  }
+}
