@@ -5,7 +5,6 @@
   },
   "main_features": [
     {
-      "icon": "BarChart3",
       "title": "Smart Analytics Dashboard",
       "description": "Get real-time insights into market sentiment, media coverage, and investor engagement with our AI-powered predictive analytics platform.",
       "features": [
@@ -24,7 +23,6 @@
       ]
     },
     {
-      "icon": "MessageSquare",
       "title": "AI Content Generation",
       "description": "Generate compelling press releases, investor updates, and corporate communications tailored to your brand voice and target audience.",
       "features": [
@@ -43,7 +41,6 @@
       ]
     },
     {
-      "icon": "Users",
       "title": "Stakeholder Management",
       "description": "Intelligent CRM for investors, analysts, media contacts, and other key stakeholders with automated engagement tracking and personalized outreach.",
       "features": [
@@ -62,7 +59,6 @@
       ]
     },
     {
-      "icon": "Lightbulb",
       "title": "Strategic Insights",
       "description": "AI-driven recommendations for timing, messaging, and channel optimization to maximize impact and reach across all your communications.",
       "features": [
@@ -86,32 +82,26 @@
     "description": "Explore additional AI-powered capabilities that make AmplifiX the complete solution for corporate communications.",
     "items": [
       {
-        "icon": "Shield",
         "title": "Compliance Monitoring",
         "description": "Automated compliance checks ensure all communications meet regulatory requirements and industry standards."
       },
       {
-        "icon": "Database",
         "title": "Data Integration",
         "description": "Seamlessly connect with your existing CRM, financial systems, and communication platforms."
       },
       {
-        "icon": "FileText",
         "title": "Document Management",
         "description": "Organize, version control, and collaborate on all your corporate communications in one place."
       },
       {
-        "icon": "Settings",
         "title": "Workflow Automation",
         "description": "Automate approval processes, distribution workflows, and follow-up communications."
       },
       {
-        "icon": "Smartphone",
         "title": "Mobile Access",
         "description": "Full-featured mobile app for managing communications and monitoring sentiment on the go."
       },
       {
-        "icon": "Mail",
         "title": "Email Integration",
         "description": "Smart email templates, automated follow-ups, and engagement tracking for all stakeholder communications."
       }
