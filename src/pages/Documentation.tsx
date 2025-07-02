@@ -3,27 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Book, Code, Shield, Zap, FileText, Download } from "lucide-react";
 import Footer from "@/components/Footer";
+import MainHeader from "@/components/MainHeader";
 
 const Documentation = () => {
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white">
-      {/* Header */}
-      <nav className="sticky top-0 z-50 bg-[#0A0A0A] container mx-auto flex items-center justify-between py-6 border-b border-gray-800">
-        <Link to="/" className="flex items-center gap-2">
-          <ArrowLeft className="h-5 w-5" />
-          <span>Back to Home</span>
-        </Link>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 flex items-center justify-center">
-            <img 
-              src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
-              alt="AmplifiX Logo" 
-              className="w-6 h-6"
-            />
-          </div>
-          <h1 className="text-xl font-bold">AmplifiX Documentation</h1>
-        </div>
-      </nav>
+      <MainHeader />
 
       <div className="container mx-auto py-12">
         {/* Hero Section */}
