@@ -1,0 +1,32 @@
+{
+  "hero": {
+    "title": "Frequently Asked Questions",
+    "description": "Find answers to common questions about AmplifiX and our AI-powered corporate communications solutions."
+  },
+  "faqs": [
+    {
+      "question": "What is AmplifiX and how does it work?",
+      "answer": "AmplifiX is an AI-powered corporate communications platform that helps companies create compelling content, manage investor relations, and amplify their message across multiple channels. Our platform uses advanced AI technology to generate high-quality press releases, investor updates, and other corporate communications materials tailored to your company's unique voice and objectives."
+    },
+    {
+      "question": "Who can benefit from using AmplifiX?",
+      "answer": "AmplifiX is designed for companies at all stages - from private companies preparing for fundraising to public companies managing ongoing investor relations. Our solutions are particularly valuable for companies preparing for IPOs, seeking to raise capital, or looking to improve their corporate communications strategy."
+    },
+    {
+      "question": "How does AmplifiX ensure content quality and compliance?",
+      "answer": "Our AI technology is trained on best practices in corporate communications and is regularly updated to reflect current regulatory requirements and industry standards. All content is generated with compliance in mind, and we recommend review by your legal and communications teams before publication."
+    },
+    {
+      "question": "What types of content can AmplifiX help create?",
+      "answer": "AmplifiX can help create a wide range of corporate communications materials including press releases, investor presentations, quarterly earnings materials, IPO documentation support, fundraising materials, corporate fact sheets, and ongoing investor relations content."
+    },
+    {
+      "question": "How do I get started with AmplifiX?",
+      "answer": "Getting started is easy. Contact our team to schedule a consultation where we'll assess your communications needs and demonstrate how AmplifiX can help amplify your company's message. We'll work with you to develop a customized solution that fits your specific requirements and objectives."
+    },
+    {
+      "question": "What makes AmplifiX different from other communication platforms?",
+      "answer": "AmplifiX combines advanced AI technology with deep expertise in corporate communications and investor relations. Our platform is specifically designed for corporate use cases and generates content that meets the high standards required for public company communications. We focus on quality, compliance, and strategic messaging rather than generic content creation."
+    }
+  ]
+}
