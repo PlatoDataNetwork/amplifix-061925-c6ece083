@@ -5,6 +5,7 @@ import MainHeader from "@/components/MainHeader";
 import FeaturedPost from "@/components/FeaturedPost";
 import BlogPostCard from "@/components/BlogPostCard";
 import NewsletterSignup from "@/components/NewsletterSignup";
+import RSSFeed from "@/components/RSSFeed";
 
 const Blog = () => {
   const blogPosts = [
@@ -91,6 +92,15 @@ const Blog = () => {
         </section>
 
         <NewsletterSignup />
+
+        {/* External RSS Feed */}
+        <section className="mb-12 md:mb-16">
+          <RSSFeed 
+            feedUrl="https://platodata.ai/artificial-intelligence/feed/"
+            title="Latest AI Intelligence from Plato Data"
+            maxItems={6}
+          />
+        </section>
 
         {/* Popular Tags */}
         <section>
