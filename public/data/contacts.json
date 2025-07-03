@@ -1,0 +1,287 @@
+{
+  "header": {
+    "title": "Contacts",
+    "description": "Manage your investor relations, media, and business contacts"
+  },
+  "stats": {
+    "total_contacts": 127,
+    "investors": 45,
+    "media": 23,
+    "analysts": 18,
+    "executives": 12,
+    "starred": 28
+  },
+  "contact_groups": [
+    {
+      "id": "all",
+      "name": "All Contacts",
+      "count": 127,
+      "active": true
+    },
+    {
+      "id": "starred",
+      "name": "Starred",
+      "count": 28,
+      "active": false
+    },
+    {
+      "id": "investors",
+      "name": "Investors",
+      "count": 45,
+      "active": false
+    },
+    {
+      "id": "media",
+      "name": "Media",
+      "count": 23,
+      "active": false
+    },
+    {
+      "id": "analysts",
+      "name": "Analysts",
+      "count": 18,
+      "active": false
+    },
+    {
+      "id": "executives",
+      "name": "Executives",
+      "count": 12,
+      "active": false
+    }
+  ],
+  "contacts": [
+    {
+      "id": "contact-001",
+      "name": "Sarah Chen",
+      "email": "s.chen@goldmansachs.com",
+      "phone": "+1 (212) 555-0123",
+      "company": "Goldman Sachs",
+      "title": "Managing Director, Healthcare Investment Banking",
+      "category": "investors",
+      "starred": true,
+      "avatar": "/lovable-uploads/cefeeb41-88d4-410c-bb83-323d0bf2c3e1.png",
+      "last_contact": "2024-01-15T10:30:00Z",
+      "notes": "Key contact for equity financing discussions",
+      "tags": ["equity", "financing", "healthcare"],
+      "social_profiles": {
+        "linkedin": "https://linkedin.com/in/sarahchen",
+        "twitter": "@sarahchen_gs"
+      }
+    },
+    {
+      "id": "contact-002",
+      "name": "Michael Rodriguez",
+      "email": "m.rodriguez@techcrunch.com",
+      "phone": "+1 (415) 555-0456",
+      "company": "TechCrunch",
+      "title": "Senior Reporter, Biotech & Healthcare",
+      "category": "media",
+      "starred": false,
+      "avatar": "/lovable-uploads/3f8875ae-807d-495a-a5aa-4f3758c25788.png",
+      "last_contact": "2024-01-15T09:15:00Z",
+      "notes": "Interested in AI innovation stories",
+      "tags": ["biotech", "ai", "innovation"],
+      "social_profiles": {
+        "linkedin": "https://linkedin.com/in/mrodriguez",
+        "twitter": "@mrodriguez_tc"
+      }
+    },
+    {
+      "id": "contact-003",
+      "name": "Emily Watson",
+      "email": "e.watson@morganstanley.com",
+      "phone": "+1 (212) 555-0789",
+      "company": "Morgan Stanley",
+      "title": "Senior Equity Research Analyst",
+      "category": "analysts",
+      "starred": true,
+      "avatar": "/lovable-uploads/1f9cf53e-b447-4ef9-b4f0-d40bcd1a4e62.png",
+      "last_contact": "2024-01-14T16:45:00Z",
+      "notes": "Covers pharma sector, focuses on pipeline analysis",
+      "tags": ["research", "pharma", "pipeline"],
+      "social_profiles": {
+        "linkedin": "https://linkedin.com/in/emilywatson"
+      }
+    },
+    {
+      "id": "contact-004",
+      "name": "David Kim",
+      "email": "d.kim@jpmorgan.com",
+      "phone": "+1 (212) 555-0321",
+      "company": "JPMorgan Chase",
+      "title": "Vice President, Healthcare Investment Banking",
+      "category": "investors",
+      "starred": false,
+      "avatar": "/lovable-uploads/e322d61f-bd41-4cd3-a72b-5067f513dfc5.png",
+      "last_contact": "2024-01-14T14:20:00Z",
+      "notes": "Strategic initiatives and M&A discussions",
+      "tags": ["investment", "banking", "strategy"],
+      "social_profiles": {
+        "linkedin": "https://linkedin.com/in/davidkim"
+      }
+    },
+    {
+      "id": "contact-005",
+      "name": "Lisa Thompson",
+      "email": "l.thompson@reuters.com",
+      "phone": "+1 (646) 555-0654",
+      "company": "Reuters",
+      "title": "Financial News Reporter",
+      "category": "media",
+      "starred": true,
+      "avatar": "/lovable-uploads/cefeeb41-88d4-410c-bb83-323d0bf2c3e1.png",
+      "last_contact": "2024-01-14T11:30:00Z",
+      "notes": "Covers regulatory approvals and market news",
+      "tags": ["regulatory", "news", "market"],
+      "social_profiles": {
+        "linkedin": "https://linkedin.com/in/lisathompson",
+        "twitter": "@lthompson_reuters"
+      }
+    },
+    {
+      "id": "contact-006",
+      "name": "Robert Lee",
+      "email": "r.lee@blackrock.com",
+      "phone": "+1 (212) 555-0987",
+      "company": "BlackRock",
+      "title": "Portfolio Manager, Healthcare Fund",
+      "category": "investors",
+      "starred": true,
+      "avatar": "/lovable-uploads/3f8875ae-807d-495a-a5aa-4f3758c25788.png",
+      "last_contact": "2024-01-13T15:45:00Z",
+      "notes": "ESG focused investor, interested in sustainability",
+      "tags": ["esg", "sustainability", "portfolio"],
+      "social_profiles": {
+        "linkedin": "https://linkedin.com/in/robertlee"
+      }
+    },
+    {
+      "id": "contact-007",
+      "name": "Amanda Foster",
+      "email": "a.foster@wsj.com",
+      "phone": "+1 (212) 555-0234",
+      "company": "Wall Street Journal",
+      "title": "Healthcare & Biotech Reporter",
+      "category": "media",
+      "starred": false,
+      "avatar": "/lovable-uploads/1f9cf53e-b447-4ef9-b4f0-d40bcd1a4e62.png",
+      "last_contact": "2024-01-13T13:20:00Z",
+      "notes": "Writes market analysis and trend pieces",
+      "tags": ["healthcare", "biotech", "trends"],
+      "social_profiles": {
+        "linkedin": "https://linkedin.com/in/amandafoster",
+        "twitter": "@afoster_wsj"
+      }
+    },
+    {
+      "id": "contact-008",
+      "name": "James Wilson",
+      "email": "j.wilson@vanguard.com",
+      "phone": "+1 (610) 555-0567",
+      "company": "Vanguard",
+      "title": "Senior Investment Analyst",
+      "category": "investors",
+      "starred": true,
+      "avatar": "/lovable-uploads/e322d61f-bd41-4cd3-a72b-5067f513dfc5.png",
+      "last_contact": "2024-01-12T16:15:00Z",
+      "notes": "Long-term value investor, quarterly reviews",
+      "tags": ["value", "long-term", "analysis"],
+      "social_profiles": {
+        "linkedin": "https://linkedin.com/in/jameswilson"
+      }
+    },
+    {
+      "id": "contact-009",
+      "name": "Dr. Catherine Moore",
+      "email": "c.moore@fda.gov",
+      "phone": "+1 (301) 555-0890",
+      "company": "FDA",
+      "title": "Senior Medical Officer",
+      "category": "executives",
+      "starred": true,
+      "avatar": "/lovable-uploads/cefeeb41-88d4-410c-bb83-323d0bf2c3e1.png",
+      "last_contact": "2024-01-10T14:30:00Z",
+      "notes": "Regulatory affairs and drug approval processes",
+      "tags": ["regulatory", "fda", "approval"],
+      "social_profiles": {
+        "linkedin": "https://linkedin.com/in/catherinemoore"
+      }
+    },
+    {
+      "id": "contact-010",
+      "name": "Thomas Anderson",
+      "email": "t.anderson@barclay.com",
+      "phone": "+1 (212) 555-0345",
+      "company": "Barclays",
+      "title": "Healthcare Equity Analyst",
+      "category": "analysts",
+      "starred": false,
+      "avatar": "/lovable-uploads/3f8875ae-807d-495a-a5aa-4f3758c25788.png",
+      "last_contact": "2024-01-08T11:00:00Z",
+      "notes": "Covers mid-cap biotech companies",
+      "tags": ["equity", "biotech", "midcap"],
+      "social_profiles": {
+        "linkedin": "https://linkedin.com/in/thomasanderson"
+      }
+    }
+  ],
+  "recent_activity": [
+    {
+      "contact_id": "contact-001",
+      "activity": "Email received",
+      "timestamp": "2024-01-15T10:30:00Z",
+      "details": "Q4 earnings follow-up questions"
+    },
+    {
+      "contact_id": "contact-002",
+      "activity": "Meeting scheduled",
+      "timestamp": "2024-01-15T09:15:00Z",
+      "details": "Interview about AI innovation"
+    },
+    {
+      "contact_id": "contact-003",
+      "activity": "Call completed",
+      "timestamp": "2024-01-14T16:45:00Z",
+      "details": "Pipeline update discussion"
+    },
+    {
+      "contact_id": "contact-004",
+      "activity": "Email sent",
+      "timestamp": "2024-01-14T14:20:00Z",
+      "details": "IR meeting proposal"
+    }
+  ],
+  "quick_actions": [
+    {
+      "id": "add_contact",
+      "name": "Add Contact",
+      "icon": "plus",
+      "color": "primary"
+    },
+    {
+      "id": "import_contacts",
+      "name": "Import Contacts",
+      "icon": "upload",
+      "color": "secondary"
+    },
+    {
+      "id": "export_contacts",
+      "name": "Export Contacts",
+      "icon": "download",
+      "color": "secondary"
+    },
+    {
+      "id": "bulk_email",
+      "name": "Send Bulk Email",
+      "icon": "mail",
+      "color": "outline"
+    }
+  ],
+  "settings": {
+    "default_view": "grid",
+    "show_avatars": true,
+    "auto_sync": true,
+    "contact_sharing": false,
+    "duplicate_detection": true
+  }
+}
