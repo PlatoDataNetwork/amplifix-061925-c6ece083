@@ -4,10 +4,14 @@ import { Link, useLocation } from "react-router-dom";
 import ThemeToggle from "@/components/ThemeToggle";
 import MobileMenu from "@/components/MobileMenu";
 import { useState, useEffect } from "react";
+import { useJsonData } from "@/hooks/useJsonData";
+import { CommonData } from "@/types/common";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const MainHeader = () => {
   const [isSticky, setIsSticky] = useState(false);
   const location = useLocation();
+  const { data: commonData, isLoading, error } = useJsonData<CommonData>('common.json');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,31 +38,72 @@ const MainHeader = () => {
           <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center">
             <img 
               src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
-              alt="AmplifiX Logo" 
+              alt={`${commonData?.branding.name || 'AmplifiX'} Logo`}
               className="w-8 h-8 md:w-10 md:h-10"
             />
           </div>
           <Link to="/" className="text-xl md:text-2xl font-bold text-foreground">
-            AmplifiX
+            {isLoading ? (
+              <Skeleton className="h-6 w-24" />
+            ) : (
+              commonData?.branding.name || 'AmplifiX'
+            )}
           </Link>
         </div>
         
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-6">
-          <Link to="/about" className="text-foreground hover:text-highlight-blue transition-colors">About</Link>
-          <Link to="/features" className="text-foreground hover:text-highlight-blue transition-colors">Features</Link>
-          <Link to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">Solutions</Link>
-          <Link to="/pricing" className="text-foreground hover:text-highlight-blue transition-colors">Pricing</Link>
-          <Link to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">Showcase</Link>
-          <Link to="/blog" className="text-foreground hover:text-highlight-blue transition-colors">Intel</Link>
-          <Link to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">FAQ</Link>
-          <Link to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">Contact</Link>
+          {isLoading ? (
+            <>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-4 w-16" />
+              ))}
+            </>
+          ) : commonData ? (
+            <>
+              <Link to="/about" className="text-foreground hover:text-highlight-blue transition-colors">
+                {commonData.navigation.main_menu.find(item => item.label === 'About')?.label || 'About'}
+              </Link>
+              <Link to="/features" className="text-foreground hover:text-highlight-blue transition-colors">
+                {commonData.navigation.main_menu.find(item => item.label === 'Features')?.label || 'Features'}
+              </Link>
+              <Link to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">
+                {commonData.navigation.main_menu.find(item => item.label === 'Solutions')?.label || 'Solutions'}
+              </Link>
+              <Link to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">
+                {commonData.navigation.main_menu.find(item => item.label === 'Showcase')?.label || 'Showcase'}
+              </Link>
+              <Link to="/blog" className="text-foreground hover:text-highlight-blue transition-colors">
+                {commonData.navigation.main_menu.find(item => item.label === 'Intel')?.label || 'Intel'}
+              </Link>
+              <Link to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">
+                {commonData.navigation.main_menu.find(item => item.label === 'FAQ')?.label || 'FAQ'}
+              </Link>
+              <Link to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">
+                {commonData.navigation.main_menu.find(item => item.label === 'Contact')?.label || 'Contact'}
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/about" className="text-foreground hover:text-highlight-blue transition-colors">About</Link>
+              <Link to="/features" className="text-foreground hover:text-highlight-blue transition-colors">Features</Link>
+              <Link to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">Solutions</Link>
+              <Link to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">Showcase</Link>
+              <Link to="/blog" className="text-foreground hover:text-highlight-blue transition-colors">Intel</Link>
+              <Link to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">FAQ</Link>
+              <Link to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">Contact</Link>
+            </>
+          )}
           <ThemeToggle />
           <Link to="/showcase/silo-pharma">
             <Button 
               className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors rounded-lg"
             >
-              SILO Showcase
+              {isLoading ? (
+                <Skeleton className="h-4 w-20" />
+              ) : (
+                commonData?.navigation.cta_button.label || 'SILO Showcase'
+              )}
             </Button>
           </Link>
         </div>
