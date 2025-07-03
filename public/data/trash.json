@@ -1,0 +1,244 @@
+{
+  "deletedItems": [
+    {
+      "id": "trash-1",
+      "name": "Old_Investor_Presentation.pptx",
+      "type": "file",
+      "originalLocation": "/Documents/Presentations/",
+      "deletedAt": "2024-12-09T14:30:00Z",
+      "deletedBy": "sarah.chen@amplifix.com",
+      "size": "15.7 MB",
+      "fileType": "document",
+      "retentionDays": 21,
+      "category": "files"
+    },
+    {
+      "id": "trash-2", 
+      "name": "Draft Email to Goldman Sachs",
+      "type": "email",
+      "originalLocation": "Drafts",
+      "deletedAt": "2024-12-08T16:45:00Z",
+      "deletedBy": "michael.rodriguez@amplifix.com",
+      "subject": "Re: Series B Investment Proposal",
+      "recipient": "jennifer.park@gs.com",
+      "retentionDays": 22,
+      "category": "emails"
+    },
+    {
+      "id": "trash-3",
+      "name": "Q2 Marketing Campaign",
+      "type": "folder",
+      "originalLocation": "/Projects/Marketing/",
+      "deletedAt": "2024-12-07T10:15:00Z", 
+      "deletedBy": "amanda.foster@amplifix.com",
+      "itemCount": 24,
+      "size": "156 MB",
+      "retentionDays": 23,
+      "category": "files"
+    },
+    {
+      "id": "trash-4",
+      "name": "Chat with Former Employee",
+      "type": "conversation",
+      "originalLocation": "Direct Messages",
+      "deletedAt": "2024-12-06T09:20:00Z",
+      "deletedBy": "system-auto-cleanup",
+      "participant": "john.smith@formeremployee.com",
+      "messageCount": 47,
+      "retentionDays": 24,
+      "category": "chats"
+    },
+    {
+      "id": "trash-5",
+      "name": "Outdated_Financial_Model.xlsx",
+      "type": "file",
+      "originalLocation": "/Documents/Finance/Models/",
+      "deletedAt": "2024-12-05T13:55:00Z",
+      "deletedBy": "robert.chen@amplifix.com",
+      "size": "8.4 MB",
+      "fileType": "document",
+      "retentionDays": 25,
+      "category": "files"
+    },
+    {
+      "id": "trash-6",
+      "name": "Weekly Newsletter Draft",
+      "type": "email",
+      "originalLocation": "Drafts",
+      "deletedAt": "2024-12-04T11:30:00Z",
+      "deletedBy": "emily.davis@amplifix.com",
+      "subject": "AmplifiX Weekly Update - November",
+      "recipientList": "investor-newsletter@amplifix.com",
+      "retentionDays": 26,
+      "category": "emails"
+    },
+    {
+      "id": "trash-7",
+      "name": "Temp_Screenshots",
+      "type": "folder",
+      "originalLocation": "/Images/Temp/",
+      "deletedAt": "2024-12-03T08:45:00Z",
+      "deletedBy": "system-auto-cleanup",
+      "itemCount": 12,
+      "size": "45 MB",
+      "retentionDays": 27,
+      "category": "files"
+    },
+    {
+      "id": "trash-8",
+      "name": "Old Calendar Event: Board Meeting",
+      "type": "calendar",
+      "originalLocation": "Calendar/Board Meetings",
+      "deletedAt": "2024-12-02T17:00:00Z",
+      "deletedBy": "sarah.chen@amplifix.com",
+      "eventDate": "2024-11-15T14:00:00Z",
+      "duration": "2 hours",
+      "retentionDays": 28,
+      "category": "calendar"
+    },
+    {
+      "id": "trash-9",
+      "name": "Contact: Old Vendor",
+      "type": "contact",
+      "originalLocation": "Contacts/Vendors",
+      "deletedAt": "2024-12-01T12:20:00Z",
+      "deletedBy": "amanda.foster@amplifix.com",
+      "contactName": "Tech Solutions Inc.",
+      "email": "contact@techsolutions.com",
+      "retentionDays": 29,
+      "category": "contacts"
+    },
+    {
+      "id": "trash-10",
+      "name": "Legacy_System_Backup.zip",
+      "type": "file",
+      "originalLocation": "/Backups/Legacy/",
+      "deletedAt": "2024-11-30T15:10:00Z",
+      "deletedBy": "system-auto-cleanup",
+      "size": "2.1 GB",
+      "fileType": "archive",
+      "retentionDays": 30,
+      "category": "files"
+    }
+  ],
+  "categories": [
+    {
+      "id": "files",
+      "name": "Files & Folders",
+      "icon": "folder",
+      "count": 5,
+      "color": "text-blue-400"
+    },
+    {
+      "id": "emails",
+      "name": "Emails",
+      "icon": "mail",
+      "count": 2,
+      "color": "text-green-400"
+    },
+    {
+      "id": "chats",
+      "name": "Conversations",
+      "icon": "message-circle",
+      "count": 1,
+      "color": "text-purple-400"
+    },
+    {
+      "id": "calendar",
+      "name": "Calendar Events",
+      "icon": "calendar",
+      "count": 1,
+      "color": "text-yellow-400"
+    },
+    {
+      "id": "contacts",
+      "name": "Contacts",
+      "icon": "users",
+      "count": 1,
+      "color": "text-orange-400"
+    }
+  ],
+  "retentionPolicy": {
+    "defaultRetention": 30,
+    "maxRetention": 90,
+    "autoDeleteEnabled": true,
+    "complianceMode": "SOX",
+    "encryptionRequired": true
+  },
+  "stats": {
+    "totalItems": 10,
+    "totalSize": "2.4 GB",
+    "itemsExpiringSoon": 3,
+    "autoDeletedThisMonth": 15,
+    "recoveredThisMonth": 8
+  },
+  "bulkActions": [
+    {
+      "id": "restore-all",
+      "label": "Restore All",
+      "icon": "undo",
+      "type": "restore"
+    },
+    {
+      "id": "delete-all",
+      "label": "Delete All Permanently",
+      "icon": "trash-2",
+      "type": "delete",
+      "dangerous": true
+    },
+    {
+      "id": "empty-trash",
+      "label": "Empty Trash",
+      "icon": "trash",
+      "type": "empty",
+      "dangerous": true
+    }
+  ],
+  "filters": {
+    "timeRanges": [
+      { "value": "today", "label": "Today" },
+      { "value": "week", "label": "This Week" },
+      { "value": "month", "label": "This Month" },
+      { "value": "all", "label": "All Time" }
+    ],
+    "sizes": [
+      { "value": "small", "label": "< 1 MB" },
+      { "value": "medium", "label": "1-10 MB" },
+      { "value": "large", "label": "10-100 MB" },
+      { "value": "xlarge", "label": "> 100 MB" }
+    ],
+    "deletedBy": [
+      { "value": "user", "label": "User Deleted" },
+      { "value": "system", "label": "System Deleted" },
+      { "value": "auto", "label": "Auto Cleanup" }
+    ]
+  },
+  "recentlyRestored": [
+    {
+      "id": "restored-1",
+      "name": "Important_Contract.pdf",
+      "restoredAt": "2024-12-10T14:30:00Z",
+      "restoredBy": "sarah.chen@amplifix.com",
+      "restoredTo": "/Documents/Legal/"
+    },
+    {
+      "id": "restored-2",
+      "name": "Email to Board Members",
+      "restoredAt": "2024-12-09T16:20:00Z",
+      "restoredBy": "michael.rodriguez@amplifix.com",
+      "restoredTo": "Sent Items"
+    }
+  ],
+  "securitySettings": {
+    "requireConfirmation": true,
+    "auditLog": true,
+    "adminOverride": false,
+    "complianceReporting": true
+  },
+  "notifications": {
+    "itemsExpiringSoon": true,
+    "autoDeleteWarning": true,
+    "recoveryConfirmation": true,
+    "weeklyDigest": false
+  }
+}
