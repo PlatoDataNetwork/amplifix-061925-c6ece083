@@ -1,0 +1,220 @@
+{
+  "header": {
+    "title": "Inbox",
+    "description": "Manage your investor communications and important messages"
+  },
+  "stats": {
+    "total_messages": 127,
+    "unread_messages": 8,
+    "flagged_messages": 3,
+    "archived_messages": 45
+  },
+  "filters": [
+    {
+      "id": "all",
+      "name": "All Messages",
+      "count": 127,
+      "active": true
+    },
+    {
+      "id": "unread",
+      "name": "Unread",
+      "count": 8,
+      "active": false
+    },
+    {
+      "id": "flagged",
+      "name": "Flagged",
+      "count": 3,
+      "active": false
+    },
+    {
+      "id": "investors",
+      "name": "Investors",
+      "count": 45,
+      "active": false
+    },
+    {
+      "id": "media",
+      "name": "Media",
+      "count": 23,
+      "active": false
+    },
+    {
+      "id": "analysts",
+      "name": "Analysts",
+      "count": 18,
+      "active": false
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg-001",
+      "sender": {
+        "name": "Sarah Chen",
+        "email": "s.chen@goldmansachs.com",
+        "company": "Goldman Sachs",
+        "avatar": "/lovable-uploads/cefeeb41-88d4-410c-bb83-323d0bf2c3e1.png"
+      },
+      "subject": "Q4 Earnings Call Follow-up Questions",
+      "preview": "Thank you for the comprehensive Q4 presentation. I have a few follow-up questions regarding...",
+      "timestamp": "2024-01-15T10:30:00Z",
+      "is_read": false,
+      "is_flagged": true,
+      "category": "investors",
+      "priority": "high",
+      "attachments": 2
+    },
+    {
+      "id": "msg-002",
+      "sender": {
+        "name": "Michael Rodriguez",
+        "email": "m.rodriguez@techcrunch.com",
+        "company": "TechCrunch",
+        "avatar": "/lovable-uploads/3f8875ae-807d-495a-a5aa-4f3758c25788.png"
+      },
+      "subject": "Interview Request - Innovation in Pharma AI",
+      "preview": "Hi there, I'm writing a piece on AI innovation in pharmaceutical companies and would love to...",
+      "timestamp": "2024-01-15T09:15:00Z",
+      "is_read": false,
+      "is_flagged": false,
+      "category": "media",
+      "priority": "medium",
+      "attachments": 0
+    },
+    {
+      "id": "msg-003",
+      "sender": {
+        "name": "Emily Watson",
+        "email": "e.watson@morganstanley.com",
+        "company": "Morgan Stanley",
+        "avatar": "/lovable-uploads/1f9cf53e-b447-4ef9-b4f0-d40bcd1a4e62.png"
+      },
+      "subject": "Pipeline Update Request",
+      "preview": "Could you provide an update on the drug pipeline progress, particularly the Phase III trials...",
+      "timestamp": "2024-01-14T16:45:00Z",
+      "is_read": true,
+      "is_flagged": true,
+      "category": "analysts",
+      "priority": "high",
+      "attachments": 1
+    },
+    {
+      "id": "msg-004",
+      "sender": {
+        "name": "David Kim",
+        "email": "d.kim@jpmorgan.com",
+        "company": "JPMorgan Chase",
+        "avatar": "/lovable-uploads/e322d61f-bd41-4cd3-a72b-5067f513dfc5.png"
+      },
+      "subject": "Investor Relations Meeting Scheduling",
+      "preview": "We'd like to schedule a one-on-one meeting to discuss your recent strategic initiatives...",
+      "timestamp": "2024-01-14T14:20:00Z",
+      "is_read": true,
+      "is_flagged": false,
+      "category": "investors",
+      "priority": "medium",
+      "attachments": 0
+    },
+    {
+      "id": "msg-005",
+      "sender": {
+        "name": "Lisa Thompson",
+        "email": "l.thompson@reuters.com",
+        "company": "Reuters",
+        "avatar": "/lovable-uploads/cefeeb41-88d4-410c-bb83-323d0bf2c3e1.png"
+      },
+      "subject": "Comment Request - Regulatory Approval News",
+      "preview": "Hi, I'm working on a story about the recent FDA approval and would appreciate a comment...",
+      "timestamp": "2024-01-14T11:30:00Z",
+      "is_read": false,
+      "is_flagged": false,
+      "category": "media",
+      "priority": "medium",
+      "attachments": 0
+    },
+    {
+      "id": "msg-006",
+      "sender": {
+        "name": "Robert Lee",
+        "email": "r.lee@blackrock.com",
+        "company": "BlackRock",
+        "avatar": "/lovable-uploads/3f8875ae-807d-495a-a5aa-4f3758c25788.png"
+      },
+      "subject": "ESG Performance Inquiry",
+      "preview": "We're reviewing our portfolio companies' ESG performance and would like to discuss your...",
+      "timestamp": "2024-01-13T15:45:00Z",
+      "is_read": true,
+      "is_flagged": true,
+      "category": "investors",
+      "priority": "high",
+      "attachments": 3
+    },
+    {
+      "id": "msg-007",
+      "sender": {
+        "name": "Amanda Foster",
+        "email": "a.foster@wsj.com",
+        "company": "Wall Street Journal",
+        "avatar": "/lovable-uploads/1f9cf53e-b447-4ef9-b4f0-d40bcd1a4e62.png"
+      },
+      "subject": "Market Analysis Quote Request",
+      "preview": "I'm writing about biotech market trends and would value your perspective on the current...",
+      "timestamp": "2024-01-13T13:20:00Z",
+      "is_read": false,
+      "is_flagged": false,
+      "category": "media",
+      "priority": "low",
+      "attachments": 0
+    },
+    {
+      "id": "msg-008",
+      "sender": {
+        "name": "James Wilson",
+        "email": "j.wilson@vanguard.com",
+        "company": "Vanguard",
+        "avatar": "/lovable-uploads/e322d61f-bd41-4cd3-a72b-5067f513dfc5.png"
+      },
+      "subject": "Quarterly Report Discussion",
+      "preview": "Thank you for the detailed quarterly report. We'd like to schedule a call to discuss some...",
+      "timestamp": "2024-01-12T16:15:00Z",
+      "is_read": true,
+      "is_flagged": false,
+      "category": "investors",
+      "priority": "medium",
+      "attachments": 1
+    }
+  ],
+  "quick_actions": [
+    {
+      "id": "compose",
+      "name": "Compose Message",
+      "icon": "plus",
+      "color": "primary"
+    },
+    {
+      "id": "archive_selected",
+      "name": "Archive Selected",
+      "icon": "archive",
+      "color": "secondary"
+    },
+    {
+      "id": "mark_read",
+      "name": "Mark as Read",
+      "icon": "check",
+      "color": "secondary"
+    },
+    {
+      "id": "flag_selected",
+      "name": "Flag Selected",
+      "icon": "flag",
+      "color": "warning"
+    }
+  ],
+  "settings": {
+    "auto_refresh": true,
+    "show_previews": true,
+    "compact_view": false,
+    "notification_sound": true
+  }
+}
