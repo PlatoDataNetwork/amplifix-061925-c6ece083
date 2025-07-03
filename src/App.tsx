@@ -8,7 +8,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/hooks/useTheme";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
-import Documentation from "./pages/Documentation";
+
 import API from "./pages/API";
 import Blog from "./pages/Blog";
 import Support from "./pages/Support";
@@ -39,7 +39,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/documentation" element={<Documentation />} />
+              
               <Route path="/api" element={<API />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/support" element={<Support />} />
