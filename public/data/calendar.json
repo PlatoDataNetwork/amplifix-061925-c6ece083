@@ -1,0 +1,263 @@
+{
+  "header": {
+    "title": "Calendar",
+    "description": "Manage your investor meetings, earnings calls, and important events"
+  },
+  "view_options": [
+    {
+      "id": "month",
+      "name": "Month",
+      "active": true
+    },
+    {
+      "id": "week",
+      "name": "Week",
+      "active": false
+    },
+    {
+      "id": "day",
+      "name": "Day",
+      "active": false
+    },
+    {
+      "id": "agenda",
+      "name": "Agenda",
+      "active": false
+    }
+  ],
+  "event_types": [
+    {
+      "id": "earnings",
+      "name": "Earnings Calls",
+      "color": "hsl(var(--chart-1))",
+      "visible": true
+    },
+    {
+      "id": "investor_meetings",
+      "name": "Investor Meetings",
+      "color": "hsl(var(--chart-2))",
+      "visible": true
+    },
+    {
+      "id": "conferences",
+      "name": "Conferences",
+      "color": "hsl(var(--chart-3))",
+      "visible": true
+    },
+    {
+      "id": "board_meetings",
+      "name": "Board Meetings",
+      "color": "hsl(var(--chart-4))",
+      "visible": true
+    },
+    {
+      "id": "media_events",
+      "name": "Media Events",
+      "color": "hsl(var(--chart-5))",
+      "visible": true
+    },
+    {
+      "id": "deadlines",
+      "name": "Deadlines",
+      "color": "hsl(var(--destructive))",
+      "visible": true
+    }
+  ],
+  "upcoming_events": [
+    {
+      "id": "event-001",
+      "title": "Q4 2024 Earnings Call",
+      "description": "Quarterly earnings presentation and investor Q&A session",
+      "type": "earnings",
+      "date": "2024-01-25",
+      "start_time": "09:00",
+      "end_time": "10:30",
+      "location": "Virtual - Zoom",
+      "attendees": [
+        {
+          "name": "Sarah Chen",
+          "email": "s.chen@goldmansachs.com",
+          "company": "Goldman Sachs"
+        },
+        {
+          "name": "Michael Rodriguez",
+          "email": "m.rodriguez@jpmorgan.com",
+          "company": "JPMorgan"
+        }
+      ],
+      "priority": "high",
+      "status": "confirmed",
+      "reminder_set": true
+    },
+    {
+      "id": "event-002",
+      "title": "One-on-One with BlackRock",
+      "description": "Discuss ESG initiatives and pipeline progress",
+      "type": "investor_meetings",
+      "date": "2024-01-18",
+      "start_time": "14:00",
+      "end_time": "15:00",
+      "location": "BlackRock Office, NYC",
+      "attendees": [
+        {
+          "name": "Robert Lee",
+          "email": "r.lee@blackrock.com",
+          "company": "BlackRock"
+        }
+      ],
+      "priority": "high",
+      "status": "confirmed",
+      "reminder_set": true
+    },
+    {
+      "id": "event-003",
+      "title": "J.P. Morgan Healthcare Conference",
+      "description": "Annual healthcare investment conference presentation",
+      "type": "conferences",
+      "date": "2024-01-20",
+      "start_time": "11:30",
+      "end_time": "12:00",
+      "location": "Westin St. Francis, San Francisco",
+      "attendees": [],
+      "priority": "medium",
+      "status": "confirmed",
+      "reminder_set": true
+    },
+    {
+      "id": "event-004",
+      "title": "Board of Directors Meeting",
+      "description": "Monthly board meeting - strategic planning session",
+      "type": "board_meetings",
+      "date": "2024-01-22",
+      "start_time": "10:00",
+      "end_time": "13:00",
+      "location": "Company Headquarters - Boardroom",
+      "attendees": [
+        {
+          "name": "Board Members",
+          "email": "board@company.com",
+          "company": "Internal"
+        }
+      ],
+      "priority": "high",
+      "status": "confirmed",
+      "reminder_set": true
+    },
+    {
+      "id": "event-005",
+      "title": "SEC Filing Deadline - 10-K",
+      "description": "Annual report filing deadline with SEC",
+      "type": "deadlines",
+      "date": "2024-01-30",
+      "start_time": "17:00",
+      "end_time": "17:00",
+      "location": "Internal",
+      "attendees": [],
+      "priority": "high",
+      "status": "pending",
+      "reminder_set": true
+    },
+    {
+      "id": "event-006",
+      "title": "Reuters Interview",
+      "description": "Interview about recent FDA approval and market outlook",
+      "type": "media_events",
+      "date": "2024-01-19",
+      "start_time": "15:30",
+      "end_time": "16:00",
+      "location": "Virtual - Teams",
+      "attendees": [
+        {
+          "name": "Lisa Thompson",
+          "email": "l.thompson@reuters.com",
+          "company": "Reuters"
+        }
+      ],
+      "priority": "medium",
+      "status": "tentative",
+      "reminder_set": false
+    },
+    {
+      "id": "event-007",
+      "title": "Analyst Day Preparation",
+      "description": "Internal preparation meeting for upcoming analyst day",
+      "type": "investor_meetings",
+      "date": "2024-01-17",
+      "start_time": "13:00",
+      "end_time": "15:00",
+      "location": "Conference Room A",
+      "attendees": [
+        {
+          "name": "Internal Team",
+          "email": "ir@company.com",
+          "company": "Internal"
+        }
+      ],
+      "priority": "medium",
+      "status": "confirmed",
+      "reminder_set": true
+    },
+    {
+      "id": "event-008",
+      "title": "Vanguard Portfolio Review",
+      "description": "Quarterly portfolio review and performance discussion",
+      "type": "investor_meetings",
+      "date": "2024-01-24",
+      "start_time": "10:00",
+      "end_time": "11:00",
+      "location": "Virtual - Zoom",
+      "attendees": [
+        {
+          "name": "James Wilson",
+          "email": "j.wilson@vanguard.com",
+          "company": "Vanguard"
+        }
+      ],
+      "priority": "medium",
+      "status": "confirmed",
+      "reminder_set": true
+    }
+  ],
+  "monthly_stats": {
+    "total_events": 23,
+    "earnings_calls": 2,
+    "investor_meetings": 12,
+    "conferences": 4,
+    "board_meetings": 2,
+    "media_events": 3
+  },
+  "quick_actions": [
+    {
+      "id": "schedule_meeting",
+      "name": "Schedule Meeting",
+      "icon": "plus",
+      "color": "primary"
+    },
+    {
+      "id": "add_earnings_call",
+      "name": "Add Earnings Call",
+      "icon": "calendar",
+      "color": "secondary"
+    },
+    {
+      "id": "set_reminder",
+      "name": "Set Reminder",
+      "icon": "bell",
+      "color": "secondary"
+    },
+    {
+      "id": "export_calendar",
+      "name": "Export Calendar",
+      "icon": "download",
+      "color": "outline"
+    }
+  ],
+  "settings": {
+    "default_view": "month",
+    "start_week_on": "monday",
+    "show_weekends": true,
+    "enable_notifications": true,
+    "reminder_default": 30,
+    "timezone": "America/New_York"
+  }
+}
