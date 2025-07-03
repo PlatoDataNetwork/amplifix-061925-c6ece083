@@ -1,0 +1,299 @@
+{
+  "featuredApps": [
+    {
+      "id": "slack-integration",
+      "name": "Slack",
+      "description": "Connect your team communications with AmplifiX for seamless workflow integration",
+      "icon": "/api/app-icons/slack.svg",
+      "category": "Communication",
+      "rating": 4.8,
+      "downloads": "2.1M+",
+      "installed": true,
+      "featured": true
+    },
+    {
+      "id": "zoom-integration",
+      "name": "Zoom",
+      "description": "Schedule and manage investor meetings directly from your dashboard",
+      "icon": "/api/app-icons/zoom.svg",
+      "category": "Video Conferencing",
+      "rating": 4.9,
+      "downloads": "1.8M+",
+      "installed": false,
+      "featured": true
+    },
+    {
+      "id": "salesforce-crm",
+      "name": "Salesforce CRM",
+      "description": "Sync investor contacts and track relationship management",
+      "icon": "/api/app-icons/salesforce.svg",
+      "category": "CRM",
+      "rating": 4.7,
+      "downloads": "950K+",
+      "installed": true,
+      "featured": true
+    }
+  ],
+  "categories": [
+    {
+      "id": "communication",
+      "name": "Communication",
+      "icon": "message-circle",
+      "count": 12
+    },
+    {
+      "id": "crm",
+      "name": "CRM & Contacts",
+      "icon": "users",
+      "count": 8
+    },
+    {
+      "id": "analytics",
+      "name": "Analytics",
+      "icon": "trending-up",
+      "count": 15
+    },
+    {
+      "id": "finance",
+      "name": "Finance",
+      "icon": "dollar-sign",
+      "count": 10
+    },
+    {
+      "id": "productivity",
+      "name": "Productivity",
+      "icon": "zap",
+      "count": 18
+    },
+    {
+      "id": "security",
+      "name": "Security",
+      "icon": "shield",
+      "count": 6
+    }
+  ],
+  "allApps": [
+    {
+      "id": "google-workspace",
+      "name": "Google Workspace",
+      "description": "Integrate Gmail, Calendar, and Drive for enhanced productivity",
+      "icon": "/api/app-icons/google.svg",
+      "category": "Productivity",
+      "rating": 4.6,
+      "downloads": "3.2M+",
+      "installed": false,
+      "price": "Free"
+    },
+    {
+      "id": "microsoft-teams",
+      "name": "Microsoft Teams",
+      "description": "Corporate communication and collaboration platform",
+      "icon": "/api/app-icons/teams.svg",
+      "category": "Communication",
+      "rating": 4.5,
+      "downloads": "2.8M+",
+      "installed": true,
+      "price": "Free"
+    },
+    {
+      "id": "hubspot",
+      "name": "HubSpot",
+      "description": "All-in-one marketing, sales, and customer service platform",
+      "icon": "/api/app-icons/hubspot.svg",
+      "category": "CRM",
+      "rating": 4.8,
+      "downloads": "1.1M+",
+      "installed": false,
+      "price": "$45/month"
+    },
+    {
+      "id": "tableau",
+      "name": "Tableau",
+      "description": "Advanced data visualization and business intelligence",
+      "icon": "/api/app-icons/tableau.svg",
+      "category": "Analytics",
+      "rating": 4.7,
+      "downloads": "890K+",
+      "installed": true,
+      "price": "$75/month"
+    },
+    {
+      "id": "quickbooks",
+      "name": "QuickBooks",
+      "description": "Financial management and accounting software",
+      "icon": "/api/app-icons/quickbooks.svg",
+      "category": "Finance",
+      "rating": 4.4,
+      "downloads": "1.5M+",
+      "installed": false,
+      "price": "$30/month"
+    },
+    {
+      "id": "mailchimp",
+      "name": "Mailchimp",
+      "description": "Email marketing and newsletter management platform",
+      "icon": "/api/app-icons/mailchimp.svg",
+      "category": "Communication",
+      "rating": 4.6,
+      "downloads": "2.3M+",
+      "installed": true,
+      "price": "Free"
+    },
+    {
+      "id": "notion",
+      "name": "Notion",
+      "description": "All-in-one workspace for notes, docs, and project management",
+      "icon": "/api/app-icons/notion.svg",
+      "category": "Productivity",
+      "rating": 4.8,
+      "downloads": "1.7M+",
+      "installed": false,
+      "price": "$8/month"
+    },
+    {
+      "id": "okta",
+      "name": "Okta",
+      "description": "Identity and access management for enterprise security",
+      "icon": "/api/app-icons/okta.svg",
+      "category": "Security",
+      "rating": 4.5,
+      "downloads": "450K+",
+      "installed": true,
+      "price": "$2/user/month"
+    },
+    {
+      "id": "docusign",
+      "name": "DocuSign",
+      "description": "Electronic signature and document management",
+      "icon": "/api/app-icons/docusign.svg",
+      "category": "Productivity",
+      "rating": 4.7,
+      "downloads": "1.3M+",
+      "installed": false,
+      "price": "$10/month"
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe",
+      "description": "Payment processing and financial infrastructure",
+      "icon": "/api/app-icons/stripe.svg",
+      "category": "Finance",
+      "rating": 4.9,
+      "downloads": "2.1M+",
+      "installed": true,
+      "price": "2.9% + 30¢"
+    },
+    {
+      "id": "intercom",
+      "name": "Intercom",
+      "description": "Customer messaging and support platform",
+      "icon": "/api/app-icons/intercom.svg",
+      "category": "Communication",
+      "rating": 4.6,
+      "downloads": "890K+",
+      "installed": false,
+      "price": "$39/month"
+    },
+    {
+      "id": "power-bi",
+      "name": "Power BI",
+      "description": "Business analytics and data visualization tool",
+      "icon": "/api/app-icons/powerbi.svg",
+      "category": "Analytics",
+      "rating": 4.5,
+      "downloads": "1.2M+",
+      "installed": true,
+      "price": "$10/month"
+    }
+  ],
+  "installedApps": [
+    {
+      "id": "slack-integration",
+      "name": "Slack",
+      "status": "Active",
+      "lastUsed": "2 hours ago",
+      "version": "2.1.4"
+    },
+    {
+      "id": "salesforce-crm",
+      "name": "Salesforce CRM",
+      "status": "Active", 
+      "lastUsed": "1 day ago",
+      "version": "1.8.2"
+    },
+    {
+      "id": "microsoft-teams",
+      "name": "Microsoft Teams",
+      "status": "Active",
+      "lastUsed": "3 hours ago",
+      "version": "3.2.1"
+    },
+    {
+      "id": "tableau",
+      "name": "Tableau",
+      "status": "Inactive",
+      "lastUsed": "1 week ago",
+      "version": "4.1.0"
+    },
+    {
+      "id": "mailchimp",
+      "name": "Mailchimp", 
+      "status": "Active",
+      "lastUsed": "5 hours ago",
+      "version": "2.5.3"
+    },
+    {
+      "id": "okta",
+      "name": "Okta",
+      "status": "Active",
+      "lastUsed": "12 hours ago",
+      "version": "1.9.1"
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe",
+      "status": "Active",
+      "lastUsed": "2 days ago",
+      "version": "3.0.5"
+    },
+    {
+      "id": "power-bi",
+      "name": "Power BI",
+      "status": "Active",
+      "lastUsed": "6 hours ago",
+      "version": "2.8.4"
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "asana",
+      "name": "Asana",
+      "description": "Project management and team collaboration",
+      "reason": "Based on your productivity app usage",
+      "category": "Productivity",
+      "rating": 4.7
+    },
+    {
+      "id": "twilio",
+      "name": "Twilio",
+      "description": "Cloud communications platform for SMS and voice",
+      "reason": "Enhance your communication stack",
+      "category": "Communication",
+      "rating": 4.6
+    },
+    {
+      "id": "zendesk",
+      "name": "Zendesk",
+      "description": "Customer service and support ticketing system",
+      "reason": "Popular among similar companies",
+      "category": "Communication",
+      "rating": 4.5
+    }
+  ],
+  "stats": {
+    "totalApps": 45,
+    "installedApps": 8,
+    "activeIntegrations": 6,
+    "monthlyUsage": "847 API calls"
+  }
+}
