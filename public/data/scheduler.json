@@ -1,0 +1,346 @@
+{
+  "header": {
+    "title": "Scheduler",
+    "description": "Schedule investor meetings, earnings calls, and important appointments"
+  },
+  "current_user": {
+    "name": "Alex Johnson",
+    "title": "VP of Investor Relations",
+    "timezone": "America/New_York",
+    "working_hours": {
+      "start": "09:00",
+      "end": "17:00"
+    },
+    "working_days": ["monday", "tuesday", "wednesday", "thursday", "friday"]
+  },
+  "meeting_types": [
+    {
+      "id": "earnings_call",
+      "name": "Earnings Call",
+      "duration": 90,
+      "description": "Quarterly earnings presentation and Q&A",
+      "color": "hsl(var(--chart-1))",
+      "buffer_time": 15,
+      "max_attendees": 100,
+      "requires_approval": true
+    },
+    {
+      "id": "investor_meeting",
+      "name": "Investor Meeting",
+      "duration": 60,
+      "description": "One-on-one or small group investor discussion",
+      "color": "hsl(var(--chart-2))",
+      "buffer_time": 10,
+      "max_attendees": 8,
+      "requires_approval": false
+    },
+    {
+      "id": "board_meeting",
+      "name": "Board Meeting",
+      "duration": 180,
+      "description": "Board of directors meeting",
+      "color": "hsl(var(--chart-3))",
+      "buffer_time": 30,
+      "max_attendees": 15,
+      "requires_approval": true
+    },
+    {
+      "id": "media_interview",
+      "name": "Media Interview",
+      "duration": 30,
+      "description": "Press interview or media briefing",
+      "color": "hsl(var(--chart-4))",
+      "buffer_time": 5,
+      "max_attendees": 5,
+      "requires_approval": false
+    },
+    {
+      "id": "analyst_call",
+      "name": "Analyst Call",
+      "duration": 45,
+      "description": "Research analyst discussion",
+      "color": "hsl(var(--chart-5))",
+      "buffer_time": 15,
+      "max_attendees": 12,
+      "requires_approval": false
+    },
+    {
+      "id": "quick_call",
+      "name": "Quick Call",
+      "duration": 15,
+      "description": "Brief consultation or update",
+      "color": "hsl(var(--muted))",
+      "buffer_time": 5,
+      "max_attendees": 3,
+      "requires_approval": false
+    }
+  ],
+  "availability": {
+    "current_week": {
+      "monday": {
+        "date": "2024-01-15",
+        "slots": [
+          { "time": "09:00", "available": true },
+          { "time": "09:30", "available": true },
+          { "time": "10:00", "available": false, "booked": "Board Prep Meeting" },
+          { "time": "10:30", "available": false, "booked": "Board Prep Meeting" },
+          { "time": "11:00", "available": true },
+          { "time": "11:30", "available": true },
+          { "time": "14:00", "available": true },
+          { "time": "14:30", "available": true },
+          { "time": "15:00", "available": false, "booked": "Goldman Sachs Call" },
+          { "time": "15:30", "available": false, "booked": "Goldman Sachs Call" },
+          { "time": "16:00", "available": true },
+          { "time": "16:30", "available": true }
+        ]
+      },
+      "tuesday": {
+        "date": "2024-01-16",
+        "slots": [
+          { "time": "09:00", "available": true },
+          { "time": "09:30", "available": true },
+          { "time": "10:00", "available": true },
+          { "time": "10:30", "available": true },
+          { "time": "11:00", "available": false, "booked": "Media Interview" },
+          { "time": "11:30", "available": true },
+          { "time": "14:00", "available": true },
+          { "time": "14:30", "available": true },
+          { "time": "15:00", "available": true },
+          { "time": "15:30", "available": true },
+          { "time": "16:00", "available": false, "booked": "Analyst Call" },
+          { "time": "16:30", "available": false, "booked": "Analyst Call" }
+        ]
+      },
+      "wednesday": {
+        "date": "2024-01-17",
+        "slots": [
+          { "time": "09:00", "available": true },
+          { "time": "09:30", "available": true },
+          { "time": "10:00", "available": true },
+          { "time": "10:30", "available": true },
+          { "time": "11:00", "available": true },
+          { "time": "11:30", "available": true },
+          { "time": "14:00", "available": false, "booked": "JPMorgan Meeting" },
+          { "time": "14:30", "available": false, "booked": "JPMorgan Meeting" },
+          { "time": "15:00", "available": true },
+          { "time": "15:30", "available": true },
+          { "time": "16:00", "available": true },
+          { "time": "16:30", "available": true }
+        ]
+      },
+      "thursday": {
+        "date": "2024-01-18",
+        "slots": [
+          { "time": "09:00", "available": true },
+          { "time": "09:30", "available": true },
+          { "time": "10:00", "available": true },
+          { "time": "10:30", "available": true },
+          { "time": "11:00", "available": true },
+          { "time": "11:30", "available": true },
+          { "time": "14:00", "available": false, "booked": "BlackRock Meeting" },
+          { "time": "14:30", "available": false, "booked": "BlackRock Meeting" },
+          { "time": "15:00", "available": true },
+          { "time": "15:30", "available": true },
+          { "time": "16:00", "available": true },
+          { "time": "16:30", "available": true }
+        ]
+      },
+      "friday": {
+        "date": "2024-01-19",
+        "slots": [
+          { "time": "09:00", "available": true },
+          { "time": "09:30", "available": true },
+          { "time": "10:00", "available": true },
+          { "time": "10:30", "available": true },
+          { "time": "11:00", "available": true },
+          { "time": "11:30", "available": true },
+          { "time": "14:00", "available": true },
+          { "time": "14:30", "available": true },
+          { "time": "15:00", "available": true },
+          { "time": "15:30", "available": false, "booked": "Reuters Interview" },
+          { "time": "16:00", "available": true },
+          { "time": "16:30", "available": true }
+        ]
+      }
+    }
+  },
+  "upcoming_meetings": [
+    {
+      "id": "meeting-001",
+      "title": "Q4 Earnings Call",
+      "type": "earnings_call",
+      "date": "2024-01-25",
+      "time": "09:00",
+      "duration": 90,
+      "attendees": [
+        {
+          "name": "Sarah Chen",
+          "email": "s.chen@goldmansachs.com",
+          "company": "Goldman Sachs",
+          "confirmed": true
+        },
+        {
+          "name": "Michael Rodriguez",
+          "email": "m.rodriguez@jpmorgan.com",
+          "company": "JPMorgan",
+          "confirmed": true
+        }
+      ],
+      "location": "Virtual - Zoom",
+      "status": "confirmed",
+      "meeting_link": "https://zoom.us/j/123456789",
+      "agenda": ["Financial Overview", "Q4 Results", "2024 Outlook", "Q&A Session"]
+    },
+    {
+      "id": "meeting-002",
+      "title": "BlackRock One-on-One",
+      "type": "investor_meeting",
+      "date": "2024-01-18",
+      "time": "14:00",
+      "duration": 60,
+      "attendees": [
+        {
+          "name": "Robert Lee",
+          "email": "r.lee@blackrock.com",
+          "company": "BlackRock",
+          "confirmed": true
+        }
+      ],
+      "location": "BlackRock Office, NYC",
+      "status": "confirmed",
+      "agenda": ["ESG Initiatives", "Pipeline Progress", "Market Outlook"]
+    },
+    {
+      "id": "meeting-003",
+      "title": "Reuters Interview",
+      "type": "media_interview",
+      "date": "2024-01-19",
+      "time": "15:30",
+      "duration": 30,
+      "attendees": [
+        {
+          "name": "Lisa Thompson",
+          "email": "l.thompson@reuters.com",
+          "company": "Reuters",
+          "confirmed": false
+        }
+      ],
+      "location": "Virtual - Teams",
+      "status": "tentative",
+      "agenda": ["FDA Approval Discussion", "Market Impact"]
+    }
+  ],
+  "booking_requests": [
+    {
+      "id": "request-001",
+      "requester": {
+        "name": "Amanda Foster",
+        "email": "a.foster@wsj.com",
+        "company": "Wall Street Journal"
+      },
+      "meeting_type": "media_interview",
+      "requested_dates": ["2024-01-22", "2024-01-23", "2024-01-24"],
+      "requested_times": ["10:00", "14:00", "15:00"],
+      "duration": 30,
+      "purpose": "Market analysis interview",
+      "status": "pending",
+      "submitted_at": "2024-01-15T08:30:00Z"
+    },
+    {
+      "id": "request-002",
+      "requester": {
+        "name": "James Wilson",
+        "email": "j.wilson@vanguard.com",
+        "company": "Vanguard"
+      },
+      "meeting_type": "investor_meeting",
+      "requested_dates": ["2024-01-24", "2024-01-25"],
+      "requested_times": ["10:00", "11:00"],
+      "duration": 60,
+      "purpose": "Quarterly portfolio review",
+      "status": "pending",
+      "submitted_at": "2024-01-14T16:45:00Z"
+    }
+  ],
+  "templates": [
+    {
+      "id": "earnings_template",
+      "name": "Earnings Call Template",
+      "type": "earnings_call",
+      "default_agenda": [
+        "Welcome & Safe Harbor Statement",
+        "Financial Highlights",
+        "Business Updates",
+        "Q&A Session",
+        "Closing Remarks"
+      ],
+      "default_duration": 90,
+      "default_location": "Virtual - Zoom",
+      "required_attendees": ["CFO", "CEO"]
+    },
+    {
+      "id": "investor_template",
+      "name": "Investor Meeting Template",
+      "type": "investor_meeting",
+      "default_agenda": [
+        "Company Overview",
+        "Recent Developments",
+        "Financial Performance",
+        "Strategic Outlook",
+        "Q&A"
+      ],
+      "default_duration": 60,
+      "default_location": "Conference Room A",
+      "required_attendees": ["IR Team"]
+    }
+  ],
+  "settings": {
+    "timezone": "America/New_York",
+    "working_hours": {
+      "start": "09:00",
+      "end": "17:00"
+    },
+    "working_days": ["monday", "tuesday", "wednesday", "thursday", "friday"],
+    "slot_duration": 30,
+    "buffer_time": 15,
+    "auto_confirm": false,
+    "send_reminders": true,
+    "reminder_times": [24, 2],
+    "max_booking_advance": 90,
+    "calendar_integration": "google",
+    "default_meeting_location": "Virtual - Zoom"
+  },
+  "stats": {
+    "this_week_meetings": 8,
+    "next_week_meetings": 12,
+    "pending_requests": 2,
+    "available_slots": 45,
+    "utilization_rate": "68%"
+  },
+  "quick_actions": [
+    {
+      "id": "schedule_meeting",
+      "name": "Schedule Meeting",
+      "icon": "plus",
+      "color": "primary"
+    },
+    {
+      "id": "block_time",
+      "name": "Block Time",
+      "icon": "x",
+      "color": "secondary"
+    },
+    {
+      "id": "view_requests",
+      "name": "View Requests",
+      "icon": "inbox",
+      "color": "secondary"
+    },
+    {
+      "id": "export_calendar",
+      "name": "Export Calendar",
+      "icon": "download",
+      "color": "outline"
+    }
+  ]
+}
