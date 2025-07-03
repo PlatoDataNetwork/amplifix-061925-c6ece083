@@ -1,0 +1,221 @@
+{
+  "storageInfo": {
+    "used": "45.2 GB",
+    "total": "100 GB",
+    "percentage": 45
+  },
+  "quickActions": [
+    {
+      "id": "upload",
+      "label": "Upload Files",
+      "icon": "upload",
+      "primary": true
+    },
+    {
+      "id": "new-folder",
+      "label": "New Folder",
+      "icon": "folder"
+    },
+    {
+      "id": "sync",
+      "label": "Sync",
+      "icon": "refresh"
+    }
+  ],
+  "folders": [
+    {
+      "id": "documents",
+      "name": "Documents",
+      "type": "folder",
+      "modified": "2 days ago",
+      "itemCount": 24,
+      "size": "156 MB"
+    },
+    {
+      "id": "images",
+      "name": "Images", 
+      "type": "folder",
+      "modified": "1 week ago",
+      "itemCount": 89,
+      "size": "2.1 GB"
+    },
+    {
+      "id": "videos",
+      "name": "Videos",
+      "type": "folder", 
+      "modified": "3 days ago",
+      "itemCount": 12,
+      "size": "8.7 GB"
+    },
+    {
+      "id": "project-files",
+      "name": "Project Files",
+      "type": "folder",
+      "modified": "5 days ago", 
+      "itemCount": 156,
+      "size": "892 MB"
+    },
+    {
+      "id": "presentations",
+      "name": "Presentations",
+      "type": "folder",
+      "modified": "1 week ago",
+      "itemCount": 8,
+      "size": "234 MB"
+    },
+    {
+      "id": "reports",
+      "name": "Reports",
+      "type": "folder", 
+      "modified": "4 days ago",
+      "itemCount": 32,
+      "size": "445 MB"
+    }
+  ],
+  "recentFiles": [
+    {
+      "id": "profile-picture",
+      "name": "profile_picture.jpg",
+      "type": "file",
+      "fileType": "image",
+      "size": "2.4 MB",
+      "modified": "2 days ago",
+      "thumbnail": "/api/thumbnails/profile_picture.jpg"
+    },
+    {
+      "id": "presentation-pdf", 
+      "name": "Q3_Financial_Presentation.pdf",
+      "type": "file",
+      "fileType": "document", 
+      "size": "4.7 MB",
+      "modified": "1 week ago"
+    },
+    {
+      "id": "meeting-notes",
+      "name": "Board_Meeting_Notes.docx",
+      "type": "file",
+      "fileType": "document",
+      "size": "1.2 MB", 
+      "modified": "Yesterday"
+    },
+    {
+      "id": "product-demo",
+      "name": "AmplifiX_Product_Demo.mp4",
+      "type": "file",
+      "fileType": "video",
+      "size": "156 MB",
+      "modified": "3 days ago"
+    },
+    {
+      "id": "audio-sample",
+      "name": "earnings_call_recording.mp3", 
+      "type": "file",
+      "fileType": "audio",
+      "size": "3.8 MB",
+      "modified": "5 days ago"
+    },
+    {
+      "id": "backup-data",
+      "name": "Q3_Data_Backup.zip",
+      "type": "file",
+      "fileType": "archive", 
+      "size": "89 MB",
+      "modified": "1 week ago"
+    },
+    {
+      "id": "research-notes",
+      "name": "Market_Research_Notes.txt",
+      "type": "file",
+      "fileType": "text",
+      "size": "45 KB",
+      "modified": "3 days ago"
+    },
+    {
+      "id": "team-photo",
+      "name": "team_photo_2024.png",
+      "type": "file", 
+      "fileType": "image",
+      "size": "8.2 MB",
+      "modified": "5 days ago"
+    },
+    {
+      "id": "financial-model",
+      "name": "Financial_Model_Q4.xlsx",
+      "type": "file",
+      "fileType": "document",
+      "size": "12.3 MB", 
+      "modified": "2 days ago"
+    },
+    {
+      "id": "investor-deck",
+      "name": "Series_B_Investor_Deck.pptx", 
+      "type": "file",
+      "fileType": "document",
+      "size": "18.7 MB",
+      "modified": "6 days ago"
+    }
+  ],
+  "sharedFiles": [
+    {
+      "id": "shared-presentation",
+      "name": "Quarterly_Review.pdf", 
+      "type": "file",
+      "fileType": "document",
+      "size": "6.8 MB",
+      "modified": "1 day ago",
+      "sharedWith": "investor-relations@company.com",
+      "permissions": "view"
+    },
+    {
+      "id": "shared-folder",
+      "name": "Board Materials",
+      "type": "folder",
+      "modified": "3 days ago", 
+      "itemCount": 15,
+      "sharedWith": "board@company.com",
+      "permissions": "edit"
+    }
+  ],
+  "fileTypes": {
+    "document": {
+      "extensions": [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx"],
+      "color": "text-yellow-500",
+      "icon": "file-text"
+    },
+    "image": {
+      "extensions": [".jpg", ".jpeg", ".png", ".gif", ".svg", ".webp"],
+      "color": "text-blue-500", 
+      "icon": "image"
+    },
+    "video": {
+      "extensions": [".mp4", ".avi", ".mov", ".wmv", ".flv"],
+      "color": "text-purple-500",
+      "icon": "video"
+    },
+    "audio": {
+      "extensions": [".mp3", ".wav", ".flac", ".aac"],
+      "color": "text-green-500",
+      "icon": "music"
+    },
+    "archive": {
+      "extensions": [".zip", ".rar", ".7z", ".tar"],
+      "color": "text-gray-500",
+      "icon": "archive"
+    },
+    "text": {
+      "extensions": [".txt", ".md", ".rtf"],
+      "color": "text-orange-500", 
+      "icon": "file-text"
+    }
+  },
+  "sortOptions": [
+    { "value": "name", "label": "Name" },
+    { "value": "modified", "label": "Date Modified" },
+    { "value": "size", "label": "Size" },
+    { "value": "type", "label": "Type" }
+  ],
+  "viewOptions": [
+    { "value": "grid", "label": "Grid View", "icon": "grid" },
+    { "value": "list", "label": "List View", "icon": "list" }
+  ]
+}
