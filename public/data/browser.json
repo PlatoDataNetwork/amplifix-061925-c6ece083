@@ -1,0 +1,234 @@
+{
+  "bookmarks": [
+    {
+      "id": "sec-filings",
+      "title": "SEC EDGAR Database",
+      "url": "https://www.sec.gov/edgar",
+      "favicon": "/api/favicons/sec.ico",
+      "category": "Regulatory",
+      "lastVisited": "2 hours ago"
+    },
+    {
+      "id": "investor-relations",
+      "title": "AmplifiX Investor Relations",
+      "url": "https://investors.amplifix.com",
+      "favicon": "/api/favicons/amplifix.ico", 
+      "category": "Company",
+      "lastVisited": "1 day ago"
+    },
+    {
+      "id": "nasdaq",
+      "title": "NASDAQ Market Data",
+      "url": "https://www.nasdaq.com",
+      "favicon": "/api/favicons/nasdaq.ico",
+      "category": "Financial",
+      "lastVisited": "3 hours ago"
+    },
+    {
+      "id": "bloomberg",
+      "title": "Bloomberg Terminal",
+      "url": "https://www.bloomberg.com/professional",
+      "favicon": "/api/favicons/bloomberg.ico",
+      "category": "Financial",
+      "lastVisited": "5 hours ago"
+    },
+    {
+      "id": "reuters",
+      "title": "Reuters Business News",
+      "url": "https://www.reuters.com/business",
+      "favicon": "/api/favicons/reuters.ico",
+      "category": "News",
+      "lastVisited": "1 hour ago"
+    }
+  ],
+  "tabs": [
+    {
+      "id": "tab-1",
+      "title": "AmplifiX Dashboard",
+      "url": "https://app.amplifix.com/dashboard",
+      "favicon": "/api/favicons/amplifix.ico",
+      "active": true,
+      "loading": false
+    },
+    {
+      "id": "tab-2", 
+      "title": "SEC Filing - Form 10-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1234567/000123456789012345/form10k.htm",
+      "favicon": "/api/favicons/sec.ico",
+      "active": false,
+      "loading": false
+    },
+    {
+      "id": "tab-3",
+      "title": "Market Research Report",
+      "url": "https://reports.amplifix.com/q3-2024-market-analysis",
+      "favicon": "/api/favicons/reports.ico",
+      "active": false,
+      "loading": false
+    }
+  ],
+  "history": [
+    {
+      "id": "hist-1",
+      "title": "Q3 2024 Earnings Call Transcript",
+      "url": "https://investors.amplifix.com/earnings/q3-2024-transcript",
+      "visitedAt": "2024-12-10T14:30:00Z",
+      "domain": "investors.amplifix.com"
+    },
+    {
+      "id": "hist-2",
+      "title": "TechCrunch - AmplifiX Raises Series B",
+      "url": "https://techcrunch.com/2024/12/09/amplifix-raises-series-b",
+      "visitedAt": "2024-12-09T16:45:00Z", 
+      "domain": "techcrunch.com"
+    },
+    {
+      "id": "hist-3",
+      "title": "Bloomberg - AI Communication Platform Market",
+      "url": "https://www.bloomberg.com/news/articles/2024-12-08/ai-communication-platforms-market-outlook",
+      "visitedAt": "2024-12-08T11:20:00Z",
+      "domain": "bloomberg.com"
+    },
+    {
+      "id": "hist-4",
+      "title": "SEC Form 8-K - Material Agreement",
+      "url": "https://www.sec.gov/Archives/edgar/data/1234567/000123456789012345/form8k.htm",
+      "visitedAt": "2024-12-07T09:15:00Z",
+      "domain": "sec.gov"
+    },
+    {
+      "id": "hist-5",
+      "title": "Reuters - Corporate Communications Trends",
+      "url": "https://www.reuters.com/business/media-telecom/corporate-communications-trends-2024",
+      "visitedAt": "2024-12-06T13:30:00Z",
+      "domain": "reuters.com"
+    }
+  ],
+  "frequentSites": [
+    {
+      "id": "freq-1",
+      "title": "SEC EDGAR",
+      "url": "https://www.sec.gov/edgar",
+      "favicon": "/api/favicons/sec.ico",
+      "visits": 45
+    },
+    {
+      "id": "freq-2",
+      "title": "Bloomberg Terminal", 
+      "url": "https://www.bloomberg.com/professional",
+      "favicon": "/api/favicons/bloomberg.ico",
+      "visits": 38
+    },
+    {
+      "id": "freq-3",
+      "title": "Company Investor Portal",
+      "url": "https://investors.amplifix.com",
+      "favicon": "/api/favicons/amplifix.ico",
+      "visits": 32
+    },
+    {
+      "id": "freq-4",
+      "title": "NASDAQ Market Data",
+      "url": "https://www.nasdaq.com", 
+      "favicon": "/api/favicons/nasdaq.ico",
+      "visits": 28
+    }
+  ],
+  "categories": [
+    {
+      "id": "regulatory",
+      "name": "Regulatory",
+      "color": "text-red-500",
+      "count": 8
+    },
+    {
+      "id": "financial",
+      "name": "Financial",
+      "color": "text-green-500", 
+      "count": 12
+    },
+    {
+      "id": "news",
+      "name": "News & Media",
+      "color": "text-blue-500",
+      "count": 15
+    },
+    {
+      "id": "company",
+      "name": "Company Resources",
+      "color": "text-purple-500",
+      "count": 6
+    },
+    {
+      "id": "research",
+      "name": "Market Research",
+      "color": "text-yellow-500",
+      "count": 9
+    }
+  ],
+  "suggestions": [
+    {
+      "id": "sug-1",
+      "title": "Form 10-Q Filing Deadline Approaching",
+      "url": "https://www.sec.gov/fast-answers/answersform10qhtm.html",
+      "type": "reminder",
+      "priority": "high"
+    },
+    {
+      "id": "sug-2", 
+      "title": "Industry Analysis: AI Communication Platforms",
+      "url": "https://research.amplifix.com/industry-analysis-2024",
+      "type": "research",
+      "priority": "medium"
+    },
+    {
+      "id": "sug-3",
+      "title": "Competitor Earnings Reports Released",
+      "url": "https://finance.yahoo.com/calendar/earnings",
+      "type": "competitive",
+      "priority": "medium"
+    }
+  ],
+  "browserSettings": {
+    "defaultSearchEngine": "Google",
+    "homePage": "https://app.amplifix.com/dashboard",
+    "newTabPage": "dashboard",
+    "blockPopups": true,
+    "enableJavaScript": true,
+    "savePasswords": false,
+    "trackingProtection": "strict"
+  },
+  "securityStatus": {
+    "level": "high",
+    "sslEnabled": true,
+    "trackingBlocked": 23,
+    "adsBlocked": 12,
+    "lastSecurityScan": "2024-12-10T08:00:00Z"
+  },
+  "downloadHistory": [
+    {
+      "id": "dl-1",
+      "fileName": "Q3_2024_Financial_Report.pdf",
+      "url": "https://investors.amplifix.com/reports/q3-2024.pdf",
+      "downloadedAt": "2024-12-10T15:30:00Z",
+      "size": "2.4 MB",
+      "status": "completed"
+    },
+    {
+      "id": "dl-2",
+      "fileName": "SEC_Form_10K_2024.pdf", 
+      "url": "https://www.sec.gov/Archives/edgar/data/1234567/form10k.pdf",
+      "downloadedAt": "2024-12-09T10:15:00Z",
+      "size": "8.7 MB",
+      "status": "completed"
+    },
+    {
+      "id": "dl-3",
+      "fileName": "Market_Analysis_Report.xlsx",
+      "url": "https://research.amplifix.com/downloads/market-analysis.xlsx", 
+      "downloadedAt": "2024-12-08T14:45:00Z",
+      "size": "1.8 MB",
+      "status": "completed"
+    }
+  ]
+}
