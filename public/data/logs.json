@@ -1,0 +1,274 @@
+{
+  "logs": [
+    {
+      "id": "log-1001",
+      "timestamp": "2024-12-10T16:45:32Z",
+      "level": "INFO",
+      "source": "auth-service",
+      "message": "User login successful",
+      "details": {
+        "userId": "user-12345",
+        "ip": "192.168.1.100",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+      },
+      "category": "authentication"
+    },
+    {
+      "id": "log-1002",
+      "timestamp": "2024-12-10T16:44:18Z",
+      "level": "WARN",
+      "source": "api-gateway",
+      "message": "Rate limit approaching for client",
+      "details": {
+        "clientId": "investor-portal",
+        "requests": 480,
+        "limit": 500,
+        "window": "1 hour"
+      },
+      "category": "performance"
+    },
+    {
+      "id": "log-1003",
+      "timestamp": "2024-12-10T16:43:05Z",
+      "level": "ERROR",
+      "source": "email-service",
+      "message": "Failed to send notification email",
+      "details": {
+        "recipient": "investor@example.com",
+        "errorCode": "SMTP_TIMEOUT",
+        "retryCount": 3
+      },
+      "category": "communication"
+    },
+    {
+      "id": "log-1004",
+      "timestamp": "2024-12-10T16:42:47Z",
+      "level": "INFO",
+      "source": "database",
+      "message": "Backup completed successfully",
+      "details": {
+        "backupSize": "2.4 GB",
+        "duration": "45 minutes",
+        "location": "s3://amplifix-backups/2024-12-10/"
+      },
+      "category": "maintenance"
+    },
+    {
+      "id": "log-1005",
+      "timestamp": "2024-12-10T16:41:23Z",
+      "level": "DEBUG",
+      "source": "ai-engine",
+      "message": "Content analysis completed",
+      "details": {
+        "documentId": "doc-789",
+        "analysisType": "sentiment",
+        "processingTime": "1.2s",
+        "confidence": 0.94
+      },
+      "category": "ai-processing"
+    },
+    {
+      "id": "log-1006",
+      "timestamp": "2024-12-10T16:40:15Z",
+      "level": "INFO",
+      "source": "compliance-monitor",
+      "message": "SOX compliance check passed",
+      "details": {
+        "checkType": "data-retention",
+        "scope": "financial-documents",
+        "violations": 0
+      },
+      "category": "compliance"
+    },
+    {
+      "id": "log-1007",
+      "timestamp": "2024-12-10T16:39:44Z",
+      "level": "WARN",
+      "source": "security-scanner",
+      "message": "Suspicious activity detected",
+      "details": {
+        "activity": "multiple-failed-logins",
+        "sourceIp": "203.0.113.45",
+        "attempts": 5,
+        "timeWindow": "5 minutes"
+      },
+      "category": "security"
+    },
+    {
+      "id": "log-1008",
+      "timestamp": "2024-12-10T16:38:29Z",
+      "level": "INFO",
+      "source": "file-service",
+      "message": "File upload completed",
+      "details": {
+        "fileName": "Q3_Financial_Report.pdf",
+        "fileSize": "2.4 MB",
+        "uploaderId": "user-67890",
+        "virusScan": "clean"
+      },
+      "category": "file-management"
+    },
+    {
+      "id": "log-1009",
+      "timestamp": "2024-12-10T16:37:56Z",
+      "level": "ERROR",
+      "source": "notification-service",
+      "message": "Push notification delivery failed",
+      "details": {
+        "deviceId": "device-abc123",
+        "errorCode": "INVALID_TOKEN",
+        "notificationType": "meeting-reminder"
+      },
+      "category": "communication"
+    },
+    {
+      "id": "log-1010",
+      "timestamp": "2024-12-10T16:36:12Z",
+      "level": "INFO",
+      "source": "scheduler",
+      "message": "Automated report generation started",
+      "details": {
+        "reportType": "investor-metrics",
+        "frequency": "daily",
+        "estimatedCompletion": "2024-12-10T17:00:00Z"
+      },
+      "category": "automation"
+    }
+  ],
+  "filters": {
+    "levels": [
+      { "value": "DEBUG", "label": "Debug", "color": "text-gray-400" },
+      { "value": "INFO", "label": "Info", "color": "text-blue-400" },
+      { "value": "WARN", "label": "Warning", "color": "text-yellow-400" },
+      { "value": "ERROR", "label": "Error", "color": "text-red-400" },
+      { "value": "FATAL", "label": "Fatal", "color": "text-red-600" }
+    ],
+    "sources": [
+      { "value": "auth-service", "label": "Authentication Service" },
+      { "value": "api-gateway", "label": "API Gateway" },
+      { "value": "email-service", "label": "Email Service" },
+      { "value": "database", "label": "Database" },
+      { "value": "ai-engine", "label": "AI Engine" },
+      { "value": "compliance-monitor", "label": "Compliance Monitor" },
+      { "value": "security-scanner", "label": "Security Scanner" },
+      { "value": "file-service", "label": "File Service" },
+      { "value": "notification-service", "label": "Notification Service" },
+      { "value": "scheduler", "label": "Scheduler" }
+    ],
+    "categories": [
+      { "value": "authentication", "label": "Authentication", "color": "text-green-400" },
+      { "value": "performance", "label": "Performance", "color": "text-orange-400" },
+      { "value": "communication", "label": "Communication", "color": "text-purple-400" },
+      { "value": "maintenance", "label": "Maintenance", "color": "text-cyan-400" },
+      { "value": "ai-processing", "label": "AI Processing", "color": "text-pink-400" },
+      { "value": "compliance", "label": "Compliance", "color": "text-indigo-400" },
+      { "value": "security", "label": "Security", "color": "text-red-400" },
+      { "value": "file-management", "label": "File Management", "color": "text-teal-400" },
+      { "value": "automation", "label": "Automation", "color": "text-lime-400" }
+    ],
+    "timeRanges": [
+      { "value": "last-hour", "label": "Last Hour" },
+      { "value": "last-24h", "label": "Last 24 Hours" },
+      { "value": "last-week", "label": "Last Week" },
+      { "value": "last-month", "label": "Last Month" },
+      { "value": "custom", "label": "Custom Range" }
+    ]
+  },
+  "stats": {
+    "totalLogs": 15847,
+    "errorRate": "0.02%",
+    "averageResponseTime": "234ms",
+    "uptime": "99.98%",
+    "lastUpdate": "2024-12-10T16:45:32Z"
+  },
+  "alerts": [
+    {
+      "id": "alert-1",
+      "level": "WARN",
+      "title": "High API Usage Detected",
+      "message": "API usage approaching rate limits for investor portal",
+      "timestamp": "2024-12-10T16:44:18Z",
+      "acknowledged": false
+    },
+    {
+      "id": "alert-2",
+      "level": "ERROR",
+      "title": "Email Service Degraded",
+      "message": "Multiple email delivery failures detected",
+      "timestamp": "2024-12-10T16:43:05Z",
+      "acknowledged": false
+    },
+    {
+      "id": "alert-3",
+      "level": "WARN",
+      "title": "Security Alert",
+      "message": "Suspicious login attempts from unknown IP",
+      "timestamp": "2024-12-10T16:39:44Z",
+      "acknowledged": true
+    }
+  ],
+  "systemHealth": {
+    "services": [
+      {
+        "name": "Authentication Service",
+        "status": "healthy",
+        "uptime": "99.99%",
+        "responseTime": "120ms"
+      },
+      {
+        "name": "API Gateway",
+        "status": "degraded",
+        "uptime": "99.95%",
+        "responseTime": "450ms"
+      },
+      {
+        "name": "Database",
+        "status": "healthy",
+        "uptime": "99.98%",
+        "responseTime": "45ms"
+      },
+      {
+        "name": "Email Service",
+        "status": "degraded",
+        "uptime": "99.80%",
+        "responseTime": "2.1s"
+      },
+      {
+        "name": "AI Engine",
+        "status": "healthy",
+        "uptime": "99.97%",
+        "responseTime": "890ms"
+      }
+    ],
+    "infrastructure": {
+      "cpu": {
+        "usage": "45%",
+        "status": "normal"
+      },
+      "memory": {
+        "usage": "67%",
+        "status": "normal"
+      },
+      "disk": {
+        "usage": "23%",
+        "status": "normal"
+      },
+      "network": {
+        "usage": "12%",
+        "status": "normal"
+      }
+    }
+  },
+  "exportOptions": [
+    { "value": "json", "label": "JSON Format" },
+    { "value": "csv", "label": "CSV Format" },
+    { "value": "xml", "label": "XML Format" },
+    { "value": "pdf", "label": "PDF Report" }
+  ],
+  "logRetention": {
+    "policy": "90 days",
+    "complianceMode": "SOX",
+    "archiveLocation": "s3://amplifix-logs-archive/",
+    "encryptionEnabled": true
+  }
+}
