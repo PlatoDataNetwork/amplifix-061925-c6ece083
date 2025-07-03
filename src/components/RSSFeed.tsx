@@ -29,14 +29,65 @@ const RSSFeed = ({ feedUrl, title = "External Feed", maxItems = 6 }: RSSFeedProp
     const fetchRSSFeed = async () => {
       try {
         setLoading(true);
-        // Use a CORS proxy service to fetch the RSS feed
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}`;
-        const response = await fetch(proxyUrl);
-        const data = await response.json();
+        
+        // Try multiple CORS proxy services as fallback
+        const proxyUrls = [
+          `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(feedUrl)}`,
+          `https://corsproxy.io/?${encodeURIComponent(feedUrl)}`,
+          `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}`
+        ];
+        
+        let xmlContent = null;
+        let lastError = null;
+        
+        for (const proxyUrl of proxyUrls) {
+          try {
+            console.log('Trying proxy:', proxyUrl);
+            const response = await fetch(proxyUrl);
+            
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const text = await response.text();
+            console.log('Response preview:', text.substring(0, 200));
+            
+            // Check if response contains JSON wrapper or direct XML
+            if (text.includes('<?xml')) {
+              xmlContent = text;
+              break;
+            } else {
+              // Try to parse as JSON (allorigins format)
+              try {
+                const data = JSON.parse(text);
+                if (data.contents && data.contents.includes('<?xml')) {
+                  xmlContent = data.contents;
+                  break;
+                }
+              } catch (jsonError) {
+                console.log('Not JSON format, trying next proxy');
+              }
+            }
+          } catch (err) {
+            console.log('Proxy failed:', err);
+            lastError = err;
+            continue;
+          }
+        }
+        
+        if (!xmlContent) {
+          throw lastError || new Error('All proxy services failed');
+        }
         
         // Parse the XML content
         const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(data.contents, 'text/xml');
+        const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+        
+        // Check for parsing errors
+        const parserError = xmlDoc.querySelector('parsererror');
+        if (parserError) {
+          throw new Error('Invalid XML content');
+        }
         
         const rssItems = Array.from(xmlDoc.querySelectorAll('item')).slice(0, maxItems).map(item => {
           const categories = Array.from(item.querySelectorAll('category')).map(cat => cat.textContent || '');
@@ -51,11 +102,12 @@ const RSSFeed = ({ feedUrl, title = "External Feed", maxItems = 6 }: RSSFeedProp
           };
         });
         
+        console.log('Parsed RSS items:', rssItems.length);
         setItems(rssItems);
         setError(null);
       } catch (err) {
-        setError('Failed to fetch RSS feed');
         console.error('RSS fetch error:', err);
+        setError('Failed to fetch RSS feed. Please try again later.');
       } finally {
         setLoading(false);
       }
