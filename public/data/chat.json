@@ -1,0 +1,304 @@
+{
+  "conversations": [
+    {
+      "id": "conv-1",
+      "type": "direct",
+      "participant": {
+        "id": "user-ceo",
+        "name": "Sarah Chen",
+        "role": "CEO",
+        "avatar": "/api/avatars/sarah-chen.jpg",
+        "status": "online",
+        "company": "AmplifiX"
+      },
+      "lastMessage": {
+        "id": "msg-1001",
+        "content": "The Q3 earnings call went well. Let's schedule the investor follow-ups.",
+        "timestamp": "2024-12-10T16:45:00Z",
+        "sender": "user-ceo",
+        "type": "text"
+      },
+      "unreadCount": 2,
+      "pinned": true,
+      "encrypted": true
+    },
+    {
+      "id": "conv-2",
+      "type": "direct",
+      "participant": {
+        "id": "user-cfo",
+        "name": "Michael Rodriguez",
+        "role": "CFO",
+        "avatar": "/api/avatars/michael-rodriguez.jpg",
+        "status": "away",
+        "company": "AmplifiX"
+      },
+      "lastMessage": {
+        "id": "msg-1002",
+        "content": "Financial projections for Series B are ready for review.",
+        "timestamp": "2024-12-10T14:20:00Z",
+        "sender": "user-cfo",
+        "type": "text"
+      },
+      "unreadCount": 0,
+      "pinned": false,
+      "encrypted": true
+    },
+    {
+      "id": "conv-3",
+      "type": "group",
+      "name": "Board Communications",
+      "avatar": "/api/avatars/board-group.jpg",
+      "participants": [
+        {
+          "id": "user-board-1",
+          "name": "David Kim",
+          "role": "Board Member",
+          "company": "Sequoia Capital"
+        },
+        {
+          "id": "user-board-2",
+          "name": "Lisa Wang",
+          "role": "Board Member", 
+          "company": "Andreessen Horowitz"
+        },
+        {
+          "id": "user-board-3",
+          "name": "James Thompson",
+          "role": "Independent Director",
+          "company": "Former Google VP"
+        }
+      ],
+      "lastMessage": {
+        "id": "msg-1003",
+        "content": "Next board meeting scheduled for December 15th at 2 PM EST.",
+        "timestamp": "2024-12-10T12:15:00Z",
+        "sender": "user-board-1",
+        "type": "text"
+      },
+      "unreadCount": 5,
+      "pinned": true,
+      "encrypted": true
+    },
+    {
+      "id": "conv-4",
+      "type": "direct",
+      "participant": {
+        "id": "user-investor-1",
+        "name": "Jennifer Park",
+        "role": "Partner",
+        "avatar": "/api/avatars/jennifer-park.jpg",
+        "status": "offline",
+        "company": "Goldman Sachs"
+      },
+      "lastMessage": {
+        "id": "msg-1004",
+        "content": "Thanks for the detailed market analysis. Very impressive growth metrics.",
+        "timestamp": "2024-12-09T18:30:00Z",
+        "sender": "user-investor-1", 
+        "type": "text"
+      },
+      "unreadCount": 0,
+      "pinned": false,
+      "encrypted": true
+    },
+    {
+      "id": "conv-5",
+      "type": "group",
+      "name": "Investor Relations Team",
+      "avatar": "/api/avatars/ir-team.jpg",
+      "participants": [
+        {
+          "id": "user-ir-1",
+          "name": "Amanda Foster",
+          "role": "VP Investor Relations",
+          "company": "AmplifiX"
+        },
+        {
+          "id": "user-ir-2",
+          "name": "Robert Chen",
+          "role": "IR Manager",
+          "company": "AmplifiX"
+        },
+        {
+          "id": "user-ir-3",
+          "name": "Emily Davis",
+          "role": "IR Analyst",
+          "company": "AmplifiX"
+        }
+      ],
+      "lastMessage": {
+        "id": "msg-1005",
+        "content": "Earnings call transcript has been uploaded to the investor portal.",
+        "timestamp": "2024-12-09T16:00:00Z",
+        "sender": "user-ir-1",
+        "type": "file"
+      },
+      "unreadCount": 1,
+      "pinned": false,
+      "encrypted": true
+    }
+  ],
+  "messages": {
+    "conv-1": [
+      {
+        "id": "msg-1001",
+        "content": "The Q3 earnings call went well. Let's schedule the investor follow-ups.",
+        "timestamp": "2024-12-10T16:45:00Z",
+        "sender": "user-ceo",
+        "type": "text",
+        "status": "delivered",
+        "encrypted": true
+      },
+      {
+        "id": "msg-1000",
+        "content": "Absolutely. I'll coordinate with the IR team to set up meetings with the key investors.",
+        "timestamp": "2024-12-10T16:30:00Z",
+        "sender": "current-user",
+        "type": "text",
+        "status": "read",
+        "encrypted": true
+      },
+      {
+        "id": "msg-999",
+        "content": "Great! The analysts seemed particularly interested in our AI development roadmap.",
+        "timestamp": "2024-12-10T16:28:00Z",
+        "sender": "user-ceo",
+        "type": "text",
+        "status": "read",
+        "encrypted": true
+      }
+    ]
+  },
+  "contacts": [
+    {
+      "id": "user-ceo",
+      "name": "Sarah Chen",
+      "role": "CEO",
+      "company": "AmplifiX",
+      "email": "sarah.chen@amplifix.com",
+      "phone": "+1 (555) 123-4567",
+      "avatar": "/api/avatars/sarah-chen.jpg",
+      "status": "online",
+      "lastSeen": "2024-12-10T16:45:00Z",
+      "category": "leadership"
+    },
+    {
+      "id": "user-cfo",
+      "name": "Michael Rodriguez", 
+      "role": "CFO",
+      "company": "AmplifiX",
+      "email": "michael.rodriguez@amplifix.com",
+      "phone": "+1 (555) 123-4568",
+      "avatar": "/api/avatars/michael-rodriguez.jpg",
+      "status": "away",
+      "lastSeen": "2024-12-10T15:30:00Z",
+      "category": "leadership"
+    },
+    {
+      "id": "user-board-1",
+      "name": "David Kim",
+      "role": "Board Member",
+      "company": "Sequoia Capital",
+      "email": "david.kim@sequoiacap.com",
+      "phone": "+1 (555) 987-6543",
+      "avatar": "/api/avatars/david-kim.jpg",
+      "status": "online",
+      "lastSeen": "2024-12-10T12:15:00Z",
+      "category": "board"
+    },
+    {
+      "id": "user-investor-1",
+      "name": "Jennifer Park",
+      "role": "Partner",
+      "company": "Goldman Sachs",
+      "email": "jennifer.park@gs.com",
+      "phone": "+1 (555) 456-7890",
+      "avatar": "/api/avatars/jennifer-park.jpg",
+      "status": "offline",
+      "lastSeen": "2024-12-09T18:30:00Z",
+      "category": "investors"
+    }
+  ],
+  "chatSettings": {
+    "notifications": {
+      "enabled": true,
+      "sound": true,
+      "desktop": true,
+      "mobile": true,
+      "quietHours": {
+        "enabled": true,
+        "start": "22:00",
+        "end": "08:00"
+      }
+    },
+    "privacy": {
+      "readReceipts": true,
+      "typing": true,
+      "lastSeen": true,
+      "encryptionEnabled": true
+    },
+    "appearance": {
+      "theme": "dark",
+      "fontSize": "medium",
+      "compactMode": false
+    }
+  },
+  "securityFeatures": {
+    "endToEndEncryption": true,
+    "messageRetention": "90 days",
+    "auditLog": true,
+    "twoFactorAuth": true,
+    "complianceMode": "SOX",
+    "dataLocation": "US-East"
+  },
+  "quickReplies": [
+    {
+      "id": "qr-1",
+      "text": "Thanks for the update. I'll review and get back to you.",
+      "category": "acknowledgment"
+    },
+    {
+      "id": "qr-2",
+      "text": "Let's schedule a call to discuss this further.",
+      "category": "meeting"
+    },
+    {
+      "id": "qr-3", 
+      "text": "Please send the relevant documents for review.",
+      "category": "request"
+    },
+    {
+      "id": "qr-4",
+      "text": "Approved. Please proceed with the next steps.",
+      "category": "approval"
+    }
+  ],
+  "chatStats": {
+    "totalMessages": 2847,
+    "activeConversations": 12,
+    "averageResponseTime": "4 minutes",
+    "encryptionRate": "100%",
+    "complianceScore": "A+"
+  },
+  "integrations": [
+    {
+      "id": "slack",
+      "name": "Slack",
+      "enabled": true,
+      "syncContacts": true
+    },
+    {
+      "id": "teams",
+      "name": "Microsoft Teams",
+      "enabled": false,
+      "syncContacts": false
+    },
+    {
+      "id": "zoom",
+      "name": "Zoom",
+      "enabled": true,
+      "syncContacts": true
+    }
+  ]
+}
