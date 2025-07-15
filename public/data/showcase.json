@@ -14,6 +14,14 @@
       "link": "/showcase/silo-pharma"
     },
     {
+      "company_name": "International Land Alliance",
+      "ticker": "OTCQB: ILAL",
+      "description": "International Land Alliance, Inc. (OTCQB: ILAL) is an international land investment and development firm based in San Diego, California.",
+      "tags": ["Real Estate", "Land Development", "Investment"],
+      "button_text": "View Case Study",
+      "link": "/showcase/international-land-alliance"
+    },
+    {
       "company_name": "Coming Soon",
       "subtitle": "Next Success Story",
       "description": "More exciting case studies and client success stories are coming soon. Stay tuned for additional showcases.",
