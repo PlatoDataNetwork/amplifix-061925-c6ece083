@@ -6,7 +6,7 @@ import MainHeader from "@/components/MainHeader";
 import { useJsonData } from "@/hooks/useJsonData";
 
 const Showcase = () => {
-  const { data: showcaseData, isLoading } = useJsonData<any>('/data/showcase.json');
+  const { data: showcaseData, isLoading } = useJsonData<any>('showcase.json');
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-foreground">
