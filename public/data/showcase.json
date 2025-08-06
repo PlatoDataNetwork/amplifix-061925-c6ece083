@@ -1,3 +1,4 @@
+
 {
   "hero": {
     "title": "Client Showcase",
@@ -20,6 +21,14 @@
       "tags": ["Real Estate", "Land Development", "Investment"],
       "button_text": "View Case Study",
       "link": "/showcase/international-land-alliance"
+    },
+    {
+      "company_name": "Karbon-X",
+      "ticker": "KARX",
+      "description": "Karbon-X is a technology company focused on innovative solutions and carbon management technologies to address environmental challenges.",
+      "tags": ["Technology", "Environmental", "Carbon Management"],
+      "button_text": "View Website",
+      "link": "https://www.karbon-x.com/"
     },
     {
       "company_name": "Coming Soon",
