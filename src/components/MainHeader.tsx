@@ -34,7 +34,6 @@ const MainHeader = () => {
     // Add GTranslate settings
     window.gtranslateSettings = {
       default_language: "en",
-      languages: ["en", "fr", "it", "es"],
       wrapper_selector: ".gtranslate_wrapper",
       switcher_horizontal_position: "right",
       switcher_vertical_position: "top",
