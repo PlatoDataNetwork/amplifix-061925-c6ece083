@@ -95,6 +95,7 @@ const MainHeader = () => {
             </>
           )}
           <ThemeToggle />
+          <div class="gtranslate_wrapper"></div>
           <Link to="/showcase/silo-pharma">
             <Button 
               className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors rounded-lg"
