@@ -89,7 +89,7 @@
 .gt_float_switcher .gt-selected {
     position: relative;
     z-index: 888;
-    background-color: #03aaff;
+    background-color: #03aaff !important;
     cursor: pointer;
     text-transform: uppercase;
     overflow: hidden;
@@ -118,11 +118,12 @@
 }
 
 .gt_float_switcher .gt_options a {
-    color: #fff !important;
+    color: #03aaff !important;
 }
 
 .gt_float_switcher .gt_options a:hover {
   background-color: #03aaff !important;
+  color: #fff !important;
 }
 
 .gt_float_switcher img{
