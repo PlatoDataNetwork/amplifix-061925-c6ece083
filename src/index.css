@@ -70,3 +70,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+#gt_float_wrapper {
+  position: relative !important;
+  top: 0 !important;
+  right: 0 !important;
+  display: flex !important;
+}
