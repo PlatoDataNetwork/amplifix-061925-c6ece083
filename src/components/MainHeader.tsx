@@ -29,6 +29,28 @@ const MainHeader = () => {
     setIsSticky(false);
   }, [location.pathname]);
 
+
+  useEffect(() => {
+    // Add GTranslate settings
+    window.gtranslateSettings = {
+      default_language: "en",
+      languages: ["en", "fr", "it", "es"],
+      wrapper_selector: ".gtranslate_wrapper",
+      switcher_horizontal_position: "right",
+      switcher_vertical_position: "top",
+    };
+
+    // Load external GTranslate script
+    const script = document.createElement("script");
+    script.src = "https://cdn.gtranslate.net/widgets/latest/float.js";
+    script.defer = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   return (
     <nav className={`${
       isSticky ? 'fixed' : 'relative'
@@ -95,7 +117,7 @@ const MainHeader = () => {
             </>
           )}
           <ThemeToggle />
-          <div class="gtranslate_wrapper"></div>
+          <div className="gtranslate_wrapper"></div>
           <Link to="/showcase/silo-pharma">
             <Button 
               className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors rounded-lg"
