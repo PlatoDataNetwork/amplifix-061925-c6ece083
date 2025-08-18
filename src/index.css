@@ -77,3 +77,45 @@
   right: 0 !important;
   display: flex !important;
 }
+
+.gt_float_switcher {
+    border-radius: 7px !important;
+}
+
+.gt_float_switcher {
+    background: unset !important;
+}
+
+.gt_float_switcher .gt-selected {
+    position: relative;
+    z-index: 888;
+    background-color: #fff;
+    cursor: pointer;
+    text-transform: uppercase;
+    overflow: hidden;
+    text-align: right;
+}
+
+.gt_float_switcher .gt-selected .gt-current-lang {
+    color: #fff !important;
+    padding: 5px 12px !important;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    gap: 5px !important;
+}
+
+.gt_float_switcher .gt_options {
+    position: absolute !important;
+    right: 0;
+    width: max-content;
+    border: 1px solid;
+    margin-top: 10px;
+    border-radius: 10px;
+    background: #1d2838;
+    border: 0px !important;
+}
+
+.gt_float_switcher .gt_options a {
+    color: #fff !important;
+}
