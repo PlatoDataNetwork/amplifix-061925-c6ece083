@@ -129,3 +129,11 @@
 .gt_float_switcher img{
   display: none !important;
 }
+
+.gt_float_switcher .gt-selected .gt-current-lang{
+  height: 40px !important;
+}
+
+.gt_float_switcher .gt-selected .gt-current-lang span.gt_float_switcher-arrow{
+  filter: brightness(3);
+}
