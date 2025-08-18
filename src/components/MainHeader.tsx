@@ -50,23 +50,6 @@ const MainHeader = () => {
       document.body.removeChild(script);
     };
 
-    // Inject custom CSS
-    const style = document.createElement("style");
-    style.innerHTML = `
-      #gt_float_wrapper {
-        position: relative !important;
-        top: 0px !important;
-        right: 0px !important;
-        display: flex !important;
-      }
-    `;
-    document.head.appendChild(style);
-
-    return () => {
-      document.body.removeChild(script);
-      document.head.removeChild(style);
-    };
-    
   }, []);
 
   return (
