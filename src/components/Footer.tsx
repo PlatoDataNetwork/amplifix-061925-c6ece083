@@ -39,7 +39,7 @@ const Footer = () => {
               <Link to="#" className="text-muted-foreground hover:text-highlight-blue" title="Medium">
                 <ExternalLink size={20} />
               </Link>
-              <Link to="#" className="text-muted-foreground hover:text-highlight-blue" title="Email">
+              <Link to="/contact" className="text-muted-foreground hover:text-highlight-blue" title="Email">
                 <Mail size={20} />
               </Link>
             </div>
