@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Linkedin, Twitter, Mail } from "lucide-react";
+import { Linkedin, Twitter, Mail, ExternalLink } from "lucide-react";
 import { useJsonData } from "@/hooks/useJsonData";
 import { CommonData } from "@/types/common";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -30,13 +30,16 @@ const Footer = () => {
               </p>
             )}
             <div className="flex space-x-4">
-              <Link to="#" className="text-muted-foreground hover:text-highlight-blue">
+              <Link to="#" className="text-muted-foreground hover:text-highlight-blue" title="X (Twitter)">
                 <Twitter size={20} />
               </Link>
-              <Link to="#" className="text-muted-foreground hover:text-highlight-blue">
+              <Link to="#" className="text-muted-foreground hover:text-highlight-blue" title="LinkedIn">
                 <Linkedin size={20} />
               </Link>
-              <Link to="#" className="text-muted-foreground hover:text-highlight-blue">
+              <Link to="#" className="text-muted-foreground hover:text-highlight-blue" title="Medium">
+                <ExternalLink size={20} />
+              </Link>
+              <Link to="#" className="text-muted-foreground hover:text-highlight-blue" title="Email">
                 <Mail size={20} />
               </Link>
             </div>
