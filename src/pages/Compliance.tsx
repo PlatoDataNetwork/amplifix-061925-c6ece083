@@ -123,58 +123,6 @@ const Compliance = () => {
           </div>
         </section>
 
-        {/* Security & Certifications */}
-        <section className="py-16 container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8 text-center">Security & Certifications</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-card p-6 rounded-xl border border-border">
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-highlight-blue" />
-                  SOC 2 Type II
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  Independently audited and certified for security, availability, processing integrity, confidentiality, and privacy.
-                </p>
-                <div className="text-sm text-highlight-blue">Annual third-party audit completed</div>
-              </div>
-
-              <div className="bg-card p-6 rounded-xl border border-border">
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Lock className="h-5 w-5 text-highlight-blue" />
-                  ISO 27001
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  Information security management system certified to international standards for protecting sensitive information.
-                </p>
-                <div className="text-sm text-highlight-blue">Certification maintained annually</div>
-              </div>
-
-              <div className="bg-card p-6 rounded-xl border border-border">
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-highlight-blue" />
-                  Encryption Standards
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  AES-256 encryption for data at rest and TLS 1.3 for data in transit, ensuring maximum security for all communications.
-                </p>
-                <div className="text-sm text-highlight-blue">Military-grade encryption</div>
-              </div>
-
-              <div className="bg-card p-6 rounded-xl border border-border">
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Users className="h-5 w-5 text-highlight-blue" />
-                  Access Controls
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  Multi-factor authentication, role-based access controls, and regular access reviews ensure only authorized personnel can access data.
-                </p>
-                <div className="text-sm text-highlight-blue">Zero-trust architecture</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Regulatory Compliance */}
         <section className="py-16 bg-accent/50">
           <div className="container mx-auto px-4">
@@ -257,80 +205,6 @@ const Compliance = () => {
           </div>
         </section>
 
-        {/* Audit & Monitoring */}
-        <section className="py-16 container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8 text-center">Continuous Monitoring & Auditing</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-card p-6 rounded-xl border border-border">
-                <Clock className="h-8 w-8 text-highlight-blue mb-4" />
-                <h3 className="text-xl font-bold mb-4">Real-Time Monitoring</h3>
-                <p className="text-muted-foreground mb-4">
-                  24/7 monitoring of all systems and processes to ensure continuous compliance and immediate response to any issues.
-                </p>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Automated compliance checks
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Security incident detection
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Performance and availability monitoring
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-card p-6 rounded-xl border border-border">
-                <FileText className="h-8 w-8 text-highlight-blue mb-4" />
-                <h3 className="text-xl font-bold mb-4">Regular Audits</h3>
-                <p className="text-muted-foreground mb-4">
-                  Comprehensive internal and external audits to verify compliance with all applicable standards and regulations.
-                </p>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Quarterly internal compliance reviews
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Annual third-party security audits
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Penetration testing and vulnerability assessments
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Contact Section */}
-        <section className="py-16 bg-accent/50">
-          <div className="container mx-auto px-4 text-center">
-            <div className="max-w-2xl mx-auto">
-              <h2 className="text-3xl font-bold mb-6">Compliance Questions?</h2>
-              <p className="text-lg text-muted-foreground mb-8">
-                Our compliance team is available to address any questions about our regulatory standards, security measures, or industry certifications.
-              </p>
-              <div className="space-y-4">
-                <p className="text-lg">
-                  <strong>Compliance Officer:</strong>{" "}
-                  <a href="mailto:compliance@amplifix.net" className="text-highlight-blue hover:underline">
-                    compliance@amplifix.net
-                  </a>
-                </p>
-                <p className="text-muted-foreground">
-                  For immediate compliance concerns, please contact our 24/7 hotline or submit a compliance inquiry through our secure portal.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
 
       <Footer />
