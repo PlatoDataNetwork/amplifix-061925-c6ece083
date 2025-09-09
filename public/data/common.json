@@ -47,6 +47,7 @@
     },
     "legal_links": [
       { "label": "Privacy Policy" },
+      { "label": "Compliance" },
       { "label": "Terms of Service" },
       { "label": "Data Processing" }
     ],

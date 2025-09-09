@@ -29,6 +29,7 @@ import Pricing from "./pages/Pricing";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import DataProcessing from "./pages/DataProcessing";
+import Compliance from "./pages/Compliance";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +61,7 @@ const App = () => (
               <Route path="/solutions/ipo-preparation" element={<IPOPreparation />} />
               <Route path="/solutions/fundraising" element={<Fundraising />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/compliance" element={<Compliance />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="/data-processing" element={<DataProcessing />} />
               <Route path="*" element={<NotFound />} />

@@ -147,6 +147,7 @@ const Footer = () => {
               commonData.footer.legal_links.map((link, index) => (
                 <Link key={index} to={
                   link.label === 'Privacy Policy' ? '/privacy-policy' :
+                  link.label === 'Compliance' ? '/compliance' :
                   link.label === 'Terms of Service' ? '/terms-of-service' :
                   link.label === 'Data Processing' ? '/data-processing' : '#'
                 } className="text-muted-foreground hover:text-highlight-blue text-sm">
@@ -156,6 +157,7 @@ const Footer = () => {
             ) : (
               <>
                 <Link to="/privacy-policy" className="text-muted-foreground hover:text-highlight-blue text-sm">Privacy Policy</Link>
+                <Link to="/compliance" className="text-muted-foreground hover:text-highlight-blue text-sm">Compliance</Link>
                 <Link to="/terms-of-service" className="text-muted-foreground hover:text-highlight-blue text-sm">Terms of Service</Link>
                 <Link to="/data-processing" className="text-muted-foreground hover:text-highlight-blue text-sm">Data Processing</Link>
               </>
