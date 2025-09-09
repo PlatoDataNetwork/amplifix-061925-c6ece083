@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Homepage -->
+  <url>
+    <loc>https://amplifix.net/zh/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amplifix.net/" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://amplifix.net/zh/" />
+    <lastmod>2025-01-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Main Pages -->
+  <url>
+    <loc>https://amplifix.net/zh/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amplifix.net/about" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://amplifix.net/zh/about" />
+    <lastmod>2025-01-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://amplifix.net/zh/solutions</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amplifix.net/solutions" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://amplifix.net/zh/solutions" />
+    <lastmod>2025-01-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://amplifix.net/zh/showcase</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amplifix.net/showcase" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://amplifix.net/zh/showcase" />
+    <lastmod>2025-01-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://amplifix.net/zh/intel</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amplifix.net/intel" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://amplifix.net/zh/intel" />
+    <lastmod>2025-01-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://amplifix.net/zh/pricing</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amplifix.net/pricing" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://amplifix.net/zh/pricing" />
+    <lastmod>2025-01-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://amplifix.net/zh/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amplifix.net/contact" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://amplifix.net/zh/contact" />
+    <lastmod>2025-01-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+</urlset>
