@@ -63,7 +63,20 @@ const Showcase = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {showcaseData.showcases.map((showcase: any, index: number) => (
-                <div key={index} className={`bg-card p-8 rounded-xl border ${showcase.disabled ? 'border-dashed border-border opacity-60' : 'border-border hover:shadow-lg transition-shadow'}`}>
+                <div key={index} className={`relative bg-card p-8 rounded-xl border ${showcase.disabled ? 'border-dashed border-border opacity-60' : 'border-border hover:shadow-lg transition-shadow'}`}>
+                  {/* Visit Website Button - Top Right Corner */}
+                  {showcase.website && (
+                    <a 
+                      href={showcase.website} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="absolute top-4 right-4 p-2 rounded-lg bg-muted hover:bg-accent transition-colors group"
+                      title="Visit Website"
+                    >
+                      <Globe className="h-4 w-4 text-muted-foreground group-hover:text-foreground" />
+                    </a>
+                  )}
+                  
                   <div className="flex items-center gap-4 mb-6">
                     <div className={`w-12 h-12 rounded-full ${showcase.disabled ? 'bg-muted' : 'bg-green-500/20'} flex items-center justify-center`}>
                       {showcase.company_name === 'SILO Pharma Inc.' && <Pill className="h-6 w-6 text-green-500" />}

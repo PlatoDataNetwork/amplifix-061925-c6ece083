@@ -12,7 +12,8 @@
       "description": "Pioneering neuropsychiatric drug development through AI-driven research and innovative therapeutic approaches for mental health conditions.",
       "tags": ["Pharmaceutical", "Biotech", "CNS Therapeutics"],
       "button_text": "Visit Showcase",
-      "link": "/showcase/silo-pharma"
+      "link": "/showcase/silo-pharma",
+      "website": "https://silopharma.com/"
     },
     {
       "company_name": "Karbon-X",
@@ -20,7 +21,8 @@
       "description": "Karbon-X is a technology company focused on innovative solutions and carbon management technologies to address environmental challenges.",
       "tags": ["Technology", "Environmental", "Carbon Management"],
       "button_text": "View Showcase",
-      "link": "https://www.karbon-x.com/"
+      "link": "https://www.karbon-x.com/",
+      "website": "https://www.karbon-x.com/"
     }
   ],
   "why_choose": {
