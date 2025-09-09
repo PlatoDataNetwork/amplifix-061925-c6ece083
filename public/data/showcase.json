@@ -21,20 +21,6 @@
       "tags": ["Technology", "Environmental", "Carbon Management"],
       "button_text": "View Website",
       "link": "https://www.karbon-x.com/"
-    },
-    {
-      "company_name": "Coming Soon",
-      "subtitle": "Next Success Story",
-      "description": "More exciting case studies and client success stories are coming soon. Stay tuned for additional showcases.",
-      "button_text": "Coming Soon",
-      "disabled": true
-    },
-    {
-      "company_name": "Your Company",
-      "subtitle": "Next Success Story", 
-      "description": "Could your company be our next showcase? Contact us to learn how AmplifiX can transform your corporate communications.",
-      "button_text": "Get Started",
-      "link": "/contact"
     }
   ],
   "why_choose": {

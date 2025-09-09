@@ -68,8 +68,6 @@ const Showcase = () => {
                     <div className={`w-12 h-12 rounded-full ${showcase.disabled ? 'bg-muted' : 'bg-green-500/20'} flex items-center justify-center`}>
                       {showcase.company_name === 'SILO Pharma Inc.' && <Pill className="h-6 w-6 text-green-500" />}
                       {showcase.company_name === 'Karbon-X' && <Building className="h-6 w-6 text-blue-500" />}
-                      {showcase.disabled && <Building className="h-6 w-6 text-muted-foreground" />}
-                      {showcase.company_name === 'Your Company' && <BarChart3 className="h-6 w-6 text-muted-foreground" />}
                     </div>
                     <div>
                       <h3 className={`text-xl font-bold ${showcase.disabled ? 'text-muted-foreground' : ''}`}>
