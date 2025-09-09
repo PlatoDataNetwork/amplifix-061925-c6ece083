@@ -55,11 +55,12 @@ const KarbonXShowcase = () => {
                     <ExternalLink className="ml-2 h-4 w-4" />
                   </Button>
                 </a>
-                <Link to="/contact">
+                <a href="https://www.tradingview.com/symbols/OTC-KARX/" target="_blank" rel="noopener noreferrer">
                   <Button size="lg" variant="outline" className="border-border hover:bg-accent">
-                    Partner With Us
+                    Live Stock Price
+                    <BarChart3 className="ml-2 h-4 w-4" />
                   </Button>
-                </Link>
+                </a>
               </div>
             </div>
             
