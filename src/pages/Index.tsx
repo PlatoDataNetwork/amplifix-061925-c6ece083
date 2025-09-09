@@ -199,7 +199,7 @@ const Index = () => {
                   </div>
                   <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
-                  <Link to="/features">
+                  <Link to="/solutions">
                     <Button variant="link" className="text-highlight-blue mt-4 p-0">
                       Learn more →
                     </Button>
@@ -218,7 +218,7 @@ const Index = () => {
                   Real-time insights into market sentiment, media coverage, and investor engagement 
                   with AI-powered predictive analytics.
                 </p>
-                <Link to="/features">
+                <Link to="/solutions">
                   <Button variant="link" className="text-highlight-blue mt-4 p-0">
                     Learn more →
                   </Button>
@@ -233,7 +233,7 @@ const Index = () => {
                   Generate compelling press releases, investor updates, and corporate communications 
                   tailored to your brand voice and audience.
                 </p>
-                <Link to="/features">
+                <Link to="/solutions">
                   <Button variant="link" className="text-highlight-blue mt-4 p-0">
                     Learn more →
                   </Button>
@@ -248,7 +248,7 @@ const Index = () => {
                   Intelligent CRM for investors, analysts, media contacts, and other key stakeholders 
                   with automated engagement tracking.
                 </p>
-                <Link to="/features">
+                <Link to="/solutions">
                   <Button variant="link" className="text-highlight-blue mt-4 p-0">
                     Learn more →
                   </Button>
@@ -263,7 +263,7 @@ const Index = () => {
                   AI-driven recommendations for timing, messaging, and channel optimization 
                   to maximize impact and reach.
                 </p>
-                <Link to="/features">
+                <Link to="/solutions">
                   <Button variant="link" className="text-highlight-blue mt-4 p-0">
                     Learn more →
                   </Button>

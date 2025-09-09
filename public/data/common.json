@@ -23,7 +23,6 @@
         "links": [
           { "label": "Home" },
           { "label": "Dashboard" },
-          { "label": "Features" },
           { "label": "Pricing" },
           { "label": "FAQ" }
         ]

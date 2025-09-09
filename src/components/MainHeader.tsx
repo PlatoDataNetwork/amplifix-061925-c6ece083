@@ -86,9 +86,6 @@ const MainHeader = () => {
               <Link to="/about" className="text-foreground hover:text-highlight-blue transition-colors">
                 {commonData.navigation.main_menu.find(item => item.label === 'About')?.label || 'About'}
               </Link>
-              <Link to="/features" className="text-foreground hover:text-highlight-blue transition-colors">
-                {commonData.navigation.main_menu.find(item => item.label === 'Features')?.label || 'Features'}
-              </Link>
               <Link to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">
                 {commonData.navigation.main_menu.find(item => item.label === 'Solutions')?.label || 'Solutions'}
               </Link>
@@ -108,7 +105,6 @@ const MainHeader = () => {
           ) : (
             <>
               <Link to="/about" className="text-foreground hover:text-highlight-blue transition-colors">About</Link>
-              <Link to="/features" className="text-foreground hover:text-highlight-blue transition-colors">Features</Link>
               <Link to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">Solutions</Link>
               <Link to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">Showcase</Link>
               <Link to="/blog" className="text-foreground hover:text-highlight-blue transition-colors">Intel</Link>

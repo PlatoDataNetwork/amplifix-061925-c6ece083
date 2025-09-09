@@ -43,13 +43,6 @@ const MobileMenu = () => {
                 About
               </Link>
               <Link 
-                to="/features" 
-                className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
-                onClick={closeMenu}
-              >
-                Features
-              </Link>
-              <Link 
                 to="/solutions" 
                 className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}

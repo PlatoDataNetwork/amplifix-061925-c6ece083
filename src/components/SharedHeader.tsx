@@ -44,9 +44,6 @@ const SharedHeader = ({
         <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
           About
         </Link>
-        <Link to="/features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-          Features
-        </Link>
         <Link to="/solutions" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
           Solutions
         </Link>
