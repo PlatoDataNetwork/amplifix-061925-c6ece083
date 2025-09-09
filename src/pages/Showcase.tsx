@@ -118,11 +118,11 @@ const Showcase = () => {
                     
                     {/* AmplifiX Search Button */}
                     <a 
-                      href={`https://www.bing.com/search?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}`}
+                      href={`https://www.bing.com/copilotsearch?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}&FORM=CSSCOP`}
                       target="_blank" 
                       rel="noopener noreferrer"
                       onClick={() => {
-                        const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}`;
+                        const searchUrl = `https://www.bing.com/copilotsearch?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}&FORM=CSSCOP`;
                         console.log('AmplifiX button clicked, opening:', searchUrl);
                       }}
                     >
