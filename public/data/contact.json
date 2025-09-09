@@ -39,11 +39,6 @@
         "value": "hello@amplifix.ai"
       },
       {
-        "type": "phone", 
-        "label": "Phone",
-        "value": "+1 (555) 123-4567"
-      },
-      {
         "type": "address",
         "label": "Office",
         "value": "123 Business Ave\nSuite 100\nNew York, NY 10001"

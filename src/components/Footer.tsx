@@ -113,7 +113,6 @@ const Footer = () => {
               ) : (
                 <>
                   <li className="text-muted-foreground">{commonData?.footer.sections.company.contact.email || 'hello@amplifi.ai'}</li>
-                  <li className="text-muted-foreground">{commonData?.footer.sections.company.contact.phone || '+1 (555) 123-4567'}</li>
                 </>
               )}
             </ul>

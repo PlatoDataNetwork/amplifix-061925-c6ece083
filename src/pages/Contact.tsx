@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 
 const Contact = () => {
   return (
@@ -91,14 +91,6 @@ const Contact = () => {
                     <div>
                       <h3 className="font-medium mb-1">Email</h3>
                       <p className="text-muted-foreground">hello@amplifix.ai</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-4">
-                    <Phone className="h-6 w-6 text-highlight-blue mt-1" />
-                    <div>
-                      <h3 className="font-medium mb-1">Phone</h3>
-                      <p className="text-muted-foreground">+1 (555) 123-4567</p>
                     </div>
                   </div>
                   

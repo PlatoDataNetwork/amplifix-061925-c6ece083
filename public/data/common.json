@@ -37,8 +37,7 @@
       "company": {
         "title": "Company",
         "contact": {
-          "email": "hello@amplifi.ai",
-          "phone": "+1 (555) 123-4567"
+          "email": "hello@amplifi.ai"
         },
         "status": {
           "text": "AI Systems Online",
