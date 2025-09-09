@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
+import Footer from "@/components/Footer";
 import { useJsonData } from "@/hooks/useJsonData";
 
 const Showcase = () => {
@@ -193,19 +194,7 @@ const Showcase = () => {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="container mx-auto py-8 px-4 border-t border-border">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center text-muted-foreground">
-              <p className="mb-2">
-                {showcaseData.footer.tagline}
-              </p>
-              <p className="text-sm">
-                {showcaseData.footer.description}
-              </p>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </>
   );
