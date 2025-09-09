@@ -67,10 +67,11 @@ const Showcase = () => {
                 <div key={index} className={`relative bg-card p-8 rounded-xl border ${showcase.disabled ? 'border-dashed border-border opacity-60' : 'border-border hover:shadow-lg transition-shadow'}`}>
                   {/* Header with company info */}
                   <div className="flex items-center gap-4 mb-6">
-                    <div className={`w-12 h-12 rounded-full ${showcase.disabled ? 'bg-muted' : 'bg-green-500/20'} flex items-center justify-center flex-shrink-0`}>
+                     <div className={`w-12 h-12 rounded-full ${showcase.disabled ? 'bg-muted' : 'bg-green-500/20'} flex items-center justify-center flex-shrink-0`}>
                       {showcase.company_name === 'SILO Pharma Inc.' && <Pill className="h-6 w-6 text-green-500" />}
                       {showcase.company_name === 'Int\'l Land Alliance' && <Home className="h-6 w-6 text-blue-500" />}
                       {showcase.company_name === 'Karbon-X' && <img src="/lovable-uploads/4fc4b91a-cd33-4009-ad3a-df4b3d33d179.png" alt="Karbon-X logo" className="h-6 w-6" />}
+                      {showcase.company_name === 'FYNN AI' && <img src="/lovable-uploads/81a540f7-53d1-4835-a86f-983e8a85e38c.png" alt="FYNN AI logo" className="h-6 w-6" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className={`text-xl font-bold whitespace-nowrap ${showcase.disabled ? 'text-muted-foreground' : ''}`}>
