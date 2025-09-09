@@ -30,9 +30,9 @@ const KarbonXShowcase = () => {
         <section className="pt-24 container mx-auto py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <div className="inline-flex items-center gap-3 bg-green-500/10 px-6 py-3 rounded-full mb-6">
-                <Earth className="h-6 w-6 text-green-500" />
-                <span className="text-green-500 font-semibold">Carbon Solutions Leader</span>
+              <div className="inline-flex items-center gap-3 bg-highlight-blue/10 px-6 py-3 rounded-full mb-6">
+                <Earth className="h-6 w-6 text-highlight-blue" />
+                <span className="text-highlight-blue font-semibold">Carbon Solutions Leader</span>
               </div>
               <div className="mb-6">
                 <img 
