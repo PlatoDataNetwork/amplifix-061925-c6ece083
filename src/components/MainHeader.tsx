@@ -92,9 +92,9 @@ const MainHeader = () => {
               <Link to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">
                 {commonData.navigation.main_menu.find(item => item.label === 'Showcase')?.label || 'Showcase'}
               </Link>
-              <Link to="/blog" className="text-foreground hover:text-highlight-blue transition-colors">
+              <a href="https://www.amplifix.net/intel" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-highlight-blue transition-colors">
                 {commonData.navigation.main_menu.find(item => item.label === 'Intel')?.label || 'Intel'}
-              </Link>
+              </a>
               <Link to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">
                 {commonData.navigation.main_menu.find(item => item.label === 'FAQ')?.label || 'FAQ'}
               </Link>
@@ -107,7 +107,7 @@ const MainHeader = () => {
               <Link to="/about" className="text-foreground hover:text-highlight-blue transition-colors">About</Link>
               <Link to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">Solutions</Link>
               <Link to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">Showcase</Link>
-              <Link to="/blog" className="text-foreground hover:text-highlight-blue transition-colors">Intel</Link>
+              <a href="https://www.amplifix.net/intel" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-highlight-blue transition-colors">Intel</a>
               <Link to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">FAQ</Link>
               <Link to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">Contact</Link>
             </>

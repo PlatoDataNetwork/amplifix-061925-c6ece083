@@ -50,9 +50,9 @@ const SharedHeader = ({
         <Link to="/showcase" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
           Showcase
         </Link>
-        <Link to="/blog" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+        <a href="https://www.amplifix.net/intel" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
           Intel
-        </Link>
+        </a>
         <Link to="/faq" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
           FAQ
         </Link>

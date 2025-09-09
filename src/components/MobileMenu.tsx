@@ -56,13 +56,15 @@ const MobileMenu = () => {
               >
                 Showcase
               </Link>
-              <Link 
-                to="/blog" 
+              <a 
+                href="https://www.amplifix.net/intel"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}
               >
                 Intel
-              </Link>
+              </a>
               <Link 
                 to="/faq" 
                 className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
