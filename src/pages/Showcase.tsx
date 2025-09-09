@@ -118,7 +118,7 @@ const Showcase = () => {
                     
                     {/* AmplifiX Search Button */}
                     <a 
-                      href={`https://duckduckgo.com/?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}`}
+                      href={`https://www.bing.com/search?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}`}
                       target="_blank" 
                       rel="noopener noreferrer"
                     >
