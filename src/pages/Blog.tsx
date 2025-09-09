@@ -89,7 +89,11 @@ const Blog = () => {
               <BlogPostCard 
                 key={post.id} 
                 post={post} 
-                articleLink={post.id === 1 ? "/blog/ai-intelligence-article" : undefined}
+                articleLink={
+                  post.id === 1 ? "/blog/ai-intelligence-article" :
+                  post.id === 2 ? "/blog/advanced-analytics-article" :
+                  undefined
+                }
               />
             ))}
           </div>

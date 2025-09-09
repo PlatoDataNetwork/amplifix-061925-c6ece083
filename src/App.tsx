@@ -32,6 +32,7 @@ import DataProcessing from "./pages/DataProcessing";
 import Compliance from "./pages/Compliance";
 import AmplifiX2Article from "./pages/AmplifiX2Article";
 import AIIntelligenceArticle from "./pages/AIIntelligenceArticle";
+import AdvancedAnalyticsArticle from "./pages/AdvancedAnalyticsArticle";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const App = () => (
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/amplifi-x-2-0-article" element={<AmplifiX2Article />} />
               <Route path="/blog/ai-intelligence-article" element={<AIIntelligenceArticle />} />
+              <Route path="/blog/advanced-analytics-article" element={<AdvancedAnalyticsArticle />} />
               <Route path="/support" element={<Support />} />
               <Route path="/solutions" element={<Solutions />} />
               <Route path="/about" element={<About />} />
