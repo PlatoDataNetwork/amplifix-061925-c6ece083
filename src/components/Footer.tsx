@@ -140,15 +140,19 @@ const Footer = () => {
               ))
             ) : commonData ? (
               commonData.footer.legal_links.map((link, index) => (
-                <Link key={index} to="#" className="text-muted-foreground hover:text-highlight-blue text-sm">
+                <Link key={index} to={
+                  link.label === 'Privacy Policy' ? '/privacy-policy' :
+                  link.label === 'Terms of Service' ? '/terms-of-service' :
+                  link.label === 'Data Processing' ? '/data-processing' : '#'
+                } className="text-muted-foreground hover:text-highlight-blue text-sm">
                   {link.label}
                 </Link>
               ))
             ) : (
               <>
-                <Link to="#" className="text-muted-foreground hover:text-highlight-blue text-sm">Privacy Policy</Link>
-                <Link to="#" className="text-muted-foreground hover:text-highlight-blue text-sm">Terms of Service</Link>
-                <Link to="#" className="text-muted-foreground hover:text-highlight-blue text-sm">Data Processing</Link>
+                <Link to="/privacy-policy" className="text-muted-foreground hover:text-highlight-blue text-sm">Privacy Policy</Link>
+                <Link to="/terms-of-service" className="text-muted-foreground hover:text-highlight-blue text-sm">Terms of Service</Link>
+                <Link to="/data-processing" className="text-muted-foreground hover:text-highlight-blue text-sm">Data Processing</Link>
               </>
             )}
           </div>

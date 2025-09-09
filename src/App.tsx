@@ -26,6 +26,9 @@ import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
 import Pricing from "./pages/Pricing";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import DataProcessing from "./pages/DataProcessing";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +59,9 @@ const App = () => (
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/solutions/ipo-preparation" element={<IPOPreparation />} />
               <Route path="/solutions/fundraising" element={<Fundraising />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/data-processing" element={<DataProcessing />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
