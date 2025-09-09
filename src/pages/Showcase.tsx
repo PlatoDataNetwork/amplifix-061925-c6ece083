@@ -50,19 +50,19 @@ const Showcase = () => {
         <MainHeader />
 
         {/* Hero Section */}
-        <div className="pt-24 container mx-auto py-20 px-4">
+        <div className="pt-20 md:pt-24 container mx-auto py-12 md:py-20 px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
+            <div className="text-center mb-12 md:mb-16">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 md:mb-6 px-2">
                 <span className="text-highlight-blue">{showcaseData.hero.title}</span><br />
                 {showcaseData.hero.subtitle}
               </h1>
-              <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-4xl mx-auto">
+              <p className="text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 leading-relaxed max-w-4xl mx-auto px-2">
                 {showcaseData.hero.description}
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {showcaseData.showcases.map((showcase: any, index: number) => (
                 <div key={index} className={`relative bg-card p-8 rounded-xl border ${showcase.disabled ? 'border-dashed border-border opacity-60' : 'border-border hover:shadow-lg transition-shadow'}`}>
                   {/* Header with company info */}
@@ -87,17 +87,19 @@ const Showcase = () => {
                   </p>
                   
                   {/* Action Buttons */}
-                  <div className="flex gap-2 mb-4">
+                  <div className="flex flex-col sm:flex-row gap-2 mb-4">
                     {/* Live Stock Price Button */}
                     {showcase.stock_url && (
                       <a 
                         href={showcase.stock_url} 
                         target="_blank" 
                         rel="noopener noreferrer"
+                        className="flex-1"
                       >
-                        <Button variant="outline" className="flex-1">
+                        <Button variant="outline" className="w-full min-h-[44px]">
                           <BarChart3 className="h-4 w-4 mr-2" />
-                          Live Stock Price
+                          <span className="hidden sm:inline">Live Stock Price</span>
+                          <span className="sm:hidden">Stock</span>
                         </Button>
                       </a>
                     )}
@@ -108,8 +110,9 @@ const Showcase = () => {
                         href={showcase.website} 
                         target="_blank" 
                         rel="noopener noreferrer"
+                        className="flex-1"
                       >
-                        <Button variant="outline" className="flex-1">
+                        <Button variant="outline" className="w-full min-h-[44px]">
                           <Globe className="h-4 w-4 mr-2" />
                           Web
                         </Button>
@@ -121,12 +124,13 @@ const Showcase = () => {
                       href={`https://www.bing.com/copilotsearch?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}&FORM=CSSCOP`}
                       target="_blank" 
                       rel="noopener noreferrer"
+                      className="flex-1"
                       onClick={() => {
                         const searchUrl = `https://www.bing.com/copilotsearch?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}&FORM=CSSCOP`;
                         console.log('AmplifiX button clicked, opening:', searchUrl);
                       }}
                     >
-                      <Button variant="outline" className="flex-1">
+                      <Button variant="outline" className="w-full min-h-[44px]">
                         <Search className="h-4 w-4 mr-2" />
                         AmplifiX
                       </Button>
@@ -160,7 +164,7 @@ const Showcase = () => {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {showcaseData.why_choose.features.map((feature: any, index: number) => (
                 <div key={index} className="bg-card p-6 rounded-xl border border-border text-center">
                   {feature.title === 'Growth Focus' && <TrendingUp className="h-12 w-12 text-highlight-blue mx-auto mb-4" />}

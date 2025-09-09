@@ -39,11 +39,11 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <MainHeader />
 
-      {/* Hero Section - Increased top padding to account for fixed header */}
-      <div className="pt-32 container mx-auto py-12 md:py-20 px-4">
+      {/* Hero Section - Optimized for mobile */}
+      <div className="pt-24 md:pt-32 container mx-auto py-8 md:py-20 px-4">
         <div className="text-center max-w-5xl mx-auto">
-          <div className="inline-block mb-6 md:mb-8">
-            <div className="bg-highlight-blue/10 text-highlight-blue rounded-full px-4 md:px-6 py-2 border border-highlight-blue/20 text-sm md:text-base">
+          <div className="inline-block mb-4 md:mb-8">
+            <div className="bg-highlight-blue/10 text-highlight-blue rounded-full px-3 md:px-6 py-2 border border-highlight-blue/20 text-xs md:text-base">
               {isLoading ? (
                 <Skeleton className="h-4 w-48" />
               ) : (
@@ -51,25 +51,25 @@ const Index = () => {
               )}
             </div>
           </div>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-4 md:mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-4 md:mb-6 px-2">
             {isLoading ? (
               <Skeleton className="h-16 w-96 mx-auto" />
             ) : (
               homeData?.hero.title || 'Amplifi Your Communications'
             )}
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 max-w-3xl mx-auto px-4">
+          <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-12 max-w-3xl mx-auto px-2">
             {isLoading ? (
               <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
             ) : (
               homeData?.hero.description || 'AmplifiX leverages cutting-edge AI to transform how public and private companies manage investor relations and corporate communications.'
             )}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/contact">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+            <Link to="/contact" className="w-full sm:w-auto">
               <Button 
                 size="lg" 
-                className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg"
+                className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
                 {isLoading ? (
                   <Skeleton className="h-4 w-32" />
@@ -82,7 +82,7 @@ const Index = () => {
               size="lg" 
               variant="outline" 
               onClick={scrollToContact}
-              className="border-border hover:bg-accent transition-colors px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg"
+              className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
             >
               {isLoading ? (
                 <Skeleton className="h-4 w-24" />
@@ -95,16 +95,16 @@ const Index = () => {
       </div>
 
       {/* About Section */}
-      <section id="about" className="container mx-auto py-12 md:py-16 px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-6">
+      <section id="about" className="container mx-auto py-8 md:py-16 px-4">
+        <div className="text-center mb-12 md:mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6 px-2">
             {isLoading ? (
               <Skeleton className="h-10 w-64 mx-auto" />
             ) : (
               homeData?.about.title || 'About AmplifiX'
             )}
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto px-2">
             {isLoading ? (
               <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
             ) : (
@@ -113,7 +113,7 @@ const Index = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {isLoading ? (
             Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="bg-card p-6 rounded-xl border border-border text-center">
@@ -180,7 +180,7 @@ const Index = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {isLoading ? (
             Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="bg-card p-6 rounded-xl border border-border">
