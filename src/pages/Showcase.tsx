@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home } from "lucide-react";
+import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home, Search } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
@@ -62,7 +62,7 @@ const Showcase = () => {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {showcaseData.showcases.map((showcase: any, index: number) => (
                 <div key={index} className={`relative bg-card p-8 rounded-xl border ${showcase.disabled ? 'border-dashed border-border opacity-60' : 'border-border hover:shadow-lg transition-shadow'}`}>
                   {/* Header with company info */}
@@ -115,6 +115,18 @@ const Showcase = () => {
                         </Button>
                       </a>
                     )}
+                    
+                    {/* AI Search Button */}
+                    <a 
+                      href={`https://www.google.com/search?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? `, ${showcase.ticker}` : ''))}`}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      <Button variant="outline" className="flex-1">
+                        <Search className="h-4 w-4 mr-2" />
+                        AI Search
+                      </Button>
+                    </a>
                   </div>
                   {showcase.link ? (
                     <Link to={showcase.link}>
