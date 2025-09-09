@@ -57,7 +57,7 @@ const Blog = () => {
             </div>
           </div>
           <h1 className="text-3xl md:text-5xl font-bold mb-6">
-            AmplifiX <span className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] bg-clip-text text-transparent">Intel</span>
+            AmplifiX <span className="bg-gradient-to-r from-[#06B6D4] to-[#06B6D4] bg-clip-text text-transparent">Intel</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto px-4">
             Stay updated with the latest in AI intelligence, corporate communications insights, and product updates from the AmplifiX team.
@@ -74,7 +74,7 @@ const Blog = () => {
                 key={category}
                 variant={category === "All" ? "default" : "outline"}
                 size="sm"
-                className={category === "All" ? "bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-xs md:text-sm" : "text-xs md:text-sm"}
+                className={category === "All" ? "bg-gradient-to-r from-[#06B6D4] to-[#06B6D4] text-xs md:text-sm" : "text-xs md:text-sm"}
               >
                 {category}
               </Button>
