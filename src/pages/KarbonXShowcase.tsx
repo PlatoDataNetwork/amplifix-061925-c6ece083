@@ -36,7 +36,7 @@ const KarbonXShowcase = () => {
               </div>
               <div className="mb-6">
                 <img 
-                  src="/lovable-uploads/15d3e19c-10e7-417c-8702-ef2c13a858ed.png" 
+                  src="/lovable-uploads/aa74295d-6cd4-4d0b-9a60-0904cd93a391.png" 
                   alt="Karbon-X Logo" 
                   className="h-16 md:h-20 mx-auto mb-4"
                 />
