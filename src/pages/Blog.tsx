@@ -88,9 +88,9 @@ const Blog = () => {
                   readTime: post.read_time
                 }} 
                 articleLink={
-                  post.id === 1 ? "/blog/ai-intelligence-article" :
-                  post.id === 2 ? "/blog/advanced-analytics-article" :
-                  post.id === 3 ? "/blog/investor-engagement-article" :
+                  post.id === 1 ? "/intel/ai-intelligence-article" :
+                  post.id === 2 ? "/intel/advanced-analytics-article" :
+                  post.id === 3 ? "/intel/investor-engagement-article" :
                   undefined
                 }
               />

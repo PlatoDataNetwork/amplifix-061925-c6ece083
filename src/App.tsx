@@ -49,11 +49,11 @@ const App = () => (
               <Route path="/" element={<Index />} />
               
               <Route path="/api" element={<API />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/amplifi-x-2-0-article" element={<AmplifiX2Article />} />
-              <Route path="/blog/ai-intelligence-article" element={<AIIntelligenceArticle />} />
-              <Route path="/blog/advanced-analytics-article" element={<AdvancedAnalyticsArticle />} />
-              <Route path="/blog/investor-engagement-article" element={<InvestorEngagementArticle />} />
+              <Route path="/intel" element={<Blog />} />
+              <Route path="/intel/amplifi-x-2-0-article" element={<AmplifiX2Article />} />
+              <Route path="/intel/ai-intelligence-article" element={<AIIntelligenceArticle />} />
+              <Route path="/intel/advanced-analytics-article" element={<AdvancedAnalyticsArticle />} />
+              <Route path="/intel/investor-engagement-article" element={<InvestorEngagementArticle />} />
               <Route path="/support" element={<Support />} />
               <Route path="/solutions" element={<Solutions />} />
               <Route path="/about" element={<About />} />

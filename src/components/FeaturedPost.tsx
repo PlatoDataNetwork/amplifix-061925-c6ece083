@@ -29,7 +29,7 @@ const FeaturedPost = () => {
               </div>
             </div>
             <Button className="bg-gradient-to-r from-blue-500 to-blue-500 text-xs md:text-sm" asChild>
-              <Link to="/blog/amplifi-x-2-0-article">
+              <Link to="/intel/amplifi-x-2-0-article">
                 Read Full Article <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>

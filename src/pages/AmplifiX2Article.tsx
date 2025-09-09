@@ -18,7 +18,7 @@ const AmplifiX2Article = () => {
         
         <main className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="mb-8">
-            <Link to="/blog">
+            <Link to="/intel">
               <Button variant="ghost" className="mb-4">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Blog
@@ -73,7 +73,7 @@ const AmplifiX2Article = () => {
           </article>
           
           <div className="mt-12 pt-8 border-t border-border">
-            <Link to="/blog">
+            <Link to="/intel">
               <Button variant="outline">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to All Articles
