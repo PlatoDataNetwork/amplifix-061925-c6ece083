@@ -65,48 +65,50 @@ const Showcase = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {showcaseData.showcases.map((showcase: any, index: number) => (
                 <div key={index} className={`relative bg-card p-8 rounded-xl border ${showcase.disabled ? 'border-dashed border-border opacity-60' : 'border-border hover:shadow-lg transition-shadow'}`}>
-                  {/* Action Buttons - Top Right Corner */}
-                  <div className="absolute top-4 right-4 flex gap-2">
-                    {/* Stock Chart Button */}
-                    {showcase.stock_url && (
-                      <a 
-                        href={showcase.stock_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-lg bg-muted hover:bg-accent transition-colors group"
-                        title="View Stock Chart"
-                      >
-                        <BarChart3 className="h-4 w-4 text-green-500 group-hover:text-green-600" />
-                      </a>
-                    )}
-                    
-                    {/* Visit Website Button */}
-                    {showcase.website && (
-                      <a 
-                        href={showcase.website} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-lg bg-muted hover:bg-accent transition-colors group"
-                        title="Visit Website"
-                      >
-                        <Globe className="h-4 w-4 text-highlight-blue group-hover:text-highlight-blue/80" />
-                      </a>
-                    )}
-                  </div>
-                  
-                  {/* Company Header with proper spacing for icons */}
-                  <div className="flex items-center gap-4 mb-6 pt-8">
-                    <div className={`w-12 h-12 rounded-full ${showcase.disabled ? 'bg-muted' : 'bg-green-500/20'} flex items-center justify-center`}>
-                      {showcase.company_name === 'SILO Pharma Inc.' && <Pill className="h-6 w-6 text-green-500" />}
-                      {showcase.company_name === 'Karbon-X' && <Building className="h-6 w-6 text-blue-500" />}
+                  {/* Header with company name and action buttons aligned */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-full ${showcase.disabled ? 'bg-muted' : 'bg-green-500/20'} flex items-center justify-center`}>
+                        {showcase.company_name === 'SILO Pharma Inc.' && <Pill className="h-6 w-6 text-green-500" />}
+                        {showcase.company_name === 'Karbon-X' && <Building className="h-6 w-6 text-blue-500" />}
+                      </div>
+                      <div>
+                        <h3 className={`text-xl font-bold ${showcase.disabled ? 'text-muted-foreground' : ''}`}>
+                          {showcase.company_name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {showcase.ticker || showcase.subtitle}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className={`text-xl font-bold ${showcase.disabled ? 'text-muted-foreground' : ''}`}>
-                        {showcase.company_name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {showcase.ticker || showcase.subtitle}
-                      </p>
+                    
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      {/* Stock Chart Button */}
+                      {showcase.stock_url && (
+                        <a 
+                          href={showcase.stock_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-lg bg-muted hover:bg-accent transition-colors group"
+                          title="View Stock Chart"
+                        >
+                          <BarChart3 className="h-4 w-4 text-green-500 group-hover:text-green-600" />
+                        </a>
+                      )}
+                      
+                      {/* Visit Website Button */}
+                      {showcase.website && (
+                        <a 
+                          href={showcase.website} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-lg bg-muted hover:bg-accent transition-colors group"
+                          title="Visit Website"
+                        >
+                          <Globe className="h-4 w-4 text-highlight-blue group-hover:text-highlight-blue/80" />
+                        </a>
+                      )}
                     </div>
                   </div>
                   <p className="text-muted-foreground mb-6">
