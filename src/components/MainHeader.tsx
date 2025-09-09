@@ -32,7 +32,7 @@ const MainHeader = () => {
 
   useEffect(() => {
     // Add GTranslate settings
-    window.gtranslateSettings = {
+    (window as any).gtranslateSettings = {
       default_language: "en",
       wrapper_selector: ".gtranslate_wrapper",
       switcher_horizontal_position: "right",

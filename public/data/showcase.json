@@ -15,14 +15,6 @@
       "link": "/showcase/silo-pharma"
     },
     {
-      "company_name": "International Land Alliance",
-      "ticker": "OTCQB: ILAL",
-      "description": "International Land Alliance, Inc. (OTCQB: ILAL) is an international land investment and development firm based in San Diego, California.",
-      "tags": ["Real Estate", "Land Development", "Investment"],
-      "button_text": "View Case Study",
-      "link": "/showcase/international-land-alliance"
-    },
-    {
       "company_name": "Karbon-X",
       "ticker": "KARX",
       "description": "Karbon-X is a technology company focused on innovative solutions and carbon management technologies to address environmental challenges.",
