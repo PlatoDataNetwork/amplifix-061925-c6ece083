@@ -86,7 +86,11 @@ const Blog = () => {
         <section className="mb-12 md:mb-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {blogPosts.map((post) => (
-              <BlogPostCard key={post.id} post={post} />
+              <BlogPostCard 
+                key={post.id} 
+                post={post} 
+                articleLink={post.id === 1 ? "/blog/ai-intelligence-article" : undefined}
+              />
             ))}
           </div>
         </section>

@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { User, ArrowRight, Shield, Zap, Globe } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface BlogPost {
   id: number;
@@ -15,9 +16,10 @@ interface BlogPost {
 
 interface BlogPostCardProps {
   post: BlogPost;
+  articleLink?: string;
 }
 
-const BlogPostCard = ({ post }: BlogPostCardProps) => {
+const BlogPostCard = ({ post, articleLink }: BlogPostCardProps) => {
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case "Security": return <Shield className="h-16 w-16 text-[#8A3FFC]" />;
@@ -46,9 +48,17 @@ const BlogPostCard = ({ post }: BlogPostCardProps) => {
           </div>
           <span className="text-gray-400 text-sm">{post.date}</span>
         </div>
-        <Button variant="link" className="text-[#8A3FFC] mt-4 p-0">
-          Read more <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
+        {articleLink ? (
+          <Button variant="link" className="text-[#8A3FFC] mt-4 p-0" asChild>
+            <Link to={articleLink}>
+              Read more <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        ) : (
+          <Button variant="link" className="text-[#8A3FFC] mt-4 p-0">
+            Read more <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        )}
       </div>
     </article>
   );
