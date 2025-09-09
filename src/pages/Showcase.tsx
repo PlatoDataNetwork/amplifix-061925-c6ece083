@@ -83,25 +83,9 @@ const Showcase = () => {
                   <p className="text-muted-foreground mb-6">
                     {showcase.description}
                   </p>
-                  {showcase.tags && (
-                    <div className="flex items-center justify-between gap-2 mb-6">
-                      <div className="flex gap-2">
-                        {showcase.tags.map((tag: string, tagIndex: number) => (
-                          <span 
-                            key={tagIndex} 
-                            className={`px-3 py-1 rounded-full text-sm ${
-                              tagIndex === 0 ? 'bg-highlight-blue/10 text-highlight-blue' :
-                              tagIndex === 1 ? 'bg-green-500/10 text-green-500' :
-                              'bg-purple-500/10 text-purple-500'
-                            }`}
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                      
-                      {/* Action Buttons positioned to the right of tags */}
-                      <div className="flex gap-2 flex-shrink-0">
+                  
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 mb-6">
                         {/* Live Stock Price Button */}
                         {showcase.stock_url && (
                           <a 
@@ -128,8 +112,6 @@ const Showcase = () => {
                           </a>
                         )}
                       </div>
-                    </div>
-                  )}
                   {showcase.link ? (
                     <Link to={showcase.link}>
                       <Button className={`w-full ${showcase.disabled ? '' : 'bg-highlight-blue hover:bg-highlight-blue/90 text-white'}`} disabled={showcase.disabled}>
