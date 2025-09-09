@@ -13,7 +13,9 @@ const Showcase = () => {
   const generateSearchUrl = (companyName: string, ticker: string) => {
     const stockSymbol = ticker.split(': ')[1] || '';
     const searchQuery = `${companyName}, ${stockSymbol}`;
-    return `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+    // Use the format: company+name,+SYMBOL
+    const formattedQuery = searchQuery.replace(/\s+/g, '+');
+    return `https://www.google.com/search?q=${formattedQuery}`;
   };
   
   if (isLoading) {
