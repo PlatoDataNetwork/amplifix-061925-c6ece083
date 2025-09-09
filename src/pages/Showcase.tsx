@@ -76,7 +76,7 @@ const Showcase = () => {
                         className="p-2 rounded-lg bg-muted hover:bg-accent transition-colors group"
                         title="View Stock Chart"
                       >
-                        <BarChart3 className="h-6 w-6 text-green-500 group-hover:text-green-600" />
+                        <BarChart3 className="h-4 w-4 text-green-500 group-hover:text-green-600" />
                       </a>
                     )}
                     
@@ -89,12 +89,13 @@ const Showcase = () => {
                         className="p-2 rounded-lg bg-muted hover:bg-accent transition-colors group"
                         title="Visit Website"
                       >
-                        <Globe className="h-6 w-6 text-highlight-blue group-hover:text-highlight-blue/80" />
+                        <Globe className="h-4 w-4 text-highlight-blue group-hover:text-highlight-blue/80" />
                       </a>
                     )}
                   </div>
                   
-                  <div className="flex items-center gap-4 mb-6">
+                  {/* Company Header with proper spacing for icons */}
+                  <div className="flex items-center gap-4 mb-6 pt-8">
                     <div className={`w-12 h-12 rounded-full ${showcase.disabled ? 'bg-muted' : 'bg-green-500/20'} flex items-center justify-center`}>
                       {showcase.company_name === 'SILO Pharma Inc.' && <Pill className="h-6 w-6 text-green-500" />}
                       {showcase.company_name === 'Karbon-X' && <Building className="h-6 w-6 text-blue-500" />}
