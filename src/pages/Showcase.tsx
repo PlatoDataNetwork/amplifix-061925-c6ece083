@@ -102,29 +102,29 @@ const Showcase = () => {
                       
                       {/* Action Buttons positioned to the right of tags */}
                       <div className="flex gap-2 flex-shrink-0">
-                        {/* Stock Chart Button */}
+                        {/* Live Stock Price Button */}
                         {showcase.stock_url && (
                           <a 
                             href={showcase.stock_url} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="p-3 rounded-lg bg-muted hover:bg-accent transition-colors group"
-                            title="View Stock Chart"
                           >
-                            <BarChart3 className="h-5 w-5 text-green-500 group-hover:text-green-600" />
+                            <Button size="sm" variant="outline" className="text-xs">
+                              Live Stock Price
+                            </Button>
                           </a>
                         )}
                         
-                        {/* Visit Website Button */}
+                        {/* Website Button */}
                         {showcase.website && (
                           <a 
                             href={showcase.website} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="p-3 rounded-lg bg-muted hover:bg-accent transition-colors group"
-                            title="Visit Website"
                           >
-                            <Globe className="h-5 w-5 text-highlight-blue group-hover:text-highlight-blue/80" />
+                            <Button size="sm" variant="outline" className="text-xs">
+                              Website
+                            </Button>
                           </a>
                         )}
                       </div>
