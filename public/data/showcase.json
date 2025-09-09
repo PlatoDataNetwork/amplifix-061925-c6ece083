@@ -13,7 +13,8 @@
       "tags": ["Pharmaceutical", "Biotech", "CNS Therapeutics"],
       "button_text": "Visit Showcase",
       "link": "/showcase/silo-pharma",
-      "website": "https://silopharma.com/"
+      "website": "https://silopharma.com/",
+      "stock_url": "https://www.nasdaq.com/market-activity/stocks/silo"
     },
     {
       "company_name": "Int'l Land Alliance",
@@ -22,7 +23,8 @@
       "tags": ["Real Estate", "Land Development", "Investment"],
       "button_text": "View Showcase",
       "link": "/showcase/international-land-alliance",
-      "website": "https://www.internationallandalliance.com/"
+      "website": "https://www.internationallandalliance.com/",
+      "stock_url": "https://www.otcmarkets.com/stock/ILAL/overview"
     },
     {
       "company_name": "Karbon-X",
@@ -31,7 +33,8 @@
       "tags": ["Technology", "Environmental", "Carbon Management"],
       "button_text": "View Showcase",
       "link": "/showcase/karbon-x",
-      "website": "https://www.karbon-x.com/"
+      "website": "https://www.karbon-x.com/",
+      "stock_url": "https://www.tradingview.com/symbols/OTC-KARX/"
     }
   ],
   "why_choose": {
