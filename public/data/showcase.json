@@ -14,7 +14,7 @@
       "button_text": "Visit Showcase",
       "link": "/showcase/silo-pharma",
       "website": "https://silopharma.com/",
-      "stock_url": "https://www.nasdaq.com/market-activity/stocks/silo"
+      "stock_url": "https://www.tradingview.com/symbols/NASDAQ-SILO/"
     },
     {
       "company_name": "Int'l Land Alliance",
@@ -24,7 +24,7 @@
       "button_text": "View Showcase",
       "link": "/showcase/international-land-alliance",
       "website": "https://www.internationallandalliance.com/",
-      "stock_url": "https://www.otcmarkets.com/stock/ILAL/overview"
+      "stock_url": "https://www.tradingview.com/symbols/OTC-ILAL/"
     },
     {
       "company_name": "Karbon-X",
