@@ -99,9 +99,8 @@ const Contact = () => {
                     <div>
                       <h3 className="font-medium mb-1">Office</h3>
                       <p className="text-muted-foreground">
-                        123 Business Ave<br />
-                        Suite 100<br />
-                        New York, NY 10001
+                        9170 Glades Road<br />
+                        Boca Raton, FL 33434
                       </p>
                     </div>
                   </div>
