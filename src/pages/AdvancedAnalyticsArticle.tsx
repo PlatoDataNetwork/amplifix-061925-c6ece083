@@ -24,7 +24,7 @@ const AdvancedAnalyticsArticle = () => {
             <Link to="/intel">
               <Button variant="ghost" className="mb-4">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Blog
+                Back to Intel
               </Button>
             </Link>
             
