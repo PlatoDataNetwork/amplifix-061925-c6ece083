@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { User, Calendar, ArrowRight, Shield } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const FeaturedPost = () => {
   return (
@@ -27,8 +28,10 @@ const FeaturedPost = () => {
                 <span className="text-gray-400">December 10, 2024</span>
               </div>
             </div>
-            <Button className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4]">
-              Read Full Article <ArrowRight className="ml-2 h-4 w-4" />
+            <Button className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4]" asChild>
+              <Link to="/blog/amplifi-x-2-0-article">
+                Read Full Article <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
             </Button>
           </div>
           <div className="bg-[#121218] p-8 rounded-xl border border-gray-800 h-64 flex items-center justify-center">

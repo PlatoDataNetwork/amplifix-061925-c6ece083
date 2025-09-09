@@ -30,6 +30,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import DataProcessing from "./pages/DataProcessing";
 import Compliance from "./pages/Compliance";
+import AmplifiX2Article from "./pages/AmplifiX2Article";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
               
               <Route path="/api" element={<API />} />
               <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/amplifi-x-2-0-article" element={<AmplifiX2Article />} />
               <Route path="/support" element={<Support />} />
               <Route path="/solutions" element={<Solutions />} />
               <Route path="/about" element={<About />} />
