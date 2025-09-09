@@ -57,24 +57,12 @@ const Footer = () => {
                       className="text-muted-foreground hover:text-highlight-blue"
                     >
                       {link.label}
-                      {link.label === 'Home' && (
-                        <span className="ml-2 text-xs text-muted-foreground/70">
-                          - {commonData?.branding.description || 'AI-powered PR Distribution and Syndication Platform'}
-                        </span>
-                      )}
                     </Link>
                   </li>
                 ))
               ) : (
                 <>
-                  <li>
-                    <Link to="/" className="text-muted-foreground hover:text-highlight-blue">
-                      Home
-                      <span className="ml-2 text-xs text-muted-foreground/70">
-                        - AI-powered PR Distribution and Syndication Platform
-                      </span>
-                    </Link>
-                  </li>
+                  <li><Link to="/" className="text-muted-foreground hover:text-highlight-blue">Home</Link></li>
                   <li><Link to="/showcase" className="text-muted-foreground hover:text-highlight-blue">Showcase</Link></li>
                   <li><Link to="/faq" className="text-muted-foreground hover:text-highlight-blue">FAQ</Link></li>
                 </>
