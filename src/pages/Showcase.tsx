@@ -86,31 +86,33 @@ const Showcase = () => {
                   
                   {/* Action Buttons */}
                   <div className="flex gap-2 mb-6">
-                        {/* Live Stock Price Button */}
-                        {showcase.stock_url && (
-                          <a 
-                            href={showcase.stock_url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                          >
-                            <Button size="sm" variant="outline" className="text-xs">
-                              Live Stock Price
-                            </Button>
-                          </a>
-                        )}
-                        
-                        {/* Website Button */}
-                        {showcase.website && (
-                          <a 
-                            href={showcase.website} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                          >
-                            <Button size="sm" variant="outline" className="text-xs">
-                              Website
-                            </Button>
-                          </a>
-                        )}
+                    {/* Live Stock Price Button */}
+                    {showcase.stock_url && (
+                      <a 
+                        href={showcase.stock_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        <Button size="sm" variant="outline" className="text-xs">
+                          <BarChart3 className="h-4 w-4 mr-2" />
+                          Live Stock Price
+                        </Button>
+                      </a>
+                    )}
+                    
+                    {/* Website Button */}
+                    {showcase.website && (
+                      <a 
+                        href={showcase.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        <Button size="sm" variant="outline" className="text-xs">
+                          <Globe className="h-4 w-4 mr-2" />
+                          Website
+                        </Button>
+                      </a>
+                    )}
                       </div>
                   {showcase.link ? (
                     <Link to={showcase.link}>
