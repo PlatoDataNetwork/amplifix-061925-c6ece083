@@ -35,6 +35,16 @@
       "link": "/showcase/karbon-x",
       "website": "https://www.karbon-x.com/",
       "stock_url": "https://www.tradingview.com/symbols/OTC-KARX/"
+    },
+    {
+      "company_name": "FYNN AI",
+      "ticker": "OTCQB: FYNN",
+      "description": "An AI Fintech Holding Company creating a new generation of AI fintech products. FYNN AI offers an AI personal advisor that analyzes large datasets and creates investment strategies with real-time market data.",
+      "tags": ["AI", "Fintech", "Trading Platform"],
+      "button_text": "View Showcase",
+      "link": "/showcase/fynn-ai",
+      "website": "https://fyntechnical.com/",
+      "stock_url": "https://www.tradingview.com/symbols/OTC-FYNN/"
     }
   ],
   "why_choose": {
