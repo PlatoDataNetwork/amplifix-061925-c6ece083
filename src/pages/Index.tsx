@@ -66,17 +66,18 @@ const Index = () => {
             )}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              onClick={handleGetStartedClick}
-              className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg"
-            >
-              {isLoading ? (
-                <Skeleton className="h-4 w-32" />
-              ) : (
-                homeData?.hero.buttons.primary || 'Amplifi Your Brand →'
-              )}
-            </Button>
+            <Link to="/contact">
+              <Button 
+                size="lg" 
+                className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg"
+              >
+                {isLoading ? (
+                  <Skeleton className="h-4 w-32" />
+                ) : (
+                  homeData?.hero.buttons.primary || 'Amplifi Your Brand →'
+                )}
+              </Button>
+            </Link>
             <Button 
               size="lg" 
               variant="outline" 
