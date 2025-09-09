@@ -73,7 +73,7 @@ const Showcase = () => {
                       className="absolute top-4 right-4 p-2 rounded-lg bg-muted hover:bg-accent transition-colors group"
                       title="Visit Website"
                     >
-                      <Globe className="h-4 w-4 text-muted-foreground group-hover:text-foreground" />
+                      <Globe className="h-6 w-6 text-highlight-blue group-hover:text-highlight-blue/80" />
                     </a>
                   )}
                   
