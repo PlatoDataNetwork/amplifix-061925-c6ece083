@@ -6,43 +6,38 @@ import FeaturedPost from "@/components/FeaturedPost";
 import BlogPostCard from "@/components/BlogPostCard";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import RSSFeed from "@/components/RSSFeed";
+import { useJsonData } from "@/hooks/useJsonData";
+
+interface BlogPost {
+  id: number;
+  title: string;
+  excerpt: string;
+  author: string;
+  date: string;
+  read_time: string;
+  category: string;
+  image: string;
+}
+
+interface BlogData {
+  hero: {
+    badge_text: string;
+    title: string;
+    description: string;
+  };
+  categories: string[];
+  blog_posts: BlogPost[];
+  popular_tags: {
+    title: string;
+    tags: string[];
+  };
+}
 
 const Blog = () => {
-  const blogPosts = [
-    {
-      id: 1,
-      title: "The Future of AI-Powered Corporate Intelligence",
-      excerpt: "Exploring how artificial intelligence is revolutionizing investor relations and corporate communications.",
-      author: "Sarah Chen",
-      date: "December 5, 2024",
-      readTime: "5 min read",
-      category: "Technology",
-      image: "blog1"
-    },
-    {
-      id: 2,
-      title: "Advanced Analytics for Better Decision Making",
-      excerpt: "A comprehensive guide to how AmplifiX empowers companies with data-driven insights.",
-      author: "Dr. Alex Rodriguez",
-      date: "December 1, 2024",
-      readTime: "8 min read",
-      category: "Analytics",
-      image: "blog2"
-    },
-    {
-      id: 3,
-      title: "Maximizing Investor Engagement Through AI",
-      excerpt: "Best practices for leveraging artificial intelligence to enhance investor relations and communications.",
-      author: "Michael Zhang",
-      date: "November 28, 2024",
-      readTime: "6 min read",
-      category: "Technology",
-      image: "blog3"
-    }
-  ];
-
-  const categories = ["All", "Technology", "Analytics", "Security", "Insights", "Updates"];
-  const popularTags = ["AI", "Analytics", "Investor Relations", "Corporate Communications", "Intelligence", "Automation", "Data", "Insights", "Technology", "Innovation"];
+  const { data: blogData } = useJsonData<BlogData>('blog.json');
+  const blogPosts = blogData?.blog_posts || [];
+  const categories = blogData?.categories || ["All", "Technology", "Analytics", "Security", "Insights", "Updates"];
+  const popularTags = blogData?.popular_tags?.tags || ["AI", "Analytics", "Investor Relations", "Corporate Communications", "Intelligence", "Automation", "Data", "Insights", "Technology", "Innovation"];
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white">
@@ -57,7 +52,7 @@ const Blog = () => {
             </div>
           </div>
           <h1 className="text-3xl md:text-5xl font-bold mb-6">
-            AmplifiX <span className="bg-gradient-to-r from-[#06B6D4] to-[#06B6D4] bg-clip-text text-transparent">Intel</span>
+            AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intel</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto px-4">
             Stay updated with the latest in AI intelligence, corporate communications insights, and product updates from the AmplifiX team.
@@ -74,7 +69,7 @@ const Blog = () => {
                 key={category}
                 variant={category === "All" ? "default" : "outline"}
                 size="sm"
-                className={category === "All" ? "bg-gradient-to-r from-[#06B6D4] to-[#06B6D4] text-xs md:text-sm" : "text-xs md:text-sm"}
+                className={category === "All" ? "bg-gradient-to-r from-blue-500 to-blue-500 text-xs md:text-sm" : "text-xs md:text-sm"}
               >
                 {category}
               </Button>
@@ -88,7 +83,10 @@ const Blog = () => {
             {blogPosts.map((post) => (
               <BlogPostCard 
                 key={post.id} 
-                post={post} 
+                post={{
+                  ...post,
+                  readTime: post.read_time
+                }} 
                 articleLink={
                   post.id === 1 ? "/blog/ai-intelligence-article" :
                   post.id === 2 ? "/blog/advanced-analytics-article" :
@@ -107,7 +105,7 @@ const Blog = () => {
           <h2 className="text-xl md:text-2xl font-bold mb-6">Popular Tags</h2>
           <div className="flex flex-wrap gap-2 md:gap-3">
             {popularTags.map((tag) => (
-              <span key={tag} className="bg-[#121218] border border-gray-800 px-3 py-2 rounded-full text-gray-300 hover:border-[#8A3FFC]/30 cursor-pointer transition-colors text-xs md:text-sm">
+              <span key={tag} className="bg-[#121218] border border-gray-800 px-3 py-2 rounded-full text-gray-300 hover:border-blue-500/30 cursor-pointer transition-colors text-xs md:text-sm">
                 #{tag}
               </span>
             ))}
