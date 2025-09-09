@@ -38,7 +38,6 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/dashboard" element={<Dashboard />} />
               
               <Route path="/api" element={<API />} />
               <Route path="/blog" element={<Blog />} />

@@ -22,7 +22,6 @@
         "title": "Platform",
         "links": [
           { "label": "Home" },
-          { "label": "Dashboard" },
           { "label": "Pricing" },
           { "label": "FAQ" }
         ]
