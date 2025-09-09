@@ -30,8 +30,7 @@
         "links": [
           { "label": "Public Companies" },
           { "label": "Private Companies" },
-          { "label": "IPO Preparation" },
-          { "label": "Fundraising" }
+          { "label": "IPO Preparation" }
         ]
       },
       "company": {

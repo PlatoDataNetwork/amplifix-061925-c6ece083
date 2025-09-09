@@ -82,7 +82,7 @@ const Footer = () => {
                 commonData.footer.sections.solutions.links.map((link, index) => (
                   <li key={index}>
                     <Link 
-                      to={link.label === 'Public Companies' ? '/solutions/public-companies' : link.label === 'Private Companies' ? '/solutions/private-companies' : link.label === 'IPO Preparation' ? '/solutions/ipo-preparation' : link.label === 'Fundraising' ? '/solutions/fundraising' : '#'} 
+                      to={link.label === 'Public Companies' ? '/solutions/public-companies' : link.label === 'Private Companies' ? '/solutions/private-companies' : link.label === 'IPO Preparation' ? '/solutions/ipo-preparation' : '#'} 
                       className="text-muted-foreground hover:text-highlight-blue"
                     >
                       {link.label}
@@ -94,7 +94,6 @@ const Footer = () => {
                   <li><Link to="/solutions/public-companies" className="text-muted-foreground hover:text-highlight-blue">Public Companies</Link></li>
                   <li><Link to="/solutions/private-companies" className="text-muted-foreground hover:text-highlight-blue">Private Companies</Link></li>
                   <li><Link to="/solutions/ipo-preparation" className="text-muted-foreground hover:text-highlight-blue">IPO Preparation</Link></li>
-                  <li><Link to="/solutions/fundraising" className="text-muted-foreground hover:text-highlight-blue">Fundraising</Link></li>
                 </>
               )}
             </ul>
