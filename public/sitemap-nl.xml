@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Homepage -->
+  <url>
+    <loc>https://amplifix.net/nl/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amplifix.net/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://amplifix.net/nl/" />
+    <lastmod>2025-01-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Main Pages -->
+  <url>
+    <loc>https://amplifix.net/nl/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amplifix.net/about" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://amplifix.net/nl/about" />
+    <lastmod>2025-01-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://amplifix.net/nl/solutions</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amplifix.net/solutions" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://amplifix.net/nl/solutions" />
+    <lastmod>2025-01-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://amplifix.net/nl/showcase</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amplifix.net/showcase" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://amplifix.net/nl/showcase" />
+    <lastmod>2025-01-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://amplifix.net/nl/intel</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amplifix.net/intel" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://amplifix.net/nl/intel" />
+    <lastmod>2025-01-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://amplifix.net/nl/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://amplifix.net/contact" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://amplifix.net/nl/contact" />
+    <lastmod>2025-01-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+</urlset>
