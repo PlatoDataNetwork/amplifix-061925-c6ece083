@@ -124,7 +124,7 @@ const Showcase = () => {
                     >
                       <Button variant="outline" className="flex-1">
                         <Search className="h-4 w-4 mr-2" />
-                        AI Search
+                        AmplifiX
                       </Button>
                     </a>
                   </div>
