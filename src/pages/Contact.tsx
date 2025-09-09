@@ -4,8 +4,77 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, MapPin } from "lucide-react";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    company: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Basic validation
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.message) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+        body: formData
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for your message. We'll get back to you soon.",
+      });
+
+      // Reset form
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        company: "",
+        message: ""
+      });
+
+    } catch (error: any) {
+      console.error('Error sending email:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <MainHeader />
@@ -30,49 +99,85 @@ const Contact = () => {
             {/* Contact Form */}
             <div className="bg-card p-8 rounded-xl border border-border">
               <h2 className="text-2xl font-bold mb-6">Send us a message</h2>
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="firstName" className="block text-sm font-medium mb-2">
-                      First Name
+                      First Name *
                     </label>
-                    <Input id="firstName" placeholder="John" />
+                    <Input 
+                      id="firstName" 
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      placeholder="John" 
+                      required
+                    />
                   </div>
                   <div>
                     <label htmlFor="lastName" className="block text-sm font-medium mb-2">
-                      Last Name
+                      Last Name *
                     </label>
-                    <Input id="lastName" placeholder="Doe" />
+                    <Input 
+                      id="lastName" 
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      placeholder="Doe" 
+                      required
+                    />
                   </div>
                 </div>
                 
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium mb-2">
-                    Email
+                    Email *
                   </label>
-                  <Input id="email" type="email" placeholder="john@company.com" />
+                  <Input 
+                    id="email" 
+                    name="email"
+                    type="email" 
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="john@company.com" 
+                    required
+                  />
                 </div>
                 
                 <div>
                   <label htmlFor="company" className="block text-sm font-medium mb-2">
                     Company
                   </label>
-                  <Input id="company" placeholder="Your Company Name" />
+                  <Input 
+                    id="company" 
+                    name="company"
+                    value={formData.company}
+                    onChange={handleInputChange}
+                    placeholder="Your Company Name" 
+                  />
                 </div>
                 
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium mb-2">
-                    Message
+                    Message *
                   </label>
                   <Textarea 
                     id="message" 
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
                     placeholder="Tell us about your corporate communications needs..."
                     rows={6}
+                    required
                   />
                 </div>
                 
-                <Button className="w-full bg-highlight-blue text-white hover:bg-highlight-blue/90">
-                  Send Message
+                <Button 
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-highlight-blue text-white hover:bg-highlight-blue/90 disabled:opacity-50"
+                >
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </div>
