@@ -85,7 +85,7 @@ const Showcase = () => {
                   </p>
                   
                   {/* Action Buttons */}
-                  <div className="flex gap-2 mb-6">
+                  <div className="flex gap-2 mb-4">
                     {/* Live Stock Price Button */}
                     {showcase.stock_url && (
                       <a 
@@ -93,7 +93,7 @@ const Showcase = () => {
                         target="_blank" 
                         rel="noopener noreferrer"
                       >
-                        <Button size="sm" variant="outline" className="text-xs">
+                        <Button variant="outline" className="flex-1">
                           <BarChart3 className="h-4 w-4 mr-2" />
                           Live Stock Price
                         </Button>
@@ -107,13 +107,13 @@ const Showcase = () => {
                         target="_blank" 
                         rel="noopener noreferrer"
                       >
-                        <Button size="sm" variant="outline" className="text-xs">
+                        <Button variant="outline" className="flex-1">
                           <Globe className="h-4 w-4 mr-2" />
                           Website
                         </Button>
                       </a>
                     )}
-                      </div>
+                  </div>
                   {showcase.link ? (
                     <Link to={showcase.link}>
                       <Button className={`w-full ${showcase.disabled ? '' : 'bg-highlight-blue hover:bg-highlight-blue/90 text-white'}`} disabled={showcase.disabled}>
