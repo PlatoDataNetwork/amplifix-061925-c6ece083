@@ -31,7 +31,7 @@ const FynnAIShowcase = () => {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-3 bg-highlight-blue/10 px-6 py-3 rounded-full mb-6">
-                <Brain className="h-6 w-6 text-highlight-blue" />
+                <img src="/lovable-uploads/81a540f7-53d1-4835-a86f-983e8a85e38c.png" alt="FYNN AI Logo" className="h-8 w-8" />
                 <span className="text-highlight-blue font-semibold">Web3 AI Innovation</span>
               </div>
               <div className="mb-6">
