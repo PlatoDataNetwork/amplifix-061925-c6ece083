@@ -21,11 +21,11 @@ const FeaturedPost = () => {
             <div className="flex items-center gap-6 mb-6">
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4 text-gray-400" />
-                <span className="text-gray-400">AmplifiX Team</span>
+                <span className="text-gray-400">AmplifiX</span>
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-gray-400" />
-                <span className="text-gray-400">December 10, 2024</span>
+                <span className="text-gray-400">Sept 1, 2025</span>
               </div>
             </div>
             <Button className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4]" asChild>

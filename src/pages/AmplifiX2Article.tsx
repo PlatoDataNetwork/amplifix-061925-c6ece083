@@ -37,11 +37,11 @@ const AmplifiX2Article = () => {
             <div className="flex items-center gap-6 mb-8">
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">AmplifiX Team</span>
+                <span className="text-muted-foreground">AmplifiX</span>
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">December 10, 2024</span>
+                <span className="text-muted-foreground">Sept 1, 2025</span>
               </div>
             </div>
           </div>
