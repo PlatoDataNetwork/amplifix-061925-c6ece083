@@ -6,7 +6,6 @@
   "navigation": {
     "main_menu": [
       { "label": "About" },
-      { "label": "Features" },
       { "label": "Solutions" },
       { "label": "Showcase" },
       { "label": "Intel" },

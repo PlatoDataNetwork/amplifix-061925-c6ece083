@@ -16,7 +16,6 @@ import NotFound from "./pages/NotFound";
 import SiloPharmaShowcase from "./pages/SiloPharmaShowcase";
 import KarbonXShowcase from "./pages/KarbonXShowcase";
 import Showcase from "./pages/Showcase";
-import Features from "./pages/Features";
 import Solutions from "./pages/Solutions";
 import PublicCompanies from "./pages/PublicCompanies";
 import PrivateCompanies from "./pages/PrivateCompanies";
@@ -44,7 +43,6 @@ const App = () => (
               <Route path="/api" element={<API />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/support" element={<Support />} />
-              <Route path="/features" element={<Features />} />
               <Route path="/solutions" element={<Solutions />} />
               <Route path="/about" element={<About />} />
               <Route path="/faq" element={<FAQ />} />
