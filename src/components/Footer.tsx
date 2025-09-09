@@ -53,7 +53,7 @@ const Footer = () => {
                 commonData.footer.sections.platform.links.map((link, index) => (
                   <li key={index}>
                     <Link 
-                      to={link.label === 'Home' ? '/' : link.label === 'Pricing' ? '/pricing' : link.label === 'FAQ' ? '/faq' : '#'} 
+                      to={link.label === 'Home' ? '/' : link.label === 'FAQ' ? '/faq' : '#'} 
                       className="text-muted-foreground hover:text-highlight-blue"
                     >
                       {link.label}
@@ -63,7 +63,6 @@ const Footer = () => {
               ) : (
                 <>
                   <li><Link to="/" className="text-muted-foreground hover:text-highlight-blue">Home</Link></li>
-                  <li><Link to="/pricing" className="text-muted-foreground hover:text-highlight-blue">Pricing</Link></li>
                   <li><Link to="/faq" className="text-muted-foreground hover:text-highlight-blue">FAQ</Link></li>
                 </>
               )}
