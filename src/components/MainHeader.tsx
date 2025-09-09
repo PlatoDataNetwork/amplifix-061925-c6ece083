@@ -114,17 +114,6 @@ const MainHeader = () => {
           )}
           <ThemeToggle />
           <div className="gtranslate_wrapper"></div>
-          <Link to="/showcase/silo-pharma">
-            <Button 
-              className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors rounded-lg"
-            >
-              {isLoading ? (
-                <Skeleton className="h-4 w-20" />
-              ) : (
-                commonData?.navigation.cta_button.label || 'SILO Showcase'
-              )}
-            </Button>
-          </Link>
         </div>
 
         {/* Mobile Navigation */}

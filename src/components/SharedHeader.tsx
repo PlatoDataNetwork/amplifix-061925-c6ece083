@@ -63,11 +63,6 @@ const SharedHeader = ({
       
       <div className="flex items-center space-x-4">
         <ThemeToggle />
-        <Link to="/showcase/silo-pharma">
-          <Button className="bg-blue-500 hover:bg-blue-600 text-white">
-            SILO Showcase
-          </Button>
-        </Link>
       </div>
     </nav>
   );

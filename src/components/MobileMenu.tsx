@@ -80,13 +80,6 @@ const MobileMenu = () => {
               <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                 <ThemeToggle />
               </div>
-              <div className="p-4">
-                <Link to="/showcase/silo-pharma" onClick={closeMenu}>
-                  <Button className="w-full bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors rounded-lg">
-                    SILO Showcase
-                  </Button>
-                </Link>
-              </div>
             </nav>
           </div>
         </div>
