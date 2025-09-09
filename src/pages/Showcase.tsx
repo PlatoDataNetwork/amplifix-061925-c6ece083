@@ -12,10 +12,10 @@ const Showcase = () => {
   // Helper function to generate Google search URL
   const generateSearchUrl = (companyName: string, ticker: string) => {
     const stockSymbol = ticker.split(': ')[1] || '';
-    const searchQuery = `${companyName}, ${stockSymbol}`;
-    // Use the format: company+name,+SYMBOL
-    const formattedQuery = searchQuery.replace(/\s+/g, '+');
-    return `https://www.google.com/search?q=${formattedQuery}`;
+    // Create a comprehensive search URL similar to the provided example
+    const searchQuery = `${companyName}+${stockSymbol}`;
+    const encodedQuery = encodeURIComponent(searchQuery.replace(/\+/g, ' '));
+    return `https://www.google.com/search?q=${encodedQuery}&sca_esv=fe6362944b97d7fe&sxsrf=AE3TifOnmotp8dskWoD8rQnMSOp1xdhEEA%3A1757450762166&ei=CpLAaOjuCaqkiLMPi7iLgAs&ved=0ahUKEwjom46jxsyPAxUqEmIAHQvcArAQ4dUDCBI&uact=5&oq=${encodedQuery}&gs_lp=Egxnd3Mtd2l6LXNlcnAiIUludGVybmF0aW9uYWwgTGFuZCBBbGxpYW5jZSwgSUxBTDIFECEYoAEyBRAhGKABMgUQIRigATIFECEYoAEyBRAhGKABSNqVAVDXHFjhcXAHeAGQAQCYAZUBoAH1HKoBBTEyLjIyuAEDyAEA-AEBmAIpoAK_HsICBxAjGLADGCfCAgoQABhHGNYEGLADwgITEC4YgAQYigUYQxjHARjRAxiwA8ICDRAAGIAEGIoFGEMYsAPCAgoQIxjwBRjJAhgnwgIEECMYJ8ICCxAAGIAEGLEDGIMBwgIOEAAYgAQYigUYsQMYgwHCAgQQABgDwgIQEAAYgAQYigUYQxixAxiDAcICChAAGIAEGIoFGEPCAhAQABiABBiKBRhDGLEDGMkDwgINEAAYgAQYigUYQxixA8ICFhAuGIAEGIoFGEMYsQMYgwEYxwEY0QPCAg4QLhiABBixAxjHARjRA8ICCBAAGIAEGLEDwgIOEC4YgAQYsQMYxwEYrwHCAgUQABiABMICCxAuGIAEGLEDGIMBwgIOEAAYgAQYigUYkQIYyQPCAgsQABiABBiKBRiRAsICCxAAGIAEGIoFGJIDwgIOEC4YgAQYxwEYrwEYjgXCAgsQLhiABBjHARjRA8ICCxAuGIAEGMcBGK8BwgIIEAAYgAQYywHCAgYQABgWGB7CAgsQABiABBiKBRiGA8ICCBAAGIAEGKIEmAMAiAYBkAYKkgcFMTcuMjSgB-usA7IHBTEwLjI0uAeRHsIHCDAuNC4zNi4xyAexAQ&sclient=gws-wiz-serp`;
   };
   
   if (isLoading) {
