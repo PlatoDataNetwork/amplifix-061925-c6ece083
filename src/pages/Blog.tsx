@@ -92,6 +92,7 @@ const Blog = () => {
                 articleLink={
                   post.id === 1 ? "/blog/ai-intelligence-article" :
                   post.id === 2 ? "/blog/advanced-analytics-article" :
+                  post.id === 3 ? "/blog/investor-engagement-article" :
                   undefined
                 }
               />
