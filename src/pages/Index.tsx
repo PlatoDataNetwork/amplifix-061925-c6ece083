@@ -661,7 +661,7 @@ const Index = () => {
                 <div key={index} className="bg-card p-6 rounded-xl border border-border">
                   <h4 className="text-lg font-bold mb-2">{info.title}</h4>
                   <p className="text-muted-foreground mb-2">{info.description}</p>
-                  {info.contact && <p className="text-highlight-blue">{info.contact}</p>}
+                  {info.contact && <a href={`mailto:${info.contact}`} className="text-highlight-blue hover:underline">{info.contact}</a>}
                   {info.additional && <p className="text-muted-foreground">{info.additional}</p>}
                 </div>
               ))
@@ -670,17 +670,17 @@ const Index = () => {
                 <div className="bg-card p-6 rounded-xl border border-border">
                   <h4 className="text-lg font-bold mb-2">Sales Inquiries</h4>
                   <p className="text-muted-foreground mb-2">Discuss your IR/PR needs with our experts</p>
-                  <p className="text-highlight-blue">Support@amplifix.net</p>
+                  <a href="mailto:Support@amplifix.net" className="text-highlight-blue hover:underline">Support@amplifix.net</a>
                 </div>
                 <div className="bg-card p-6 rounded-xl border border-border">
                   <h4 className="text-lg font-bold mb-2">Customer Success</h4>
                   <p className="text-muted-foreground mb-2">Get help with your existing account</p>
-                  <p className="text-highlight-blue">Support@amplifix.net</p>
+                  <a href="mailto:Support@amplifix.net" className="text-highlight-blue hover:underline">Support@amplifix.net</a>
                 </div>
                 <div className="bg-card p-6 rounded-xl border border-border">
                   <h4 className="text-lg font-bold mb-2">Partnership Opportunities</h4>
                   <p className="text-muted-foreground mb-2">Explore strategic partnerships</p>
-                  <p className="text-highlight-blue">Support@amplifix.net</p>
+                  <a href="mailto:Support@amplifix.net" className="text-highlight-blue hover:underline">Support@amplifix.net</a>
                 </div>
                 <div className="bg-card p-6 rounded-xl border border-border">
                   <h4 className="text-lg font-bold mb-2">Office Hours</h4>
