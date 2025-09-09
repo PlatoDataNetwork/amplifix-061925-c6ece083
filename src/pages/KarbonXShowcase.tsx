@@ -33,10 +33,16 @@ const KarbonXShowcase = () => {
                 <Earth className="h-6 w-6 text-green-500" />
                 <span className="text-green-500 font-semibold">Carbon Solutions Leader</span>
               </div>
-              <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
-                <span className="text-highlight-blue">Karbon-X</span><br />
-                Climate Impact Platform
-              </h1>
+              <div className="mb-6">
+                <img 
+                  src="/lovable-uploads/15d3e19c-10e7-417c-8702-ef2c13a858ed.png" 
+                  alt="Karbon-X Logo" 
+                  className="h-16 md:h-20 mx-auto mb-4"
+                />
+                <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+                  Climate Impact Platform
+                </h1>
+              </div>
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-4xl mx-auto">
                 Pioneering verified carbon credits that make a real, positive impact around the world. 
                 Karbon-X is built on the belief that everyone can drive climate change through 
