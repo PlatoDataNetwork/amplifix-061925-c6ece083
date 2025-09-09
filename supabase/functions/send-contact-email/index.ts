@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const brevoApiKey = Deno.env.get("RESEND_API_KEY"); // Using same secret name for Brevo API key
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -28,27 +27,52 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Received contact form submission:", { firstName, lastName, email, company });
 
-    // Send notification email to AmplifiX
-    const notificationResponse = await resend.emails.send({
-      from: "AmplifiX Contact Form <onboarding@resend.dev>",
-      to: ["support@amplifix.net"],
+    // Send notification email to AmplifiX using Brevo API
+    const notificationPayload = {
+      sender: {
+        name: "AmplifiX Contact Form",
+        email: "noreply@amplifix.net"
+      },
+      to: [
+        {
+          email: "support@amplifix.net",
+          name: "AmplifiX Support"
+        }
+      ],
       subject: `New Contact Form Submission from ${firstName} ${lastName}`,
-      html: `
+      htmlContent: `
         <h2>New Contact Form Submission</h2>
         <p><strong>Name:</strong> ${firstName} ${lastName}</p>
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Company:</strong> ${company}</p>
         <p><strong>Message:</strong></p>
         <p>${message.replace(/\n/g, '<br>')}</p>
-      `,
+      `
+    };
+
+    const notificationResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': brevoApiKey!
+      },
+      body: JSON.stringify(notificationPayload)
     });
 
-    // Send confirmation email to the user
-    const confirmationResponse = await resend.emails.send({
-      from: "AmplifiX <onboarding@resend.dev>",
-      to: [email],
+    // Send confirmation email to the user using Brevo API
+    const confirmationPayload = {
+      sender: {
+        name: "AmplifiX",
+        email: "noreply@amplifix.net"
+      },
+      to: [
+        {
+          email: email,
+          name: `${firstName} ${lastName}`
+        }
+      ],
       subject: "Thank you for contacting AmplifiX!",
-      html: `
+      htmlContent: `
         <h1>Thank you for reaching out, ${firstName}!</h1>
         <p>We have received your message and will get back to you within 24 hours.</p>
         <p>Here's a copy of what you sent us:</p>
@@ -57,10 +81,25 @@ const handler = async (req: Request): Promise<Response> => {
           <p>${message.replace(/\n/g, '<br>')}</p>
         </blockquote>
         <p>Best regards,<br>The AmplifiX Team</p>
-      `,
+      `
+    };
+
+    const confirmationResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': brevoApiKey!
+      },
+      body: JSON.stringify(confirmationPayload)
     });
 
-    console.log("Emails sent successfully:", { notificationResponse, confirmationResponse });
+    const notificationResult = await notificationResponse.json();
+    const confirmationResult = await confirmationResponse.json();
+
+    console.log("Emails sent successfully:", { 
+      notification: notificationResult, 
+      confirmation: confirmationResult 
+    });
 
     return new Response(JSON.stringify({ 
       success: true, 
