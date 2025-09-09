@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home, Search } from "lucide-react";
+import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
@@ -8,16 +8,6 @@ import { useJsonData } from "@/hooks/useJsonData";
 
 const Showcase = () => {
   const { data: showcaseData, isLoading } = useJsonData<any>('showcase.json');
-  
-  // Helper function to generate Google search URL
-  const generateSearchUrl = (companyName: string, ticker: string) => {
-    const stockSymbol = ticker.split(': ')[1] || '';
-    // Create a comprehensive search URL similar to the provided example
-    const searchQuery = `${companyName}+${stockSymbol}`;
-    const encodedQuery = encodeURIComponent(searchQuery.replace(/\+/g, ' '));
-    return `https://www.google.com/search?q=${encodedQuery}&sca_esv=fe6362944b97d7fe&sxsrf=AE3TifOnmotp8dskWoD8rQnMSOp1xdhEEA%3A1757450762166&ei=CpLAaOjuCaqkiLMPi7iLgAs&ved=0ahUKEwjom46jxsyPAxUqEmIAHQvcArAQ4dUDCBI&uact=5&oq=${encodedQuery}&gs_lp=Egxnd3Mtd2l6LXNlcnAiIUludGVybmF0aW9uYWwgTGFuZCBBbGxpYW5jZSwgSUxBTDIFECEYoAEyBRAhGKABMgUQIRigATIFECEYoAEyBRAhGKABSNqVAVDXHFjhcXAHeAGQAQCYAZUBoAH1HKoBBTEyLjIyuAEDyAEA-AEBmAIpoAK_HsICBxAjGLADGCfCAgoQABhHGNYEGLADwgITEC4YgAQYigUYQxjHARjRAxiwA8ICDRAAGIAEGIoFGEMYsAPCAgoQIxjwBRjJAhgnwgIEECMYJ8ICCxAAGIAEGLEDGIMBwgIOEAAYgAQYigUYsQMYgwHCAgQQABgDwgIQEAAYgAQYigUYQxixAxiDAcICChAAGIAEGIoFGEPCAhAQABiABBiKBRhDGLEDGMkDwgINEAAYgAQYigUYQxixA8ICFhAuGIAEGIoFGEMYsQMYgwEYxwEY0QPCAg4QLhiABBixAxjHARjRA8ICCBAAGIAEGLEDwgIOEC4YgAQYsQMYxwEYrwHCAgUQABiABMICCxAuGIAEGLEDGIMBwgIOEAAYgAQYigUYkQIYyQPCAgsQABiABBiKBRiRAsICCxAAGIAEGIoFGJIDwgIOEC4YgAQYxwEYrwEYjgXCAgsQLhiABBjHARjRA8ICCxAuGIAEGMcBGK8BwgIIEAAYgAQYywHCAgYQABgWGB7CAgsQABiABBiKBRiGA8ICCBAAGIAEGKIEmAMAiAYBkAYKkgcFMTcuMjSgB-usA7IHBTEwLjI0uAeRHsIHCDAuNC4zNi4xyAexAQ&sclient=gws-wiz-serp`;
-  };
-  
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-foreground">
@@ -97,16 +87,15 @@ const Showcase = () => {
                   </p>
                   
                   {/* Action Buttons */}
-                  <div className="flex gap-2 mb-4 flex-wrap">
+                  <div className="flex gap-2 mb-4">
                     {/* Live Stock Price Button */}
                     {showcase.stock_url && (
                       <a 
                         href={showcase.stock_url} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="flex-1 min-w-0"
                       >
-                        <Button variant="outline" className="w-full">
+                        <Button variant="outline" className="flex-1">
                           <BarChart3 className="h-4 w-4 mr-2" />
                           Live Stock Price
                         </Button>
@@ -119,27 +108,13 @@ const Showcase = () => {
                         href={showcase.website} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="flex-1 min-w-0"
                       >
-                        <Button variant="outline" className="w-full">
+                        <Button variant="outline" className="flex-1">
                           <Globe className="h-4 w-4 mr-2" />
                           Website
                         </Button>
                       </a>
                     )}
-                    
-                    {/* AI Search Button */}
-                    <a 
-                      href={generateSearchUrl(showcase.company_name, showcase.ticker)} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex-1 min-w-0"
-                    >
-                      <Button variant="outline" className="w-full">
-                        <Search className="h-4 w-4 mr-2" />
-                        AI Search
-                      </Button>
-                    </a>
                   </div>
                   {showcase.link ? (
                     <Link to={showcase.link}>
