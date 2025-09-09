@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Leaf, Recycle, Earth, TreePine, Wind } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
+import Footer from "@/components/Footer";
 
 const KarbonXShowcase = () => {
   return (
@@ -306,22 +307,7 @@ const KarbonXShowcase = () => {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="container mx-auto py-8 px-4 border-t border-border">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center text-muted-foreground">
-              <p className="mb-2">
-                <strong>Karbon-X Showcase</strong> - Powered by AmplifiX AI Communications Platform
-              </p>
-              <p className="text-sm">
-                This showcase demonstrates AmplifiX's ability to create compelling corporate narratives 
-                for innovative climate technology companies. 
-                <br />
-                <em>Information sourced from Karbon-X.com for demonstration purposes.</em>
-              </p>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </>
   );
