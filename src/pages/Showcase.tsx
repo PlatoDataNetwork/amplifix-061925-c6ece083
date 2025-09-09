@@ -111,7 +111,7 @@ const Showcase = () => {
                       >
                         <Button variant="outline" className="flex-1">
                           <Globe className="h-4 w-4 mr-2" />
-                          Website
+                          Web
                         </Button>
                       </a>
                     )}
