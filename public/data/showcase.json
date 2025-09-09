@@ -16,6 +16,15 @@
       "website": "https://silopharma.com/"
     },
     {
+      "company_name": "International Land Alliance",
+      "ticker": "OTCQB: ILAL",
+      "description": "International Land Alliance is a land investment and development company focused on acquiring and developing strategic real estate properties across multiple markets.",
+      "tags": ["Real Estate", "Land Development", "Investment"],
+      "button_text": "View Showcase",
+      "link": "/showcase/international-land-alliance",
+      "website": "https://www.internationallandalliance.com/"
+    },
+    {
       "company_name": "Karbon-X",
       "ticker": "KARX",
       "description": "Karbon-X is a technology company focused on innovative solutions and carbon management technologies to address environmental challenges.",
