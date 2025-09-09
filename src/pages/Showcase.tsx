@@ -121,6 +121,10 @@ const Showcase = () => {
                       href={`https://www.bing.com/search?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}`}
                       target="_blank" 
                       rel="noopener noreferrer"
+                      onClick={() => {
+                        const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}`;
+                        console.log('AmplifiX button clicked, opening:', searchUrl);
+                      }}
                     >
                       <Button variant="outline" className="flex-1">
                         <Search className="h-4 w-4 mr-2" />
