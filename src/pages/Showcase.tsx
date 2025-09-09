@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope } from "lucide-react";
+import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
@@ -69,6 +69,7 @@ const Showcase = () => {
                   <div className="flex items-center gap-4 mb-6">
                     <div className={`w-12 h-12 rounded-full ${showcase.disabled ? 'bg-muted' : 'bg-green-500/20'} flex items-center justify-center flex-shrink-0`}>
                       {showcase.company_name === 'SILO Pharma Inc.' && <Pill className="h-6 w-6 text-green-500" />}
+                      {showcase.company_name === 'Int\'l Land Alliance' && <Home className="h-6 w-6 text-blue-500" />}
                       {showcase.company_name === 'Karbon-X' && <Building className="h-6 w-6 text-blue-500" />}
                     </div>
                     <div className="flex-1 min-w-0">
