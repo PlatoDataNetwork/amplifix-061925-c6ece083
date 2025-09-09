@@ -24,9 +24,11 @@ const Footer = () => {
                 {isLoading ? <Skeleton className="h-6 w-24" /> : commonData?.branding.name || 'AmplifiX'}
               </h2>
             </div>
-            <p className="text-muted-foreground mb-4">
-              {isLoading ? <Skeleton className="h-4 w-full" /> : commonData?.branding.description || 'AI-powered investor relations and public relations platform for modern companies.'}
-            </p>
+            {commonData?.branding.description && (
+              <p className="text-muted-foreground mb-4">
+                {isLoading ? <Skeleton className="h-4 w-full" /> : commonData.branding.description}
+              </p>
+            )}
             <div className="flex space-x-4">
               <Link to="#" className="text-muted-foreground hover:text-highlight-blue">
                 <Twitter size={20} />
