@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
-const brevoApiKey = Deno.env.get("RESEND_API_KEY"); // Using same secret name for Brevo API key
+const brevoApiKey = Deno.env.get("BREVO_API_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
