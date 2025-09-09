@@ -14,7 +14,8 @@
       "date": "Sept 1, 2025",
       "read_time": "5 min read",
       "category": "Technology",
-      "image": "blog1"
+      "image": "blog1",
+      "tags": ["AI", "Technology", "Corporate Communications", "Intelligence"]
     },
     {
       "id": 2,
@@ -24,7 +25,8 @@
       "date": "Sept 1, 2025",
       "read_time": "8 min read",
       "category": "Analytics",
-      "image": "blog2"
+      "image": "blog2",
+      "tags": ["Analytics", "Data", "Insights", "Corporate Communications"]
     },
     {
       "id": 3,
@@ -34,7 +36,8 @@
       "date": "Sept 1, 2025",
       "read_time": "6 min read",
       "category": "Technology",
-      "image": "blog3"
+      "image": "blog3",
+      "tags": ["AI", "Investor Relations", "Technology", "Automation"]
     }
   ],
   "popular_tags": {

@@ -7,6 +7,8 @@ import BlogPostCard from "@/components/BlogPostCard";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import RSSFeed from "@/components/RSSFeed";
 import { useJsonData } from "@/hooks/useJsonData";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 
 interface BlogPost {
   id: number;
@@ -17,6 +19,7 @@ interface BlogPost {
   read_time: string;
   category: string;
   image: string;
+  tags: string[];
 }
 
 interface BlogData {
@@ -35,9 +38,27 @@ interface BlogData {
 
 const Blog = () => {
   const { data: blogData } = useJsonData<BlogData>('blog.json');
-  const blogPosts = blogData?.blog_posts || [];
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  
+  const selectedTag = searchParams.get('tag');
+  
+  const allBlogPosts = blogData?.blog_posts || [];
   const categories = blogData?.categories || ["All", "Technology", "Analytics", "Security", "Insights", "Updates"];
   const popularTags = blogData?.popular_tags?.tags || ["AI", "Analytics", "Investor Relations", "Corporate Communications", "Intelligence", "Automation", "Data", "Insights", "Technology", "Innovation"];
+  
+  const filteredBlogPosts = useMemo(() => {
+    if (!selectedTag) return allBlogPosts;
+    return allBlogPosts.filter(post => post.tags?.includes(selectedTag));
+  }, [allBlogPosts, selectedTag]);
+  
+  const handleTagClick = (tag: string) => {
+    setSearchParams({ tag });
+  };
+  
+  const clearFilter = () => {
+    setSearchParams({});
+  };
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white">
@@ -61,6 +82,26 @@ const Blog = () => {
 
         <FeaturedPost />
 
+        {/* Filter indicator */}
+        {selectedTag && (
+          <section className="mb-6">
+            <div className="flex items-center gap-3">
+              <span className="text-gray-300">Filtered by:</span>
+              <span className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm">
+                #{selectedTag}
+              </span>
+              <Button
+                onClick={clearFilter}
+                variant="ghost"
+                size="sm"
+                className="text-gray-400 hover:text-white"
+              >
+                Clear filter
+              </Button>
+            </div>
+          </section>
+        )}
+
         {/* Categories */}
         <section className="mb-8 md:mb-12">
           <div className="flex flex-wrap gap-2 md:gap-3">
@@ -80,7 +121,7 @@ const Blog = () => {
         {/* Blog Posts Grid */}
         <section className="mb-12 md:mb-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {blogPosts.map((post) => (
+            {filteredBlogPosts.map((post) => (
               <BlogPostCard 
                 key={post.id} 
                 post={{
@@ -96,6 +137,14 @@ const Blog = () => {
               />
             ))}
           </div>
+          {filteredBlogPosts.length === 0 && selectedTag && (
+            <div className="text-center py-12">
+              <p className="text-gray-400 text-lg mb-4">No articles found for tag "#{selectedTag}"</p>
+              <Button onClick={clearFilter} variant="outline">
+                View all articles
+              </Button>
+            </div>
+          )}
         </section>
 
         <NewsletterSignup />
@@ -105,7 +154,15 @@ const Blog = () => {
           <h2 className="text-xl md:text-2xl font-bold mb-6">Popular Tags</h2>
           <div className="flex flex-wrap gap-2 md:gap-3">
             {popularTags.map((tag) => (
-              <span key={tag} className="bg-[#121218] border border-gray-800 px-3 py-2 rounded-full text-gray-300 hover:border-blue-500/30 cursor-pointer transition-colors text-xs md:text-sm">
+              <span 
+                key={tag} 
+                onClick={() => handleTagClick(tag)}
+                className={`px-3 py-2 rounded-full cursor-pointer transition-colors text-xs md:text-sm ${
+                  selectedTag === tag 
+                    ? 'bg-blue-500/20 border border-blue-500 text-blue-400' 
+                    : 'bg-[#121218] border border-gray-800 text-gray-300 hover:border-blue-500/30'
+                }`}
+              >
                 #{tag}
               </span>
             ))}

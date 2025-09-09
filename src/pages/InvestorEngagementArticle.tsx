@@ -2,12 +2,17 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { User, Calendar, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useJsonData } from "@/hooks/useJsonData";
 
 const InvestorEngagementArticle = () => {
   const { data: blogData } = useJsonData<any>('blog.json');
+  const navigate = useNavigate();
+  
+  const handleTagClick = (tag: string) => {
+    navigate(`/intel?tag=${encodeURIComponent(tag)}`);
+  };
 
   return (
     <>
@@ -90,6 +95,7 @@ const InvestorEngagementArticle = () => {
                 {blogData.popular_tags.tags.map((tag: string, index: number) => (
                   <span
                     key={index}
+                    onClick={() => handleTagClick(tag)}
                     className="px-3 py-1 bg-muted text-muted-foreground rounded-full text-sm hover:bg-muted/80 transition-colors cursor-pointer"
                   >
                     {tag}
