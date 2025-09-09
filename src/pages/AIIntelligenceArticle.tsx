@@ -4,8 +4,11 @@ import { User, Calendar, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useJsonData } from "@/hooks/useJsonData";
 
 const AIIntelligenceArticle = () => {
+  const { data: blogData } = useJsonData<any>('blog.json');
+
   return (
     <>
       <Helmet>
@@ -75,7 +78,24 @@ const AIIntelligenceArticle = () => {
             </p>
           </article>
           
-          <div className="mt-12 pt-8 border-t border-border">
+          {/* Popular Tags Section */}
+          {blogData?.popular_tags && (
+            <div className="mt-12 pt-8 border-t border-border">
+              <h3 className="text-lg font-semibold mb-4">{blogData.popular_tags.title}</h3>
+              <div className="flex flex-wrap gap-2">
+                {blogData.popular_tags.tags.map((tag: string, index: number) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-muted text-muted-foreground rounded-full text-sm hover:bg-muted/80 transition-colors cursor-pointer"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          <div className="mt-8 pt-8 border-t border-border">
             <Link to="/intel">
               <Button variant="outline">
                 <ArrowLeft className="mr-2 h-4 w-4" />
