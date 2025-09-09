@@ -92,9 +92,9 @@ const MainHeader = () => {
               <Link to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">
                 {commonData.navigation.main_menu.find(item => item.label === 'Showcase')?.label || 'Showcase'}
               </Link>
-              <a href="https://www.amplifix.net/intel" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-highlight-blue transition-colors">
-                {commonData.navigation.main_menu.find(item => item.label === 'Intel')?.label || 'Intel'}
-              </a>
+               <a href="https://www.amplifix.net/intel" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-highlight-blue transition-colors">
+                 Intel
+               </a>
               <Link to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">
                 {commonData.navigation.main_menu.find(item => item.label === 'FAQ')?.label || 'FAQ'}
               </Link>
