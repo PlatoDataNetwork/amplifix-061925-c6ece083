@@ -84,8 +84,8 @@ const Showcase = () => {
                     {showcase.description}
                   </p>
                   {showcase.tags && (
-                    <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
-                      <div className="flex flex-wrap gap-2">
+                    <div className="flex items-center justify-between gap-2 mb-6">
+                      <div className="flex gap-2">
                         {showcase.tags.map((tag: string, tagIndex: number) => (
                           <span 
                             key={tagIndex} 
