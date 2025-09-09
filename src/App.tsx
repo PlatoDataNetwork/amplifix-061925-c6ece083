@@ -14,6 +14,7 @@ import Blog from "./pages/Blog";
 import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
 import SiloPharmaShowcase from "./pages/SiloPharmaShowcase";
+import KarbonXShowcase from "./pages/KarbonXShowcase";
 import Showcase from "./pages/Showcase";
 import Features from "./pages/Features";
 import Solutions from "./pages/Solutions";
@@ -51,6 +52,7 @@ const App = () => (
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/showcase" element={<Showcase />} />
               <Route path="/showcase/silo-pharma" element={<SiloPharmaShowcase />} />
+              <Route path="/showcase/karbon-x" element={<KarbonXShowcase />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/solutions/ipo-preparation" element={<IPOPreparation />} />
