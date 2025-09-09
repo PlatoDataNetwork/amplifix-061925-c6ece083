@@ -15,6 +15,7 @@ import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
 import SiloPharmaShowcase from "./pages/SiloPharmaShowcase";
 import KarbonXShowcase from "./pages/KarbonXShowcase";
+import InternationalLandAllianceShowcase from "./pages/InternationalLandAllianceShowcase";
 import Showcase from "./pages/Showcase";
 import Solutions from "./pages/Solutions";
 import PublicCompanies from "./pages/PublicCompanies";
@@ -50,6 +51,7 @@ const App = () => (
               <Route path="/showcase" element={<Showcase />} />
               <Route path="/showcase/silo-pharma" element={<SiloPharmaShowcase />} />
               <Route path="/showcase/karbon-x" element={<KarbonXShowcase />} />
+              <Route path="/showcase/international-land-alliance" element={<InternationalLandAllianceShowcase />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/solutions/ipo-preparation" element={<IPOPreparation />} />
