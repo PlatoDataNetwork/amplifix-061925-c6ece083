@@ -670,17 +670,17 @@ const Index = () => {
                 <div className="bg-card p-6 rounded-xl border border-border">
                   <h4 className="text-lg font-bold mb-2">Sales Inquiries</h4>
                   <p className="text-muted-foreground mb-2">Discuss your IR/PR needs with our experts</p>
-                  <p className="text-highlight-blue">Support@Ampllifix.net</p>
+                  <p className="text-highlight-blue">Support@amplifix.net</p>
                 </div>
                 <div className="bg-card p-6 rounded-xl border border-border">
                   <h4 className="text-lg font-bold mb-2">Customer Success</h4>
                   <p className="text-muted-foreground mb-2">Get help with your existing account</p>
-                  <p className="text-highlight-blue">Support@Ampllifix.net</p>
+                  <p className="text-highlight-blue">Support@amplifix.net</p>
                 </div>
                 <div className="bg-card p-6 rounded-xl border border-border">
                   <h4 className="text-lg font-bold mb-2">Partnership Opportunities</h4>
                   <p className="text-muted-foreground mb-2">Explore strategic partnerships</p>
-                  <p className="text-highlight-blue">Support@Ampllifix.net</p>
+                  <p className="text-highlight-blue">Support@amplifix.net</p>
                 </div>
                 <div className="bg-card p-6 rounded-xl border border-border">
                   <h4 className="text-lg font-bold mb-2">Office Hours</h4>
