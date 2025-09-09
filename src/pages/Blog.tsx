@@ -93,15 +93,6 @@ const Blog = () => {
 
         <NewsletterSignup />
 
-        {/* External RSS Feed */}
-        <section className="mb-12 md:mb-16">
-          <RSSFeed 
-            feedUrl="https://platodata.ai/artificial-intelligence/feed/"
-            title="Latest AI Intelligence from Plato Data"
-            maxItems={6}
-          />
-        </section>
-
         {/* Popular Tags */}
         <section>
           <h2 className="text-xl md:text-2xl font-bold mb-6">Popular Tags</h2>
