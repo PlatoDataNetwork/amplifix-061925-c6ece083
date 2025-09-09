@@ -112,7 +112,7 @@ const Footer = () => {
                 </>
               ) : (
                 <>
-                  <li className="text-muted-foreground">{commonData?.footer.sections.company.contact.email || 'hello@amplifi.ai'}</li>
+                  <li className="text-muted-foreground">{commonData?.footer.sections.company.contact.email || 'hello@amplifix.net'}</li>
                 </>
               )}
             </ul>

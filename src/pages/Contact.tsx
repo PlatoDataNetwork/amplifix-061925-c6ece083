@@ -90,7 +90,7 @@ const Contact = () => {
                     <Mail className="h-6 w-6 text-highlight-blue mt-1" />
                     <div>
                       <h3 className="font-medium mb-1">Email</h3>
-                      <p className="text-muted-foreground">hello@amplifix.ai</p>
+                      <p className="text-muted-foreground">hello@amplifix.net</p>
                     </div>
                   </div>
                   
