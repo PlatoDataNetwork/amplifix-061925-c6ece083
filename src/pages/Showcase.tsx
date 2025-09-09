@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home } from "lucide-react";
+import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home, Search } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
@@ -8,6 +8,14 @@ import { useJsonData } from "@/hooks/useJsonData";
 
 const Showcase = () => {
   const { data: showcaseData, isLoading } = useJsonData<any>('showcase.json');
+  
+  // Helper function to generate Google search URL
+  const generateSearchUrl = (companyName: string, ticker: string) => {
+    const stockSymbol = ticker.split(': ')[1] || '';
+    const searchQuery = `${companyName}, ${stockSymbol}`;
+    return `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+  };
+  
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-foreground">
@@ -87,15 +95,16 @@ const Showcase = () => {
                   </p>
                   
                   {/* Action Buttons */}
-                  <div className="flex gap-2 mb-4">
+                  <div className="flex gap-2 mb-4 flex-wrap">
                     {/* Live Stock Price Button */}
                     {showcase.stock_url && (
                       <a 
                         href={showcase.stock_url} 
                         target="_blank" 
                         rel="noopener noreferrer"
+                        className="flex-1 min-w-0"
                       >
-                        <Button variant="outline" className="flex-1">
+                        <Button variant="outline" className="w-full">
                           <BarChart3 className="h-4 w-4 mr-2" />
                           Live Stock Price
                         </Button>
@@ -108,13 +117,27 @@ const Showcase = () => {
                         href={showcase.website} 
                         target="_blank" 
                         rel="noopener noreferrer"
+                        className="flex-1 min-w-0"
                       >
-                        <Button variant="outline" className="flex-1">
+                        <Button variant="outline" className="w-full">
                           <Globe className="h-4 w-4 mr-2" />
                           Website
                         </Button>
                       </a>
                     )}
+                    
+                    {/* AI Search Button */}
+                    <a 
+                      href={generateSearchUrl(showcase.company_name, showcase.ticker)} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex-1 min-w-0"
+                    >
+                      <Button variant="outline" className="w-full">
+                        <Search className="h-4 w-4 mr-2" />
+                        AI Search
+                      </Button>
+                    </a>
                   </div>
                   {showcase.link ? (
                     <Link to={showcase.link}>
