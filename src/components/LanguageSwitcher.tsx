@@ -49,108 +49,68 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
 
   const translatePage = async (langCode: string) => {
     setIsTranslating(true);
-    console.log('Attempting translation to:', langCode);
+    console.log('Translating page to:', langCode);
     
     try {
-      // Method 1: Try direct Google Translate API approach
-      const triggerTranslation = () => {
-        // Create a temporary Google Translate widget if it doesn't exist
-        if (!(window as any).google || !(window as any).google.translate) {
-          throw new Error('Google Translate API not loaded');
-        }
-
-        // Look for existing combo element
-        let selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-        
-        if (!selectElement) {
-          // Force create a new translate element
-          const tempDiv = document.createElement('div');
-          tempDiv.id = 'temp_translate_' + Date.now();
-          document.body.appendChild(tempDiv);
-          
-          new (window as any).google.translate.TranslateElement({
-            pageLanguage: 'en',
-            includedLanguages: 'en,es,fr,de,it,pt,zh,ja,ko,ar,ru,hi,nl,sv,tr,pl,fi,no,da,th,he,fa',
-            layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE
-          }, tempDiv.id);
-          
-          // Wait for the new element to be created
-          setTimeout(() => {
-            selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-            if (selectElement) {
-              selectElement.value = langCode;
-              selectElement.dispatchEvent(new Event('change'));
-              console.log('Translation triggered with new element');
-            }
-            // Clean up temp div
-            if (document.body.contains(tempDiv)) {
-              document.body.removeChild(tempDiv);
-            }
-          }, 500);
-        } else {
-          // Use existing element
-          selectElement.value = langCode;
-          selectElement.dispatchEvent(new Event('change'));
-          console.log('Translation triggered with existing element');
-        }
-      };
-
-      // Method 2: If Google Translate isn't ready, try loading it fresh
-      if (!(window as any).google || !(window as any).google.translate) {
-        console.log('Google Translate not loaded, attempting to load...');
-        
-        // Load Google Translate script dynamically
-        const script = document.createElement('script');
-        script.src = 'https://translate.google.com/translate_a/element.js?cb=initTranslateCallback';
-        
-        (window as any).initTranslateCallback = () => {
-          setTimeout(() => {
-            triggerTranslation();
-          }, 1000);
-        };
-        
-        document.head.appendChild(script);
-      } else {
-        triggerTranslation();
-      }
-      
       const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
       setCurrentLanguage(selectedLang);
-      
-      // Store preference in localStorage
       localStorage.setItem('selectedLanguage', langCode);
       
-      console.log('Translation process completed');
+      if (langCode === 'en') {
+        // If English is selected, reload the original page
+        if (window.location.href.includes('translate.google.com')) {
+          // If we're on a translated page, go back to original
+          const originalUrl = window.location.origin + window.location.pathname + window.location.search;
+          window.location.href = originalUrl;
+        }
+        console.log('Switched to English (original)');
+      } else {
+        // Use Google Translate's page translation service
+        const currentUrl = window.location.href;
+        const baseUrl = currentUrl.includes('translate.google.com') 
+          ? currentUrl.split('&u=')[1]?.split('&')[0] || window.location.origin + window.location.pathname
+          : currentUrl;
+        
+        const translateUrl = `https://translate.google.com/translate?sl=en&tl=${langCode}&u=${encodeURIComponent(baseUrl)}`;
+        
+        console.log('Redirecting to translated page:', translateUrl);
+        window.location.href = translateUrl;
+      }
       
     } catch (error) {
       console.error('Translation failed:', error);
-      
-      // Fallback: Try manual page reload with language parameter
-      console.log('Attempting fallback translation method...');
-      const url = new URL(window.location.href);
-      url.searchParams.set('lang', langCode);
-      
-      // Don't reload immediately, just update the current language display
-      const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
-      setCurrentLanguage(selectedLang);
-      localStorage.setItem('selectedLanguage', langCode);
-      
     } finally {
       setIsTranslating(false);
     }
   };
 
   useEffect(() => {
-    // Restore saved language preference
-    const savedLang = localStorage.getItem('selectedLanguage');
-    if (savedLang && savedLang !== 'en') {
-      const savedLanguage = languages.find(lang => lang.code === savedLang);
-      if (savedLanguage) {
-        setCurrentLanguage(savedLanguage);
-        // Auto-translate to saved language after a delay
-        setTimeout(() => translatePage(savedLang), 1000);
+    // Check if we're on a translated page and update the current language
+    const checkTranslatedPage = () => {
+      if (window.location.href.includes('translate.google.com')) {
+        // Extract language from Google Translate URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetLang = urlParams.get('tl');
+        if (targetLang) {
+          const savedLanguage = languages.find(lang => lang.code === targetLang);
+          if (savedLanguage) {
+            setCurrentLanguage(savedLanguage);
+            localStorage.setItem('selectedLanguage', targetLang);
+          }
+        }
+      } else {
+        // Restore saved language preference for original page
+        const savedLang = localStorage.getItem('selectedLanguage');
+        if (savedLang && savedLang !== 'en') {
+          const savedLanguage = languages.find(lang => lang.code === savedLang);
+          if (savedLanguage) {
+            setCurrentLanguage(savedLanguage);
+          }
+        }
       }
-    }
+    };
+
+    checkTranslatedPage();
   }, []);
 
   if (isMobile) {

@@ -32,46 +32,7 @@ const MainHeader = () => {
 
 
   useEffect(() => {
-    console.log('Setting up Google Translate...');
-    
-    // Add Google Translate script
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-    script.async = true;
-    document.head.appendChild(script);
-
-    // Initialize Google Translate with a visible element that we'll hide with CSS
-    (window as any).googleTranslateElementInit = function() {
-      console.log('Initializing Google Translate...');
-      new (window as any).google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: 'en,es,fr,de,it,pt,zh,ja,ko,ar,ru,hi,nl,sv,tr,pl,fi,no,da,th,he,fa',
-        layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
-        multilanguagePage: true,
-        gaTrack: true,
-        gaId: 'G-FQ4G09PD29'
-      }, 'google_translate_hidden');
-      
-      console.log('Google Translate initialized');
-      
-      // Wait for the combo element to be ready
-      setTimeout(() => {
-        const combo = document.querySelector('.goog-te-combo');
-        if (combo) {
-          console.log('Google Translate combo element ready');
-        } else {
-          console.error('Google Translate combo element not found');
-        }
-      }, 1000);
-    };
-
-    return () => {
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
-      }
-    };
-
+    console.log('MainHeader mounted - no Google Translate setup needed for direct translation');
   }, []);
 
   return (
@@ -137,8 +98,6 @@ const MainHeader = () => {
           )}
           <ThemeToggle />
           <LanguageSwitcher />
-          {/* Hidden Google Translate element */}
-          <div id="google_translate_hidden" style={{ display: 'none' }}></div>
         </div>
 
         {/* Mobile Navigation */}
