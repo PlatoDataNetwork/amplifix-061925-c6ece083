@@ -35,6 +35,8 @@ const languages: Language[] = [
   { code: 'no', name: 'Norwegian', flag: '🇳🇴' },
   { code: 'da', name: 'Danish', flag: '🇩🇰' },
   { code: 'th', name: 'Thai', flag: '🇹🇭' },
+  { code: 'he', name: 'Hebrew', flag: '🇮🇱' },
+  { code: 'fa', name: 'Farsi', flag: '🇮🇷' },
 ];
 
 interface LanguageSwitcherProps {
@@ -68,7 +70,7 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
           
           new (window as any).google.translate.TranslateElement({
             pageLanguage: 'en',
-            includedLanguages: 'en,es,fr,de,it,pt,zh,ja,ko,ar,ru,hi,nl,sv,tr,pl,fi,no,da,th',
+            includedLanguages: 'en,es,fr,de,it,pt,zh,ja,ko,ar,ru,hi,nl,sv,tr,pl,fi,no,da,th,he,fa',
             layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE
           }, tempDiv.id);
           

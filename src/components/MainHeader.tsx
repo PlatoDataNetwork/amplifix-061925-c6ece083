@@ -46,7 +46,7 @@ const MainHeader = () => {
       console.log('Initializing Google Translate...');
       new (window as any).google.translate.TranslateElement({
         pageLanguage: 'en',
-        includedLanguages: 'en,es,fr,de,it,pt,zh,ja,ko,ar,ru,hi,nl,sv,tr,pl,fi,no,da,th',
+        includedLanguages: 'en,es,fr,de,it,pt,zh,ja,ko,ar,ru,hi,nl,sv,tr,pl,fi,no,da,th,he,fa',
         layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
         multilanguagePage: true,
         gaTrack: true,
