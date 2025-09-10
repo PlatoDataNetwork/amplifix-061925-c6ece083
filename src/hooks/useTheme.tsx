@@ -18,9 +18,9 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       
       return window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
-        : "light";
+        : "dark"; // Default to dark instead of light
     }
-    return "light";
+    return "dark"; // Default to dark on server-side too
   });
 
   useEffect(() => {
