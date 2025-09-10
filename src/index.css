@@ -239,10 +239,25 @@
   text-decoration: none !important;
 }
 
-/* Mobile specific adjustments */
-@media (max-width: 768px) {
-  .goog-te-gadget-simple {
-    width: 100% !important;
-    text-align: left !important;
-  }
+/* Hide Google Translate widget but keep it functional */
+#google_translate_hidden {
+  position: fixed !important;
+  top: -1000px !important;
+  left: -1000px !important;
+  visibility: hidden !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Ensure the combo element is still accessible */
+#google_translate_hidden .goog-te-combo {
+  position: fixed !important;
+  top: -1000px !important;
+  left: -1000px !important;
+  visibility: hidden !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
 }

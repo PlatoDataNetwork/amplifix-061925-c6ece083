@@ -41,8 +41,9 @@ const MainHeader = () => {
     script.async = true;
     document.head.appendChild(script);
 
-    // Initialize Google Translate with hidden element
+    // Initialize Google Translate with a visible element that we'll hide with CSS
     (window as any).googleTranslateElementInit = function() {
+      console.log('Initializing Google Translate...');
       new (window as any).google.translate.TranslateElement({
         pageLanguage: 'en',
         includedLanguages: 'en,es,fr,de,it,pt,zh,ja,ko,ar',
@@ -53,6 +54,16 @@ const MainHeader = () => {
       }, 'google_translate_hidden');
       
       console.log('Google Translate initialized');
+      
+      // Wait for the combo element to be ready
+      setTimeout(() => {
+        const combo = document.querySelector('.goog-te-combo');
+        if (combo) {
+          console.log('Google Translate combo element ready');
+        } else {
+          console.error('Google Translate combo element not found');
+        }
+      }, 1000);
     };
 
     return () => {

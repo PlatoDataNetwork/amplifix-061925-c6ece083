@@ -40,39 +40,42 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
     console.log('Translating to:', langCode);
     
     try {
-      // Wait for Google Translate to be ready
-      let attempts = 0;
-      const maxAttempts = 20;
+      // First, try to find the Google Translate combo element
+      let selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
       
-      const waitForGoogleTranslate = () => {
-        return new Promise<void>((resolve, reject) => {
-          const checkGoogleTranslate = () => {
-            const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-            if (selectElement) {
-              selectElement.value = langCode;
-              selectElement.dispatchEvent(new Event('change'));
-              resolve();
-            } else if (attempts < maxAttempts) {
-              attempts++;
-              setTimeout(checkGoogleTranslate, 100);
-            } else {
-              reject(new Error('Google Translate not ready'));
-            }
-          };
-          checkGoogleTranslate();
-        });
-      };
-
-      await waitForGoogleTranslate();
+      if (!selectElement) {
+        // If not found, wait a bit longer and try again
+        console.log('Waiting for Google Translate to initialize...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+      }
       
-      const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
-      setCurrentLanguage(selectedLang);
-      
-      // Store preference in localStorage
-      localStorage.setItem('selectedLanguage', langCode);
+      if (selectElement) {
+        console.log('Found Google Translate combo, setting language to:', langCode);
+        selectElement.value = langCode;
+        selectElement.dispatchEvent(new Event('change'));
+        
+        const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
+        setCurrentLanguage(selectedLang);
+        
+        // Store preference in localStorage
+        localStorage.setItem('selectedLanguage', langCode);
+        
+        console.log('Translation triggered successfully');
+      } else {
+        console.error('Google Translate combo element still not found');
+        // Fallback: Try to initialize Google Translate again
+        if ((window as any).google && (window as any).google.translate) {
+          console.log('Attempting to reinitialize Google Translate...');
+          (window as any).googleTranslateElementInit();
+        } else {
+          throw new Error('Google Translate API not loaded');
+        }
+      }
       
     } catch (error) {
       console.error('Translation failed:', error);
+      // Don't change the UI state on error, so user knows it didn't work
     } finally {
       setIsTranslating(false);
     }
