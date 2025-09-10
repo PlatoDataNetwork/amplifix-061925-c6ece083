@@ -117,7 +117,7 @@ const Footer = () => {
                 </>
               ) : (
                 <>
-                  <li className="text-muted-foreground">{commonData?.footer.sections.company.contact.email || 'hello@amplifix.net'}</li>
+                  <li className="text-muted-foreground">{commonData?.footer.sections.company.contact.email || 'support@amplifix.net'}</li>
                 </>
               )}
             </ul>
