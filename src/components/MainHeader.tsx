@@ -38,7 +38,7 @@ const MainHeader = () => {
     (window as any).gtranslateSettings = {
       default_language: "en",
       wrapper_selector: ".gtranslate_wrapper",
-      url_structure: "none", // Use none to avoid URL conflicts with React Router
+      url_structure: "none",
       native_language_names: true,
       flag_style: "3d",
       flag_size: 16,
@@ -46,22 +46,51 @@ const MainHeader = () => {
       vertical_position: "top"
     };
 
-    // Load GTranslate script
-    const script = document.createElement('script');
-    script.src = 'https://cdn.gtranslate.net/widgets/latest/float.js';
-    script.defer = true;
-    script.onload = () => {
-      console.log('GTranslate script loaded');
+    // Initialize Google Translate Element directly
+    const initGoogleTranslate = () => {
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      script.async = true;
+      
+      (window as any).googleTranslateElementInit = function() {
+        new (window as any).google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,es,fr,de,it,pt,zh,ja,ko,ar,ru,hi,nl,sv,tr,pl,fi,no,da,th,he,fa',
+          layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
+          multilanguagePage: true
+        }, 'google_translate_element');
+        console.log('Google Translate Element initialized');
+      };
+      
+      document.head.appendChild(script);
     };
-    script.onerror = () => {
-      console.error('Failed to load GTranslate script');
-    };
-    document.body.appendChild(script);
+
+    // Try Google Translate first
+    initGoogleTranslate();
+    
+    // Fallback to GTranslate if needed
+    setTimeout(() => {
+      if (!document.querySelector('.goog-te-combo')) {
+        console.log('Google Translate not loaded, trying GTranslate...');
+        const gtScript = document.createElement('script');
+        gtScript.src = 'https://cdn.gtranslate.net/widgets/latest/float.js';
+        gtScript.defer = true;
+        gtScript.onload = () => {
+          console.log('GTranslate script loaded');
+        };
+        document.body.appendChild(gtScript);
+      }
+    }, 2000);
 
     return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
+      // Cleanup
+      const scripts = document.querySelectorAll('script[src*="translate"]');
+      scripts.forEach(script => {
+        if (script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+      });
     };
 
   }, []);
@@ -129,7 +158,7 @@ const MainHeader = () => {
           )}
           <ThemeToggle />
           <LanguageSwitcher />
-          <div className="gtranslate_wrapper" style={{ 
+          <div id="google_translate_element" className="gtranslate_wrapper" style={{ 
             position: 'fixed', 
             top: '-1000px', 
             left: '-1000px', 
