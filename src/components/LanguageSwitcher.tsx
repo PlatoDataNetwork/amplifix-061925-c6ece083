@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Globe, ChevronDown } from "lucide-react";
+import { translatePage } from "@/utils/translations";
 
 interface Language {
   code: string;
@@ -47,7 +48,7 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
   const [currentLanguage, setCurrentLanguage] = useState<Language>(languages[0]);
   const [isTranslating, setIsTranslating] = useState(false);
 
-  const translatePage = async (langCode: string) => {
+  const handleTranslate = async (langCode: string) => {
     setIsTranslating(true);
     console.log('Translating to:', langCode);
     
@@ -56,95 +57,27 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
       setCurrentLanguage(selectedLang);
       localStorage.setItem('selectedLanguage', langCode);
       
-      // Clear any existing translation indicators first
-      clearTranslationIndicators();
+      // Use our custom translation system
+      await new Promise(resolve => setTimeout(resolve, 300)); // Small delay for UI feedback
+      translatePage(langCode);
       
-      // Wait for UI update
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
-      if (langCode === 'en') {
-        // Return to English - reload page to clear any translations
-        window.location.reload();
-        return;
-      }
-      
-      // Try to find and trigger existing Google Translate widget
-      let attempts = 0;
-      const maxAttempts = 10;
-      
-      const findAndTriggerTranslate = () => {
-        const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-        if (selectElement) {
-          console.log('Found Google Translate combo, setting language');
-          selectElement.value = langCode;
-          selectElement.dispatchEvent(new Event('change'));
-          return true;
-        }
-        return false;
-      };
-      
-      // Try immediately
-      if (!findAndTriggerTranslate()) {
-        // If not found, wait and retry
-        const retryInterval = setInterval(() => {
-          attempts++;
-          if (findAndTriggerTranslate() || attempts >= maxAttempts) {
-            clearInterval(retryInterval);
-            if (attempts >= maxAttempts) {
-              console.log('Translation widget not available');
-              // Don't do manual translation - just update the UI state
-            }
-          }
-        }, 300);
-      }
+      console.log('Translation completed successfully');
       
     } catch (error) {
       console.error('Translation failed:', error);
     } finally {
-      setTimeout(() => setIsTranslating(false), 1000);
+      setTimeout(() => setIsTranslating(false), 500);
     }
   };
 
-  const clearTranslationIndicators = () => {
-    // Remove any existing translation indicators
-    const indicators = document.querySelectorAll('span[style*="opacity: 0.5"]');
-    indicators.forEach(indicator => {
-      if (indicator.textContent?.match(/\[([A-Z]{2})\]/)) {
-        indicator.remove();
-      }
-    });
-    
-    // Remove translated class from elements
-    const translatedElements = document.querySelectorAll('.translated');
-    translatedElements.forEach(element => {
-      element.classList.remove('translated');
-    });
-  };
-
   useEffect(() => {
-    // Clear any existing translation indicators on component mount
-    const clearIndicators = () => {
-      const indicators = document.querySelectorAll('span[style*="opacity: 0.5"]');
-      indicators.forEach(indicator => {
-        if (indicator.textContent?.match(/\[([A-Z]{2})\]/)) {
-          indicator.remove();
-        }
-      });
-      
-      const translatedElements = document.querySelectorAll('.translated');
-      translatedElements.forEach(element => {
-        element.classList.remove('translated');
-      });
-    };
-    
-    clearIndicators();
-    
-    // Check saved preference but don't auto-translate
+    // Check saved preference and apply if exists
     const savedLang = localStorage.getItem('selectedLanguage');
     if (savedLang && savedLang !== 'en') {
       const savedLanguage = languages.find(lang => lang.code === savedLang);
       if (savedLanguage) {
         setCurrentLanguage(savedLanguage);
+        // Don't auto-translate on load, let user choose when to translate
       }
     }
   }, []);
@@ -159,7 +92,7 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
           value={currentLanguage.code}
           onChange={(e) => {
             console.log('Mobile select changed:', e.target.value);
-            translatePage(e.target.value);
+            handleTranslate(e.target.value);
           }}
           disabled={isTranslating}
           className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-highlight-blue focus:border-transparent disabled:opacity-50"
@@ -193,7 +126,7 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
             key={lang.code}
             onSelect={() => {
               console.log('Desktop dropdown item selected:', lang.code, lang.name);
-              translatePage(lang.code);
+              handleTranslate(lang.code);
             }}
             className={`flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-muted focus:bg-muted ${
               currentLanguage.code === lang.code ? 'bg-muted' : ''
