@@ -35,8 +35,12 @@ const MainHeader = () => {
     (window as any).gtranslateSettings = {
       default_language: "en",
       wrapper_selector: ".gtranslate_wrapper",
-      switcher_horizontal_position: "right",
-      switcher_vertical_position: "top",
+      url_structure: "subdirectory",
+      native_language_names: true,
+      flag_style: "3d",
+      flag_size: 16,
+      horizontal_position: "right",
+      vertical_position: "top"
     };
 
     // Load external GTranslate script
