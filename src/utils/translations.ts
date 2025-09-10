@@ -346,6 +346,168 @@ export const translations: Record<string, Record<string, string>> = {
     th: 'ติดต่อเรา',
     he: 'צור קשר',
     fa: 'با ما تماس بگیرید'
+  },
+  // Article Page Content
+  'Back to Intel': {
+    es: 'Volver a Intel',
+    fr: 'Retour à Intel',
+    de: 'Zurück zu Intel',
+    it: 'Torna a Intel',
+    pt: 'Voltar ao Intel',
+    zh: '返回情报',
+    ja: 'インテルに戻る',
+    ko: '인텔로 돌아가기',
+    ar: 'العودة إلى المعلومات',
+    ru: 'Назад к Аналитике',
+    hi: 'इंटेल पर वापस जाएं',
+    nl: 'Terug naar Intel',
+    sv: 'Tillbaka till Intel',
+    tr: 'İstihbarata Dön',
+    pl: 'Powrót do Intel',
+    fi: 'Takaisin Intel',
+    no: 'Tilbake til Intel',
+    da: 'Tilbage til Intel',
+    th: 'กลับไปที่อินเทล',
+    he: 'חזרה למודיעין',
+    fa: 'بازگشت به اطلاعات'
+  },
+  'Analytics': {
+    es: 'Analíticos',
+    fr: 'Analytique',
+    de: 'Analytik',
+    it: 'Analitica',
+    pt: 'Análise',
+    zh: '分析',
+    ja: 'アナリティクス',
+    ko: '분석',
+    ar: 'التحليلات',
+    ru: 'Аналитика',
+    hi: 'विश्लेषण',
+    nl: 'Analytics',
+    sv: 'Analys',
+    tr: 'Analitik',
+    pl: 'Analityka',
+    fi: 'Analytiikka',
+    no: 'Analyse',
+    da: 'Analyse',
+    th: 'การวิเคราะห์',
+    he: 'ניתוחים',
+    fa: 'تجزیه و تحلیل'
+  },
+  'Advanced Analytics for Better Decision Making': {
+    es: 'Análisis Avanzado para Mejor Toma de Decisiones',
+    fr: 'Analyse Avancée pour une Meilleure Prise de Décision',
+    de: 'Erweiterte Analytik für Bessere Entscheidungsfindung',
+    it: 'Analisi Avanzata per Migliori Decisioni',
+    pt: 'Análise Avançada para Melhor Tomada de Decisão',
+    zh: '先进分析促进更好决策',
+    ja: 'より良い意思決定のための高度な分析',
+    ko: '더 나은 의사결정을 위한 고급 분석',
+    ar: 'التحليلات المتقدمة لاتخاذ قرارات أفضل',
+    ru: 'Продвинутая Аналитика для Лучшего Принятия Решений',
+    hi: 'बेहतर निर्णय लेने के लिए उन्नत विश्लेषण',
+    nl: 'Geavanceerde Analytics voor Betere Besluitvorming',
+    sv: 'Avancerad Analys för Bättre Beslutsfattande',
+    tr: 'Daha İyi Karar Verme için Gelişmiş Analitik',
+    pl: 'Zaawansowana Analityka dla Lepszego Podejmowania Decyzji',
+    fi: 'Edistynyt Analytiikka Parempaan Päätöksentekoon',
+    no: 'Avansert Analyse for Bedre Beslutninger',
+    da: 'Avanceret Analyse for Bedre Beslutningstagning',
+    th: 'การวิเคราะห์ขั้นสูงเพื่อการตัดสินใจที่ดีขึ้น',
+    he: 'ניתוחים מתקדמים לקבלת החלטות טובות יותר',
+    fa: 'تجزیه و تحلیل پیشرفته برای تصمیم‌گیری بهتر'
+  },
+  'AmplifiX': {
+    es: 'AmplifiX',
+    fr: 'AmplifiX',
+    de: 'AmplifiX',
+    it: 'AmplifiX',
+    pt: 'AmplifiX',
+    zh: 'AmplifiX',
+    ja: 'AmplifiX',
+    ko: 'AmplifiX',
+    ar: 'AmplifiX',
+    ru: 'AmplifiX',
+    hi: 'AmplifiX',
+    nl: 'AmplifiX',
+    sv: 'AmplifiX',
+    tr: 'AmplifiX',
+    pl: 'AmplifiX',
+    fi: 'AmplifiX',
+    no: 'AmplifiX',
+    da: 'AmplifiX',
+    th: 'AmplifiX',
+    he: 'AmplifiX',
+    fa: 'AmplifiX'
+  },
+  'Sept 1, 2025': {
+    es: '1 de Sept, 2025',
+    fr: '1 Sept, 2025',
+    de: '1. Sept, 2025',
+    it: '1 Sett, 2025',
+    pt: '1 Set, 2025',
+    zh: '2025年9月1日',
+    ja: '2025年9月1日',
+    ko: '2025년 9월 1일',
+    ar: '1 سبتمبر 2025',
+    ru: '1 Сент, 2025',
+    hi: '1 सित, 2025',
+    nl: '1 Sept, 2025',
+    sv: '1 Sept, 2025',
+    tr: '1 Eyl, 2025',
+    pl: '1 Wrz, 2025',
+    fi: '1 Syys, 2025',
+    no: '1 Sep, 2025',
+    da: '1 Sep, 2025',
+    th: '1 ก.ย. 2025',
+    he: '1 ספט, 2025',
+    fa: '1 سپتامبر 2025'
+  },
+  'Back to All Articles': {
+    es: 'Volver a Todos los Artículos',
+    fr: 'Retour à Tous les Articles',
+    de: 'Zurück zu Allen Artikeln',
+    it: 'Torna a Tutti gli Articoli',
+    pt: 'Voltar a Todos os Artigos',
+    zh: '返回所有文章',
+    ja: '全記事に戻る',
+    ko: '모든 기사로 돌아가기',
+    ar: 'العودة إلى جميع المقالات',
+    ru: 'Назад ко Всем Статьям',
+    hi: 'सभी लेखों पर वापस जाएं',
+    nl: 'Terug naar Alle Artikelen',
+    sv: 'Tillbaka till Alla Artiklar',
+    tr: 'Tüm Makalelere Dön',
+    pl: 'Powrót do Wszystkich Artykułów',
+    fi: 'Takaisin Kaikkiin Artikkeleihin',
+    no: 'Tilbake til Alle Artikler',
+    da: 'Tilbage til Alle Artikler',
+    th: 'กลับไปที่บทความทั้งหมด',
+    he: 'חזרה לכל המאמרים',
+    fa: 'بازگشت به همه مقالات'
+  },
+  "In today's fast-paced business environment": {
+    es: 'En el entorno empresarial acelerado de hoy',
+    fr: "Dans l'environnement commercial rapide d'aujourd'hui",
+    de: 'In der heutigen schnelllebigen Geschäftswelt',
+    it: "Nell'ambiente aziendale veloce di oggi",
+    pt: 'No ambiente empresarial acelerado de hoje',
+    zh: '在当今快节奏的商业环境中',
+    ja: '今日の急速なビジネス環境において',
+    ko: '오늘날의 빠른 비즈니스 환경에서',
+    ar: 'في بيئة الأعمال سريعة الخطى اليوم',
+    ru: 'В сегодняшней быстро меняющейся бизнес-среде',
+    hi: 'आज के तेज़ रफ़्तार व्यापारिक माहौल में',
+    nl: 'In de snelle zakelijke omgeving van vandaag',
+    sv: 'I dagens snabba affärsmiljö',
+    tr: "Günümüzün hızlı iş ortamında",
+    pl: 'W dzisiejszym szybkim środowisku biznesowym',
+    fi: 'Nykypäivän nopeassa liiketoimintaympäristössä',
+    no: 'I dagens tempofylte forretningsmiljø',
+    da: 'I dagens hurtige forretningsmiljø',
+    th: 'ในสภาพแวดล้อมทางธุรกิจที่เร็วในปัจจุบัน',
+    he: 'בסביבת העסקים המהירה של היום',
+    fa: 'در محیط تجاری پرسرعت امروز'
   }
 };
 
@@ -359,14 +521,38 @@ export function translateText(text: string, targetLanguage: string): string {
     return translations[text][targetLanguage];
   }
   
-  // Try to find partial matches for longer texts
-  for (const key in translations) {
-    if (text.includes(key) && translations[key][targetLanguage]) {
-      return text.replace(key, translations[key][targetLanguage]);
+  // Try to find partial matches for longer texts - improved matching
+  let translatedText = text;
+  
+  // Sort keys by length (longest first) for better matching
+  const sortedKeys = Object.keys(translations).sort((a, b) => b.length - a.length);
+  
+  for (const key of sortedKeys) {
+    if (translations[key][targetLanguage]) {
+      // Try exact match first
+      if (translatedText === key) {
+        return translations[key][targetLanguage];
+      }
+      
+      // Try case-insensitive match
+      if (translatedText.toLowerCase() === key.toLowerCase()) {
+        return translations[key][targetLanguage];
+      }
+      
+      // Try partial match - replace if the text contains the key
+      if (translatedText.includes(key)) {
+        translatedText = translatedText.replace(key, translations[key][targetLanguage]);
+      }
+      
+      // Try partial match with case-insensitive
+      if (translatedText.toLowerCase().includes(key.toLowerCase())) {
+        const regex = new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        translatedText = translatedText.replace(regex, translations[key][targetLanguage]);
+      }
     }
   }
   
-  return text; // Return original if no translation found
+  return translatedText;
 }
 
 // Store original text content for restoration
@@ -390,84 +576,32 @@ export function translatePage(targetLanguage: string) {
     el.classList.remove('translated');
   });
   
-  // Translate navigation elements
-  const navElements = document.querySelectorAll('nav a, nav button');
-  navElements.forEach((element) => {
-    if (element.textContent) {
+  // Function to translate a single element
+  const translateElement = (element: Element) => {
+    if (element.textContent && 
+        element.children.length === 0 && // Only translate leaf nodes
+        element.textContent.trim().length > 0 &&
+        !element.closest('script') && // Skip script tags
+        !element.closest('style') && // Skip style tags
+        !element.closest('noscript')) { // Skip noscript tags
+      
       // Store original text if not already stored
       if (!originalTexts.has(element)) {
         originalTexts.set(element, element.textContent.trim());
       }
       
-      const translated = translateText(element.textContent.trim(), targetLanguage);
-      if (translated !== element.textContent.trim()) {
-        element.textContent = translated;
-      }
-    }
-  });
-  
-  // Translate main content elements - expanded selectors (removed :not(.translated))
-  const contentSelectors = [
-    'h1', 
-    'h2', 
-    'h3', 
-    'h4', 
-    'h5', 
-    'h6',
-    'p',
-    'button',
-    'span',
-    'div',
-    '.text-4xl', 
-    '.text-3xl', 
-    '.text-2xl', 
-    '.text-xl', 
-    '.text-lg',
-    '[class*="text-"]', 
-    'main *', // Specifically target main content area
-    'article *',
-    'section *'
-  ];
-  
-  contentSelectors.forEach(selector => {
-    const elements = document.querySelectorAll(selector);
-    elements.forEach((element) => {
-      if (element.textContent && 
-          element.children.length === 0 && // Only translate leaf nodes
-          element.textContent.trim().length > 0) {
-        
-        // Store original text if not already stored
-        if (!originalTexts.has(element)) {
-          originalTexts.set(element, element.textContent.trim());
-        }
-        
-        const originalText = element.textContent.trim();
-        const translated = translateText(originalText, targetLanguage);
-        if (translated !== originalText) {
-          element.textContent = translated;
-          element.classList.add('translated');
-        }
-      }
-    });
-  });
-  
-  // Also translate button text content specifically
-  const buttons = document.querySelectorAll('button, .btn, [role="button"]');
-  buttons.forEach((button) => {
-    if (button.textContent) {
-      // Store original text if not already stored
-      if (!originalTexts.has(button)) {
-        originalTexts.set(button, button.textContent.trim());
-      }
-      
-      const originalText = button.textContent.trim();
+      const originalText = element.textContent.trim();
       const translated = translateText(originalText, targetLanguage);
       if (translated !== originalText) {
-        button.textContent = translated;
-        button.classList.add('translated');
+        element.textContent = translated;
+        element.classList.add('translated');
       }
     }
-  });
+  };
+  
+  // Comprehensive element selection - target everything with text
+  const allTextElements = document.querySelectorAll('*');
+  allTextElements.forEach(translateElement);
   
   // Use MutationObserver to catch dynamically loaded content
   const observer = new MutationObserver((mutations) => {
