@@ -34,11 +34,11 @@ const MainHeader = () => {
     // Add debugging
     console.log('Setting up GTranslate...');
     
-    // Add GTranslate settings for desktop
+    // Add GTranslate settings for desktop - using no URL structure to avoid React Router conflicts
     (window as any).gtranslateSettings = {
       default_language: "en",
       wrapper_selector: ".gtranslate_wrapper",
-      url_structure: "subdirectory",
+      url_structure: "none",
       native_language_names: true,
       flag_style: "3d",
       flag_size: 16,
@@ -58,20 +58,25 @@ const MainHeader = () => {
     };
     document.body.appendChild(script);
 
-    // Add global doGTranslate function for mobile dropdown
+    // Simple language switcher function for mobile that uses GTranslate API
     (window as any).doGTranslate = function(lang_pair) {
       console.log('doGTranslate called with:', lang_pair);
       if (lang_pair.value) lang_pair = lang_pair.value;
       if (lang_pair == '') return;
       var lang = lang_pair.split('|')[1];
-      if (lang == (window as any).gt_request_uri) return;
-      var url = window.location.href;
-      var new_url = url.replace(/\/[a-z]{2}(-[A-Z]{2})?\//g, '/').replace(/\/[a-z]{2}(-[A-Z]{2})?$/g, '');
-      if (lang != 'en') {
-        new_url = new_url.replace(/\/$/, '') + '/' + lang + '/';
+      
+      // Use GTranslate's own function if available
+      if ((window as any).doGTranslate && typeof (window as any).doGTranslate.original === 'function') {
+        (window as any).doGTranslate.original(lang_pair);
+      } else {
+        // Fallback: trigger translation by creating a temporary Google Translate element
+        console.log('Triggering translation for language:', lang);
+        var gtCombo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+        if (gtCombo) {
+          gtCombo.value = lang;
+          gtCombo.dispatchEvent(new Event('change'));
+        }
       }
-      console.log('Redirecting to:', new_url);
-      window.location.href = new_url;
     };
 
     // Add a simple mobile language switcher
