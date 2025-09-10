@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const MobileMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -81,7 +82,7 @@ const MobileMenu = () => {
                 <ThemeToggle />
               </div>
               <div className="px-4 py-3">
-                <div className="gtranslate_wrapper_mobile"></div>
+                <LanguageSwitcher isMobile={true} />
               </div>
             </nav>
           </div>

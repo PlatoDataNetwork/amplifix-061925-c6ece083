@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 import ThemeToggle from "@/components/ThemeToggle";
 import MobileMenu from "@/components/MobileMenu";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useState, useEffect } from "react";
 import { useJsonData } from "@/hooks/useJsonData";
 import { CommonData } from "@/types/common";
@@ -40,7 +41,7 @@ const MainHeader = () => {
     script.async = true;
     document.head.appendChild(script);
 
-    // Initialize Google Translate
+    // Initialize Google Translate with hidden element
     (window as any).googleTranslateElementInit = function() {
       new (window as any).google.translate.TranslateElement({
         pageLanguage: 'en',
@@ -49,66 +50,12 @@ const MainHeader = () => {
         multilanguagePage: true,
         gaTrack: true,
         gaId: 'G-FQ4G09PD29'
-      }, 'google_translate_element');
+      }, 'google_translate_hidden');
       
       console.log('Google Translate initialized');
     };
 
-    // Custom function for mobile dropdown
-    (window as any).translatePage = function(langCode) {
-      console.log('Translating to:', langCode);
-      var selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-      if (selectElement) {
-        selectElement.value = langCode;
-        selectElement.dispatchEvent(new Event('change'));
-      } else {
-        console.log('Google Translate not ready yet');
-      }
-    };
-
-    // Add mobile language switcher
-    const addMobileSwitcher = () => {
-      const mobileWrapper = document.querySelector('.gtranslate_wrapper_mobile');
-      if (mobileWrapper && !mobileWrapper.hasChildNodes()) {
-        console.log('Adding mobile switcher');
-        mobileWrapper.innerHTML = `
-          <div style="margin-bottom: 8px;">
-            <label style="font-size: 14px; color: var(--foreground); margin-bottom: 4px; display: block;">Language</label>
-            <select onchange="translatePage(this.value)" style="
-              padding: 8px 12px;
-              border: 1px solid #e5e7eb;
-              border-radius: 6px;
-              background: var(--background);
-              color: var(--foreground);
-              font-size: 14px;
-              width: 100%;
-            ">
-              <option value="">English</option>
-              <option value="es">Español</option>
-              <option value="fr">Français</option>
-              <option value="de">Deutsch</option>
-              <option value="it">Italiano</option>
-              <option value="pt">Português</option>
-              <option value="zh">中文</option>
-              <option value="ja">日本語</option>
-              <option value="ko">한국어</option>
-              <option value="ar">العربية</option>
-            </select>
-          </div>
-        `;
-      }
-    };
-
-    // Check for mobile wrapper periodically
-    const interval = setInterval(() => {
-      addMobileSwitcher();
-      if (document.querySelector('.gtranslate_wrapper_mobile select')) {
-        clearInterval(interval);
-      }
-    }, 100);
-
     return () => {
-      clearInterval(interval);
       if (document.head.contains(script)) {
         document.head.removeChild(script);
       }
@@ -178,7 +125,9 @@ const MainHeader = () => {
             </>
           )}
           <ThemeToggle />
-          <div id="google_translate_element" className="gtranslate_wrapper"></div>
+          <LanguageSwitcher />
+          {/* Hidden Google Translate element */}
+          <div id="google_translate_hidden" style={{ display: 'none' }}></div>
         </div>
 
         {/* Mobile Navigation */}
