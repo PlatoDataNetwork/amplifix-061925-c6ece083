@@ -56,26 +56,19 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
       setCurrentLanguage(selectedLang);
       localStorage.setItem('selectedLanguage', langCode);
       
+      // Clear any existing translation indicators first
+      clearTranslationIndicators();
+      
       // Wait for UI update
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      // Method 1: Use GTranslate's built-in functionality
-      const gtranslateElement = document.querySelector('.gtranslate_wrapper');
-      if (gtranslateElement) {
-        // Look for GTranslate's native elements
-        const gtLinks = document.querySelectorAll('.gtranslate_wrapper a');
-        const targetLink = Array.from(gtLinks).find(link => 
-          link.getAttribute('onclick')?.includes(`|${langCode}`)
-        ) as HTMLElement;
-        
-        if (targetLink) {
-          console.log('Found GTranslate link, clicking...');
-          targetLink.click();
-          return;
-        }
+      if (langCode === 'en') {
+        // Return to English - reload page to clear any translations
+        window.location.reload();
+        return;
       }
       
-      // Method 2: Try to find and trigger existing Google Translate widget
+      // Try to find and trigger existing Google Translate widget
       let attempts = 0;
       const maxAttempts = 10;
       
@@ -98,9 +91,8 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
           if (findAndTriggerTranslate() || attempts >= maxAttempts) {
             clearInterval(retryInterval);
             if (attempts >= maxAttempts) {
-              console.log('Could not find translation widget, trying manual approach');
-              // Method 3: Manual DOM manipulation for translation
-              translatePageManually(langCode);
+              console.log('Translation widget not available');
+              // Don't do manual translation - just update the UI state
             }
           }
         }, 300);
@@ -108,68 +100,53 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
       
     } catch (error) {
       console.error('Translation failed:', error);
-      translatePageManually(langCode);
     } finally {
       setTimeout(() => setIsTranslating(false), 1000);
     }
   };
 
-  const translatePageManually = (langCode: string) => {
-    if (langCode === 'en') {
-      // Reload page to original English
-      window.location.reload();
-      return;
-    }
-    
-    console.log('Attempting manual translation for:', langCode);
-    
-    // Create a simple text replacement for demonstration
-    // In a real implementation, you'd want to use a proper translation API
-    const elementsToTranslate = document.querySelectorAll('h1, h2, h3, p, button, a, span');
-    
-    // Simple demo - just add language indicator
-    elementsToTranslate.forEach(element => {
-      if (element.textContent && !element.classList.contains('translated')) {
-        element.classList.add('translated');
-        // Add a small indicator that the page is "translated"
-        const indicator = document.createElement('span');
-        indicator.textContent = ` [${langCode.toUpperCase()}]`;
-        indicator.style.fontSize = '0.7em';
-        indicator.style.opacity = '0.5';
-        indicator.style.marginLeft = '4px';
-        element.appendChild(indicator);
+  const clearTranslationIndicators = () => {
+    // Remove any existing translation indicators
+    const indicators = document.querySelectorAll('span[style*="opacity: 0.5"]');
+    indicators.forEach(indicator => {
+      if (indicator.textContent?.match(/\[([A-Z]{2})\]/)) {
+        indicator.remove();
       }
+    });
+    
+    // Remove translated class from elements
+    const translatedElements = document.querySelectorAll('.translated');
+    translatedElements.forEach(element => {
+      element.classList.remove('translated');
     });
   };
 
   useEffect(() => {
-    // Check if we're on a Google Translate page and update language accordingly
-    const checkTranslatedPage = () => {
-      if (window.location.href.includes('translate.google.com')) {
-        // Extract target language from Google Translate URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const targetLang = urlParams.get('tl');
-        if (targetLang) {
-          const foundLang = languages.find(lang => lang.code === targetLang);
-          if (foundLang) {
-            setCurrentLanguage(foundLang);
-            localStorage.setItem('selectedLanguage', targetLang);
-            return;
-          }
+    // Clear any existing translation indicators on component mount
+    const clearIndicators = () => {
+      const indicators = document.querySelectorAll('span[style*="opacity: 0.5"]');
+      indicators.forEach(indicator => {
+        if (indicator.textContent?.match(/\[([A-Z]{2})\]/)) {
+          indicator.remove();
         }
-      }
+      });
       
-      // Check saved preference
-      const savedLang = localStorage.getItem('selectedLanguage');
-      if (savedLang && savedLang !== 'en') {
-        const savedLanguage = languages.find(lang => lang.code === savedLang);
-        if (savedLanguage) {
-          setCurrentLanguage(savedLanguage);
-        }
-      }
+      const translatedElements = document.querySelectorAll('.translated');
+      translatedElements.forEach(element => {
+        element.classList.remove('translated');
+      });
     };
-
-    checkTranslatedPage();
+    
+    clearIndicators();
+    
+    // Check saved preference but don't auto-translate
+    const savedLang = localStorage.getItem('selectedLanguage');
+    if (savedLang && savedLang !== 'en') {
+      const savedLanguage = languages.find(lang => lang.code === savedLang);
+      if (savedLanguage) {
+        setCurrentLanguage(savedLanguage);
+      }
+    }
   }, []);
 
   if (isMobile) {
