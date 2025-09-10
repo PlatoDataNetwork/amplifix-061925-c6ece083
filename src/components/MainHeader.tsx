@@ -38,7 +38,7 @@ const MainHeader = () => {
     (window as any).gtranslateSettings = {
       default_language: "en",
       wrapper_selector: ".gtranslate_wrapper",
-      url_structure: "none",
+      url_structure: "none", // Use none to avoid URL conflicts with React Router
       native_language_names: true,
       flag_style: "3d",
       flag_size: 16,
@@ -57,27 +57,6 @@ const MainHeader = () => {
       console.error('Failed to load GTranslate script');
     };
     document.body.appendChild(script);
-
-    // Set up global doGTranslate function
-    (window as any).doGTranslate = function(lang_pair) {
-      console.log('doGTranslate called with:', lang_pair);
-      if (lang_pair.value) lang_pair = lang_pair.value;
-      if (lang_pair == '') return;
-      var lang = lang_pair.split('|')[1];
-      
-      if (lang == 'en') {
-        // Return to original page
-        var url = window.location.href;
-        var new_url = url.replace(/\/[a-z]{2}(-[A-Z]{2})?\//g, '/').replace(/\/[a-z]{2}(-[A-Z]{2})?$/g, '');
-        window.location.href = new_url;
-      } else {
-        // Translate to target language
-        var url = window.location.href;
-        var new_url = url.replace(/\/[a-z]{2}(-[A-Z]{2})?\//g, '/').replace(/\/[a-z]{2}(-[A-Z]{2})?$/g, '');
-        new_url = new_url.replace(/\/$/, '') + '/' + lang + '/';
-        window.location.href = new_url;
-      }
-    };
 
     return () => {
       if (document.body.contains(script)) {
@@ -150,7 +129,15 @@ const MainHeader = () => {
           )}
           <ThemeToggle />
           <LanguageSwitcher />
-          <div className="gtranslate_wrapper" style={{ display: 'none' }}></div>
+          <div className="gtranslate_wrapper" style={{ 
+            position: 'fixed', 
+            top: '-1000px', 
+            left: '-1000px', 
+            visibility: 'hidden',
+            width: '1px',
+            height: '1px',
+            opacity: 0
+          }}></div>
         </div>
 
         {/* Mobile Navigation */}

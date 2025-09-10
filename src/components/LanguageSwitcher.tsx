@@ -49,67 +49,68 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
 
   const translatePage = async (langCode: string) => {
     setIsTranslating(true);
-    console.log('translatePage called - Desktop:', !isMobile, 'Language:', langCode);
+    console.log('Starting translation to:', langCode);
     
     try {
       const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
       setCurrentLanguage(selectedLang);
       localStorage.setItem('selectedLanguage', langCode);
       
-      // Use GTranslate's doGTranslate function
-      const langPair = `en|${langCode}`;
-      console.log('Calling doGTranslate with:', langPair);
-      
-      // Give a small delay to ensure the UI updates
+      // Wait a moment for UI to update
       await new Promise(resolve => setTimeout(resolve, 100));
       
-      // Call GTranslate function if available
-      if ((window as any).doGTranslate) {
-        console.log('doGTranslate function found, calling...');
-        (window as any).doGTranslate(langPair);
-      } else {
-        console.log('GTranslate not ready, manual redirect');
-        // Fallback manual redirect for GTranslate
-        if (langCode === 'en') {
-          // Return to original page
-          const url = window.location.href;
-          const newUrl = url.replace(/\/[a-z]{2}(-[A-Z]{2})?\//g, '/').replace(/\/[a-z]{2}(-[A-Z]{2})?$/g, '');
-          console.log('Redirecting to English version:', newUrl);
-          window.location.href = newUrl;
-        } else {
-          // Redirect to translated version
-          const url = window.location.href;
-          let newUrl = url.replace(/\/[a-z]{2}(-[A-Z]{2})?\//g, '/').replace(/\/[a-z]{2}(-[A-Z]{2})?$/g, '');
-          newUrl = newUrl.replace(/\/$/, '') + '/' + langCode + '/';
-          console.log('Redirecting to translated version:', newUrl);
-          window.location.href = newUrl;
+      // Method 1: Try to find and use GTranslate's native dropdown
+      const gtCombo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+      if (gtCombo) {
+        console.log('Using GTranslate native combo');
+        gtCombo.value = langCode;
+        gtCombo.dispatchEvent(new Event('change'));
+        return;
+      }
+      
+      // Method 2: Use direct Google Translate redirect (most reliable)
+      console.log('Using direct Google Translate redirect');
+      
+      if (langCode === 'en') {
+        // If returning to English and we're on a translated page
+        if (window.location.href.includes('translate.google.com')) {
+          const originalUrl = window.location.origin + window.location.pathname.replace(/^\/[a-z]{2}\//, '/');
+          window.location.href = originalUrl;
         }
+      } else {
+        // Create Google Translate URL
+        const currentUrl = encodeURIComponent(window.location.origin + window.location.pathname);
+        const translateUrl = `https://translate.google.com/translate?sl=en&tl=${langCode}&u=${currentUrl}`;
+        console.log('Redirecting to:', translateUrl);
+        window.location.href = translateUrl;
       }
       
     } catch (error) {
       console.error('Translation failed:', error);
     } finally {
-      setTimeout(() => setIsTranslating(false), 1000); // Keep loading state a bit longer
+      // Keep loading state for a bit to show user something is happening
+      setTimeout(() => setIsTranslating(false), 2000);
     }
   };
 
   useEffect(() => {
-    // Check URL for current language (GTranslate style)
-    const checkCurrentLanguage = () => {
-      const path = window.location.pathname;
-      const langMatch = path.match(/\/([a-z]{2})\/$/);
-      
-      if (langMatch) {
-        const langCode = langMatch[1];
-        const foundLang = languages.find(lang => lang.code === langCode);
-        if (foundLang) {
-          setCurrentLanguage(foundLang);
-          localStorage.setItem('selectedLanguage', langCode);
-          return;
+    // Check if we're on a Google Translate page and update language accordingly
+    const checkTranslatedPage = () => {
+      if (window.location.href.includes('translate.google.com')) {
+        // Extract target language from Google Translate URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetLang = urlParams.get('tl');
+        if (targetLang) {
+          const foundLang = languages.find(lang => lang.code === targetLang);
+          if (foundLang) {
+            setCurrentLanguage(foundLang);
+            localStorage.setItem('selectedLanguage', targetLang);
+            return;
+          }
         }
       }
       
-      // If no language in URL, check saved preference
+      // Check saved preference
       const savedLang = localStorage.getItem('selectedLanguage');
       if (savedLang && savedLang !== 'en') {
         const savedLanguage = languages.find(lang => lang.code === savedLang);
@@ -119,7 +120,7 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
       }
     };
 
-    checkCurrentLanguage();
+    checkTranslatedPage();
   }, []);
 
   if (isMobile) {
