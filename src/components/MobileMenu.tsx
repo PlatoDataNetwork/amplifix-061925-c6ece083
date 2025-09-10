@@ -80,6 +80,9 @@ const MobileMenu = () => {
               <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                 <ThemeToggle />
               </div>
+              <div className="px-4 py-3">
+                <div className="gtranslate_wrapper"></div>
+              </div>
             </nav>
           </div>
         </div>
