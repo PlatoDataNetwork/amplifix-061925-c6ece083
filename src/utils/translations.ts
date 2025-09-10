@@ -369,17 +369,36 @@ export function translateText(text: string, targetLanguage: string): string {
   return text; // Return original if no translation found
 }
 
+// Store original text content for restoration
+const originalTexts = new Map<Element, string>();
+
 export function translatePage(targetLanguage: string) {
+  // First, restore all original texts if switching languages
+  originalTexts.forEach((originalText, element) => {
+    if (element.textContent && element.textContent !== originalText) {
+      element.textContent = originalText;
+    }
+  });
+  
   if (targetLanguage === 'en') {
-    // Reload page to restore original text
-    window.location.reload();
+    // Just return after restoring original texts
     return;
   }
+  
+  // Clear existing stored texts and remove translated markers
+  document.querySelectorAll('.translated').forEach(el => {
+    el.classList.remove('translated');
+  });
   
   // Translate navigation elements
   const navElements = document.querySelectorAll('nav a, nav button');
   navElements.forEach((element) => {
     if (element.textContent) {
+      // Store original text if not already stored
+      if (!originalTexts.has(element)) {
+        originalTexts.set(element, element.textContent.trim());
+      }
+      
       const translated = translateText(element.textContent.trim(), targetLanguage);
       if (translated !== element.textContent.trim()) {
         element.textContent = translated;
@@ -387,36 +406,40 @@ export function translatePage(targetLanguage: string) {
     }
   });
   
-  // Translate main content elements - expanded selectors
+  // Translate main content elements - expanded selectors (removed :not(.translated))
   const contentSelectors = [
-    'h1:not(.translated)', 
-    'h2:not(.translated)', 
-    'h3:not(.translated)', 
-    'h4:not(.translated)', 
-    'h5:not(.translated)', 
-    'h6:not(.translated)',
-    'p:not(.translated)',
-    'button:not(.translated)',
-    'span:not(.translated)',
-    'div:not(.translated)',
-    '.text-4xl:not(.translated)', 
-    '.text-3xl:not(.translated)', 
-    '.text-2xl:not(.translated)', 
-    '.text-xl:not(.translated)', 
-    '.text-lg:not(.translated)',
-    '[class*="text-"]:not(.translated)',
-    'main *:not(.translated)', // Specifically target main content area
-    'article *:not(.translated)',
-    'section *:not(.translated)'
+    'h1', 
+    'h2', 
+    'h3', 
+    'h4', 
+    'h5', 
+    'h6',
+    'p',
+    'button',
+    'span',
+    'div',
+    '.text-4xl', 
+    '.text-3xl', 
+    '.text-2xl', 
+    '.text-xl', 
+    '.text-lg',
+    '[class*="text-"]', 
+    'main *', // Specifically target main content area
+    'article *',
+    'section *'
   ];
   
   contentSelectors.forEach(selector => {
     const elements = document.querySelectorAll(selector);
     elements.forEach((element) => {
       if (element.textContent && 
-          !element.classList.contains('translated') && 
           element.children.length === 0 && // Only translate leaf nodes
           element.textContent.trim().length > 0) {
+        
+        // Store original text if not already stored
+        if (!originalTexts.has(element)) {
+          originalTexts.set(element, element.textContent.trim());
+        }
         
         const originalText = element.textContent.trim();
         const translated = translateText(originalText, targetLanguage);
@@ -431,7 +454,12 @@ export function translatePage(targetLanguage: string) {
   // Also translate button text content specifically
   const buttons = document.querySelectorAll('button, .btn, [role="button"]');
   buttons.forEach((button) => {
-    if (button.textContent && !button.classList.contains('translated')) {
+    if (button.textContent) {
+      // Store original text if not already stored
+      if (!originalTexts.has(button)) {
+        originalTexts.set(button, button.textContent.trim());
+      }
+      
       const originalText = button.textContent.trim();
       const translated = translateText(originalText, targetLanguage);
       if (translated !== originalText) {
@@ -449,7 +477,12 @@ export function translatePage(targetLanguage: string) {
           const element = node as Element;
           
           // Translate the new element if it has text content
-          if (element.textContent && !element.classList.contains('translated')) {
+          if (element.textContent) {
+            // Store original text if not already stored
+            if (!originalTexts.has(element)) {
+              originalTexts.set(element, element.textContent.trim());
+            }
+            
             const originalText = element.textContent.trim();
             const translated = translateText(originalText, targetLanguage);
             if (translated !== originalText) {
@@ -459,9 +492,14 @@ export function translatePage(targetLanguage: string) {
           }
           
           // Also check child elements
-          const childElements = element.querySelectorAll('*:not(.translated)');
+          const childElements = element.querySelectorAll('*');
           childElements.forEach((child) => {
             if (child.textContent && child.children.length === 0) {
+              // Store original text if not already stored
+              if (!originalTexts.has(child)) {
+                originalTexts.set(child, child.textContent.trim());
+              }
+              
               const originalText = child.textContent.trim();
               const translated = translateText(originalText, targetLanguage);
               if (translated !== originalText) {
