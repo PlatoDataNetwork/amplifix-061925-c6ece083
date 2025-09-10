@@ -31,7 +31,7 @@ const MainHeader = () => {
 
 
   useEffect(() => {
-    // Add GTranslate settings
+    // Add GTranslate settings for desktop
     (window as any).gtranslateSettings = {
       default_language: "en",
       wrapper_selector: ".gtranslate_wrapper",
@@ -45,8 +45,48 @@ const MainHeader = () => {
     script.defer = true;
     document.body.appendChild(script);
 
+    // Add a simple mobile language switcher
+    const mobileSwitcher = () => {
+      const mobileWrapper = document.querySelector('.gtranslate_wrapper_mobile');
+      if (mobileWrapper && !mobileWrapper.hasChildNodes()) {
+        mobileWrapper.innerHTML = `
+          <select onchange="doGTranslate(this.value)" style="
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background: var(--background);
+            color: var(--foreground);
+            font-size: 14px;
+            width: 100%;
+          ">
+            <option value="en|en">English</option>
+            <option value="en|es">Español</option>
+            <option value="en|fr">Français</option>
+            <option value="en|de">Deutsch</option>
+            <option value="en|it">Italiano</option>
+            <option value="en|pt">Português</option>
+            <option value="en|zh">中文</option>
+            <option value="en|ja">日本語</option>
+            <option value="en|ko">한국어</option>
+            <option value="en|ar">العربية</option>
+          </select>
+        `;
+      }
+    };
+
+    // Check periodically for mobile wrapper
+    const interval = setInterval(() => {
+      mobileSwitcher();
+      if (document.querySelector('.gtranslate_wrapper_mobile select')) {
+        clearInterval(interval);
+      }
+    }, 100);
+
     return () => {
-      document.body.removeChild(script);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+      clearInterval(interval);
     };
 
   }, []);

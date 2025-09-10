@@ -81,7 +81,7 @@ const MobileMenu = () => {
                 <ThemeToggle />
               </div>
               <div className="px-4 py-3">
-                <div className="gtranslate_wrapper"></div>
+                <div className="gtranslate_wrapper_mobile"></div>
               </div>
             </nav>
           </div>
