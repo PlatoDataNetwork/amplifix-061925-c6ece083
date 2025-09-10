@@ -49,7 +49,7 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
 
   const translatePage = async (langCode: string) => {
     setIsTranslating(true);
-    console.log('Translating page to:', langCode, 'using GTranslate');
+    console.log('translatePage called - Desktop:', !isMobile, 'Language:', langCode);
     
     try {
       const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
@@ -58,9 +58,14 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
       
       // Use GTranslate's doGTranslate function
       const langPair = `en|${langCode}`;
+      console.log('Calling doGTranslate with:', langPair);
+      
+      // Give a small delay to ensure the UI updates
+      await new Promise(resolve => setTimeout(resolve, 100));
       
       // Call GTranslate function if available
       if ((window as any).doGTranslate) {
+        console.log('doGTranslate function found, calling...');
         (window as any).doGTranslate(langPair);
       } else {
         console.log('GTranslate not ready, manual redirect');
@@ -69,12 +74,14 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
           // Return to original page
           const url = window.location.href;
           const newUrl = url.replace(/\/[a-z]{2}(-[A-Z]{2})?\//g, '/').replace(/\/[a-z]{2}(-[A-Z]{2})?$/g, '');
+          console.log('Redirecting to English version:', newUrl);
           window.location.href = newUrl;
         } else {
           // Redirect to translated version
           const url = window.location.href;
           let newUrl = url.replace(/\/[a-z]{2}(-[A-Z]{2})?\//g, '/').replace(/\/[a-z]{2}(-[A-Z]{2})?$/g, '');
           newUrl = newUrl.replace(/\/$/, '') + '/' + langCode + '/';
+          console.log('Redirecting to translated version:', newUrl);
           window.location.href = newUrl;
         }
       }
@@ -82,7 +89,7 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
     } catch (error) {
       console.error('Translation failed:', error);
     } finally {
-      setIsTranslating(false);
+      setTimeout(() => setIsTranslating(false), 1000); // Keep loading state a bit longer
     }
   };
 
@@ -123,7 +130,10 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
         </label>
         <select
           value={currentLanguage.code}
-          onChange={(e) => translatePage(e.target.value)}
+          onChange={(e) => {
+            console.log('Mobile select changed:', e.target.value);
+            translatePage(e.target.value);
+          }}
           disabled={isTranslating}
           className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-highlight-blue focus:border-transparent disabled:opacity-50"
         >
@@ -154,8 +164,11 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => translatePage(lang.code)}
-            className={`flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-muted ${
+            onSelect={() => {
+              console.log('Desktop dropdown item selected:', lang.code, lang.name);
+              translatePage(lang.code);
+            }}
+            className={`flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-muted focus:bg-muted ${
               currentLanguage.code === lang.code ? 'bg-muted' : ''
             }`}
           >
