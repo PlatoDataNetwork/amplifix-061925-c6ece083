@@ -49,32 +49,34 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
 
   const translatePage = async (langCode: string) => {
     setIsTranslating(true);
-    console.log('Translating page to:', langCode);
+    console.log('Translating page to:', langCode, 'using GTranslate');
     
     try {
       const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
       setCurrentLanguage(selectedLang);
       localStorage.setItem('selectedLanguage', langCode);
       
-      if (langCode === 'en') {
-        // If English is selected, reload the original page
-        if (window.location.href.includes('translate.google.com')) {
-          // If we're on a translated page, go back to original
-          const originalUrl = window.location.origin + window.location.pathname + window.location.search;
-          window.location.href = originalUrl;
-        }
-        console.log('Switched to English (original)');
+      // Use GTranslate's doGTranslate function
+      const langPair = `en|${langCode}`;
+      
+      // Call GTranslate function if available
+      if ((window as any).doGTranslate) {
+        (window as any).doGTranslate(langPair);
       } else {
-        // Use Google Translate's page translation service
-        const currentUrl = window.location.href;
-        const baseUrl = currentUrl.includes('translate.google.com') 
-          ? currentUrl.split('&u=')[1]?.split('&')[0] || window.location.origin + window.location.pathname
-          : currentUrl;
-        
-        const translateUrl = `https://translate.google.com/translate?sl=en&tl=${langCode}&u=${encodeURIComponent(baseUrl)}`;
-        
-        console.log('Redirecting to translated page:', translateUrl);
-        window.location.href = translateUrl;
+        console.log('GTranslate not ready, manual redirect');
+        // Fallback manual redirect for GTranslate
+        if (langCode === 'en') {
+          // Return to original page
+          const url = window.location.href;
+          const newUrl = url.replace(/\/[a-z]{2}(-[A-Z]{2})?\//g, '/').replace(/\/[a-z]{2}(-[A-Z]{2})?$/g, '');
+          window.location.href = newUrl;
+        } else {
+          // Redirect to translated version
+          const url = window.location.href;
+          let newUrl = url.replace(/\/[a-z]{2}(-[A-Z]{2})?\//g, '/').replace(/\/[a-z]{2}(-[A-Z]{2})?$/g, '');
+          newUrl = newUrl.replace(/\/$/, '') + '/' + langCode + '/';
+          window.location.href = newUrl;
+        }
       }
       
     } catch (error) {
@@ -85,32 +87,32 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
   };
 
   useEffect(() => {
-    // Check if we're on a translated page and update the current language
-    const checkTranslatedPage = () => {
-      if (window.location.href.includes('translate.google.com')) {
-        // Extract language from Google Translate URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const targetLang = urlParams.get('tl');
-        if (targetLang) {
-          const savedLanguage = languages.find(lang => lang.code === targetLang);
-          if (savedLanguage) {
-            setCurrentLanguage(savedLanguage);
-            localStorage.setItem('selectedLanguage', targetLang);
-          }
+    // Check URL for current language (GTranslate style)
+    const checkCurrentLanguage = () => {
+      const path = window.location.pathname;
+      const langMatch = path.match(/\/([a-z]{2})\/$/);
+      
+      if (langMatch) {
+        const langCode = langMatch[1];
+        const foundLang = languages.find(lang => lang.code === langCode);
+        if (foundLang) {
+          setCurrentLanguage(foundLang);
+          localStorage.setItem('selectedLanguage', langCode);
+          return;
         }
-      } else {
-        // Restore saved language preference for original page
-        const savedLang = localStorage.getItem('selectedLanguage');
-        if (savedLang && savedLang !== 'en') {
-          const savedLanguage = languages.find(lang => lang.code === savedLang);
-          if (savedLanguage) {
-            setCurrentLanguage(savedLanguage);
-          }
+      }
+      
+      // If no language in URL, check saved preference
+      const savedLang = localStorage.getItem('selectedLanguage');
+      if (savedLang && savedLang !== 'en') {
+        const savedLanguage = languages.find(lang => lang.code === savedLang);
+        if (savedLanguage) {
+          setCurrentLanguage(savedLanguage);
         }
       }
     };
 
-    checkTranslatedPage();
+    checkCurrentLanguage();
   }, []);
 
   if (isMobile) {
