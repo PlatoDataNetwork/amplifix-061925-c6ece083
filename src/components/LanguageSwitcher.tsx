@@ -16,15 +16,25 @@ interface Language {
 
 const languages: Language[] = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-  { code: 'pt', name: 'Português', flag: '🇵🇹' },
-  { code: 'zh', name: '中文', flag: '🇨🇳' },
-  { code: 'ja', name: '日本語', flag: '🇯🇵' },
-  { code: 'ko', name: '한국어', flag: '🇰🇷' },
-  { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+  { code: 'es', name: 'Spanish', flag: '🇪🇸' },
+  { code: 'fr', name: 'French', flag: '🇫🇷' },
+  { code: 'de', name: 'German', flag: '🇩🇪' },
+  { code: 'it', name: 'Italian', flag: '🇮🇹' },
+  { code: 'pt', name: 'Portuguese', flag: '🇵🇹' },
+  { code: 'zh', name: 'Chinese', flag: '🇨🇳' },
+  { code: 'ja', name: 'Japanese', flag: '🇯🇵' },
+  { code: 'ko', name: 'Korean', flag: '🇰🇷' },
+  { code: 'ar', name: 'Arabic', flag: '🇸🇦' },
+  { code: 'ru', name: 'Russian', flag: '🇷🇺' },
+  { code: 'hi', name: 'Hindi', flag: '🇮🇳' },
+  { code: 'nl', name: 'Dutch', flag: '🇳🇱' },
+  { code: 'sv', name: 'Swedish', flag: '🇸🇪' },
+  { code: 'tr', name: 'Turkish', flag: '🇹🇷' },
+  { code: 'pl', name: 'Polish', flag: '🇵🇱' },
+  { code: 'fi', name: 'Finnish', flag: '🇫🇮' },
+  { code: 'no', name: 'Norwegian', flag: '🇳🇴' },
+  { code: 'da', name: 'Danish', flag: '🇩🇰' },
+  { code: 'th', name: 'Thai', flag: '🇹🇭' },
 ];
 
 interface LanguageSwitcherProps {
@@ -37,45 +47,92 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
 
   const translatePage = async (langCode: string) => {
     setIsTranslating(true);
-    console.log('Translating to:', langCode);
+    console.log('Attempting translation to:', langCode);
     
     try {
-      // First, try to find the Google Translate combo element
-      let selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-      
-      if (!selectElement) {
-        // If not found, wait a bit longer and try again
-        console.log('Waiting for Google Translate to initialize...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-      }
-      
-      if (selectElement) {
-        console.log('Found Google Translate combo, setting language to:', langCode);
-        selectElement.value = langCode;
-        selectElement.dispatchEvent(new Event('change'));
-        
-        const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
-        setCurrentLanguage(selectedLang);
-        
-        // Store preference in localStorage
-        localStorage.setItem('selectedLanguage', langCode);
-        
-        console.log('Translation triggered successfully');
-      } else {
-        console.error('Google Translate combo element still not found');
-        // Fallback: Try to initialize Google Translate again
-        if ((window as any).google && (window as any).google.translate) {
-          console.log('Attempting to reinitialize Google Translate...');
-          (window as any).googleTranslateElementInit();
-        } else {
+      // Method 1: Try direct Google Translate API approach
+      const triggerTranslation = () => {
+        // Create a temporary Google Translate widget if it doesn't exist
+        if (!(window as any).google || !(window as any).google.translate) {
           throw new Error('Google Translate API not loaded');
         }
+
+        // Look for existing combo element
+        let selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+        
+        if (!selectElement) {
+          // Force create a new translate element
+          const tempDiv = document.createElement('div');
+          tempDiv.id = 'temp_translate_' + Date.now();
+          document.body.appendChild(tempDiv);
+          
+          new (window as any).google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,es,fr,de,it,pt,zh,ja,ko,ar,ru,hi,nl,sv,tr,pl,fi,no,da,th',
+            layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE
+          }, tempDiv.id);
+          
+          // Wait for the new element to be created
+          setTimeout(() => {
+            selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+            if (selectElement) {
+              selectElement.value = langCode;
+              selectElement.dispatchEvent(new Event('change'));
+              console.log('Translation triggered with new element');
+            }
+            // Clean up temp div
+            if (document.body.contains(tempDiv)) {
+              document.body.removeChild(tempDiv);
+            }
+          }, 500);
+        } else {
+          // Use existing element
+          selectElement.value = langCode;
+          selectElement.dispatchEvent(new Event('change'));
+          console.log('Translation triggered with existing element');
+        }
+      };
+
+      // Method 2: If Google Translate isn't ready, try loading it fresh
+      if (!(window as any).google || !(window as any).google.translate) {
+        console.log('Google Translate not loaded, attempting to load...');
+        
+        // Load Google Translate script dynamically
+        const script = document.createElement('script');
+        script.src = 'https://translate.google.com/translate_a/element.js?cb=initTranslateCallback';
+        
+        (window as any).initTranslateCallback = () => {
+          setTimeout(() => {
+            triggerTranslation();
+          }, 1000);
+        };
+        
+        document.head.appendChild(script);
+      } else {
+        triggerTranslation();
       }
+      
+      const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
+      setCurrentLanguage(selectedLang);
+      
+      // Store preference in localStorage
+      localStorage.setItem('selectedLanguage', langCode);
+      
+      console.log('Translation process completed');
       
     } catch (error) {
       console.error('Translation failed:', error);
-      // Don't change the UI state on error, so user knows it didn't work
+      
+      // Fallback: Try manual page reload with language parameter
+      console.log('Attempting fallback translation method...');
+      const url = new URL(window.location.href);
+      url.searchParams.set('lang', langCode);
+      
+      // Don't reload immediately, just update the current language display
+      const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
+      setCurrentLanguage(selectedLang);
+      localStorage.setItem('selectedLanguage', langCode);
+      
     } finally {
       setIsTranslating(false);
     }
