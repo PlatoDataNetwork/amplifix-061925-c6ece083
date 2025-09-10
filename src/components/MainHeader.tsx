@@ -31,6 +31,9 @@ const MainHeader = () => {
 
 
   useEffect(() => {
+    // Add debugging
+    console.log('Setting up GTranslate...');
+    
     // Add GTranslate settings for desktop
     (window as any).gtranslateSettings = {
       default_language: "en",
@@ -43,16 +46,39 @@ const MainHeader = () => {
       vertical_position: "top"
     };
 
-    // Load external GTranslate script
+    // Load external GTranslate script for floating widget
     const script = document.createElement("script");
     script.src = "https://cdn.gtranslate.net/widgets/latest/float.js";
     script.defer = true;
+    script.onload = () => {
+      console.log('GTranslate script loaded');
+    };
+    script.onerror = () => {
+      console.error('Failed to load GTranslate script');
+    };
     document.body.appendChild(script);
+
+    // Add global doGTranslate function for mobile dropdown
+    (window as any).doGTranslate = function(lang_pair) {
+      console.log('doGTranslate called with:', lang_pair);
+      if (lang_pair.value) lang_pair = lang_pair.value;
+      if (lang_pair == '') return;
+      var lang = lang_pair.split('|')[1];
+      if (lang == (window as any).gt_request_uri) return;
+      var url = window.location.href;
+      var new_url = url.replace(/\/[a-z]{2}(-[A-Z]{2})?\//g, '/').replace(/\/[a-z]{2}(-[A-Z]{2})?$/g, '');
+      if (lang != 'en') {
+        new_url = new_url.replace(/\/$/, '') + '/' + lang + '/';
+      }
+      console.log('Redirecting to:', new_url);
+      window.location.href = new_url;
+    };
 
     // Add a simple mobile language switcher
     const mobileSwitcher = () => {
       const mobileWrapper = document.querySelector('.gtranslate_wrapper_mobile');
       if (mobileWrapper && !mobileWrapper.hasChildNodes()) {
+        console.log('Adding mobile switcher');
         mobileWrapper.innerHTML = `
           <select onchange="doGTranslate(this.value)" style="
             padding: 8px 12px;
