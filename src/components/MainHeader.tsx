@@ -31,97 +31,87 @@ const MainHeader = () => {
 
 
   useEffect(() => {
-    // Add debugging
-    console.log('Setting up GTranslate...');
+    console.log('Setting up Google Translate...');
     
-    // Add GTranslate settings for desktop - using no URL structure to avoid React Router conflicts
-    (window as any).gtranslateSettings = {
-      default_language: "en",
-      wrapper_selector: ".gtranslate_wrapper",
-      url_structure: "none",
-      native_language_names: true,
-      flag_style: "3d",
-      flag_size: 16,
-      horizontal_position: "right",
-      vertical_position: "top"
-    };
+    // Add Google Translate script
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    script.async = true;
+    document.head.appendChild(script);
 
-    // Load external GTranslate script for floating widget
-    const script = document.createElement("script");
-    script.src = "https://cdn.gtranslate.net/widgets/latest/float.js";
-    script.defer = true;
-    script.onload = () => {
-      console.log('GTranslate script loaded');
-    };
-    script.onerror = () => {
-      console.error('Failed to load GTranslate script');
-    };
-    document.body.appendChild(script);
-
-    // Simple language switcher function for mobile that uses GTranslate API
-    (window as any).doGTranslate = function(lang_pair) {
-      console.log('doGTranslate called with:', lang_pair);
-      if (lang_pair.value) lang_pair = lang_pair.value;
-      if (lang_pair == '') return;
-      var lang = lang_pair.split('|')[1];
+    // Initialize Google Translate
+    (window as any).googleTranslateElementInit = function() {
+      new (window as any).google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,es,fr,de,it,pt,zh,ja,ko,ar',
+        layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
+        multilanguagePage: true,
+        gaTrack: true,
+        gaId: 'G-FQ4G09PD29'
+      }, 'google_translate_element');
       
-      // Use GTranslate's own function if available
-      if ((window as any).doGTranslate && typeof (window as any).doGTranslate.original === 'function') {
-        (window as any).doGTranslate.original(lang_pair);
+      console.log('Google Translate initialized');
+    };
+
+    // Custom function for mobile dropdown
+    (window as any).translatePage = function(langCode) {
+      console.log('Translating to:', langCode);
+      var selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+      if (selectElement) {
+        selectElement.value = langCode;
+        selectElement.dispatchEvent(new Event('change'));
       } else {
-        // Fallback: trigger translation by creating a temporary Google Translate element
-        console.log('Triggering translation for language:', lang);
-        var gtCombo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-        if (gtCombo) {
-          gtCombo.value = lang;
-          gtCombo.dispatchEvent(new Event('change'));
-        }
+        console.log('Google Translate not ready yet');
       }
     };
 
-    // Add a simple mobile language switcher
-    const mobileSwitcher = () => {
+    // Add mobile language switcher
+    const addMobileSwitcher = () => {
       const mobileWrapper = document.querySelector('.gtranslate_wrapper_mobile');
       if (mobileWrapper && !mobileWrapper.hasChildNodes()) {
         console.log('Adding mobile switcher');
         mobileWrapper.innerHTML = `
-          <select onchange="doGTranslate(this.value)" style="
-            padding: 8px 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            background: var(--background);
-            color: var(--foreground);
-            font-size: 14px;
-            width: 100%;
-          ">
-            <option value="en|en">English</option>
-            <option value="en|es">Español</option>
-            <option value="en|fr">Français</option>
-            <option value="en|de">Deutsch</option>
-            <option value="en|it">Italiano</option>
-            <option value="en|pt">Português</option>
-            <option value="en|zh">中文</option>
-            <option value="en|ja">日本語</option>
-            <option value="en|ko">한국어</option>
-            <option value="en|ar">العربية</option>
-          </select>
+          <div style="margin-bottom: 8px;">
+            <label style="font-size: 14px; color: var(--foreground); margin-bottom: 4px; display: block;">Language</label>
+            <select onchange="translatePage(this.value)" style="
+              padding: 8px 12px;
+              border: 1px solid #e5e7eb;
+              border-radius: 6px;
+              background: var(--background);
+              color: var(--foreground);
+              font-size: 14px;
+              width: 100%;
+            ">
+              <option value="">English</option>
+              <option value="es">Español</option>
+              <option value="fr">Français</option>
+              <option value="de">Deutsch</option>
+              <option value="it">Italiano</option>
+              <option value="pt">Português</option>
+              <option value="zh">中文</option>
+              <option value="ja">日本語</option>
+              <option value="ko">한국어</option>
+              <option value="ar">العربية</option>
+            </select>
+          </div>
         `;
       }
     };
 
-    // Check periodically for mobile wrapper
+    // Check for mobile wrapper periodically
     const interval = setInterval(() => {
-      mobileSwitcher();
+      addMobileSwitcher();
       if (document.querySelector('.gtranslate_wrapper_mobile select')) {
         clearInterval(interval);
       }
     }, 100);
 
     return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
       clearInterval(interval);
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
     };
 
   }, []);
@@ -188,7 +178,7 @@ const MainHeader = () => {
             </>
           )}
           <ThemeToggle />
-          <div className="gtranslate_wrapper"></div>
+          <div id="google_translate_element" className="gtranslate_wrapper"></div>
         </div>
 
         {/* Mobile Navigation */}
