@@ -163,6 +163,121 @@ export const translations: Record<string, Record<string, string>> = {
     he: 'הגבר את התקשורת שלך',
     fa: 'ارتباطات خود را تقویت کنید'
   },
+  'AmplifiX Intelligence': {
+    es: 'Inteligencia AmplifiX',
+    fr: 'Intelligence AmplifiX',
+    de: 'AmplifiX Intelligence',
+    it: 'Intelligence AmplifiX',
+    pt: 'Inteligência AmplifiX',
+    zh: 'AmplifiX 智能',
+    ja: 'AmplifiX インテリジェンス',
+    ko: 'AmplifiX 인텔리전스',
+    ar: 'ذكاء AmplifiX',
+    ru: 'AmplifiX Аналитика',
+    hi: 'AmplifiX बुद्धिमत्ता',
+    nl: 'AmplifiX Intelligence',
+    sv: 'AmplifiX Intelligence',
+    tr: 'AmplifiX İstihbaratı',
+    pl: 'AmplifiX Intelligence',
+    fi: 'AmplifiX Intelligence',
+    no: 'AmplifiX Intelligence',
+    da: 'AmplifiX Intelligence',
+    th: 'AmplifiX อินเทลลิเจนซ์',
+    he: 'AmplifiX אינטליגנציה',
+    fa: 'هوش AmplifiX'
+  },
+  'Stay updated with the latest in AI intelligence, corporate insights, and product updates from the AmplifiX team': {
+    es: 'Mantente actualizado con lo último en inteligencia artificial, perspectivas corporativas y actualizaciones de productos del equipo AmplifiX',
+    fr: 'Restez à jour avec les dernières nouveautés en intelligence artificielle, perspectives d\'entreprise et mises à jour de produits de l\'équipe AmplifiX',
+    de: 'Bleiben Sie auf dem Laufenden mit den neuesten KI-Entwicklungen, Unternehmenseinblicken und Produktupdates vom AmplifiX-Team',
+    it: 'Rimani aggiornato con le ultime novità in intelligenza artificiale, approfondimenti aziendali e aggiornamenti di prodotto dal team AmplifiX',
+    pt: 'Mantenha-se atualizado com o mais recente em inteligência artificial, insights corporativos e atualizações de produtos da equipe AmplifiX',
+    zh: '了解 AmplifiX 团队在人工智能、企业洞察和产品更新方面的最新信息',
+    ja: 'AmplifiX チームからの AI インテリジェンス、企業インサイト、製品アップデートの最新情報をお届けします',
+    ko: 'AmplifiX 팀의 최신 AI 인텔리전스, 기업 인사이트 및 제품 업데이트를 확인하세요',
+    ar: 'ابق محدثاً بأحدث المعلومات في الذكاء الاصطناعي والرؤى المؤسسية وتحديثات المنتجات من فريق AmplifiX',
+    ru: 'Будьте в курсе последних новостей в области ИИ, корпоративной аналитики и обновлений продуктов от команды AmplifiX',
+    hi: 'AmplifiX टीम से AI इंटेलिजेंस, कॉर्पोरेट इनसाइट्स, और उत्पाद अपडेट की नवीनतम जानकारी के साथ अपडेट रहें',
+    nl: 'Blijf op de hoogte van het laatste nieuws over AI-intelligentie, bedrijfsinzichten en productupdates van het AmplifiX-team',
+    sv: 'Håll dig uppdaterad med det senaste inom AI-intelligens, företagsinsikter och produktuppdateringar från AmplifiX-teamet',
+    tr: 'AmplifiX ekibinden yapay zeka istihbaratı, kurumsal içgörüler ve ürün güncellemeleri konularında en son gelişmelerden haberdar olun',
+    pl: 'Bądź na bieżąco z najnowszymi informacjami o sztucznej inteligencji, wglądzie w biznes i aktualizacjach produktów od zespołu AmplifiX',
+    fi: 'Pysy ajan tasalla AmplifiX-tiimin uusimmista tekoälyälykkyyden, yritystietojen ja tuotepäivitysten kanssa',
+    no: 'Hold deg oppdatert med det nyeste innen AI-intelligens, bedriftsinnsikt og produktoppdateringer fra AmplifiX-teamet',
+    da: 'Hold dig opdateret med det seneste inden for AI-intelligens, virksomhedsindsigt og produktopdateringer fra AmplifiX-teamet',
+    th: 'อัปเดตข้อมูลล่าสุดเกี่ยวกับ AI intelligence, corporate insights และ product updates จากทีม AmplifiX',
+    he: 'הישאר מעודכן עם החדשות האחרונות בבינה מלאכותית, תובנות עסקיות ועדכוני מוצרים מצוות AmplifiX',
+    fa: 'با آخرین اطلاعات در زمینه هوش مصنوعی، بینش‌های شرکتی و به‌روزرسانی‌های محصول از تیم AmplifiX به‌روز بمانید'
+  },
+  'Featured': {
+    es: 'Destacado',
+    fr: 'En vedette',
+    de: 'Empfohlen',
+    it: 'In evidenza',
+    pt: 'Destaque',
+    zh: '精选',
+    ja: '注目',
+    ko: '주요',
+    ar: 'مميز',
+    ru: 'Рекомендуемое',
+    hi: 'विशेष',
+    nl: 'Uitgelicht',
+    sv: 'Utvald',
+    tr: 'Öne Çıkan',
+    pl: 'Polecane',
+    fi: 'Suositeltu',
+    no: 'Anbefalt',
+    da: 'Fremhævet',
+    th: 'แนะนำ',
+    he: 'מובלט',
+    fa: 'ویژه'
+  },
+  'Technology': {
+    es: 'Tecnología',
+    fr: 'Technologie',
+    de: 'Technologie',
+    it: 'Tecnologia',
+    pt: 'Tecnologia',
+    zh: '技术',
+    ja: 'テクノロジー',
+    ko: '기술',
+    ar: 'التكنولوجيا',
+    ru: 'Технология',
+    hi: 'प्रौद्योगिकी',
+    nl: 'Technologie',
+    sv: 'Teknik',
+    tr: 'Teknoloji',
+    pl: 'Technologia',
+    fi: 'Teknologia',
+    no: 'Teknologi',
+    da: 'Teknologi',
+    th: 'เทคโนโลยี',
+    he: 'טכנולוגיה',
+    fa: 'فناوری'
+  },
+  'Latest Intelligence': {
+    es: 'Últimas Noticias',
+    fr: 'Dernières Actualités',
+    de: 'Neueste Erkenntnisse',
+    it: 'Ultime Novità',
+    pt: 'Últimas Notícias',
+    zh: '最新情报',
+    ja: '最新情報',
+    ko: '최신 정보',
+    ar: 'آخر المعلومات',
+    ru: 'Последние новости',
+    hi: 'नवीनतम जानकारी',
+    nl: 'Laatste Nieuws',
+    sv: 'Senaste Nytt',
+    tr: 'Son Haberler',
+    pl: 'Najnowsze Informacje',
+    fi: 'Uusimmat Tiedot',
+    no: 'Siste Nytt',
+    da: 'Seneste Nyt',
+    th: 'ข้อมูลล่าสุด',
+    he: 'מידע עדכני',
+    fa: 'آخرین اطلاعات'
+  },
   'AmplifiX leverages cutting-edge AI to transform how public and private companies manage investor relations and corporate communications.': {
     es: 'AmplifiX aprovecha la IA de vanguardia para transformar cómo las empresas públicas y privadas gestionan las relaciones con inversores y comunicaciones corporativas.',
     fr: 'AmplifiX exploite l\'IA de pointe pour transformer la façon dont les entreprises publiques et privées gèrent les relations investisseurs et les communications d\'entreprise.',
@@ -272,18 +387,37 @@ export function translatePage(targetLanguage: string) {
     }
   });
   
-  // Translate main content elements
+  // Translate main content elements - expanded selectors
   const contentSelectors = [
-    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'h1:not(.translated)', 
+    'h2:not(.translated)', 
+    'h3:not(.translated)', 
+    'h4:not(.translated)', 
+    'h5:not(.translated)', 
+    'h6:not(.translated)',
     'p:not(.translated)',
     'button:not(.translated)',
-    '.text-4xl', '.text-3xl', '.text-2xl', '.text-xl', '.text-lg'
+    'span:not(.translated)',
+    'div:not(.translated)',
+    '.text-4xl:not(.translated)', 
+    '.text-3xl:not(.translated)', 
+    '.text-2xl:not(.translated)', 
+    '.text-xl:not(.translated)', 
+    '.text-lg:not(.translated)',
+    '[class*="text-"]:not(.translated)',
+    'main *:not(.translated)', // Specifically target main content area
+    'article *:not(.translated)',
+    'section *:not(.translated)'
   ];
   
   contentSelectors.forEach(selector => {
     const elements = document.querySelectorAll(selector);
     elements.forEach((element) => {
-      if (element.textContent && !element.classList.contains('translated')) {
+      if (element.textContent && 
+          !element.classList.contains('translated') && 
+          element.children.length === 0 && // Only translate leaf nodes
+          element.textContent.trim().length > 0) {
+        
         const originalText = element.textContent.trim();
         const translated = translateText(originalText, targetLanguage);
         if (translated !== originalText) {
@@ -293,6 +427,64 @@ export function translatePage(targetLanguage: string) {
       }
     });
   });
+  
+  // Also translate button text content specifically
+  const buttons = document.querySelectorAll('button, .btn, [role="button"]');
+  buttons.forEach((button) => {
+    if (button.textContent && !button.classList.contains('translated')) {
+      const originalText = button.textContent.trim();
+      const translated = translateText(originalText, targetLanguage);
+      if (translated !== originalText) {
+        button.textContent = translated;
+        button.classList.add('translated');
+      }
+    }
+  });
+  
+  // Use MutationObserver to catch dynamically loaded content
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const element = node as Element;
+          
+          // Translate the new element if it has text content
+          if (element.textContent && !element.classList.contains('translated')) {
+            const originalText = element.textContent.trim();
+            const translated = translateText(originalText, targetLanguage);
+            if (translated !== originalText) {
+              element.textContent = translated;
+              element.classList.add('translated');
+            }
+          }
+          
+          // Also check child elements
+          const childElements = element.querySelectorAll('*:not(.translated)');
+          childElements.forEach((child) => {
+            if (child.textContent && child.children.length === 0) {
+              const originalText = child.textContent.trim();
+              const translated = translateText(originalText, targetLanguage);
+              if (translated !== originalText) {
+                child.textContent = translated;
+                child.classList.add('translated');
+              }
+            }
+          });
+        }
+      });
+    });
+  });
+  
+  // Start observing
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+  
+  // Stop observing after 5 seconds
+  setTimeout(() => {
+    observer.disconnect();
+  }, 5000);
   
   console.log(`Page translated to ${targetLanguage}`);
 }
