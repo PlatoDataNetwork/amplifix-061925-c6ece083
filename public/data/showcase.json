@@ -70,7 +70,7 @@
     ]
   },
   "cta": {
-    "title": "Ready to Amplify Your Success?",
+    "title": "Ready to Amplifi Your Outreach?",
     "description": "Join the growing list of companies transforming their corporate communications with AmplifiX's AI-powered platform.",
     "buttons": {
       "primary": {
@@ -79,7 +79,7 @@
       },
       "secondary": {
         "text": "Explore Features", 
-        "link": "/features"
+        "link": "/solutions"
       }
     }
   },
