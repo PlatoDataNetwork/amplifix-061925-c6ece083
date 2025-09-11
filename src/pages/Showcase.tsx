@@ -190,7 +190,7 @@ const Showcase = () => {
         </section>
 
         {/* Call to Action */}
-        <section className="container mx-auto py-16 px-4 bg-gradient-to-r from-highlight-blue/10 to-green-500/10">
+        <section className="container mx-auto py-16 px-4 bg-card">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold mb-6">{showcaseData.cta.title}</h2>
             <p className="text-xl text-muted-foreground mb-8">
