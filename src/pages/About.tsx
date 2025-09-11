@@ -1,5 +1,7 @@
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { CheckCircle, Users, Target, Award } from "lucide-react";
 import { useJsonData } from "@/hooks/useJsonData";
 import { AboutData } from "@/types/about";
@@ -30,7 +32,7 @@ const About = () => {
         <MainHeader />
         <div className="container mx-auto py-12 md:py-20 px-4">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-3xl md:text-5xl font-bold mb-6">
+            <h1 className="text-5xl font-bold mb-6">
               About <span className="text-highlight-blue">AmplifiX</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8">
@@ -51,14 +53,38 @@ const About = () => {
       <MainHeader />
       
       {/* Hero Section */}
-      <div className="container mx-auto py-12 md:py-20 px-4">
+      <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-3xl md:text-5xl font-bold mb-6">
+          <h1 className="text-5xl font-bold mb-6">
             {data.hero.title}
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground mb-8">
+          <p className="text-xl text-muted-foreground mb-8">
             {data.hero.description}
           </p>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+            <Link to="/contact" className="w-full sm:w-auto">
+              <Button 
+                size="lg" 
+                className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
+              >
+                Amplifi Your Brand →
+              </Button>
+            </Link>
+            <a 
+              href="https://calendly.com/amplifix/amplifix-discovery"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto"
+            >
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
+              >
+                Book A Demo
+              </Button>
+            </a>
+          </div>
         </div>
       </div>
 
