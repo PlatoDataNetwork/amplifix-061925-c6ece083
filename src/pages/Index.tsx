@@ -78,18 +78,24 @@ const Index = () => {
                 )}
               </Button>
             </Link>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              onClick={scrollToContact}
-              className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
+            <a 
+              href="https://calendly.com/amplifix/demo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto"
             >
-              {isLoading ? (
-                <Skeleton className="h-4 w-24" />
-              ) : (
-                homeData?.hero.buttons.secondary || 'Contact Us'
-              )}
-            </Button>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
+              >
+                {isLoading ? (
+                  <Skeleton className="h-4 w-24" />
+                ) : (
+                  'Book A Demo'
+                )}
+              </Button>
+            </a>
           </div>
         </div>
       </div>
