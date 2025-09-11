@@ -47,7 +47,7 @@ const InternationalLandAllianceShowcase = () => {
                 retirement, and investors across Baja's most desirable locations.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="https://www.internationallandalliance.com/" target="_blank" rel="noopener noreferrer">
+                <a href="https://ila.company/" target="_blank" rel="noopener noreferrer">
                   <Button size="lg" className="bg-highlight-blue text-white hover:bg-highlight-blue/90">
                     Visit ILA Website
                     <ExternalLink className="ml-2 h-4 w-4" />
@@ -290,7 +290,7 @@ const InternationalLandAllianceShowcase = () => {
               how AmplifiX can help showcase your real estate investment story.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="https://www.internationallandalliance.com/" target="_blank" rel="noopener noreferrer">
+              <a href="https://ila.company/" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" className="bg-highlight-blue text-white hover:bg-highlight-blue/90">
                   Explore Properties
                   <ExternalLink className="ml-2 h-4 w-4" />
