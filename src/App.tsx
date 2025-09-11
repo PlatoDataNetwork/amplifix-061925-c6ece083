@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/hooks/useTheme";
+import PrivacyPopup from "@/components/PrivacyPopup";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 
@@ -45,6 +46,7 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <PrivacyPopup />
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
