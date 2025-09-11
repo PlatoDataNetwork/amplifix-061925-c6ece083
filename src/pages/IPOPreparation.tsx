@@ -19,11 +19,15 @@ const IPOPreparation = () => {
             Navigate your path to public markets with confidence. Our comprehensive IPO 
             preparation platform ensures you're ready for the rigorous demands of being a public company.
           </p>
-          <Link to="/contact">
+          <a 
+            href="https://calendly.com/amplifix/demo"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Button className="bg-highlight-blue text-white hover:bg-highlight-blue/90">
               Start IPO Assessment
             </Button>
-          </Link>
+          </a>
         </div>
       </div>
 

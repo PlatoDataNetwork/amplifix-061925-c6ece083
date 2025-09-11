@@ -19,11 +19,15 @@ const Fundraising = () => {
             Accelerate your fundraising process with intelligent investor targeting, 
             automated outreach, and AI-optimized pitch materials that convert.
           </p>
-          <Link to="/contact">
+          <a 
+            href="https://calendly.com/amplifix/demo"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Button className="bg-highlight-blue text-white hover:bg-highlight-blue/90">
               Optimize Your Fundraise
             </Button>
-          </Link>
+          </a>
         </div>
       </div>
 

@@ -7,8 +7,10 @@ import { Mail, MapPin } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useJsonData } from "@/hooks/useJsonData";
 
 const Contact = () => {
+  const { data: contactData } = useJsonData<any>('contact.json');
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -218,8 +220,18 @@ const Contact = () => {
                   Ready to see AmplifiX in action? Schedule a personalized demo to learn how we can
                   help amplify your corporate communications.
                 </p>
-                <Button variant="outline" className="w-full">
-                  Book a Demo
+                <Button 
+                  variant="outline" 
+                  className="w-full" 
+                  asChild
+                >
+                  <a 
+                    href={contactData?.consultation?.calendly_link || "https://calendly.com/amplifix/demo"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {contactData?.consultation?.button_text || "Book a Demo"}
+                  </a>
                 </Button>
               </div>
             </div>

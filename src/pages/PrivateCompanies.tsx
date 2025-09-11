@@ -20,11 +20,15 @@ const PrivateCompanies = () => {
             Scale your communications strategy with AI-powered PR and stakeholder 
             management solutions tailored for private companies and growth-stage businesses.
           </p>
-          <Link to="/contact">
+          <a 
+            href="https://calendly.com/amplifix/demo"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Button className="bg-highlight-blue text-white hover:bg-highlight-blue/90">
               Get Started Today
             </Button>
-          </Link>
+          </a>
         </div>
       </div>
 

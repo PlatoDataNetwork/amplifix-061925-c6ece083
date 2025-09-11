@@ -48,6 +48,7 @@
   "consultation": {
     "title": "Schedule a Consultation",
     "description": "Ready to see AmplifiX in action? Schedule a personalized demo to learn how we can help amplify your corporate communications.",
-    "button_text": "Book a Demo"
+    "button_text": "Book a Demo",
+    "calendly_link": "https://calendly.com/amplifix/demo"
   }
 }

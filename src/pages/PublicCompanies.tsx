@@ -19,11 +19,15 @@ const PublicCompanies = () => {
             Comprehensive AI-powered investor relations and corporate communications 
             solutions designed specifically for publicly traded companies.
           </p>
-          <Link to="/contact">
+          <a 
+            href="https://calendly.com/amplifix/demo"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Button className="bg-highlight-blue text-white hover:bg-highlight-blue/90">
               Schedule a Demo
             </Button>
-          </Link>
+          </a>
         </div>
       </div>
 
