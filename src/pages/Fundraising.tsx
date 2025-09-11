@@ -20,7 +20,7 @@ const Fundraising = () => {
             automated outreach, and AI-optimized pitch materials that convert.
           </p>
           <a 
-            href="https://calendly.com/amplifix/demo"
+            href="https://calendly.com/amplifix/amplifix-discovery"
             target="_blank"
             rel="noopener noreferrer"
           >

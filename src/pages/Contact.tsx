@@ -226,7 +226,7 @@ const Contact = () => {
                   asChild
                 >
                   <a 
-                    href={contactData?.consultation?.calendly_link || "https://calendly.com/amplifix/demo"}
+                    href={contactData?.consultation?.calendly_link || "https://calendly.com/amplifix/amplifix-discovery"}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

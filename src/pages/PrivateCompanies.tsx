@@ -21,7 +21,7 @@ const PrivateCompanies = () => {
             management solutions tailored for private companies and growth-stage businesses.
           </p>
           <a 
-            href="https://calendly.com/amplifix/demo"
+            href="https://calendly.com/amplifix/amplifix-discovery"
             target="_blank"
             rel="noopener noreferrer"
           >

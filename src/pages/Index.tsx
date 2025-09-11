@@ -79,7 +79,7 @@ const Index = () => {
               </Button>
             </Link>
             <a 
-              href="https://calendly.com/amplifix/demo"
+              href="https://calendly.com/amplifix/amplifix-discovery"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto"
