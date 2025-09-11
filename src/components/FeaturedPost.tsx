@@ -11,21 +11,21 @@ const FeaturedPost = () => {
           <div>
             <div className="flex items-center gap-4 mb-4">
               <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">Featured</span>
-              <span className="text-gray-400 text-sm">Technology</span>
+              <span className="text-muted-foreground text-sm">Technology</span>
             </div>
             <h2 className="text-3xl font-bold mb-4">Introducing AmplifiX 2.0: Next-Gen AI Intelligence</h2>
-            <p className="text-gray-300 mb-6">
+            <p className="text-muted-foreground mb-6">
               We're excited to announce the launch of AmplifiX 2.0, featuring enhanced AI capabilities, 
               improved analytics, and revolutionary intelligence features that set new standards for corporate communications.
             </p>
             <div className="flex items-center gap-6 mb-6">
               <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-gray-400" />
-                <span className="text-gray-400">AmplifiX</span>
+                <User className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">AmplifiX</span>
               </div>
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-gray-400" />
-                <span className="text-gray-400">Sept 1, 2025</span>
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">Sept 1, 2025</span>
               </div>
             </div>
             <Button className="bg-gradient-to-r from-blue-500 to-blue-500 text-xs md:text-sm" asChild>
@@ -34,7 +34,7 @@ const FeaturedPost = () => {
               </Link>
             </Button>
           </div>
-          <div className="bg-[#121218] p-8 rounded-xl border border-gray-800 h-64 flex items-center justify-center">
+          <div className="bg-card p-8 rounded-xl border border-border h-64 flex items-center justify-center">
             <Shield className="h-24 w-24 text-blue-500" />
           </div>
         </div>

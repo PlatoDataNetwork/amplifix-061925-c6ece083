@@ -61,7 +61,7 @@ const Blog = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white">
+    <div className="min-h-screen bg-background text-foreground">
       <MainHeader />
 
       <div className="pt-24 container mx-auto py-8 md:py-12 px-4">
@@ -75,7 +75,7 @@ const Blog = () => {
           <h1 className="text-3xl md:text-5xl font-bold mb-6">
             AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intel</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto px-4">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
             Stay updated with the latest in AI intelligence, corporate communications insights, and product updates from the AmplifiX team.
           </p>
         </div>
@@ -86,7 +86,7 @@ const Blog = () => {
         {selectedTag && (
           <section className="mb-6">
             <div className="flex items-center gap-3">
-              <span className="text-gray-300">Filtered by:</span>
+              <span className="text-muted-foreground">Filtered by:</span>
               <span className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm">
                 #{selectedTag}
               </span>
@@ -94,7 +94,7 @@ const Blog = () => {
                 onClick={clearFilter}
                 variant="ghost"
                 size="sm"
-                className="text-gray-400 hover:text-white"
+                className="text-muted-foreground hover:text-foreground"
               >
                 Clear filter
               </Button>
@@ -139,7 +139,7 @@ const Blog = () => {
           </div>
           {filteredBlogPosts.length === 0 && selectedTag && (
             <div className="text-center py-12">
-              <p className="text-gray-400 text-lg mb-4">No articles found for tag "#{selectedTag}"</p>
+              <p className="text-muted-foreground text-lg mb-4">No articles found for tag "#{selectedTag}"</p>
               <Button onClick={clearFilter} variant="outline">
                 View all articles
               </Button>
@@ -160,7 +160,7 @@ const Blog = () => {
                 className={`px-3 py-2 rounded-full cursor-pointer transition-colors text-xs md:text-sm ${
                   selectedTag === tag 
                     ? 'bg-blue-500/20 border border-blue-500 text-blue-400' 
-                    : 'bg-[#121218] border border-gray-800 text-gray-300 hover:border-blue-500/30'
+                    : 'bg-card border border-border text-muted-foreground hover:border-primary/30'
                 }`}
               >
                 #{tag}

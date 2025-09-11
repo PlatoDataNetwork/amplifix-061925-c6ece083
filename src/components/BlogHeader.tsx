@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 
 const BlogHeader = () => {
   return (
-    <nav className="container mx-auto flex items-center justify-between py-6 border-b border-gray-800">
+    <nav className="container mx-auto flex items-center justify-between py-6 border-b border-border">
       <Link to="/" className="flex items-center gap-2">
         <ArrowLeft className="h-5 w-5" />
         <span>Back to Home</span>
