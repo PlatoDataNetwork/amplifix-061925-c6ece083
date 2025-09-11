@@ -53,7 +53,7 @@ const Showcase = () => {
         <div className="pt-20 md:pt-24 container mx-auto py-12 md:py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12 md:mb-16">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 md:mb-6 px-2">
+              <h1 className="text-5xl font-bold mb-6">
                 <span className="text-highlight-blue">{showcaseData.hero.title}</span><br />
                 {showcaseData.hero.subtitle}
               </h1>
