@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Mail, MapPin } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +17,7 @@ const Contact = () => {
     lastName: "",
     email: "",
     company: "",
+    companyType: "",
     message: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,6 +25,13 @@ const Contact = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -62,6 +71,7 @@ const Contact = () => {
         lastName: "",
         email: "",
         company: "",
+        companyType: "",
         message: ""
       });
 
@@ -185,6 +195,22 @@ const Contact = () => {
                     onChange={handleInputChange}
                     placeholder="Your Company Name" 
                   />
+                </div>
+                
+                <div>
+                  <label htmlFor="companyType" className="block text-sm font-medium mb-2">
+                    Company Type
+                  </label>
+                  <Select value={formData.companyType} onValueChange={(value) => handleSelectChange('companyType', value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select company type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="public">Public Company</SelectItem>
+                      <SelectItem value="private">Private Company</SelectItem>
+                      <SelectItem value="pre-ipo">PRE-IPO Company</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 
                 <div>
