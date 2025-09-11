@@ -84,18 +84,46 @@ const Contact = () => {
       {/* Hero Section - Updated with consistent mobile-responsive padding */}
       <div className="pt-24 container mx-auto py-12 md:py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6">
+          <h1 className="text-5xl font-bold mb-6">
             Get in <span className="text-highlight-blue">Touch</span>
           </h1>
-          <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-8 px-4">
+          <p className="text-xl text-muted-foreground mb-8 px-4">
             Ready to amplify your corporate communications? Let's discuss how AmplifiX can help
             your company achieve its communication and growth objectives.
           </p>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+            <Button 
+              size="lg" 
+              onClick={() => {
+                const contactForm = document.getElementById('contact-form');
+                if (contactForm) {
+                  contactForm.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
+            >
+              Amplifi Your Brand →
+            </Button>
+            <a 
+              href="https://calendly.com/amplifix/amplifix-discovery"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto"
+            >
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
+              >
+                Book A Demo
+              </Button>
+            </a>
+          </div>
         </div>
       </div>
 
       {/* Contact Section */}
-      <section className="container mx-auto py-12 md:py-16 px-4">
+      <section id="contact-form" className="container mx-auto py-12 md:py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
