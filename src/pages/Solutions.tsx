@@ -20,6 +20,30 @@ const Solutions = () => {
             From private companies preparing for growth to public companies managing investor relations, 
             AmplifiX provides tailored solutions for your unique needs.
           </p>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+            <Link to="/contact" className="w-full sm:w-auto">
+              <Button 
+                size="lg" 
+                className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
+              >
+                Amplifi Your Brand →
+              </Button>
+            </Link>
+            <a 
+              href="https://calendly.com/amplifix/amplifix-discovery"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto"
+            >
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
+              >
+                Book A Demo
+              </Button>
+            </a>
+          </div>
         </div>
       </div>
 
