@@ -198,7 +198,7 @@ const PrivacyPolicy = () => {
                   </p>
                   <div className="space-y-2 text-muted-foreground">
                     <p><strong>Email:</strong> privacy@amplifix.net</p>
-                    <p><strong>Address:</strong> 9170 Glades Road, Boca Raton, FL 33434</p>
+                    <p><strong>Address:</strong> 144 E 44th St, New York, NY 10017</p>
                     <p><strong>Data Protection Officer:</strong> dpo@amplifix.net</p>
                   </div>
                 </div>

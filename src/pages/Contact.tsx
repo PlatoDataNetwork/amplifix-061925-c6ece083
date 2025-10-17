@@ -260,8 +260,8 @@ const Contact = () => {
                     <div>
                       <h3 className="font-medium mb-1">Office</h3>
                       <p className="text-muted-foreground">
-                        9170 Glades Road<br />
-                        Boca Raton, FL 33434
+                        144 E 44th St<br />
+                        New York, NY 10017
                       </p>
                     </div>
                   </div>

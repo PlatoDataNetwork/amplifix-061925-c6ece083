@@ -242,7 +242,7 @@ const TermsOfService = () => {
                   </p>
                   <div className="space-y-2 text-muted-foreground">
                     <p><strong>Email:</strong> legal@amplifix.net</p>
-                    <p><strong>Address:</strong> 9170 Glades Road, Boca Raton, FL 33434</p>
+                    <p><strong>Address:</strong> 144 E 44th St, New York, NY 10017</p>
                     <p><strong>Support:</strong> support@amplifix.net</p>
                   </div>
                 </div>

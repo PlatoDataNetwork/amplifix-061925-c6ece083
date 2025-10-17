@@ -339,7 +339,7 @@ const DataProcessing = () => {
                     <p><strong>Data Protection Officer:</strong> dpo@amplifix.net</p>
                     <p><strong>Privacy Team:</strong> privacy@amplifix.net</p>
                     <p><strong>Security Team:</strong> security@amplifix.net</p>
-                    <p><strong>Address:</strong> 9170 Glades Road, Boca Raton, FL 33434</p>
+                    <p><strong>Address:</strong> 144 E 44th St, New York, NY 10017</p>
                   </div>
                   <p className="text-sm text-muted-foreground mt-4">
                     You also have the right to lodge a complaint with your local data protection authority 
