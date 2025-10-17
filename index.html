@@ -29,6 +29,14 @@
 
       gtag('config', 'G-FQ4G09PD29');
     </script>
+    
+    <!-- Set dark theme as default before React loads to prevent flash -->
+    <script>
+      (function() {
+        const theme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.classList.add(theme);
+      })();
+    </script>
   </head>
 
   <body>
