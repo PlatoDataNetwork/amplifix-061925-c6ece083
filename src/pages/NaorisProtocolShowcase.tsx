@@ -44,7 +44,7 @@ const NaorisProtocolShowcase = () => {
                 <div className="space-y-6">
                   <div>
                     <img 
-                      src="/lovable-uploads/naoris-logo-hires.png" 
+                      src="/lovable-uploads/naoris-logo-updated.png" 
                       alt="Naoris Protocol" 
                       className="h-24 w-auto mb-6"
                     />
