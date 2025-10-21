@@ -37,7 +37,8 @@ const MicropolisShowcase = () => {
         
         <main className="flex-1">
           {/* Hero Section */}
-          <section className="relative py-20 px-4 overflow-hidden bg-gradient-to-b from-muted/30 via-muted/60 to-muted">
+          <section className="relative py-20 px-4 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/5" />
             <div className="container mx-auto max-w-6xl relative z-10">
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 <div className="space-y-6">
@@ -73,10 +74,11 @@ const MicropolisShowcase = () => {
                   </div>
                 </div>
                 <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-3xl" />
                   <img 
                     src="/lovable-uploads/micropolis-hero.png" 
-                    alt="Micropolis M-Platform Chassis"
-                    className="relative w-full"
+                    alt="Micropolis Autonomous Mobile Patrol Robots"
+                    className="relative rounded-2xl shadow-2xl w-full"
                   />
                 </div>
               </div>
