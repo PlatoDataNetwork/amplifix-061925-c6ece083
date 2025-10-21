@@ -51,7 +51,7 @@ const MicropolisShowcase = () => {
                   </div>
                   <div>
                     <p className="text-primary font-semibold mb-2">NYSE-AMEX: MCRP</p>
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                    <h1 className="text-4xl md:text-5xl font-bold mb-4 pb-2 md:pb-3 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
                       Leveraging Breakthrough AI
                     </h1>
                     <p className="text-xl text-muted-foreground">
