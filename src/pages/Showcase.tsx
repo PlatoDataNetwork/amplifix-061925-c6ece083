@@ -71,7 +71,7 @@ const Showcase = () => {
                       {showcase.company_name === 'SILO Pharma Inc.' && <Pill className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />}
                       {showcase.company_name === 'Int\'l Land Alliance' && <Home className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />}
                       {showcase.company_name === 'Karbon-X' && (
-                        <div className="w-full h-full rounded-full bg-transparent border-2 border-highlight-blue flex items-center justify-center">
+                        <div className="w-full h-full rounded-full bg-transparent border border-highlight-blue flex items-center justify-center">
                           <span className="text-highlight-blue text-2xl font-bold">K</span>
                         </div>
                       )}
