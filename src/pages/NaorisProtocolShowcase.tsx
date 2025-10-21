@@ -75,12 +75,9 @@ const NaorisProtocolShowcase = () => {
                 </div>
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-3xl" />
-                  <video 
-                    src="/lovable-uploads/naoris-hero-video.webm"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
+                  <img 
+                    src="/lovable-uploads/naoris-hyperstructure.png" 
+                    alt="Naoris Protocol Hyperstructure"
                     className="relative rounded-2xl shadow-2xl w-full scale-110 md:scale-125"
                   />
                 </div>
