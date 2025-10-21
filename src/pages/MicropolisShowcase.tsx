@@ -76,7 +76,7 @@ const MicropolisShowcase = () => {
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-3xl" />
                   <img 
-                    src="/lovable-uploads/micropolis-platform-chassis.png" 
+                    src="/lovable-uploads/micropolis-hero.png" 
                     alt="Micropolis M-Platform Chassis"
                     className="relative rounded-2xl shadow-2xl w-full"
                   />
