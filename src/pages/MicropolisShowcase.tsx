@@ -37,7 +37,7 @@ const MicropolisShowcase = () => {
         
         <main className="flex-1">
           {/* Hero Section */}
-          <section className="relative py-20 px-4 overflow-hidden bg-gradient-to-b from-muted/20 via-muted/40 to-muted/60">
+          <section className="relative py-20 px-4 overflow-hidden bg-gradient-to-b from-muted/30 via-muted/60 to-muted">
             <div className="container mx-auto max-w-6xl relative z-10">
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 <div className="space-y-6">
