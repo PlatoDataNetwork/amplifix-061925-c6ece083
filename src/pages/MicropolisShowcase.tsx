@@ -46,7 +46,7 @@ const MicropolisShowcase = () => {
                     <img 
                       src="/lovable-uploads/micropolis-logo.svg" 
                       alt="Micropolis Robotics Logo" 
-                      className="h-16 w-auto"
+                      className="h-24 w-auto"
                     />
                   </div>
                   <div>
