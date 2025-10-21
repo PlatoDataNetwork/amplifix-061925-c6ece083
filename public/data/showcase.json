@@ -37,14 +37,14 @@
       "stock_url": "https://www.tradingview.com/symbols/OTC-KARX/"
     },
     {
-      "company_name": "FYNN AI",
-      "ticker": "OTCQB: FYNN",
-      "description": "FYNN Ai is an Web3 AI Holding company investing in the next generation of innovation across the Blockchain / Web3 and AI Sectors.",
-      "tags": ["AI", "Fintech", "Trading Platform"],
+      "company_name": "Micropolis",
+      "ticker": "NYSE-AMEX: MCRP",
+      "description": "Micropolis Robotics leverages breakthrough AI to deliver exquisite custom design bespoke robotic solutions, pioneering the future of autonomous mobile robotics.",
+      "tags": ["AI", "Robotics", "Autonomous Systems"],
       "button_text": "View Showcase",
-      "link": "/showcase/fynn-ai",
-      "website": "https://fyntechnical.com/",
-      "stock_url": "https://www.tradingview.com/symbols/OTC-FYNN/"
+      "link": "/showcase/micropolis",
+      "website": "https://www.micropolis.ai/",
+      "stock_url": "https://www.tradingview.com/symbols/NYSE-MCRP/"
     }
   ],
   "why_choose": {
