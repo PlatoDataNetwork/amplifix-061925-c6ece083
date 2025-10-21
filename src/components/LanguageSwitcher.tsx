@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Globe, ChevronDown } from "lucide-react";
 import { translatePage } from "@/utils/translations";
+import { getLanguageFromSubdomain, buildLanguageUrl } from "@/utils/subdomain";
 
 interface Language {
   code: string;
@@ -50,34 +51,49 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
 
   const handleTranslate = async (langCode: string) => {
     setIsTranslating(true);
-    console.log('Translating to:', langCode);
+    console.log('Switching to language subdomain:', langCode);
     
     try {
       const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
       setCurrentLanguage(selectedLang);
       localStorage.setItem('selectedLanguage', langCode);
       
-      // Use our custom translation system
-      await new Promise(resolve => setTimeout(resolve, 300)); // Small delay for UI feedback
-      translatePage(langCode);
-      
-      console.log('Translation completed successfully');
+      // Redirect to appropriate subdomain
+      const newUrl = buildLanguageUrl(langCode);
+      console.log('Redirecting to:', newUrl);
+      window.location.href = newUrl;
       
     } catch (error) {
-      console.error('Translation failed:', error);
-    } finally {
-      setTimeout(() => setIsTranslating(false), 500);
+      console.error('Language switch failed:', error);
+      setIsTranslating(false);
     }
   };
 
   useEffect(() => {
-    // Check saved preference and apply if exists
-    const savedLang = localStorage.getItem('selectedLanguage');
-    if (savedLang && savedLang !== 'en') {
-      const savedLanguage = languages.find(lang => lang.code === savedLang);
-      if (savedLanguage) {
-        setCurrentLanguage(savedLanguage);
-        // Don't auto-translate on load, let user choose when to translate
+    // Detect language from subdomain or URL parameter (for development)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlLang = urlParams.get('lang');
+    const subdomainLang = getLanguageFromSubdomain();
+    const detectedLang = subdomainLang || urlLang;
+    
+    if (detectedLang && detectedLang !== 'en') {
+      const detectedLanguage = languages.find(lang => lang.code === detectedLang);
+      if (detectedLanguage) {
+        console.log('Detected language from subdomain:', detectedLang);
+        setCurrentLanguage(detectedLanguage);
+        localStorage.setItem('selectedLanguage', detectedLang);
+        
+        // Auto-translate page on load
+        translatePage(detectedLang);
+      }
+    } else {
+      // Check saved preference as fallback
+      const savedLang = localStorage.getItem('selectedLanguage');
+      if (savedLang && savedLang !== 'en') {
+        const savedLanguage = languages.find(lang => lang.code === savedLang);
+        if (savedLanguage) {
+          setCurrentLanguage(savedLanguage);
+        }
       }
     }
   }, []);
