@@ -40,7 +40,7 @@ const MicropolisShowcase = () => {
           <section className="relative py-20 px-4 overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/5" />
             <div className="container mx-auto max-w-6xl relative z-10">
-              <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="grid md:grid-cols-2 gap-16 items-center">
                 <div className="space-y-6">
                   <div className="inline-block">
                     <img 
@@ -51,7 +51,7 @@ const MicropolisShowcase = () => {
                   </div>
                   <div>
                     <p className="text-primary font-semibold mb-2">NYSE-AMEX: MCRP</p>
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
                       Leveraging Breakthrough AI
                     </h1>
                     <p className="text-xl text-muted-foreground">
@@ -73,12 +73,12 @@ const MicropolisShowcase = () => {
                     </Button>
                   </div>
                 </div>
-                <div className="relative">
+                <div className="relative -mx-4 md:mx-0">
                   <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-3xl" />
                   <img 
                     src="/lovable-uploads/micropolis-hero.png" 
                     alt="Micropolis Autonomous Mobile Patrol Robots"
-                    className="relative rounded-2xl shadow-2xl w-full"
+                    className="relative rounded-2xl shadow-2xl w-full h-auto scale-110"
                   />
                 </div>
               </div>
