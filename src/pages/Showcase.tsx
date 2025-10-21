@@ -129,14 +129,10 @@ const Showcase = () => {
                     
                     {/* AmplifiX Search Button */}
                     <a 
-                      href={`https://www.bing.com/copilotsearch?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}&FORM=CSSCOP`}
+                      href={showcase.search_url || `https://www.bing.com/copilotsearch?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}&FORM=CSSCOP`}
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex-1"
-                      onClick={() => {
-                        const searchUrl = `https://www.bing.com/copilotsearch?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}&FORM=CSSCOP`;
-                        console.log('AmplifiX button clicked, opening:', searchUrl);
-                      }}
                     >
                       <Button variant="outline" className="w-full min-h-[44px]">
                         <Search className="h-4 w-4 mr-2" />

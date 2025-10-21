@@ -44,7 +44,8 @@
       "button_text": "View Showcase",
       "link": "/showcase/micropolis",
       "website": "https://www.micropolis.ai/",
-      "stock_url": "https://finance.yahoo.com/quote/MCRP/"
+      "stock_url": "https://finance.yahoo.com/quote/MCRP/",
+      "search_url": "https://www.bing.com/copilotsearch?q=Micropolis%20MCRP"
     }
   ],
   "why_choose": {
