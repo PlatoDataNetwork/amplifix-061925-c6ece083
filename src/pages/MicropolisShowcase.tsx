@@ -88,13 +88,22 @@ const MicropolisShowcase = () => {
           {/* Company Overview */}
           <section className="py-16 px-4 bg-muted/30">
             <div className="container mx-auto max-w-6xl">
-              <div className="text-center mb-12">
+              <div className="text-center mb-8">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
                   Pioneering the Future of Mobility
                 </h2>
-                <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                <p className="text-xl text-muted-foreground whitespace-nowrap">
                   Autonomous mobile robotics platforms tailored to deliver exclusive operational efficiency
                 </p>
+              </div>
+              
+              <div className="mb-12 relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-2xl blur-2xl" />
+                <img 
+                  src="/lovable-uploads/micropolis-robots-duo.png" 
+                  alt="Micropolis Autonomous Mobile Patrol Robots"
+                  className="relative rounded-2xl shadow-2xl w-full max-h-[400px] object-cover object-center"
+                />
               </div>
               
               <div className="grid md:grid-cols-3 gap-8">
