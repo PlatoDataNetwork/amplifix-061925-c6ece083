@@ -20,6 +20,8 @@ import SiloPharmaShowcase from "./pages/SiloPharmaShowcase";
 import KarbonXShowcase from "./pages/KarbonXShowcase";
 import MicropolisShowcase from "./pages/MicropolisShowcase";
 import InternationalLandAllianceShowcase from "./pages/InternationalLandAllianceShowcase";
+import NaorisProtocolShowcase from "./pages/NaorisProtocolShowcase";
+import AbatisShowcase from "./pages/AbatisShowcase";
 import Showcase from "./pages/Showcase";
 import Solutions from "./pages/Solutions";
 import PublicCompanies from "./pages/PublicCompanies";
@@ -70,6 +72,8 @@ const App = () => (
               <Route path="/showcase/karbon-x" element={<KarbonXShowcase />} />
               <Route path="/showcase/micropolis" element={<MicropolisShowcase />} />
               <Route path="/showcase/international-land-alliance" element={<InternationalLandAllianceShowcase />} />
+              <Route path="/showcase/naoris-protocol" element={<NaorisProtocolShowcase />} />
+              <Route path="/showcase/abatis" element={<AbatisShowcase />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/solutions/ipo-preparation" element={<IPOPreparation />} />

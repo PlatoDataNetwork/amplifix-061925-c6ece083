@@ -53,7 +53,8 @@
       "ticker": "Crypto",
       "description": "Naoris Protocol is a decentralized cybersecurity platform leveraging blockchain technology to create a distributed, validator-based security mesh network.",
       "tags": ["Blockchain", "Cybersecurity", "DeFi"],
-      "button_text": "View Details",
+      "button_text": "View Showcase",
+      "link": "/showcase/naoris-protocol",
       "website": "https://www.naorisprotocol.com/",
       "stock_url": "https://coinmarketcap.com/currencies/naoris-protocol/",
       "type": "token"
@@ -63,7 +64,8 @@
       "ticker": "Crypto",
       "description": "Abatis is a blockchain-based platform focused on digital asset management and cryptocurrency solutions.",
       "tags": ["Blockchain", "Digital Assets", "Cryptocurrency"],
-      "button_text": "View Details",
+      "button_text": "View Showcase",
+      "link": "/showcase/abatis",
       "website": "https://abatisabtu.com",
       "stock_url": "https://abatisabtu.com",
       "type": "token"
