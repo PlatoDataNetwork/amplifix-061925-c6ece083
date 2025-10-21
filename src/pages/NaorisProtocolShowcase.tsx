@@ -76,7 +76,7 @@ const NaorisProtocolShowcase = () => {
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-3xl" />
                   <img 
-                    src="/lovable-uploads/naoris-hero-new.png" 
+                    src="/lovable-uploads/naoris-hero-blocks.png" 
                     alt="Decentralized Post-Quantum Infrastructure"
                     className="relative rounded-2xl shadow-2xl w-full scale-110 md:scale-125"
                   />
