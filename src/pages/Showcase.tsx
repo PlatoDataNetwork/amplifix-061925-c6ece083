@@ -67,7 +67,7 @@ const Showcase = () => {
                 <div key={index} className={`relative bg-card p-8 rounded-xl border ${showcase.disabled ? 'border-dashed border-border opacity-60' : 'border-border hover:shadow-lg transition-shadow'}`}>
                   {/* Header with company info */}
                   <div className="flex items-center gap-4 mb-6">
-                     <div className={`w-12 h-12 rounded-full ${showcase.disabled ? 'bg-muted' : 'bg-background border border-border'} flex items-center justify-center flex-shrink-0 shadow-sm`}>
+                     <div className={`w-12 h-12 rounded-full ${showcase.disabled ? 'bg-muted' : 'bg-transparent border border-highlight-blue'} flex items-center justify-center flex-shrink-0 shadow-sm`}>
                       {showcase.company_name === 'SILO Pharma Inc.' && <Pill className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />}
                       {showcase.company_name === 'Int\'l Land Alliance' && <Home className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />}
                       {showcase.company_name === 'Karbon-X' && (
