@@ -83,6 +83,16 @@ const Showcase = () => {
                           <img src="/lovable-uploads/81a540f7-53d1-4835-a86f-983e8a85e38c.png" alt="FYNN AI logo" className="h-full w-full object-contain" />
                         </div>
                       )}
+                      {showcase.company_name === 'Naoris Protocol' && (
+                        <div className="w-full h-full rounded-full bg-transparent border border-highlight-blue flex items-center justify-center">
+                          <span className="text-highlight-blue text-2xl font-bold">N</span>
+                        </div>
+                      )}
+                      {showcase.company_name === 'Abatis' && (
+                        <div className="w-full h-full rounded-full bg-transparent border border-highlight-blue flex items-center justify-center">
+                          <span className="text-highlight-blue text-2xl font-bold">A</span>
+                        </div>
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className={`text-xl font-bold whitespace-nowrap ${showcase.disabled ? 'text-muted-foreground' : ''}`}>
@@ -99,7 +109,7 @@ const Showcase = () => {
                   
                   {/* Action Buttons */}
                   <div className="flex flex-col sm:flex-row gap-2 mb-4">
-                    {/* Live Stock Price Button */}
+                    {/* Live Stock/Token Price Button */}
                     {showcase.stock_url && (
                       <a 
                         href={showcase.stock_url} 
@@ -109,8 +119,8 @@ const Showcase = () => {
                       >
                         <Button variant="outline" className="w-full min-h-[44px]">
                           <BarChart3 className="h-4 w-4 mr-2" />
-                          <span className="hidden sm:inline">Live Stock Price</span>
-                          <span className="sm:hidden">Stock</span>
+                          <span className="hidden sm:inline">{showcase.type === 'token' ? 'Live Token Price' : 'Live Stock Price'}</span>
+                          <span className="sm:hidden">{showcase.type === 'token' ? 'Token' : 'Stock'}</span>
                         </Button>
                       </a>
                     )}

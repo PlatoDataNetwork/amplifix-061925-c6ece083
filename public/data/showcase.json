@@ -45,7 +45,28 @@
       "link": "/showcase/micropolis",
       "website": "https://www.micropolis.ai/",
       "stock_url": "https://finance.yahoo.com/quote/MCRP/",
-      "search_url": "https://www.bing.com/copilotsearch?q=Micropolis%20MCRP"
+      "search_url": "https://www.bing.com/copilotsearch?q=Micropolis%20MCRP",
+      "type": "stock"
+    },
+    {
+      "company_name": "Naoris Protocol",
+      "ticker": "Crypto",
+      "description": "Naoris Protocol is a decentralized cybersecurity platform leveraging blockchain technology to create a distributed, validator-based security mesh network.",
+      "tags": ["Blockchain", "Cybersecurity", "DeFi"],
+      "button_text": "View Details",
+      "website": "https://www.naorisprotocol.com/",
+      "stock_url": "https://coinmarketcap.com/currencies/naoris-protocol/",
+      "type": "token"
+    },
+    {
+      "company_name": "Abatis",
+      "ticker": "Crypto",
+      "description": "Abatis is a blockchain-based platform focused on digital asset management and cryptocurrency solutions.",
+      "tags": ["Blockchain", "Digital Assets", "Cryptocurrency"],
+      "button_text": "View Details",
+      "website": "https://abatisabtu.com",
+      "stock_url": "https://abatisabtu.com",
+      "type": "token"
     }
   ],
   "why_choose": {
