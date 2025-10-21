@@ -60,7 +60,7 @@ const MicropolisShowcase = () => {
                   </div>
                   <div className="flex flex-wrap gap-3">
                     <Button asChild className="gap-2">
-                      <a href="https://www.tradingview.com/symbols/NYSE-MCRP/" target="_blank" rel="noopener noreferrer">
+                      <a href="https://finance.yahoo.com/quote/MCRP/" target="_blank" rel="noopener noreferrer">
                         <TrendingUp className="w-4 h-4" />
                         Live Stock Price
                       </a>
