@@ -42,8 +42,12 @@ const NaorisProtocolShowcase = () => {
             <div className="container mx-auto max-w-6xl relative z-10">
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 <div className="space-y-6">
-                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-transparent border-2 border-highlight-blue">
-                    <span className="text-highlight-blue text-4xl font-bold">N</span>
+                  <div className="inline-block">
+                    <img 
+                      src="/lovable-uploads/naoris-logo.png" 
+                      alt="Naoris Protocol Logo" 
+                      className="h-20 w-auto"
+                    />
                   </div>
                   <div>
                     <p className="text-primary font-semibold mb-2">Cryptocurrency</p>
@@ -51,7 +55,7 @@ const NaorisProtocolShowcase = () => {
                       Naoris Protocol
                     </h1>
                     <p className="text-xl text-muted-foreground">
-                      Decentralized cybersecurity through blockchain innovation
+                      Decentralized Post-Quantum Infrastructure
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-3">
@@ -71,11 +75,11 @@ const NaorisProtocolShowcase = () => {
                 </div>
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-3xl" />
-                  <div className="relative rounded-2xl shadow-2xl w-full p-12 bg-card border border-primary/20 flex items-center justify-center">
-                    <div className="w-48 h-48 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                      <Network className="w-24 h-24 text-primary" />
-                    </div>
-                  </div>
+                  <img 
+                    src="/lovable-uploads/naoris-hero.png" 
+                    alt="Naoris Protocol - DePIN & Web3 Security"
+                    className="relative rounded-2xl shadow-2xl w-full"
+                  />
                 </div>
               </div>
             </div>
