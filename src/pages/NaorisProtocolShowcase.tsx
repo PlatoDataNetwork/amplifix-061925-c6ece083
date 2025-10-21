@@ -42,18 +42,12 @@ const NaorisProtocolShowcase = () => {
             <div className="container mx-auto max-w-6xl relative z-10">
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 <div className="space-y-6">
-                  <div className="inline-block">
+                  <div>
                     <img 
                       src="/lovable-uploads/naoris-logo.png" 
-                      alt="Naoris Protocol Logo" 
-                      className="h-20 w-auto"
+                      alt="Naoris Protocol" 
+                      className="h-24 w-auto mb-6"
                     />
-                  </div>
-                  <div>
-                    <p className="text-primary font-semibold mb-2">Cryptocurrency</p>
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4 pb-2 md:pb-3 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                      Naoris Protocol
-                    </h1>
                     <p className="text-xl text-muted-foreground">
                       Decentralized Post-Quantum Infrastructure
                     </p>
