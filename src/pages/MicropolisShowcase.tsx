@@ -58,7 +58,10 @@ const MicropolisShowcase = () => {
                       Leveraging Breakthrough AI
                     </h1>
                     <p className="text-base md:text-xl text-muted-foreground">
-                      Micropolis leverages breakthrough AI to deliver exquisite custom design bespoke robotic solutions, pioneering the future of autonomous mobile robotics.
+                      Micropolis leverages breakthrough AI to<br />
+                      deliver exquisite custom design bespoke<br />
+                      robotic solutions, pioneering the future<br />
+                      of autonomous mobile robotics.
                     </p>
                   </div>
                   <div className="flex flex-row flex-wrap gap-3 mt-8">
