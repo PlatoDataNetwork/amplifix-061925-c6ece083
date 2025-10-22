@@ -92,11 +92,13 @@ const MicropolisShowcase = () => {
                       <Play className="w-4 h-4" />
                       Watch Video
                     </Button>
-                    <Button asChild size="default" className="gap-2 bg-teal-400 text-black hover:bg-teal-500">
-                      <a href="https://www.micropolis.ai/" target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="w-4 h-4" />
-                        Research
-                      </a>
+                    <Button 
+                      size="default" 
+                      className="gap-2 bg-teal-400 text-black hover:bg-teal-500"
+                      onClick={() => document.getElementById('research-section')?.scrollIntoView({ behavior: 'smooth' })}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      Research
                     </Button>
                   </div>
                 </div>
@@ -272,7 +274,7 @@ const MicropolisShowcase = () => {
           </section>
 
           {/* Research Presentation Section */}
-          <section className="py-12 md:py-20 px-4 bg-gradient-to-br from-muted/30 to-background">
+          <section id="research-section" className="py-12 md:py-20 px-4 bg-gradient-to-br from-muted/30 to-background">
             <div className="container mx-auto max-w-6xl">
               <div className="text-center mb-12">
                 <div className="inline-block px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-4">
