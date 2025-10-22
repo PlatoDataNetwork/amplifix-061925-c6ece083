@@ -65,7 +65,7 @@ const MicropolisShowcase = () => {
                     </p>
                   </div>
                 </div>
-                <div className="space-y-8">
+                <div className="space-y-12">
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-3xl" />
                     <img 
@@ -75,7 +75,7 @@ const MicropolisShowcase = () => {
                     />
                   </div>
                   
-                  <div className="flex flex-row gap-3 justify-center pt-4">
+                  <div className="flex flex-row gap-3 justify-center pt-8">
                     <Button asChild size="lg" className="gap-2 bg-teal-400 text-black hover:bg-teal-500">
                       <a href="https://finance.yahoo.com/quote/MCRP/" target="_blank" rel="noopener noreferrer">
                         <TrendingUp className="w-4 h-4" />
