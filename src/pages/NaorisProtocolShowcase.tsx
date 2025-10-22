@@ -44,7 +44,7 @@ const NaorisProtocolShowcase = () => {
                     src="/lovable-uploads/naoris-logo-updated.png" 
                     alt="Naoris Protocol" 
                     className="mb-6"
-                    style={{ width: '300%', height: 'auto', maxWidth: 'none' }}
+                    style={{ width: '120%', height: 'auto', maxWidth: 'none' }}
                   />
                   <p className="text-xl text-muted-foreground mb-8">
                     Decentralized Post-Quantum Infrastructure
@@ -55,6 +55,12 @@ const NaorisProtocolShowcase = () => {
                     <a href="https://coinmarketcap.com/currencies/naoris-protocol/" target="_blank" rel="noopener noreferrer">
                       <TrendingUp className="w-4 h-4" />
                       Live Token Price
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline" className="gap-2 hover:bg-[#00FFB2] hover:text-black hover:border-[#00FFB2] transition-colors">
+                    <a href="https://www.naorisprotocol.com/" target="_blank" rel="noopener noreferrer">
+                      <Globe className="w-4 h-4" />
+                      Website
                     </a>
                   </Button>
                   <Button asChild variant="outline" className="gap-2 hover:bg-[#00FFB2] hover:text-black hover:border-[#00FFB2] transition-colors">
@@ -79,12 +85,6 @@ const NaorisProtocolShowcase = () => {
                     <a href="https://www.naorisprotocol.com/about#awards" target="_blank" rel="noopener noreferrer">
                       <Award className="w-4 h-4" />
                       Awards
-                    </a>
-                  </Button>
-                  <Button asChild variant="outline" className="gap-2 hover:bg-[#00FFB2] hover:text-black hover:border-[#00FFB2] transition-colors">
-                    <a href="https://www.naorisprotocol.com/" target="_blank" rel="noopener noreferrer">
-                      <Globe className="w-4 h-4" />
-                      Website
                     </a>
                   </Button>
                   <Button asChild variant="outline" className="gap-2 hover:bg-[#00FFB2] hover:text-black hover:border-[#00FFB2] transition-colors">
