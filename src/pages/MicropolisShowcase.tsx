@@ -67,11 +67,12 @@ const MicropolisShowcase = () => {
                 </div>
                 <div className="space-y-12">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-3xl" />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-xl" />
                     <img 
                       src="/lovable-uploads/micropolis-hero.png" 
                       alt="Micropolis Robotics Exhibition Booth"
-                      className="relative rounded-2xl shadow-2xl w-full scale-110 md:scale-125"
+                      className="relative rounded-2xl shadow-2xl w-full"
+                      loading="eager"
                     />
                   </div>
                   
@@ -119,11 +120,12 @@ const MicropolisShowcase = () => {
               </div>
               
               <div className="mb-8 md:mb-12 relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-2xl blur-2xl" />
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-2xl blur-lg" />
                 <img 
                   src="/lovable-uploads/micropolis-robots-duo.png" 
                   alt="Micropolis Autonomous Mobile Patrol Robots"
                   className="relative rounded-2xl shadow-2xl w-full max-h-[300px] md:max-h-[400px] object-cover object-center"
+                  loading="lazy"
                 />
               </div>
               
@@ -176,6 +178,7 @@ const MicropolisShowcase = () => {
                     src="/lovable-uploads/micropolis-platform.webp" 
                     alt="M-Platform Mobile Robotic Vehicle"
                     className="rounded-2xl shadow-2xl w-full"
+                    loading="lazy"
                   />
                 </div>
                 <div className="space-y-4 md:space-y-6">
@@ -230,7 +233,7 @@ const MicropolisShowcase = () => {
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/50 backdrop-blur-sm border border-primary/10">
+                <div className="text-center space-y-3 p-6 rounded-lg bg-background/80 border border-primary/10">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                     <Cpu className="w-6 h-6 text-primary" />
                   </div>
@@ -240,7 +243,7 @@ const MicropolisShowcase = () => {
                   </p>
                 </div>
                 
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/50 backdrop-blur-sm border border-primary/10">
+                <div className="text-center space-y-3 p-6 rounded-lg bg-background/80 border border-primary/10">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                     <Target className="w-6 h-6 text-primary" />
                   </div>
@@ -250,7 +253,7 @@ const MicropolisShowcase = () => {
                   </p>
                 </div>
                 
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/50 backdrop-blur-sm border border-primary/10">
+                <div className="text-center space-y-3 p-6 rounded-lg bg-background/80 border border-primary/10">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                     <Shield className="w-6 h-6 text-primary" />
                   </div>
@@ -260,7 +263,7 @@ const MicropolisShowcase = () => {
                   </p>
                 </div>
                 
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/50 backdrop-blur-sm border border-primary/10">
+                <div className="text-center space-y-3 p-6 rounded-lg bg-background/80 border border-primary/10">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                     <Globe className="w-6 h-6 text-primary" />
                   </div>
@@ -511,17 +514,17 @@ const MicropolisShowcase = () => {
                   EV/Sales framework applied to 2027E revenue scenarios using micro-cap robotics/security comps (2.0-5.0× multiples)
                 </p>
                 <div className="grid md:grid-cols-3 gap-6">
-                  <div className="p-4 bg-gradient-to-br from-primary/5 to-transparent backdrop-blur-sm border border-border/50 rounded-lg">
+                  <div className="p-4 bg-gradient-to-br from-primary/5 to-transparent border border-border/50 rounded-lg">
                     <div className="text-sm text-muted-foreground mb-2">Bear Case</div>
                     <div className="text-2xl font-bold mb-1">$0.50 - $1.10</div>
                     <div className="text-xs text-muted-foreground">per share (illustrative)</div>
                   </div>
-                  <div className="p-4 bg-gradient-to-br from-primary/5 to-transparent backdrop-blur-sm border border-primary/30 rounded-lg">
+                  <div className="p-4 bg-gradient-to-br from-primary/5 to-transparent border border-primary/30 rounded-lg">
                     <div className="text-sm text-primary mb-2">Base Case</div>
                     <div className="text-2xl font-bold mb-1">$1.85 - $3.60</div>
                     <div className="text-xs text-muted-foreground">per share (illustrative)</div>
                   </div>
-                  <div className="p-4 bg-gradient-to-br from-primary/5 to-transparent backdrop-blur-sm border border-border/50 rounded-lg">
+                  <div className="p-4 bg-gradient-to-br from-primary/5 to-transparent border border-border/50 rounded-lg">
                     <div className="text-sm text-muted-foreground mb-2">Bull Case</div>
                     <div className="text-2xl font-bold mb-1">$3.90 - $7.00</div>
                     <div className="text-xs text-muted-foreground">per share (illustrative)</div>
