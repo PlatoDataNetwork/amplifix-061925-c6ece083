@@ -62,34 +62,32 @@ const MicropolisShowcase = () => {
                     </p>
                   </div>
                 </div>
-                <div className="space-y-6">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-3xl" />
-                    <img 
-                      src="/lovable-uploads/micropolis-hero.png" 
-                      alt="Micropolis Robotics Exhibition Booth"
-                      className="relative rounded-2xl shadow-2xl w-full scale-110 md:scale-125"
-                    />
-                  </div>
-                  <div className="flex flex-row flex-wrap justify-center gap-3">
-                    <Button asChild size="lg" className="gap-2 bg-blue-600 text-white hover:bg-purple-600">
-                      <a href="https://finance.yahoo.com/quote/MCRP/" target="_blank" rel="noopener noreferrer">
-                        <TrendingUp className="w-4 h-4" />
-                        Live Stock Price
-                      </a>
-                    </Button>
-                    <Button asChild size="lg" className="gap-2 bg-blue-600 text-white hover:bg-purple-600">
-                      <a href="https://www.micropolis.ai/" target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="w-4 h-4" />
-                        Visit Website
-                      </a>
-                    </Button>
-                    <Button size="lg" className="gap-2 bg-blue-600 text-white hover:bg-purple-600" onClick={() => setIsVideoPlaying(true)}>
-                      <Play className="w-4 h-4" />
-                      Watch Video
-                    </Button>
-                  </div>
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-3xl" />
+                  <img 
+                    src="/lovable-uploads/micropolis-hero.png" 
+                    alt="Micropolis Robotics Exhibition Booth"
+                    className="relative rounded-2xl shadow-2xl w-full scale-110 md:scale-125"
+                  />
                 </div>
+              </div>
+              <div className="flex flex-row flex-wrap justify-center gap-3 mt-8">
+                <Button asChild size="lg" className="gap-2 bg-blue-600 text-white hover:bg-purple-600">
+                  <a href="https://finance.yahoo.com/quote/MCRP/" target="_blank" rel="noopener noreferrer">
+                    <TrendingUp className="w-4 h-4" />
+                    Live Stock Price
+                  </a>
+                </Button>
+                <Button asChild size="lg" className="gap-2 bg-blue-600 text-white hover:bg-purple-600">
+                  <a href="https://www.micropolis.ai/" target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-4 h-4" />
+                    Visit Website
+                  </a>
+                </Button>
+                <Button size="lg" className="gap-2 bg-blue-600 text-white hover:bg-purple-600" onClick={() => setIsVideoPlaying(true)}>
+                  <Play className="w-4 h-4" />
+                  Watch Video
+                </Button>
               </div>
             </div>
           </section>
