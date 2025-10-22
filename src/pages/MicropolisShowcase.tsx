@@ -40,41 +40,41 @@ const MicropolisShowcase = () => {
         
         <main className="flex-1">
           {/* Hero Section */}
-          <section className="relative py-20 px-4 overflow-visible">
+          <section className="relative py-12 md:py-20 px-4 overflow-visible">
             <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/5" />
             <div className="container mx-auto max-w-6xl relative z-10">
-              <div className="grid md:grid-cols-2 gap-12 items-center">
-                <div className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+                <div className="space-y-4 md:space-y-6">
                   <div className="inline-block">
                     <img 
                       src="/lovable-uploads/micropolis-logo.svg" 
                       alt="Micropolis Robotics Logo" 
-                      className="h-24 w-auto"
+                      className="h-16 md:h-24 w-auto"
                     />
                   </div>
                   <div>
-                    <p className="text-primary font-semibold mb-2">NYSE-AMEX: MCRP</p>
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4 pb-2 md:pb-3 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                    <p className="text-primary font-semibold mb-2 text-sm md:text-base">NYSE-AMEX: MCRP</p>
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4 pb-2 md:pb-3 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
                       Leveraging Breakthrough AI
                     </h1>
-                    <p className="text-xl text-muted-foreground">
+                    <p className="text-base md:text-xl text-muted-foreground">
                       Micropolis leverages breakthrough AI to deliver exquisite custom design bespoke robotic solutions, pioneering the future of autonomous mobile robotics.
                     </p>
                   </div>
-                  <div className="flex flex-wrap gap-3">
-                    <Button asChild size="lg" className="gap-2">
+                  <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+                    <Button asChild size="lg" className="gap-2 w-full sm:w-auto">
                       <a href="https://finance.yahoo.com/quote/MCRP/" target="_blank" rel="noopener noreferrer">
                         <TrendingUp className="w-4 h-4" />
                         Live Stock Price
                       </a>
                     </Button>
-                    <Button asChild size="lg" variant="outline" className="gap-2">
+                    <Button asChild size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
                       <a href="https://www.micropolis.ai/" target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-4 h-4" />
                         Visit Website
                       </a>
                     </Button>
-                    <Button size="lg" variant="outline" className="gap-2" onClick={() => setIsVideoPlaying(true)}>
+                    <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto" onClick={() => setIsVideoPlaying(true)}>
                       <Play className="w-4 h-4" />
                       Watch Video
                     </Button>
@@ -93,27 +93,27 @@ const MicropolisShowcase = () => {
           </section>
 
           {/* Company Overview */}
-          <section className="py-16 px-4 bg-muted/30">
+          <section className="py-12 md:py-16 px-4 bg-muted/30">
             <div className="container mx-auto max-w-6xl">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <div className="text-center mb-6 md:mb-8">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
                   Pioneering the Future of Mobility
                 </h2>
-                <p className="text-xl text-muted-foreground whitespace-nowrap">
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
                   Autonomous mobile robotics platforms tailored to deliver exclusive operational efficiency
                 </p>
               </div>
               
-              <div className="mb-12 relative">
+              <div className="mb-8 md:mb-12 relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-2xl blur-2xl" />
                 <img 
                   src="/lovable-uploads/micropolis-robots-duo.png" 
                   alt="Micropolis Autonomous Mobile Patrol Robots"
-                  className="relative rounded-2xl shadow-2xl w-full max-h-[400px] object-cover object-center"
+                  className="relative rounded-2xl shadow-2xl w-full max-h-[300px] md:max-h-[400px] object-cover object-center"
                 />
               </div>
               
-              <div className="grid md:grid-cols-3 gap-8">
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
                 <Card className="border-primary/20 hover:border-primary/40 transition-all">
                   <CardContent className="pt-6">
                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
@@ -154,9 +154,9 @@ const MicropolisShowcase = () => {
           </section>
 
           {/* M-Platform Section */}
-          <section className="py-16 px-4">
+          <section className="py-12 md:py-16 px-4">
             <div className="container mx-auto max-w-6xl">
-              <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div>
                   <img 
                     src="/lovable-uploads/micropolis-platform.webp" 
@@ -164,11 +164,11 @@ const MicropolisShowcase = () => {
                     className="rounded-2xl shadow-2xl w-full"
                   />
                 </div>
-                <div className="space-y-6">
-                  <h2 className="text-3xl md:text-4xl font-bold">
+                <div className="space-y-4 md:space-y-6">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
                     M-Platform
                   </h2>
-                  <p className="text-xl text-muted-foreground">
+                  <p className="text-lg md:text-xl text-muted-foreground">
                     The mobile robotic vehicle to revolutionize operational intelligence
                   </p>
                   <p className="text-muted-foreground">
@@ -204,18 +204,18 @@ const MicropolisShowcase = () => {
           </section>
 
           {/* Why Choose Micropolis */}
-          <section className="py-16 px-4 bg-muted/30">
+          <section className="py-12 md:py-16 px-4 bg-muted/30">
             <div className="container mx-auto max-w-6xl">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <div className="text-center mb-8 md:mb-12">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
                   Why Choose Micropolis
                 </h2>
-                <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
                   Leading the autonomous robotics revolution with cutting-edge AI technology
                 </p>
               </div>
               
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="text-center space-y-3 p-6 rounded-lg bg-background/50 backdrop-blur-sm border border-primary/10">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                     <Cpu className="w-6 h-6 text-primary" />
@@ -260,22 +260,22 @@ const MicropolisShowcase = () => {
           </section>
 
           {/* CTA Section */}
-          <section className="py-20 px-4">
+          <section className="py-12 md:py-20 px-4">
             <div className="container mx-auto max-w-4xl text-center">
-              <div className="space-y-6 p-12 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20">
-                <h2 className="text-3xl md:text-4xl font-bold">
+              <div className="space-y-4 md:space-y-6 p-6 md:p-12 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
                   Discover the Future of Autonomous Robotics
                 </h2>
-                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
                   Learn how Micropolis Robotics is transforming security, surveillance, and operational efficiency through breakthrough AI technology.
                 </p>
-                <div className="flex flex-wrap gap-4 justify-center">
-                  <Button asChild size="lg" className="gap-2">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
+                  <Button asChild size="lg" className="gap-2 w-full sm:w-auto">
                     <a href="/contact">
                       Partner with AmplifiX
                     </a>
                   </Button>
-                  <Button asChild size="lg" variant="outline" className="gap-2">
+                  <Button asChild size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
                     <a href="https://www.micropolis.ai/" target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="w-4 h-4" />
                       Explore Micropolis
