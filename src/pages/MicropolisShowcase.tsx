@@ -277,7 +277,7 @@ const MicropolisShowcase = () => {
           <section id="research-section" className="py-12 md:py-20 px-4 bg-gradient-to-br from-muted/30 to-background">
             <div className="container mx-auto max-w-6xl">
               <div className="text-center mb-12">
-                <div className="inline-block px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-4">
+                <div className="inline-block px-4 py-2 bg-transparent border border-blue-400/30 rounded-full mb-4">
                   <span className="text-primary font-semibold text-sm">AmplifiX Research</span>
                 </div>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
