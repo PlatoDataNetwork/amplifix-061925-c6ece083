@@ -64,24 +64,6 @@ const MicropolisShowcase = () => {
                       of autonomous mobile robotics.
                     </p>
                   </div>
-                  <div className="flex flex-row flex-wrap gap-3 mt-8">
-                    <Button asChild size="lg" className="gap-2 bg-primary text-black hover:bg-primary/90">
-                      <a href="https://finance.yahoo.com/quote/MCRP/" target="_blank" rel="noopener noreferrer">
-                        <TrendingUp className="w-4 h-4" />
-                        Live Stock Price
-                      </a>
-                    </Button>
-                    <Button asChild size="lg" className="gap-2 bg-primary text-black hover:bg-primary/90">
-                      <a href="https://www.micropolis.ai/" target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="w-4 h-4" />
-                        Visit Website
-                      </a>
-                    </Button>
-                    <Button size="lg" className="gap-2 bg-primary text-black hover:bg-primary/90" onClick={() => setIsVideoPlaying(true)}>
-                      <Play className="w-4 h-4" />
-                      Watch Video
-                    </Button>
-                  </div>
                 </div>
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-3xl" />
@@ -91,6 +73,25 @@ const MicropolisShowcase = () => {
                     className="relative rounded-2xl shadow-2xl w-full scale-110 md:scale-125"
                   />
                 </div>
+              </div>
+              
+              <div className="flex flex-row gap-3 justify-center mt-8">
+                <Button asChild size="lg" className="gap-2 bg-teal-400 text-black hover:bg-teal-500">
+                  <a href="https://finance.yahoo.com/quote/MCRP/" target="_blank" rel="noopener noreferrer">
+                    <TrendingUp className="w-4 h-4" />
+                    Live Stock Price
+                  </a>
+                </Button>
+                <Button asChild size="lg" className="gap-2 bg-teal-400 text-black hover:bg-teal-500">
+                  <a href="https://www.micropolis.ai/" target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-4 h-4" />
+                    Visit Website
+                  </a>
+                </Button>
+                <Button size="lg" className="gap-2 bg-teal-400 text-black hover:bg-teal-500" onClick={() => setIsVideoPlaying(true)}>
+                  <Play className="w-4 h-4" />
+                  Watch Video
+                </Button>
               </div>
             </div>
           </section>
