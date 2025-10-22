@@ -304,7 +304,7 @@ const MicropolisShowcase = () => {
               <div className="mb-12">
                 <h3 className="text-2xl md:text-3xl font-bold mb-8 text-center">Investment Thesis</h3>
                 <div className="grid md:grid-cols-2 gap-6">
-                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-teal-400/30 rounded-2xl">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="flex items-start gap-4 mb-4">
                         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -320,7 +320,7 @@ const MicropolisShowcase = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-teal-400/30 rounded-2xl">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="flex items-start gap-4 mb-4">
                         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -336,7 +336,7 @@ const MicropolisShowcase = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-teal-400/30 rounded-2xl">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="flex items-start gap-4 mb-4">
                         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -352,7 +352,7 @@ const MicropolisShowcase = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-teal-400/30 rounded-2xl">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="flex items-start gap-4 mb-4">
                         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -371,7 +371,7 @@ const MicropolisShowcase = () => {
               </div>
 
               {/* Recent Developments */}
-              <div className="mb-12 p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-teal-400/30 rounded-2xl">
+              <div className="mb-12 p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
                 <h3 className="text-2xl md:text-3xl font-bold mb-6">Recent Developments (2025 YTD)</h3>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3 pb-4 border-b border-border/50">
@@ -409,7 +409,7 @@ const MicropolisShowcase = () => {
                 <h3 className="text-2xl md:text-3xl font-bold mb-8 text-center">Revenue Scenarios (2025E-2029E)</h3>
                 <p className="text-center text-sm text-muted-foreground mb-8">Scenario-based projections - all figures are assumptions, not company guidance</p>
                 <div className="grid md:grid-cols-3 gap-6">
-                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-teal-400/30 rounded-2xl">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="text-center mb-4">
                         <div className="inline-block px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full mb-2">
@@ -440,7 +440,7 @@ const MicropolisShowcase = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-teal-400/30 rounded-2xl">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="text-center mb-4">
                         <div className="inline-block px-3 py-1 bg-primary/10 border border-primary/30 rounded-full mb-2">
@@ -471,7 +471,7 @@ const MicropolisShowcase = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-teal-400/30 rounded-2xl">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="text-center mb-4">
                         <div className="inline-block px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full mb-2">
@@ -505,7 +505,7 @@ const MicropolisShowcase = () => {
               </div>
 
               {/* Valuation Framework */}
-              <div className="mb-12 p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-teal-400/30 rounded-2xl">
+              <div className="mb-12 p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
                 <h3 className="text-2xl md:text-3xl font-bold mb-6">Valuation Framework (12-Month View)</h3>
                 <p className="text-muted-foreground mb-6">
                   EV/Sales framework applied to 2027E revenue scenarios using micro-cap robotics/security comps (2.0-5.0× multiples)
@@ -548,7 +548,7 @@ const MicropolisShowcase = () => {
                       "Trade-show traction (GITEX 2025 demos)",
                       "International partnerships & market expansion"
                     ].map((catalyst, idx) => (
-                      <div key={idx} className="flex items-start gap-3 p-3 bg-primary/5 border border-primary/10 rounded-lg">
+                      <div key={idx} className="flex items-start gap-3 p-3 bg-primary/5 border border-blue-400/30 rounded-lg">
                         <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-xs font-bold text-primary">{idx + 1}</span>
                         </div>
