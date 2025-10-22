@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
-import { ExternalLink, TrendingUp, Shield, Cpu, Network, Lock, Globe, Zap, FileText, ArrowLeftRight, Code, Layers } from "lucide-react";
+import { ExternalLink, TrendingUp, Shield, Cpu, Network, Lock, Globe, Zap, FileText, ArrowLeftRight, Code, Layers, Award } from "lucide-react";
 
 const NaorisProtocolShowcase = () => {
   return (
@@ -45,7 +45,8 @@ const NaorisProtocolShowcase = () => {
                     <img 
                       src="/lovable-uploads/naoris-logo-updated.png" 
                       alt="Naoris Protocol" 
-                      className="h-40 w-auto mb-6"
+                      className="w-auto mb-6"
+                      style={{ height: 'auto', maxWidth: '100%' }}
                     />
                     <p className="text-xl text-muted-foreground">
                       Decentralized Post-Quantum Infrastructure
@@ -77,9 +78,9 @@ const NaorisProtocolShowcase = () => {
                       </a>
                     </Button>
                     <Button asChild variant="outline" className="gap-2 hover:bg-[#00FFB2] hover:text-black hover:border-[#00FFB2] transition-colors">
-                      <a href="https://www.naorisprotocol.com/naoris-token" target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="w-4 h-4" />
-                        Token
+                      <a href="https://www.naorisprotocol.com/about#awards" target="_blank" rel="noopener noreferrer">
+                        <Award className="w-4 h-4" />
+                        Awards
                       </a>
                     </Button>
                     <Button asChild variant="outline" className="gap-2 hover:bg-[#00FFB2] hover:text-black hover:border-[#00FFB2] transition-colors">
