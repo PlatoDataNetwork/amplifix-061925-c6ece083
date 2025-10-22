@@ -543,7 +543,8 @@ const MicropolisShowcase = () => {
                       "Sustainable City 2.0 milestones & deployments",
                       "Industrial pilot → production conversions",
                       "Additional capital on improved terms",
-                      "Trade-show traction (GITEX 2025 demos)"
+                      "Trade-show traction (GITEX 2025 demos)",
+                      "International partnerships & market expansion"
                     ].map((catalyst, idx) => (
                       <div key={idx} className="flex items-start gap-3 p-3 bg-primary/5 border border-primary/10 rounded-lg">
                         <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
