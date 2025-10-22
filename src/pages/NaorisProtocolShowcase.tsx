@@ -58,37 +58,37 @@ const NaorisProtocolShowcase = () => {
                         Live Token Price
                       </a>
                     </Button>
-                    <Button asChild variant="outline" className="gap-2">
+                    <Button asChild variant="outline" className="gap-2 hover:bg-[#00FFB2] hover:text-black hover:border-[#00FFB2] transition-colors">
                       <a href="https://www.naorisprotocol.com/whitepapers" target="_blank" rel="noopener noreferrer">
                         <FileText className="w-4 h-4" />
-                        Whitepapers
+                        White Papers
                       </a>
                     </Button>
-                    <Button asChild variant="outline" className="gap-2">
+                    <Button asChild variant="outline" className="gap-2 hover:bg-[#00FFB2] hover:text-black hover:border-[#00FFB2] transition-colors">
                       <a href="https://www.naorisprotocol.com/exchanges" target="_blank" rel="noopener noreferrer">
                         <ArrowLeftRight className="w-4 h-4" />
                         Exchanges
                       </a>
                     </Button>
-                    <Button asChild variant="outline" className="gap-2">
+                    <Button asChild variant="outline" className="gap-2 hover:bg-[#00FFB2] hover:text-black hover:border-[#00FFB2] transition-colors">
                       <a href="https://knowledgebase.naorisprotocol.com/naoris-protocol/" target="_blank" rel="noopener noreferrer">
                         <Code className="w-4 h-4" />
                         Developer
                       </a>
                     </Button>
-                    <Button asChild variant="outline" className="gap-2">
+                    <Button asChild variant="outline" className="gap-2 hover:bg-[#00FFB2] hover:text-black hover:border-[#00FFB2] transition-colors">
                       <a href="https://www.naorisprotocol.com/naoris-token" target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-4 h-4" />
                         Token
                       </a>
                     </Button>
-                    <Button asChild variant="outline" className="gap-2">
+                    <Button asChild variant="outline" className="gap-2 hover:bg-[#00FFB2] hover:text-black hover:border-[#00FFB2] transition-colors">
                       <a href="https://www.naorisprotocol.com/" target="_blank" rel="noopener noreferrer">
                         <Globe className="w-4 h-4" />
                         Website
                       </a>
                     </Button>
-                    <Button asChild variant="outline" className="gap-2">
+                    <Button asChild variant="outline" className="gap-2 hover:bg-[#00FFB2] hover:text-black hover:border-[#00FFB2] transition-colors">
                       <a href="https://www.naorisprotocol.com/join-the-network#use-cases" target="_blank" rel="noopener noreferrer">
                         <Layers className="w-4 h-4" />
                         Use Cases
