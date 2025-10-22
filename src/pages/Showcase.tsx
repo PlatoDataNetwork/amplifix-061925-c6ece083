@@ -154,12 +154,21 @@ const Showcase = () => {
                     </a>
                   </div>
                   {showcase.link ? (
-                    <Link to={showcase.link}>
-                      <Button className={`w-full ${showcase.disabled ? '' : 'bg-highlight-blue hover:bg-highlight-blue/90 text-white'}`} disabled={showcase.disabled}>
-                        {showcase.button_text}
-                        {!showcase.disabled && <ExternalLink className="ml-2 h-4 w-4" />}
-                      </Button>
-                    </Link>
+                    showcase.link.startsWith('http') ? (
+                      <a href={showcase.link} target="_blank" rel="noopener noreferrer">
+                        <Button className={`w-full ${showcase.disabled ? '' : 'bg-highlight-blue hover:bg-highlight-blue/90 text-white'}`} disabled={showcase.disabled}>
+                          {showcase.button_text}
+                          {!showcase.disabled && <ExternalLink className="ml-2 h-4 w-4" />}
+                        </Button>
+                      </a>
+                    ) : (
+                      <Link to={showcase.link}>
+                        <Button className={`w-full ${showcase.disabled ? '' : 'bg-highlight-blue hover:bg-highlight-blue/90 text-white'}`} disabled={showcase.disabled}>
+                          {showcase.button_text}
+                          {!showcase.disabled && <ExternalLink className="ml-2 h-4 w-4" />}
+                        </Button>
+                      </Link>
+                    )
                   ) : (
                     <Button variant="outline" className="w-full" disabled={showcase.disabled}>
                       {showcase.button_text}
