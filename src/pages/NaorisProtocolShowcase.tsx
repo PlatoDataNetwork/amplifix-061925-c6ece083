@@ -73,11 +73,18 @@ const NaorisProtocolShowcase = () => {
                   </div>
                 </div>
                 <div className="relative">
-                  <img 
-                    src="/lovable-uploads/naoris-community-computing.gif" 
-                    alt="Naoris Protocol Community Computing Model"
-                    className="relative w-full"
-                  />
+                  <a 
+                    href="https://naorisprotocol.network/testnet#how-it-works" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="block cursor-pointer hover:opacity-90 transition-opacity"
+                  >
+                    <img 
+                      src="/lovable-uploads/naoris-testnet-hero.png" 
+                      alt="Post-Quantum DePIN Testnet - Secure The Future"
+                      className="relative w-full"
+                    />
+                  </a>
                 </div>
               </div>
             </div>
