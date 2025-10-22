@@ -293,7 +293,7 @@ const MicropolisShowcase = () => {
               </div>
 
               {/* Executive Summary */}
-              <div className="mb-12 p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-teal-400/30 rounded-2xl">
+              <div className="mb-12 p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
                 <h3 className="text-2xl font-bold mb-4 text-primary">Executive Summary</h3>
                 <p className="text-muted-foreground leading-relaxed">
                   Micropolis is a Dubai-based robotics company designing and manufacturing unmanned ground vehicles (UGVs) and autonomous mobile robots (AMRs) for public-safety, industrial and "smart city" applications. Products include the M-Platform base vehicles, M-Patrol autonomous security patrol vehicles (developed with Dubai Police), and Microspot AI software powered by NVIDIA Orin and proprietary control electronics.
@@ -581,7 +581,7 @@ const MicropolisShowcase = () => {
               </div>
 
               {/* Disclaimer */}
-              <div className="p-6 bg-muted/50 border border-border/50 rounded-xl">
+              <div className="p-6 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl">
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   <strong className="text-foreground">Disclaimer:</strong> This research is an informational, independent research report prepared by AmplifiX. It is not produced by, affiliated with, or endorsed by any broker-dealer, and it does not constitute investment advice, a recommendation, an offer, or a solicitation to buy or sell any security. Opinions and estimates are subject to change without notice. This report contains forward-looking statements which are inherently uncertain and involve significant risks. Micro-cap equities can be illiquid and volatile, and investors may lose all or a substantial portion of their investment. Please consult your own professional advisers for tax, legal, accounting, or personalized investment advice.
                 </p>
