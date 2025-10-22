@@ -33,6 +33,9 @@ const MicropolisShowcase = () => {
           name="twitter:description" 
           content="Leveraging breakthrough AI for exquisite custom design bespoke robotic solutions." 
         />
+        <link rel="preload" as="image" href="/lovable-uploads/micropolis-hero.png" />
+        <link rel="preload" as="image" href="/lovable-uploads/micropolis-robots-duo.png" />
+        <link rel="preload" as="image" href="/lovable-uploads/micropolis-platform.webp" />
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-muted/20">
@@ -125,7 +128,7 @@ const MicropolisShowcase = () => {
                   src="/lovable-uploads/micropolis-robots-duo.png" 
                   alt="Micropolis Autonomous Mobile Patrol Robots"
                   className="relative rounded-2xl shadow-2xl w-full max-h-[300px] md:max-h-[400px] object-cover object-center"
-                  loading="lazy"
+                  loading="eager"
                 />
               </div>
               
@@ -178,7 +181,7 @@ const MicropolisShowcase = () => {
                     src="/lovable-uploads/micropolis-platform.webp" 
                     alt="M-Platform Mobile Robotic Vehicle"
                     className="rounded-2xl shadow-2xl w-full"
-                    loading="lazy"
+                    loading="eager"
                   />
                 </div>
                 <div className="space-y-4 md:space-y-6">
