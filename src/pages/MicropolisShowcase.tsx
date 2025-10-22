@@ -271,6 +271,318 @@ const MicropolisShowcase = () => {
             </div>
           </section>
 
+          {/* Research Presentation Section */}
+          <section className="py-12 md:py-20 px-4 bg-gradient-to-br from-muted/30 to-background">
+            <div className="container mx-auto max-w-6xl">
+              <div className="text-center mb-12">
+                <div className="inline-block px-4 py-2 bg-teal-400/10 border border-teal-400/20 rounded-full mb-4">
+                  <span className="text-teal-400 font-semibold text-sm">AmplifiX Research</span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+                  Investment Research & Analysis
+                </h2>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                  Independent research report on Micropolis Robotics - Early innings for a vertically-integrated UGV/AMR player
+                </p>
+                <p className="text-sm text-muted-foreground/70 mt-2">Date: October 20, 2025</p>
+              </div>
+
+              {/* Executive Summary */}
+              <div className="mb-12 p-6 md:p-8 bg-gradient-to-br from-teal-400/5 to-transparent border border-teal-400/20 rounded-2xl">
+                <h3 className="text-2xl font-bold mb-4 text-teal-400">Executive Summary</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Micropolis is a Dubai-based robotics company designing and manufacturing unmanned ground vehicles (UGVs) and autonomous mobile robots (AMRs) for public-safety, industrial and "smart city" applications. Products include the M-Platform base vehicles, M-Patrol autonomous security patrol vehicles (developed with Dubai Police), and Microspot AI software powered by NVIDIA Orin and proprietary control electronics.
+                </p>
+              </div>
+
+              {/* Investment Thesis */}
+              <div className="mb-12">
+                <h3 className="text-2xl md:text-3xl font-bold mb-8 text-center">Investment Thesis</h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Card className="border-teal-400/20 hover:border-teal-400/40 transition-all">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className="w-10 h-10 rounded-lg bg-teal-400/10 flex items-center justify-center flex-shrink-0">
+                          <TrendingUp className="w-5 h-5 text-teal-400" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-lg mb-2">Category Growth + Focused Use-Cases</h4>
+                          <p className="text-sm text-muted-foreground">
+                            AMR market estimated at ~$4.1bn in 2024, rising to ~$9.6bn by 2030 (≈15% CAGR). Professional service-robot shipments rose ~30% in 2023.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-teal-400/20 hover:border-teal-400/40 transition-all">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className="w-10 h-10 rounded-lg bg-teal-400/10 flex items-center justify-center flex-shrink-0">
+                          <Cpu className="w-5 h-5 text-teal-400" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-lg mb-2">Full-Stack Vertical Integration</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Designs and builds mechatronics, control boards, and autonomy stack in-house, compressing iteration cycles and improving margin capture.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-teal-400/20 hover:border-teal-400/40 transition-all">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className="w-10 h-10 rounded-lg bg-teal-400/10 flex items-center justify-center flex-shrink-0">
+                          <Shield className="w-5 h-5 text-teal-400" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-lg mb-2">Building Commercial Proof</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Dubai Police deployment, Sustainable City 2.0 agreement, and Swedish port cleaning pilot broaden reference base across geographies.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-teal-400/20 hover:border-teal-400/40 transition-all">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className="w-10 h-10 rounded-lg bg-teal-400/10 flex items-center justify-center flex-shrink-0">
+                          <Target className="w-5 h-5 text-teal-400" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-lg mb-2">Risks Real but Manageable</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Pathways exist through $5m financing with Streeterville Capital, extending runway to pursue commercialization and fleet orders.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Recent Developments */}
+              <div className="mb-12 p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 rounded-2xl">
+                <h3 className="text-2xl md:text-3xl font-bold mb-6">Recent Developments (2025 YTD)</h3>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 pb-4 border-b border-border/50">
+                    <div className="w-2 h-2 rounded-full bg-teal-400 mt-2 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Dubai Police Deployment</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Official deployment of Autonomous Police Patrol at Dubai Global Village - strong validation for public safety applications.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 pb-4 border-b border-border/50">
+                    <div className="w-2 h-2 rounded-full bg-teal-400 mt-2 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Sustainable City 2.0 Agreement</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Agreement to deliver AI & robotics infrastructure for SEE Holding's Sustainable City 2.0 project in the UAE.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-teal-400 mt-2 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Swedish Port Cleaning Pilot</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Partnership with Helsingborgs Hamn AB and MCS Robotics to develop "Box Cleaner" based on M2 platform - expanding into industrial applications.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Financial Scenarios */}
+              <div className="mb-12">
+                <h3 className="text-2xl md:text-3xl font-bold mb-8 text-center">Revenue Scenarios (2025E-2029E)</h3>
+                <p className="text-center text-sm text-muted-foreground mb-8">Scenario-based projections - all figures are assumptions, not company guidance</p>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <Card className="border-red-500/20 hover:border-red-500/40 transition-all">
+                    <CardContent className="pt-6">
+                      <div className="text-center mb-4">
+                        <div className="inline-block px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full mb-2">
+                          <span className="text-red-500 font-semibold text-sm">Bear Case</span>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2025E</span>
+                          <span className="font-semibold">$2-3M</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2026E</span>
+                          <span className="font-semibold">$6-8M</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2027E</span>
+                          <span className="font-semibold">$12-18M</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">2028E</span>
+                          <span className="font-semibold">$25-35M</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-border/50">
+                        <p className="text-xs text-muted-foreground">Slow conversion & financing constraints</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-teal-400/30 hover:border-teal-400/50 transition-all bg-gradient-to-br from-teal-400/5 to-transparent">
+                    <CardContent className="pt-6">
+                      <div className="text-center mb-4">
+                        <div className="inline-block px-3 py-1 bg-teal-400/10 border border-teal-400/30 rounded-full mb-2">
+                          <span className="text-teal-400 font-semibold text-sm">Base Case</span>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2025E</span>
+                          <span className="font-semibold">$4-6M</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2026E</span>
+                          <span className="font-semibold">$10-15M</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2027E</span>
+                          <span className="font-semibold">$22-30M</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">2028E</span>
+                          <span className="font-semibold">$60-80M</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-border/50">
+                        <p className="text-xs text-muted-foreground">Dubai Police scales, City 2.0 phases yield fleet purchases</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-green-500/20 hover:border-green-500/40 transition-all">
+                    <CardContent className="pt-6">
+                      <div className="text-center mb-4">
+                        <div className="inline-block px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full mb-2">
+                          <span className="text-green-500 font-semibold text-sm">Bull Case</span>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2025E</span>
+                          <span className="font-semibold">$8-10M</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2026E</span>
+                          <span className="font-semibold">$18-25M</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2027E</span>
+                          <span className="font-semibold">$35-50M</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">2028E</span>
+                          <span className="font-semibold">$110-150M</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-border/50">
+                        <p className="text-xs text-muted-foreground">Two+ scaled programs & international replication</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Valuation Framework */}
+              <div className="mb-12 p-6 md:p-8 bg-gradient-to-br from-teal-400/5 to-transparent border border-teal-400/20 rounded-2xl">
+                <h3 className="text-2xl md:text-3xl font-bold mb-6">Valuation Framework (12-Month View)</h3>
+                <p className="text-muted-foreground mb-6">
+                  EV/Sales framework applied to 2027E revenue scenarios using micro-cap robotics/security comps (2.0-5.0× multiples)
+                </p>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="p-4 bg-background/50 backdrop-blur-sm border border-border/50 rounded-lg">
+                    <div className="text-sm text-muted-foreground mb-2">Bear Case</div>
+                    <div className="text-2xl font-bold mb-1">$0.50 - $1.10</div>
+                    <div className="text-xs text-muted-foreground">per share (illustrative)</div>
+                  </div>
+                  <div className="p-4 bg-teal-400/10 backdrop-blur-sm border border-teal-400/30 rounded-lg">
+                    <div className="text-sm text-teal-400 mb-2">Base Case</div>
+                    <div className="text-2xl font-bold mb-1">$1.85 - $3.60</div>
+                    <div className="text-xs text-muted-foreground">per share (illustrative)</div>
+                  </div>
+                  <div className="p-4 bg-background/50 backdrop-blur-sm border border-border/50 rounded-lg">
+                    <div className="text-sm text-muted-foreground mb-2">Bull Case</div>
+                    <div className="text-2xl font-bold mb-1">$3.90 - $7.00</div>
+                    <div className="text-xs text-muted-foreground">per share (illustrative)</div>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground/70 mt-6 italic">
+                  Important: These ranges are not company guidance and hinge on contract conversion, production ramp, and financing.
+                </p>
+              </div>
+
+              {/* Catalysts & Risks */}
+              <div className="grid md:grid-cols-2 gap-8 mb-12">
+                <div>
+                  <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <Zap className="w-6 h-6 text-teal-400" />
+                    Key Catalysts (6-18 Months)
+                  </h3>
+                  <div className="space-y-3">
+                    {[
+                      "Follow-on orders from Dubai Police / UAE agencies",
+                      "Sustainable City 2.0 milestones & deployments",
+                      "Industrial pilot → production conversions",
+                      "Additional capital on improved terms",
+                      "Trade-show traction (GITEX 2025 demos)"
+                    ].map((catalyst, idx) => (
+                      <div key={idx} className="flex items-start gap-3 p-3 bg-teal-400/5 border border-teal-400/10 rounded-lg">
+                        <div className="w-6 h-6 rounded-full bg-teal-400/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-xs font-bold text-teal-400">{idx + 1}</span>
+                        </div>
+                        <p className="text-sm">{catalyst}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <Shield className="w-6 h-6 text-red-500" />
+                    Key Risks
+                  </h3>
+                  <div className="space-y-3">
+                    {[
+                      { title: "Going Concern / Liquidity", desc: "FY2024 audit carried going-concern paragraph; financing adds potential dilution" },
+                      { title: "Commercialization Risk", desc: "FY2024 revenue $35k; order conversion unproven at volume" },
+                      { title: "Financing/Dilution", desc: "Warrants and convertible notes introduce overhang" },
+                      { title: "Competition", desc: "Well-funded incumbents with head starts in certain markets" },
+                      { title: "Regulatory/Acceptance", desc: "Public space deployments require community buy-in" }
+                    ].map((risk, idx) => (
+                      <div key={idx} className="p-3 bg-red-500/5 border border-red-500/10 rounded-lg">
+                        <h4 className="font-semibold text-sm mb-1">{risk.title}</h4>
+                        <p className="text-xs text-muted-foreground">{risk.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Disclaimer */}
+              <div className="p-6 bg-muted/50 border border-border/50 rounded-xl">
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  <strong className="text-foreground">Disclaimer:</strong> This research is an informational, independent research report prepared by AmplifiX. It is not produced by, affiliated with, or endorsed by any broker-dealer, and it does not constitute investment advice, a recommendation, an offer, or a solicitation to buy or sell any security. Opinions and estimates are subject to change without notice. This report contains forward-looking statements which are inherently uncertain and involve significant risks. Micro-cap equities can be illiquid and volatile, and investors may lose all or a substantial portion of their investment. Please consult your own professional advisers for tax, legal, accounting, or personalized investment advice.
+                </p>
+              </div>
+            </div>
+          </section>
+
           {/* CTA Section */}
           <section className="py-12 md:py-20 px-4">
             <div className="container mx-auto max-w-4xl text-center">
