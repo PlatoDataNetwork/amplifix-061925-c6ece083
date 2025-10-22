@@ -75,22 +75,28 @@ const MicropolisShowcase = () => {
                     />
                   </div>
                   
-                  <div className="flex flex-row gap-3 justify-center pt-8">
-                    <Button asChild size="lg" className="gap-2 bg-teal-400 text-black hover:bg-teal-500">
+                  <div className="flex flex-row gap-3 justify-stretch pt-8">
+                    <Button asChild size="lg" className="gap-2 bg-teal-400 text-black hover:bg-teal-500 flex-1">
                       <a href="https://finance.yahoo.com/quote/MCRP/" target="_blank" rel="noopener noreferrer">
                         <TrendingUp className="w-4 h-4" />
                         Live Stock Price
                       </a>
                     </Button>
-                    <Button asChild size="lg" className="gap-2 bg-teal-400 text-black hover:bg-teal-500">
+                    <Button asChild size="lg" className="gap-2 bg-teal-400 text-black hover:bg-teal-500 flex-1">
                       <a href="https://www.micropolis.ai/" target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-4 h-4" />
                         Visit Website
                       </a>
                     </Button>
-                    <Button size="lg" className="gap-2 bg-teal-400 text-black hover:bg-teal-500" onClick={() => setIsVideoPlaying(true)}>
+                    <Button size="lg" className="gap-2 bg-teal-400 text-black hover:bg-teal-500 flex-1" onClick={() => setIsVideoPlaying(true)}>
                       <Play className="w-4 h-4" />
                       Watch Video
+                    </Button>
+                    <Button asChild size="lg" className="gap-2 bg-teal-400 text-black hover:bg-teal-500 flex-1">
+                      <a href="https://www.micropolis.ai/" target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="w-4 h-4" />
+                        Research
+                      </a>
                     </Button>
                   </div>
                 </div>
