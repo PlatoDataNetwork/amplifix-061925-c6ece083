@@ -84,7 +84,9 @@ const Showcase = () => {
                         </div>
                       )}
                       {showcase.company_name === 'Naoris Protocol' && (
-                        <img src="/lovable-uploads/naoris-logo-updated.png" alt="Naoris Protocol" className="w-full h-full object-contain rounded-full" />
+                        <div className="w-full h-full rounded-full bg-transparent border border-highlight-blue flex items-center justify-center">
+                          <img src="/lovable-uploads/naoris-icon.png" alt="Naoris Protocol" className="w-8 h-8 object-contain" />
+                        </div>
                       )}
                       {showcase.company_name === 'Abatis' && (
                         <div className="w-full h-full rounded-full bg-transparent border border-highlight-blue flex items-center justify-center">
