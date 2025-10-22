@@ -282,10 +282,10 @@ const MicropolisShowcase = () => {
                   Investment Research & Analysis
                 </h2>
                 <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-                  Independent research report on Micropolis Robotics
+                  Independent research report on Micropolis Robotics.
                 </p>
                 <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mt-2">
-                  Early innings for a vertically-integrated UGV/AMR player
+                  Early innings for a vertically-integrated UGV/AMR player.
                 </p>
                 <p className="text-sm text-muted-foreground/70 mt-2">Date: October 20, 2025</p>
               </div>
