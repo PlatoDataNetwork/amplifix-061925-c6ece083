@@ -37,7 +37,7 @@ const NaorisProtocolShowcase = () => {
         
         <main className="flex-1">
           {/* Hero Section */}
-          <section className="relative py-20 px-4 overflow-visible bg-[#0a1628]">
+          <section className="relative py-20 px-4 overflow-visible" style={{ backgroundImage: 'url(/lovable-uploads/naoris-hero-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <div className="container mx-auto max-w-6xl relative z-10">
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 <div className="space-y-6">
