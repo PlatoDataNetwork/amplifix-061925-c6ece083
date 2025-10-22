@@ -52,7 +52,7 @@ const NaorisProtocolShowcase = () => {
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-3">
-                    <Button asChild className="gap-2">
+                    <Button asChild className="gap-2 bg-[#00FFB2] text-white hover:bg-[#00E5A0] border-[#00FFB2]">
                       <a href="https://coinmarketcap.com/currencies/naoris-protocol/" target="_blank" rel="noopener noreferrer">
                         <TrendingUp className="w-4 h-4" />
                         Live Token Price
