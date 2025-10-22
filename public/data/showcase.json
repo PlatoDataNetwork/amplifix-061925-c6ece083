@@ -55,7 +55,7 @@
       "description": "Naoris Protocol is a decentralized cybersecurity platform leveraging blockchain technology to create a distributed, validator-based security mesh network.",
       "tags": ["Blockchain", "Cybersecurity", "DeFi"],
       "button_text": "View Showcase",
-      "link": "/showcase/naoris-protocol",
+      "link": "https://naorisprotocol.com",
       "website": "https://www.naorisprotocol.com/",
       "stock_url": "https://coinmarketcap.com/currencies/naoris-protocol/",
       "type": "token"
@@ -66,7 +66,7 @@
       "description": "The first autonomous cybersecurity solution for Web3 products and users, delivering sovereignty & immutability at pre-foundational level.",
       "tags": ["Cybersecurity", "Web3", "Blockchain"],
       "button_text": "View Showcase",
-      "link": "/showcase/abatis",
+      "link": "https://abatisabtu.com",
       "website": "https://abatisabtu.com",
       "stock_url": "https://abatisabtu.com",
       "type": "token"
