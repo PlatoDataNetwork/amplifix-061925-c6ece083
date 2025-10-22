@@ -43,8 +43,8 @@ const NaorisProtocolShowcase = () => {
                   <img 
                     src="/lovable-uploads/naoris-logo-updated.png" 
                     alt="Naoris Protocol" 
-                    className="w-auto mb-6"
-                    style={{ height: 'auto', maxWidth: '225%' }}
+                    className="mb-6"
+                    style={{ width: '300%', height: 'auto', maxWidth: 'none' }}
                   />
                   <p className="text-xl text-muted-foreground mb-8">
                     Decentralized Post-Quantum Infrastructure
