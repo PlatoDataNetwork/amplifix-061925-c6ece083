@@ -3,289 +3,262 @@ import { Card, CardContent } from "@/components/ui/card";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
-import { ExternalLink, TrendingUp, Wallet, Cpu, Layers, Zap, Globe } from "lucide-react";
+import { ExternalLink, Shield, Lock, Zap, Users, TrendingUp, CheckCircle, Globe, Target, Award, Cpu, Server, AlertCircle, FileText, Sparkles } from "lucide-react";
 
 const AbatisShowcase = () => {
   return (
     <>
       <Helmet>
-        <title>Abatis - Blockchain Digital Asset Platform | AmplifiX Showcase</title>
-        <meta 
-          name="description" 
-          content="Discover how Abatis leverages blockchain technology for innovative digital asset management and cryptocurrency solutions." 
-        />
-        <meta 
-          name="keywords" 
-          content="Abatis, blockchain platform, digital assets, cryptocurrency, crypto management, decentralized finance" 
-        />
-        <meta property="og:title" content="Abatis - Blockchain Digital Asset Platform | AmplifiX" />
-        <meta 
-          property="og:description" 
-          content="Explore Abatis' innovative blockchain-based platform for digital asset management and cryptocurrency solutions." 
-        />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Abatis - Blockchain Digital Asset Platform" />
-        <meta 
-          name="twitter:description" 
-          content="Revolutionary blockchain technology for digital asset management and cryptocurrency solutions." 
-        />
+        <title>Abatis - Military-Grade Cybersecurity for Web3 | AmplifiX Showcase</title>
+        <meta name="description" content="Discover Abatis ABTU - The first autonomous cybersecurity solution for Web3, delivering sovereignty & immutability at pre-foundational level with 20+ years of proven military deployment." />
+        <meta name="keywords" content="Abatis, ABTU token, Web3 cybersecurity, military-grade security, autonomous defense, digital sovereignty, blockchain security" />
       </Helmet>
 
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-muted/20">
+      <div className="min-h-screen bg-background text-foreground">
         <MainHeader />
-        
-        <main className="flex-1">
-          {/* Hero Section */}
-          <section className="relative py-20 px-4 overflow-visible">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/5" />
-            <div className="container mx-auto max-w-6xl relative z-10">
-              <div className="grid md:grid-cols-2 gap-12 items-center">
-                <div className="space-y-6">
-                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-transparent border-2 border-highlight-blue">
-                    <span className="text-highlight-blue text-4xl font-bold">A</span>
-                  </div>
-                  <div>
-                    <p className="text-primary font-semibold mb-2">Cryptocurrency</p>
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4 pb-2 md:pb-3 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                      Abatis
-                    </h1>
-                    <p className="text-xl text-muted-foreground">
-                      Innovative blockchain solutions for digital asset management
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    <Button asChild className="gap-2">
-                      <a href="https://abatisabtu.com" target="_blank" rel="noopener noreferrer">
-                        <TrendingUp className="w-4 h-4" />
-                        Live Token Price
-                      </a>
-                    </Button>
-                    <Button asChild variant="outline" className="gap-2">
-                      <a href="https://abatisabtu.com" target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="w-4 h-4" />
-                        Visit Website
-                      </a>
-                    </Button>
-                  </div>
-                </div>
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-3xl" />
-                  <div className="relative rounded-2xl shadow-2xl w-full p-12 bg-card border border-primary/20 flex items-center justify-center">
-                    <div className="w-48 h-48 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                      <Wallet className="w-24 h-24 text-primary" />
+
+        {/* Hero Section */}
+        <div className="container mx-auto py-20 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <div className="mb-6">
+                  <div className="inline-block mb-4">
+                    <div className="bg-green-500/10 text-green-500 rounded-full px-4 py-2 border border-green-500/20 text-sm font-medium">
+                      PRIVATE PLACEMENT NOW LIVE
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Company Overview */}
-          <section className="py-16 px-4 bg-muted/30">
-            <div className="container mx-auto max-w-6xl">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  Next-Generation Digital Assets
-                </h2>
-                <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
-                  A blockchain-based platform focused on digital asset management and innovative cryptocurrency solutions
-                </p>
-              </div>
-              
-              <div className="grid md:grid-cols-3 gap-8">
-                <Card className="border-primary/20 hover:border-primary/40 transition-all">
-                  <CardContent className="pt-6">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                      <Wallet className="w-6 h-6 text-primary" />
-                    </div>
-                    <h3 className="text-xl font-semibold mb-3">Asset Management</h3>
-                    <p className="text-muted-foreground">
-                      Comprehensive digital asset management solutions built on secure blockchain infrastructure.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-primary/20 hover:border-primary/40 transition-all">
-                  <CardContent className="pt-6">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                      <Layers className="w-6 h-6 text-primary" />
-                    </div>
-                    <h3 className="text-xl font-semibold mb-3">Blockchain Technology</h3>
-                    <p className="text-muted-foreground">
-                      Leveraging cutting-edge blockchain technology to provide secure and transparent digital solutions.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-primary/20 hover:border-primary/40 transition-all">
-                  <CardContent className="pt-6">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                      <Zap className="w-6 h-6 text-primary" />
-                    </div>
-                    <h3 className="text-xl font-semibold mb-3">Cryptocurrency Solutions</h3>
-                    <p className="text-muted-foreground">
-                      Innovative cryptocurrency solutions designed for the evolving digital economy.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </section>
-
-          {/* Key Features */}
-          <section className="py-16 px-4">
-            <div className="container mx-auto max-w-6xl">
-              <div className="grid md:grid-cols-2 gap-12 items-center">
-                <div className="space-y-6">
-                  <h2 className="text-3xl md:text-4xl font-bold">
-                    Blockchain-Powered Platform
-                  </h2>
-                  <p className="text-xl text-muted-foreground">
-                    Advanced technology for secure digital asset management
-                  </p>
-                  <p className="text-muted-foreground">
-                    Abatis provides a comprehensive blockchain-based platform that enables efficient management of digital assets and cryptocurrency operations with enhanced security and transparency.
-                  </p>
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
-                        <Wallet className="w-3 h-3 text-primary" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">Digital Asset Security</h4>
-                        <p className="text-sm text-muted-foreground">
-                          Secure storage and management of digital assets on blockchain infrastructure
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
-                        <Layers className="w-3 h-3 text-primary" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">Scalable Solutions</h4>
-                        <p className="text-sm text-muted-foreground">
-                          Built to scale with growing demands of the digital asset ecosystem
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-3xl" />
-                  <Card className="relative border-primary/20">
-                    <CardContent className="p-12">
-                      <div className="grid grid-cols-3 gap-6">
-                        <div className="flex flex-col items-center text-center space-y-2">
-                          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                            <Wallet className="w-8 h-8 text-primary" />
-                          </div>
-                          <p className="text-sm font-medium">Manage</p>
-                        </div>
-                        <div className="flex flex-col items-center text-center space-y-2">
-                          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                            <Layers className="w-8 h-8 text-primary" />
-                          </div>
-                          <p className="text-sm font-medium">Scale</p>
-                        </div>
-                        <div className="flex flex-col items-center text-center space-y-2">
-                          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                            <Zap className="w-8 h-8 text-primary" />
-                          </div>
-                          <p className="text-sm font-medium">Innovate</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Why Choose Abatis */}
-          <section className="py-16 px-4 bg-muted/30">
-            <div className="container mx-auto max-w-6xl">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  Why Choose Abatis
-                </h2>
-                <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                  Leading blockchain innovation in digital asset management and cryptocurrency solutions
-                </p>
-              </div>
-              
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/50 backdrop-blur-sm border border-primary/10">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <Wallet className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-semibold">Secure Platform</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Blockchain-powered security for digital asset protection
+                  <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-4">
+                    Introducing <span className="text-green-500">ABTU</span>
+                  </h1>
+                  <p className="text-2xl font-semibold mb-3">The Utility Token Powering ABATIS®</p>
+                  <p className="text-lg text-muted-foreground mb-4">
+                    The first autonomous cybersecurity solution for Web3 products and users, delivering sovereignty & immutability at pre-foundational level.
                   </p>
                 </div>
-                
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/50 backdrop-blur-sm border border-primary/10">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <Layers className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-semibold">Scalable</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Infrastructure designed to grow with digital economy demands
-                  </p>
-                </div>
-                
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/50 backdrop-blur-sm border border-primary/10">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <Cpu className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-semibold">Innovative</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Cutting-edge technology for next-generation crypto solutions
-                  </p>
-                </div>
-                
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/50 backdrop-blur-sm border border-primary/10">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <Globe className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-semibold">Global Access</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Worldwide platform for digital asset management
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* CTA Section */}
-          <section className="py-20 px-4">
-            <div className="container mx-auto max-w-4xl text-center">
-              <div className="space-y-6 p-12 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20">
-                <h2 className="text-3xl md:text-4xl font-bold">
-                  Discover Blockchain Innovation
-                </h2>
-                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                  Learn how Abatis is transforming digital asset management through innovative blockchain technology and cryptocurrency solutions.
-                </p>
-                <div className="flex flex-wrap gap-4 justify-center">
-                  <Button asChild size="lg" className="gap-2">
-                    <a href="/contact">
-                      Partner with AmplifiX
+                <div className="flex flex-wrap gap-3">
+                  <Button asChild size="lg" className="gap-2 bg-green-500 text-white hover:bg-green-600">
+                    <a href="https://share.hsforms.com/1VJUfYGy9RF2luYxkn3JGVg4piku" target="_blank" rel="noopener noreferrer">
+                      <TrendingUp className="w-4 h-4" />
+                      Buy Now
                     </a>
                   </Button>
                   <Button asChild size="lg" variant="outline" className="gap-2">
-                    <a href="https://abatisabtu.com" target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="w-4 h-4" />
-                      Explore Abatis
+                    <a href="https://4piku.share.hsforms.com/2sJ62PDchRQWuB_NgDJQ5Gw" target="_blank" rel="noopener noreferrer">
+                      <FileText className="w-4 h-4" />
+                      Whitepaper
+                    </a>
+                  </Button>
+                  <Button asChild size="lg" variant="outline" className="gap-2">
+                    <a href="https://abatisabtu.com/" target="_blank" rel="noopener noreferrer">
+                      <Globe className="w-4 h-4" />
+                      Website
                     </a>
                   </Button>
                 </div>
               </div>
+              
+              <div className="relative flex justify-center">
+                <img src="/lovable-uploads/abtu-coin.png" alt="ABTU Utility Token" className="w-full max-w-md mx-auto" />
+              </div>
             </div>
-          </section>
-        </main>
+          </div>
+        </div>
+
+        {/* Trusted By Section */}
+        <div className="bg-gray-50 py-12">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-semibold text-center mb-8">Trusted, tested and endorsed by…</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-6 justify-items-center">
+              <img src="https://abatisabtu.com/wp-content/uploads/2025/08/Quranium-Logo-Secondary-Black-SMALLER.2.png" alt="Quranium" className="h-8 grayscale opacity-70 hover:opacity-100" />
+              <img src="https://abatisabtu.com/wp-content/uploads/2025/08/Coop.svg-SMALLER.png" alt="Coop" className="h-8 grayscale opacity-70 hover:opacity-100" />
+              <img src="https://abatisabtu.com/wp-content/uploads/2025/08/cropped-MTR-SMALLER.png" alt="MTR" className="h-8 grayscale opacity-70 hover:opacity-100" />
+              <img src="https://abatisabtu.com/wp-content/uploads/2025/08/Cox-Logo-SAMLLER.png" alt="Cox" className="h-8 grayscale opacity-70 hover:opacity-100" />
+              <img src="https://abatisabtu.com/wp-content/uploads/2025/08/Epson_logo.svg-SMALLER.png" alt="Epson" className="h-8 grayscale opacity-70 hover:opacity-100" />
+              <img src="https://abatisabtu.com/wp-content/uploads/2025/08/glaxosmithkline-logo-SMALLER.2.png" alt="GlaxoSmithKline" className="h-8 grayscale opacity-70 hover:opacity-100" />
+              <img src="https://abatisabtu.com/wp-content/uploads/2025/08/eurotunnel-logo-png-transparent-SMALLER.2.png" alt="Eurotunnel" className="h-8 grayscale opacity-70 hover:opacity-100" />
+              <img src="https://abatisabtu.com/wp-content/uploads/2025/08/toppng.com-lockheed-martin-logo-2480x674-1.png" alt="Lockheed Martin" className="h-8 grayscale opacity-70 hover:opacity-100" />
+              <img src="https://abatisabtu.com/wp-content/uploads/2025/08/Armasuisse.001.max-600x480-1-SMALLER.2.png" alt="Armasuisse" className="h-8 grayscale opacity-70 hover:opacity-100" />
+            </div>
+          </div>
+        </div>
+
+        {/* ABTU Overview Section */}
+        <div className="container mx-auto py-20 px-4">
+          <div className="max-w-5xl mx-auto text-center">
+            <h2 className="text-4xl font-bold mb-4">Buy ABTU. Use it. Hold it. Earn from it.</h2>
+            <img src="https://abatisabtu.com/wp-content/uploads/2025/08/b8bfc6f6-ba60-4de3-bf15-07d73d93b5a2.3.4.png" alt="ABTU Ecosystem" className="w-full max-w-lg mx-auto mb-6" />
+            <p className="text-lg text-muted-foreground mb-4">
+              Redeem 20% of ABTU instantly for Abatis licenses; protect yourself or your whole Web3 project. Stake, HODL, and ride with us to our CEX listing. Actually, why not do both?
+            </p>
+          </div>
+        </div>
+
+        {/* Military Grade Cybersecurity Section */}
+        <div className="bg-secondary py-16">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-4xl font-bold text-white mb-4">Military Grade Cybersecurity, Now for the Web3 Ecosystem</h2>
+            <p className="text-xl text-secondary-foreground mb-8">Autonomous Defence. Digital Sovereignty Secured.</p>
+            <h3 className="text-3xl font-semibold text-white mb-4">Abatis</h3>
+            <p className="text-lg text-secondary-foreground">Cybersecurity for Web3</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+              <Card className="bg-secondary-foreground text-secondary">
+                <CardContent className="p-6">
+                  <Shield className="w-6 h-6 mb-4 text-green-500" />
+                  <h4 className="text-xl font-semibold mb-2">Proactive protection</h4>
+                  <p className="text-sm">Blocks threats before they begin (stopping attacks before impact).</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-secondary-foreground text-secondary">
+                <CardContent className="p-6">
+                  <Lock className="w-6 h-6 mb-4 text-green-500" />
+                  <h4 className="text-xl font-semibold mb-2">Proven technology</h4>
+                  <p className="text-sm">Trusted by militaries, governments, and enterprises for 20+ years, zero breaches.</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-secondary-foreground text-secondary">
+                <CardContent className="p-6">
+                  <Zap className="w-6 h-6 mb-4 text-green-500" />
+                  <h4 className="text-xl font-semibold mb-2">Privacy by default</h4>
+                  <p className="text-sm">No data collection, no oversight, no compromise.</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-secondary-foreground text-secondary">
+                <CardContent className="p-6">
+                  <Users className="w-6 h-6 mb-4 text-green-500" />
+                  <h4 className="text-xl font-semibold mb-2">Autonomous & immutable</h4>
+                  <p className="text-sm">Sovereignty, speed, and resilience unmatched since 2005.</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        {/* Web3 Challenges Section */}
+        <div className="container mx-auto py-20 px-4">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-3xl font-bold mb-4">Why it matters for Web3</h2>
+            <p className="text-lg text-muted-foreground mb-6">
+              Web3 security challenges cannot be solved with old tools. The following highlights explain why a new, pre‑foundational approach is essential:
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <Target className="w-6 h-6 mb-4 text-blue-500" />
+                  <h4 className="text-xl font-semibold mb-2">Pre-foundational exposure</h4>
+                  <p className="text-sm">
+                    Web3 still depends on vulnerable Web2 endpoints (devices, RPCs, APIs), exploited through open kernels, misconfigured nodes, and unsigned calls.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <AlertCircle className="w-6 h-6 mb-4 text-red-500" />
+                  <h4 className="text-xl font-semibold mb-2">User blind spot</h4>
+                  <p className="text-sm">
+                    Wallets and dApps rely on poorly defended user devices, where billions have been lost to unsecured access points and Web2 vulnerabilities.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+            <div className="mt-8">
+              <p className="text-lg text-muted-foreground mb-2">Abatis shields the entire digital universe: users, businesses, and chains.</p>
+              <p className="text-lg text-muted-foreground">Joining the Abatis Movement = becoming a guardian of Web3.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* ABTU Utility Token Section */}
+        <div className="bg-gray-100 py-16">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-4xl font-bold mb-4">Powered by ABTU Utility Token</h2>
+            <p className="text-lg text-muted-foreground mb-6">
+              ABTU is more than a token, it is the fuel of a movement to make sovereign cybersecurity accessible to all.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="bg-white">
+                <CardContent className="p-6">
+                  <Award className="w-6 h-6 mb-4 text-yellow-500" />
+                  <h4 className="text-xl font-semibold mb-2">Unmatchable Security</h4>
+                  <p className="text-sm">ABTU gives Web3 developers & users access to unmatchable security at the pre-foundational level.</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-white">
+                <CardContent className="p-6">
+                  <CheckCircle className="w-6 h-6 mb-4 text-green-500" />
+                  <h4 className="text-xl font-semibold mb-2">Military-Grade Access</h4>
+                  <p className="text-sm">For the first time, military-grade cybersecurity is available to all, at a fraction of the normal price.</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-white">
+                <CardContent className="p-6">
+                  <Cpu className="w-6 h-6 mb-4 text-purple-500" />
+                  <h4 className="text-xl font-semibold mb-2">Fuels Adoption</h4>
+                  <p className="text-sm">ABTU fuels Abatis adoption across wallets, devices, and networks.</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        {/* Roadmap Section */}
+        <div className="container mx-auto py-20 px-4">
+          <div className="max-w-5xl mx-auto text-center">
+            <h2 className="text-4xl font-bold mb-4">Roadmap</h2>
+            <p className="text-lg text-muted-foreground mb-6">
+              From hardware innovation to AI‑driven defence, ABTU’s roadmap sets out a clear path from today’s proven platform to tomorrow’s secure digital universe.
+            </p>
+            <h3 className="text-3xl font-semibold mb-4">Highlights</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <h4 className="text-xl font-semibold mb-2">2025–26</h4>
+                  <ul className="list-disc list-inside text-sm">
+                    <li>Abatis smartphone with built-in privacy and security.</li>
+                    <li>Abatis crypto wallet + world’s first smartphone with warm/cold wallet.</li>
+                    <li>OEM manufacturing of triple-hardened devices: firewalls, servers, routers.</li>
+                    <li>Application for licence and launch of Platinum Digital Custodian Service Company</li>
+                    <li>Application for licencing and launch of Abatis Cyber Insurance Company</li>
+                  </ul>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <h4 className="text-xl font-semibold mb-2">2027</h4>
+                  <ul className="list-disc list-inside text-sm">
+                    <li>Licensing programme: establish Abatis as the gold standard for Web3 security.</li>
+                    <li>Launch of Abatis 3.0 + AI: deterministic, predictive defence for every user, business, and chain.</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        {/* Timeline Section */}
+        <div className="bg-secondary py-16">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-4xl font-bold text-white mb-4">Abatis’ Timeline for Cyber Sovereignty</h2>
+            <p className="text-lg text-secondary-foreground mb-6">Roadmap to Resilience</p>
+            <img src="https://abatisabtu.com/wp-content/uploads/2025/09/Stages-timeline-mobile.png" alt="Abatis Timeline" className="w-full max-w-3xl mx-auto" />
+          </div>
+        </div>
+
+        {/* Open to All Section */}
+        <div className="container mx-auto py-20 px-4">
+          <div className="max-w-5xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-4">Protect Yourself. Protect Web3. Stand with Digital Sovereignty.</h2>
+            <p className="text-lg text-muted-foreground mb-6">
+              The ABTU Stage 1 “Private Placement” is your chance to secure tokens at the start, along with the privileges, protection, and rewards that come with them.
+            </p>
+            <Button asChild size="lg" className="gap-2 bg-green-500 text-white hover:bg-green-600">
+              <a href="https://share.hsforms.com/1VJUfYGy9RF2luYxkn3JGVg4piku" target="_blank" rel="noopener noreferrer">
+                <TrendingUp className="w-4 h-4" />
+                Buy Now
+              </a>
+            </Button>
+          </div>
+        </div>
 
         <Footer />
       </div>
