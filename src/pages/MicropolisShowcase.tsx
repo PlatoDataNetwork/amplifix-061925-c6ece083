@@ -291,7 +291,7 @@ const MicropolisShowcase = () => {
               </div>
 
               {/* Executive Summary */}
-              <div className="mb-12 p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-primary/20 rounded-2xl">
+              <div className="mb-12 p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 rounded-2xl">
                 <h3 className="text-2xl font-bold mb-4 text-primary">Executive Summary</h3>
                 <p className="text-muted-foreground leading-relaxed">
                   Micropolis is a Dubai-based robotics company designing and manufacturing unmanned ground vehicles (UGVs) and autonomous mobile robots (AMRs) for public-safety, industrial and "smart city" applications. Products include the M-Platform base vehicles, M-Patrol autonomous security patrol vehicles (developed with Dubai Police), and Microspot AI software powered by NVIDIA Orin and proprietary control electronics.
@@ -302,7 +302,7 @@ const MicropolisShowcase = () => {
               <div className="mb-12">
                 <h3 className="text-2xl md:text-3xl font-bold mb-8 text-center">Investment Thesis</h3>
                 <div className="grid md:grid-cols-2 gap-6">
-                  <Card className="border-primary/20 hover:border-primary/40 transition-all">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="flex items-start gap-4 mb-4">
                         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -318,7 +318,7 @@ const MicropolisShowcase = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="border-primary/20 hover:border-primary/40 transition-all">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="flex items-start gap-4 mb-4">
                         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -334,7 +334,7 @@ const MicropolisShowcase = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="border-primary/20 hover:border-primary/40 transition-all">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="flex items-start gap-4 mb-4">
                         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -350,7 +350,7 @@ const MicropolisShowcase = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="border-primary/20 hover:border-primary/40 transition-all">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="flex items-start gap-4 mb-4">
                         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -407,7 +407,7 @@ const MicropolisShowcase = () => {
                 <h3 className="text-2xl md:text-3xl font-bold mb-8 text-center">Revenue Scenarios (2025E-2029E)</h3>
                 <p className="text-center text-sm text-muted-foreground mb-8">Scenario-based projections - all figures are assumptions, not company guidance</p>
                 <div className="grid md:grid-cols-3 gap-6">
-                  <Card className="border-red-500/20 hover:border-red-500/40 transition-all">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="text-center mb-4">
                         <div className="inline-block px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full mb-2">
@@ -438,7 +438,7 @@ const MicropolisShowcase = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="border-primary/30 hover:border-primary/50 transition-all bg-gradient-to-br from-primary/5 to-transparent">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="text-center mb-4">
                         <div className="inline-block px-3 py-1 bg-primary/10 border border-primary/30 rounded-full mb-2">
@@ -469,7 +469,7 @@ const MicropolisShowcase = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="border-green-500/20 hover:border-green-500/40 transition-all">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="text-center mb-4">
                         <div className="inline-block px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full mb-2">
@@ -503,7 +503,7 @@ const MicropolisShowcase = () => {
               </div>
 
               {/* Valuation Framework */}
-              <div className="mb-12 p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-primary/20 rounded-2xl">
+              <div className="mb-12 p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 rounded-2xl">
                 <h3 className="text-2xl md:text-3xl font-bold mb-6">Valuation Framework (12-Month View)</h3>
                 <p className="text-muted-foreground mb-6">
                   EV/Sales framework applied to 2027E revenue scenarios using micro-cap robotics/security comps (2.0-5.0× multiples)
