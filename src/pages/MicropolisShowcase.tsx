@@ -3,16 +3,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
-import { ExternalLink, TrendingUp, Shield, Cpu, Zap, Target, Globe } from "lucide-react";
+import { ExternalLink, TrendingUp, Shield, Cpu, Zap, Target, Globe, Play, X } from "lucide-react";
+import { useState } from "react";
 
 const MicropolisShowcase = () => {
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+
   return (
     <>
       <Helmet>
         <title>Micropolis Robotics - AI-Powered Autonomous Robotics | AmplifiX Showcase</title>
         <meta 
           name="description" 
-          content="Discover how Micropolis Robotics leverages breakthrough AI to revolutionize autonomous mobile robotics, security patrol vehicles, and operational intelligence." 
+          content="Micropolis leverages breakthrough AI to deliver exquisite custom design bespoke robotic solutions, pioneering the future of autonomous mobile robotics." 
         />
         <meta 
           name="keywords" 
@@ -21,7 +24,7 @@ const MicropolisShowcase = () => {
         <meta property="og:title" content="Micropolis Robotics - AI-Powered Autonomous Robotics | AmplifiX" />
         <meta 
           property="og:description" 
-          content="Explore Micropolis Robotics' breakthrough AI-powered autonomous robotic solutions for security, patrol, and operational efficiency." 
+          content="Micropolis leverages breakthrough AI to deliver exquisite custom design bespoke robotic solutions, pioneering the future of autonomous mobile robotics." 
         />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -55,21 +58,25 @@ const MicropolisShowcase = () => {
                       Leveraging Breakthrough AI
                     </h1>
                     <p className="text-xl text-muted-foreground">
-                      Exquisite custom design bespoke robotic solutions
+                      Micropolis leverages breakthrough AI to deliver exquisite custom design bespoke robotic solutions, pioneering the future of autonomous mobile robotics.
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-3">
-                    <Button asChild className="gap-2">
+                    <Button asChild size="lg" className="gap-2">
                       <a href="https://finance.yahoo.com/quote/MCRP/" target="_blank" rel="noopener noreferrer">
                         <TrendingUp className="w-4 h-4" />
                         Live Stock Price
                       </a>
                     </Button>
-                    <Button asChild variant="outline" className="gap-2">
+                    <Button asChild size="lg" variant="outline" className="gap-2">
                       <a href="https://www.micropolis.ai/" target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-4 h-4" />
                         Visit Website
                       </a>
+                    </Button>
+                    <Button size="lg" variant="outline" className="gap-2" onClick={() => setIsVideoPlaying(true)}>
+                      <Play className="w-4 h-4" />
+                      Watch Video
                     </Button>
                   </div>
                 </div>
@@ -281,6 +288,30 @@ const MicropolisShowcase = () => {
         </main>
 
         <Footer />
+
+        {/* Video Overlay */}
+        {isVideoPlaying && (
+          <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
+            <div className="relative w-full max-w-5xl">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute -top-12 right-0 text-white hover:bg-white/10"
+                onClick={() => setIsVideoPlaying(false)}
+              >
+                <X className="w-6 h-6" />
+              </Button>
+              <video
+                className="w-full rounded-lg shadow-2xl"
+                controls
+                autoPlay
+                src="/lovable-uploads/micropolis-video.mp4"
+              >
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

@@ -39,13 +39,14 @@
     {
       "company_name": "Micropolis",
       "ticker": "NYSE-AMEX: MCRP",
-      "description": "Micropolis Robotics leverages breakthrough AI to deliver exquisite custom design bespoke robotic solutions, pioneering the future of autonomous mobile robotics.",
+      "description": "Micropolis leverages breakthrough AI to deliver exquisite custom design bespoke robotic solutions, pioneering the future of autonomous mobile robotics.",
       "tags": ["AI", "Robotics", "Autonomous Systems"],
       "button_text": "View Showcase",
       "link": "/showcase/micropolis",
       "website": "https://www.micropolis.ai/",
       "stock_url": "https://finance.yahoo.com/quote/MCRP/",
       "search_url": "https://www.bing.com/copilotsearch?q=Micropolis%20MCRP",
+      "thumbnail": "/lovable-uploads/micropolis-m-icon.png",
       "type": "stock"
     },
     {
@@ -61,9 +62,9 @@
     },
     {
       "company_name": "Abatis",
-      "ticker": "Crypto",
-      "description": "Abatis is a blockchain-based platform focused on digital asset management and cryptocurrency solutions.",
-      "tags": ["Blockchain", "Digital Assets", "Cryptocurrency"],
+      "ticker": "ABTU Token",
+      "description": "The first autonomous cybersecurity solution for Web3 products and users, delivering sovereignty & immutability at pre-foundational level.",
+      "tags": ["Cybersecurity", "Web3", "Blockchain"],
       "button_text": "View Showcase",
       "link": "/showcase/abatis",
       "website": "https://abatisabtu.com",

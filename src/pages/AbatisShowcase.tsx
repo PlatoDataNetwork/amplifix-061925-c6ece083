@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
-import { ExternalLink, Shield, Lock, Zap, Users, TrendingUp, CheckCircle, Globe, Target, Award, Cpu, Server, AlertCircle, FileText, Sparkles } from "lucide-react";
+import { ExternalLink, Shield, Lock, Zap, Globe, Check, FileText, ShoppingCart, TrendingUp } from "lucide-react";
 
 const AbatisShowcase = () => {
   return (
