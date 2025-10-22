@@ -75,7 +75,7 @@ const MicropolisShowcase = () => {
                     />
                   </div>
                   
-                  <div className="flex flex-row gap-3 pt-8 -ml-2">
+                  <div className="flex flex-row gap-3 pt-8 -ml-8">
                     <Button asChild size="default" className="gap-2 bg-teal-400 text-black hover:bg-teal-500">
                       <a href="https://finance.yahoo.com/quote/MCRP/" target="_blank" rel="noopener noreferrer">
                         <TrendingUp className="w-4 h-4" />
