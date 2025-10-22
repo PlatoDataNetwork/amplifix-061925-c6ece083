@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
-import { ExternalLink, TrendingUp, Shield, Cpu, Network, Lock, Globe, Zap, FileText, ArrowLeftRight, Code } from "lucide-react";
+import { ExternalLink, TrendingUp, Shield, Cpu, Network, Lock, Globe, Zap, FileText, ArrowLeftRight, Code, Layers } from "lucide-react";
 
 const NaorisProtocolShowcase = () => {
   return (
@@ -86,6 +86,12 @@ const NaorisProtocolShowcase = () => {
                       <a href="https://www.naorisprotocol.com/" target="_blank" rel="noopener noreferrer">
                         <Globe className="w-4 h-4" />
                         Website
+                      </a>
+                    </Button>
+                    <Button asChild variant="outline" className="gap-2">
+                      <a href="https://www.naorisprotocol.com/join-the-network#use-cases" target="_blank" rel="noopener noreferrer">
+                        <Layers className="w-4 h-4" />
+                        Use Cases
                       </a>
                     </Button>
                   </div>
