@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
-import { ExternalLink, TrendingUp, Shield, Cpu, Network, Lock, Globe, Zap } from "lucide-react";
+import { ExternalLink, TrendingUp, Shield, Cpu, Network, Lock, Globe, Zap, FileText, ArrowLeftRight, Code } from "lucide-react";
 
 const NaorisProtocolShowcase = () => {
   return (
@@ -56,6 +56,24 @@ const NaorisProtocolShowcase = () => {
                       <a href="https://coinmarketcap.com/currencies/naoris-protocol/" target="_blank" rel="noopener noreferrer">
                         <TrendingUp className="w-4 h-4" />
                         Live Token Price
+                      </a>
+                    </Button>
+                    <Button asChild variant="outline" className="gap-2">
+                      <a href="https://www.naorisprotocol.com/whitepapers" target="_blank" rel="noopener noreferrer">
+                        <FileText className="w-4 h-4" />
+                        Whitepapers
+                      </a>
+                    </Button>
+                    <Button asChild variant="outline" className="gap-2">
+                      <a href="https://www.naorisprotocol.com/exchanges" target="_blank" rel="noopener noreferrer">
+                        <ArrowLeftRight className="w-4 h-4" />
+                        Exchanges
+                      </a>
+                    </Button>
+                    <Button asChild variant="outline" className="gap-2">
+                      <a href="https://knowledgebase.naorisprotocol.com/naoris-protocol/" target="_blank" rel="noopener noreferrer">
+                        <Code className="w-4 h-4" />
+                        Developer
                       </a>
                     </Button>
                     <Button asChild variant="outline" className="gap-2">
