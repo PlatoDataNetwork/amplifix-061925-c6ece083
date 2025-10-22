@@ -44,7 +44,7 @@ const NaorisProtocolShowcase = () => {
                     src="/lovable-uploads/naoris-logo-updated.png" 
                     alt="Naoris Protocol" 
                     className="w-auto mb-6"
-                    style={{ height: 'auto', maxWidth: '100%' }}
+                    style={{ height: 'auto', maxWidth: '120%' }}
                   />
                   <p className="text-xl text-muted-foreground mb-8">
                     Decentralized Post-Quantum Infrastructure
@@ -96,8 +96,8 @@ const NaorisProtocolShowcase = () => {
                 </div>
               </div>
               
-              <div className="relative">
-                <div className="bg-gradient-to-br from-[#00FFB2]/20 to-primary/20 rounded-2xl p-8 border border-border">
+              <div className="relative flex justify-center">
+                <div className="bg-gradient-to-br from-[#00FFB2]/20 to-primary/20 rounded-2xl p-4 border border-border max-w-md">
                   <a 
                     href="https://naorisprotocol.network/testnet#how-it-works" 
                     target="_blank" 
