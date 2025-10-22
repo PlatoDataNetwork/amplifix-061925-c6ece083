@@ -57,7 +57,7 @@ const MicropolisShowcase = () => {
                     <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4 pb-2 md:pb-3 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
                       Leveraging Breakthrough AI
                     </h1>
-                    <p className="text-base md:text-xl text-muted-foreground">
+                    <p className="text-base md:text-xl text-muted-foreground text-justify">
                       Micropolis leverages breakthrough AI to deliver exquisite custom design bespoke robotic solutions, pioneering the future of autonomous mobile robotics.
                     </p>
                   </div>
@@ -71,7 +71,7 @@ const MicropolisShowcase = () => {
                   />
                 </div>
               </div>
-              <div className="flex flex-row flex-wrap justify-center gap-3 mt-8">
+              <div className="flex flex-row justify-center gap-3 mt-8">
                 <Button asChild size="lg" className="gap-2 bg-blue-600 text-white hover:bg-purple-600">
                   <a href="https://finance.yahoo.com/quote/MCRP/" target="_blank" rel="noopener noreferrer">
                     <TrendingUp className="w-4 h-4" />
