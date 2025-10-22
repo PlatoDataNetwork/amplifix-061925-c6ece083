@@ -130,7 +130,7 @@ const MicropolisShowcase = () => {
               </div>
               
               <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-                <Card className="border-primary/20 hover:border-primary/40 transition-all">
+                <Card className="bg-transparent border-blue-400/30 hover:border-blue-400/50 transition-all">
                   <CardContent className="pt-6">
                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                       <Cpu className="w-6 h-6 text-primary" />
@@ -142,7 +142,7 @@ const MicropolisShowcase = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="border-primary/20 hover:border-primary/40 transition-all">
+                <Card className="bg-transparent border-blue-400/30 hover:border-blue-400/50 transition-all">
                   <CardContent className="pt-6">
                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                       <Shield className="w-6 h-6 text-primary" />
@@ -154,7 +154,7 @@ const MicropolisShowcase = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="border-primary/20 hover:border-primary/40 transition-all">
+                <Card className="bg-transparent border-blue-400/30 hover:border-blue-400/50 transition-all">
                   <CardContent className="pt-6">
                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                       <Target className="w-6 h-6 text-primary" />
@@ -233,7 +233,7 @@ const MicropolisShowcase = () => {
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/80 border border-primary/10">
+                <div className="text-center space-y-3 p-6 rounded-lg bg-transparent border border-blue-400/30">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                     <Cpu className="w-6 h-6 text-primary" />
                   </div>
@@ -243,7 +243,7 @@ const MicropolisShowcase = () => {
                   </p>
                 </div>
                 
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/80 border border-primary/10">
+                <div className="text-center space-y-3 p-6 rounded-lg bg-transparent border border-blue-400/30">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                     <Target className="w-6 h-6 text-primary" />
                   </div>
@@ -253,7 +253,7 @@ const MicropolisShowcase = () => {
                   </p>
                 </div>
                 
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/80 border border-primary/10">
+                <div className="text-center space-y-3 p-6 rounded-lg bg-transparent border border-blue-400/30">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                     <Shield className="w-6 h-6 text-primary" />
                   </div>
@@ -263,7 +263,7 @@ const MicropolisShowcase = () => {
                   </p>
                 </div>
                 
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/80 border border-primary/10">
+                <div className="text-center space-y-3 p-6 rounded-lg bg-transparent border border-blue-400/30">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                     <Globe className="w-6 h-6 text-primary" />
                   </div>
