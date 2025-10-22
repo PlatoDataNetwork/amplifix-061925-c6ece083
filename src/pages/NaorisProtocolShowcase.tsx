@@ -37,8 +37,7 @@ const NaorisProtocolShowcase = () => {
         
         <main className="flex-1">
           {/* Hero Section */}
-          <section className="relative py-20 px-4 overflow-visible">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/5" />
+          <section className="relative py-20 px-4 overflow-visible bg-[#0a1628]">
             <div className="container mx-auto max-w-6xl relative z-10">
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 <div className="space-y-6">
@@ -74,11 +73,10 @@ const NaorisProtocolShowcase = () => {
                   </div>
                 </div>
                 <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-3xl" />
                   <img 
-                    src="/lovable-uploads/naoris-hyperstructure.png" 
-                    alt="Naoris Protocol Hyperstructure"
-                    className="relative rounded-2xl shadow-2xl w-full scale-110 md:scale-125"
+                    src="/lovable-uploads/naoris-community-computing.gif" 
+                    alt="Naoris Protocol Community Computing Model"
+                    className="relative w-full"
                   />
                 </div>
               </div>
