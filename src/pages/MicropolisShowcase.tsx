@@ -511,17 +511,17 @@ const MicropolisShowcase = () => {
                   EV/Sales framework applied to 2027E revenue scenarios using micro-cap robotics/security comps (2.0-5.0× multiples)
                 </p>
                 <div className="grid md:grid-cols-3 gap-6">
-                  <div className="p-4 bg-background/50 backdrop-blur-sm border border-border/50 rounded-lg">
+                  <div className="p-4 bg-gradient-to-br from-primary/5 to-transparent backdrop-blur-sm border border-border/50 rounded-lg">
                     <div className="text-sm text-muted-foreground mb-2">Bear Case</div>
                     <div className="text-2xl font-bold mb-1">$0.50 - $1.10</div>
                     <div className="text-xs text-muted-foreground">per share (illustrative)</div>
                   </div>
-                  <div className="p-4 bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-lg">
+                  <div className="p-4 bg-gradient-to-br from-primary/5 to-transparent backdrop-blur-sm border border-primary/30 rounded-lg">
                     <div className="text-sm text-primary mb-2">Base Case</div>
                     <div className="text-2xl font-bold mb-1">$1.85 - $3.60</div>
                     <div className="text-xs text-muted-foreground">per share (illustrative)</div>
                   </div>
-                  <div className="p-4 bg-background/50 backdrop-blur-sm border border-border/50 rounded-lg">
+                  <div className="p-4 bg-gradient-to-br from-primary/5 to-transparent backdrop-blur-sm border border-border/50 rounded-lg">
                     <div className="text-sm text-muted-foreground mb-2">Bull Case</div>
                     <div className="text-2xl font-bold mb-1">$3.90 - $7.00</div>
                     <div className="text-xs text-muted-foreground">per share (illustrative)</div>
@@ -548,7 +548,7 @@ const MicropolisShowcase = () => {
                       "Trade-show traction (GITEX 2025 demos)",
                       "International partnerships & market expansion"
                     ].map((catalyst, idx) => (
-                      <div key={idx} className="flex items-start gap-3 p-3 bg-primary/5 border border-blue-400/30 rounded-lg">
+                      <div key={idx} className="flex items-start gap-3 p-3 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-lg">
                         <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-xs font-bold text-primary">{idx + 1}</span>
                         </div>
@@ -571,7 +571,7 @@ const MicropolisShowcase = () => {
                       { title: "Competition", desc: "Well-funded incumbents with head starts in certain markets" },
                       { title: "Regulatory/Acceptance", desc: "Public space deployments require community buy-in" }
                     ].map((risk, idx) => (
-                      <div key={idx} className="p-3 bg-red-500/5 border border-red-500/10 rounded-lg">
+                      <div key={idx} className="p-3 bg-gradient-to-br from-primary/5 to-transparent border border-red-500/10 rounded-lg">
                         <h4 className="font-semibold text-sm mb-1">{risk.title}</h4>
                         <p className="text-xs text-muted-foreground">{risk.desc}</p>
                       </div>
