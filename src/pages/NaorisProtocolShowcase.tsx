@@ -281,62 +281,6 @@ const NaorisProtocolShowcase = () => {
             </div>
           </section>
 
-          {/* Why Choose Naoris Protocol */}
-          <section className="py-16 px-4 bg-muted/30">
-            <div className="container mx-auto max-w-6xl">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  Why Choose Naoris Protocol
-                </h2>
-                <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                  Leading the future of decentralized cybersecurity with innovative blockchain technology
-                </p>
-              </div>
-              
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/50 backdrop-blur-sm border border-primary/10">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <Network className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-semibold">Decentralized</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Distributed validator network eliminating single points of failure
-                  </p>
-                </div>
-                
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/50 backdrop-blur-sm border border-primary/10">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <Shield className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-semibold">Secure</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Blockchain-powered security ensuring immutable protection
-                  </p>
-                </div>
-                
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/50 backdrop-blur-sm border border-primary/10">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <Cpu className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-semibold">Innovative</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Cutting-edge technology addressing modern security challenges
-                  </p>
-                </div>
-                
-                <div className="text-center space-y-3 p-6 rounded-lg bg-background/50 backdrop-blur-sm border border-primary/10">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <Globe className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-semibold">Global Network</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Worldwide validator mesh providing universal protection
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-
           {/* CTA Section */}
           <section className="py-20 px-4">
             <div className="container mx-auto max-w-4xl text-center">
