@@ -1,33 +1,34 @@
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
-import { ExternalLink, TrendingUp, Shield, Network, Globe, Zap, FileText, ArrowLeftRight, Code, Award, CheckCircle, Lock, Cpu, Users, Building, Target, Sparkles } from "lucide-react";
+import { ExternalLink, TrendingUp, Shield, Network, Globe, Zap, FileText, ArrowLeftRight, Code, Award, CheckCircle, Lock, Cpu, Users, Building, Target, Sparkles, Activity, Server, AlertCircle } from "lucide-react";
 
 const NaorisProtocolShowcase = () => {
   return (
     <>
       <Helmet>
-        <title>Naoris Protocol - Decentralized Cybersecurity Platform | AmplifiX Showcase</title>
+        <title>Naoris Protocol - Decentralized Post-Quantum Infrastructure | AmplifiX Showcase</title>
         <meta 
           name="description" 
-          content="Discover how Naoris Protocol leverages blockchain technology to create a distributed, validator-based security mesh network revolutionizing cybersecurity." 
+          content="Discover Naoris Protocol's revolutionary post-quantum blockchain infrastructure securing Web3 and Web2 with decentralized validator-based security mesh network." 
         />
         <meta 
           name="keywords" 
-          content="Naoris Protocol, blockchain security, decentralized cybersecurity, validator network, DeFi security, distributed security mesh" 
+          content="Naoris Protocol, post-quantum blockchain, decentralized cybersecurity, validator network, DeFi security, distributed security mesh, DePIN" 
         />
-        <meta property="og:title" content="Naoris Protocol - Decentralized Cybersecurity | AmplifiX" />
+        <meta property="og:title" content="Naoris Protocol - First In-Production Post-Quantum Blockchain" />
         <meta 
           property="og:description" 
-          content="Explore Naoris Protocol's innovative blockchain-based cybersecurity platform for distributed protection." 
+          content="World's first post-quantum DePIN testnet with 105M+ transactions, 3.3M+ wallets, and 583M+ threats mitigated." 
         />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Naoris Protocol - Decentralized Cybersecurity Platform" />
+        <meta name="twitter:title" content="Naoris Protocol - Post-Quantum Infrastructure" />
         <meta 
           name="twitter:description" 
-          content="Revolutionary blockchain technology for distributed cybersecurity protection." 
+          content="Revolutionary blockchain technology for post-quantum distributed cybersecurity protection." 
         />
       </Helmet>
 
@@ -46,8 +47,11 @@ const NaorisProtocolShowcase = () => {
                     className="mb-6"
                     style={{ width: '120%', height: 'auto', maxWidth: 'none' }}
                   />
-                  <p className="text-xl text-muted-foreground mb-8">
+                  <p className="text-xl text-muted-foreground mb-2">
                     Decentralized Post-Quantum Infrastructure
+                  </p>
+                  <p className="text-lg text-[#00FFB2] font-semibold mb-8">
+                    Trust & Security for Web3 & Web2
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-3">
@@ -116,115 +120,222 @@ const NaorisProtocolShowcase = () => {
           </div>
         </div>
 
-        {/* Company Overview */}
+        {/* Network Growth Statistics */}
         <section className="container mx-auto py-16 px-4 bg-muted/30">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-6">Revolutionizing Cybersecurity</h2>
-              <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
-                A decentralized cybersecurity platform leveraging blockchain technology to create a distributed, validator-based security mesh network
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4">
+                Incredible Network Growth
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                First In-Production Post-Quantum Blockchain - Testnet Launched January 31st, 2025
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-card p-8 rounded-xl border border-border text-center">
-                <Building className="h-12 w-12 text-[#00FFB2] mx-auto mb-4" />
-                <h3 className="text-xl font-bold mb-4">Foundation</h3>
-                <p className="text-muted-foreground">
-                  Built on blockchain technology to provide transparent, immutable security infrastructure for modern enterprises and decentralized networks.
-                </p>
-              </div>
-              
-              <div className="bg-card p-8 rounded-xl border border-border text-center">
-                <Target className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-bold mb-4">Mission</h3>
-                <p className="text-muted-foreground">
-                  To create a distributed, validator-based security mesh network that protects digital assets across blockchain ecosystems.
-                </p>
-              </div>
-              
-              <div className="bg-card p-8 rounded-xl border border-border text-center">
-                <Globe className="h-12 w-12 text-purple-500 mx-auto mb-4" />
-                <h3 className="text-xl font-bold mb-4">Vision</h3>
-                <p className="text-muted-foreground">
-                  To transform cybersecurity through decentralized post-quantum infrastructure that scales globally.
-                </p>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className="border-[#00FFB2]/20 hover:border-[#00FFB2]/40 transition-all">
+                <CardContent className="pt-6 text-center">
+                  <div className="w-16 h-16 rounded-lg bg-[#00FFB2]/10 flex items-center justify-center mb-4 mx-auto">
+                    <Activity className="w-8 h-8 text-[#00FFB2]" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-2 text-[#00FFB2]">105M+</h3>
+                  <p className="text-sm text-muted-foreground mb-2">Post-Quantum Transactions</p>
+                  <p className="text-xs text-muted-foreground">410K daily transactions</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-primary/20 hover:border-primary/40 transition-all">
+                <CardContent className="pt-6 text-center">
+                  <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center mb-4 mx-auto">
+                    <Users className="w-8 h-8 text-primary" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-2 text-primary">3.3M+</h3>
+                  <p className="text-sm text-muted-foreground mb-2">Naoris Wallets</p>
+                  <p className="text-xs text-muted-foreground">13.1K daily new wallets</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-purple-500/20 hover:border-purple-500/40 transition-all">
+                <CardContent className="pt-6 text-center">
+                  <div className="w-16 h-16 rounded-lg bg-purple-500/10 flex items-center justify-center mb-4 mx-auto">
+                    <Server className="w-8 h-8 text-purple-500" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-2 text-purple-500">1M+</h3>
+                  <p className="text-sm text-muted-foreground mb-2">Security Nodes</p>
+                  <p className="text-xs text-muted-foreground">4.1K daily new nodes</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-orange-500/20 hover:border-orange-500/40 transition-all">
+                <CardContent className="pt-6 text-center">
+                  <div className="w-16 h-16 rounded-lg bg-orange-500/10 flex items-center justify-center mb-4 mx-auto">
+                    <AlertCircle className="w-8 h-8 text-orange-500" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-2 text-orange-500">583M+</h3>
+                  <p className="text-sm text-muted-foreground mb-2">Threats Mitigated</p>
+                  <p className="text-xs text-muted-foreground">2.3M daily threats blocked</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="text-center mt-8">
+              <Button asChild size="lg" className="gap-2 bg-[#00FFB2] text-black hover:bg-[#00E5A0]">
+                <a href="https://naorisprotocol.network/testnet" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="w-4 h-4" />
+                  Go To Testnet
+                </a>
+              </Button>
             </div>
           </div>
         </section>
 
-        {/* $NAORIS Token Section */}
+        {/* Company Overview */}
+        <section className="container mx-auto py-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold mb-6">Who We Are</h2>
+              <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
+                Naoris Protocol is at the forefront of revolutionizing digital security with its pioneering Decentralized Trust Mesh Architecture, specifically designed to restore cyber-trust between organizations, operations, and digital systems.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <Card className="border-border hover:border-[#00FFB2]/40 transition-all">
+                <CardContent className="pt-6 text-center">
+                  <Building className="h-12 w-12 text-[#00FFB2] mx-auto mb-4" />
+                  <h3 className="text-xl font-bold mb-4">Innovation Leadership</h3>
+                  <p className="text-muted-foreground">
+                    Led by industry experts with decades of experience and guided by cyber pioneers committed to advancing the frontiers of cybersecurity.
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-border hover:border-primary/40 transition-all">
+                <CardContent className="pt-6 text-center">
+                  <Target className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <h3 className="text-xl font-bold mb-4">Mission</h3>
+                  <p className="text-muted-foreground">
+                    Deliver Decentralized Zero Trust for data and assets, powering the transition from isolated systems to incentivized community computing models.
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-border hover:border-purple-500/40 transition-all">
+                <CardContent className="pt-6 text-center">
+                  <Globe className="h-12 w-12 text-purple-500 mx-auto mb-4" />
+                  <h3 className="text-xl font-bold mb-4">Global Impact</h3>
+                  <p className="text-muted-foreground">
+                    The trusted backbone for mainstream adoption of DePINs across defense, government, banking, healthcare, and enterprise sectors.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Post-Quantum Technology */}
+        <section className="container mx-auto py-16 px-4 bg-muted/30">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold mb-6">Post-Quantum Infrastructure</h2>
+              <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
+                The world needs a Post-Quantum solution to secure $Trillions in vulnerable assets. Naoris Protocol secures Web3 without hard forks.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <Card className="border-border">
+                <CardContent className="pt-6">
+                  <div className="w-12 h-12 rounded-lg bg-[#00FFB2]/10 flex items-center justify-center mb-4">
+                    <Lock className="w-6 h-6 text-[#00FFB2]" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-4">Quantum-Secure Blockchain Transactions</h3>
+                  <ul className="space-y-3">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-[#00FFB2] mt-0.5 flex-shrink-0" />
+                      <span className="text-muted-foreground">EVM compatible & easy to adopt</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-[#00FFB2] mt-0.5 flex-shrink-0" />
+                      <span className="text-muted-foreground">NIST-approved PQC algorithms</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-[#00FFB2] mt-0.5 flex-shrink-0" />
+                      <span className="text-muted-foreground">Post-Quantum ensured security for transactions</span>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              <Card className="border-border">
+                <CardContent className="pt-6">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <Network className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-4">Trust & Security For Web3 Infrastructure</h3>
+                  <ul className="space-y-3">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span className="text-muted-foreground">Operating at the Sub-Zero Layer</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span className="text-muted-foreground">Quantum security for the Web3 stack</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span className="text-muted-foreground">Chains, Nodes, Validators, DEXs & Bridges</span>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* $NAORIS Token Economy */}
         <section className="container mx-auto py-16 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold mb-6">$NAORIS Proof of Trust Economy</h2>
               <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
-                The native utility token powering the Naoris Protocol network through decentralized Proof of Security consensus, enabling real-time security validations across disparate ecosystems.
+                The native utility token powering the Naoris Protocol network through decentralized Proof of Security (dPoSec) consensus mechanism.
               </p>
             </div>
             
-            <div className="space-y-8">
-              <div className="bg-card p-8 rounded-xl border border-border">
-                <div className="flex items-start gap-6">
-                  <div className="w-16 h-16 rounded-full bg-[#00FFB2]/20 flex items-center justify-center flex-shrink-0">
-                    <Zap className="h-8 w-8 text-[#00FFB2]" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold mb-4">Network Utility</h3>
-                    <p className="text-muted-foreground mb-4 leading-relaxed">
-                      Validates security across ecosystems, transferring value between devices in real-time. The token serves as the backbone of the decentralized validation network.
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="bg-[#00FFB2]/10 text-[#00FFB2] px-3 py-1 rounded-full text-sm">Real-Time Validation</span>
-                      <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">Cross-Ecosystem</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <Card className="border-border hover:border-[#00FFB2]/40 transition-all">
+                <CardContent className="pt-6 text-center">
+                  <Zap className="h-12 w-12 text-[#00FFB2] mx-auto mb-4" />
+                  <h3 className="text-lg font-bold mb-3">Network Utility</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Validates security across ecosystems, transferring value between devices in real-time as the backbone of decentralized validation.
+                  </p>
+                </CardContent>
+              </Card>
 
-              <div className="bg-card p-8 rounded-xl border border-border">
-                <div className="flex items-start gap-6">
-                  <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                    <Shield className="h-8 w-8 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold mb-4">Trusted Validations</h3>
-                    <p className="text-muted-foreground mb-4 leading-relaxed">
-                      Devices earn tokens for secure validations as network value grows with participation. The dPoSec consensus mechanism ensures trust through millisecond validation speed.
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="bg-purple-500/10 text-purple-500 px-3 py-1 rounded-full text-sm">dPoSec Consensus</span>
-                      <span className="bg-blue-500/10 text-blue-500 px-3 py-1 rounded-full text-sm">Device Rewards</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <Card className="border-border hover:border-primary/40 transition-all">
+                <CardContent className="pt-6 text-center">
+                  <Shield className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <h3 className="text-lg font-bold mb-3">Trusted Validations</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Devices earn tokens for secure validations with millisecond validation speed through the dPoSec consensus mechanism.
+                  </p>
+                </CardContent>
+              </Card>
 
-              <div className="bg-card p-8 rounded-xl border border-border">
-                <div className="flex items-start gap-6">
-                  <div className="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-                    <Network className="h-8 w-8 text-purple-500" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold mb-4">Secure Mesh Network</h3>
-                    <p className="text-muted-foreground mb-4 leading-relaxed">
-                      Transforms devices into cyber-secure validator nodes with millisecond validation speed. Creates an always-on record of device validations immutably secured on-chain.
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="bg-orange-500/10 text-orange-500 px-3 py-1 rounded-full text-sm">Validator Nodes</span>
-                      <span className="bg-green-500/10 text-green-500 px-3 py-1 rounded-full text-sm">On-Chain Security</span>
-                      <span className="bg-indigo-500/10 text-indigo-500 px-3 py-1 rounded-full text-sm">Distributed Protection</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <Card className="border-border hover:border-purple-500/40 transition-all">
+                <CardContent className="pt-6 text-center">
+                  <Network className="h-12 w-12 text-purple-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-bold mb-3">Security Mesh</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Transforms devices into cyber-secure validator nodes creating an always-on record immutably secured on-chain.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
 
             <div className="text-center mt-12">
-              <p className="text-muted-foreground mb-6">
-                Under the dPoSec consensus mechanism, $NAORIS provides an always-on record of device validations that ensures trust and security across disparate networks, with results immutably secured on-chain.
-              </p>
               <Button asChild size="lg" variant="outline" className="gap-2">
                 <a href="https://knowledgebase.naorisprotocol.com/naoris-protocol/introduction/what-is-the-usdnaoris-token-used-for" target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="w-4 h-4" />
@@ -235,139 +346,77 @@ const NaorisProtocolShowcase = () => {
           </div>
         </section>
 
-        {/* Key Features */}
+        {/* Recognition & Media */}
         <section className="container mx-auto py-16 px-4 bg-muted/30">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-6">Competitive Advantages</h2>
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold mb-6">Industry Recognition</h2>
               <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
-                Naoris Protocol's unique approach combines blockchain security with distributed validation to create resilient cybersecurity infrastructure.
+                Featured in leading global publications and recognized by major tech accelerators across banking, telecommunications, and industrial sectors.
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="h-6 w-6 text-[#00FFB2] mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="text-lg font-bold mb-2">Decentralized Validation</h3>
-                    <p className="text-muted-foreground">
-                      Distributed validator network ensuring comprehensive security coverage across multiple blockchain ecosystems and networks.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="text-lg font-bold mb-2">Post-Quantum Security</h3>
-                    <p className="text-muted-foreground">
-                      Future-proof infrastructure designed to withstand emerging quantum computing threats through advanced cryptographic techniques.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="h-6 w-6 text-purple-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="text-lg font-bold mb-2">Real-Time Protection</h3>
-                    <p className="text-muted-foreground">
-                      Millisecond validation speed enables instant threat detection and response across the entire security mesh network.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="h-6 w-6 text-blue-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="text-lg font-bold mb-2">DeFi Security Focus</h3>
-                    <p className="text-muted-foreground">
-                      Specialized security solutions designed for the decentralized finance ecosystem and digital asset protection.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="h-6 w-6 text-orange-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="text-lg font-bold mb-2">Blockchain Integration</h3>
-                    <p className="text-muted-foreground">
-                      Seamless integration with existing blockchain infrastructure for transparent, immutable security records.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="h-6 w-6 text-green-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="text-lg font-bold mb-2">Scalable Architecture</h3>
-                    <p className="text-muted-foreground">
-                      Built to scale from individual devices to enterprise-level deployments without compromising security or performance.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Card className="border-border">
+                <CardContent className="pt-6">
+                  <Award className="h-8 w-8 text-[#00FFB2] mb-3" />
+                  <h4 className="font-semibold mb-2">Cointelegraph</h4>
+                  <p className="text-sm text-muted-foreground">World's First Post-Quantum DePIN Testnet Launch</p>
+                </CardContent>
+              </Card>
 
-        {/* Investment Highlights */}
-        <section className="container mx-auto py-16 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-6">Platform Highlights</h2>
-              <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
-                Naoris Protocol represents the future of cybersecurity through innovative blockchain-based distributed protection mechanisms.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <TrendingUp className="h-12 w-12 text-[#00FFB2] mx-auto mb-4" />
-                <h3 className="text-lg font-bold mb-2">Live Trading</h3>
-                <p className="text-muted-foreground text-sm">
-                  $NAORIS token actively traded on major cryptocurrency exchanges
-                </p>
-              </div>
+              <Card className="border-border">
+                <CardContent className="pt-6">
+                  <Award className="h-8 w-8 text-primary mb-3" />
+                  <h4 className="font-semibold mb-2">Forbes</h4>
+                  <p className="text-sm text-muted-foreground">$10 Trillion Case for Decentralized Cybersecurity</p>
+                </CardContent>
+              </Card>
 
-              <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <Cpu className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-lg font-bold mb-2">Innovation</h3>
-                <p className="text-muted-foreground text-sm">
-                  Pioneering post-quantum decentralized infrastructure for modern security needs
-                </p>
-              </div>
+              <Card className="border-border">
+                <CardContent className="pt-6">
+                  <Award className="h-8 w-8 text-purple-500 mb-3" />
+                  <h4 className="font-semibold mb-2">NASDAQ</h4>
+                  <p className="text-sm text-muted-foreground">Tim Draper Investment in Blockchain Cybersecurity</p>
+                </CardContent>
+              </Card>
 
-              <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <Award className="h-12 w-12 text-purple-500 mx-auto mb-4" />
-                <h3 className="text-lg font-bold mb-2">Recognition</h3>
-                <p className="text-muted-foreground text-sm">
-                  Award-winning platform recognized for innovation in cybersecurity
-                </p>
-              </div>
+              <Card className="border-border">
+                <CardContent className="pt-6">
+                  <Award className="h-8 w-8 text-blue-500 mb-3" />
+                  <h4 className="font-semibold mb-2">Coindesk</h4>
+                  <p className="text-sm text-muted-foreground">$11.5M Raised for Decentralized Proof of Security</p>
+                </CardContent>
+              </Card>
 
-              <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <Users className="h-12 w-12 text-blue-500 mx-auto mb-4" />
-                <h3 className="text-lg font-bold mb-2">Community</h3>
-                <p className="text-muted-foreground text-sm">
-                  Growing ecosystem of validators and security-focused participants
-                </p>
-              </div>
+              <Card className="border-border">
+                <CardContent className="pt-6">
+                  <Award className="h-8 w-8 text-green-500 mb-3" />
+                  <h4 className="font-semibold mb-2">Financial Times</h4>
+                  <p className="text-sm text-muted-foreground">Featured in FT Coverage of Blockchain Innovation</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-border">
+                <CardContent className="pt-6">
+                  <Award className="h-8 w-8 text-orange-500 mb-3" />
+                  <h4 className="font-semibold mb-2">AssureDeFi Verified</h4>
+                  <p className="text-sm text-muted-foreground">Proudly Verified By AssureDeFi™ Platform</p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
 
         {/* CTA Section */}
-        <section className="container mx-auto py-16 px-4 bg-muted/30">
+        <section className="container mx-auto py-16 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <div className="space-y-6 p-12 rounded-2xl bg-gradient-to-br from-[#00FFB2]/10 via-primary/5 to-transparent border border-border">
               <h2 className="text-4xl font-bold">
-                Discover Decentralized Cybersecurity
+                Secure The Future with Post-Quantum Infrastructure
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Learn how Naoris Protocol is transforming cybersecurity through blockchain technology and distributed validator networks.
+                Join the revolution in decentralized cybersecurity. Protect your digital assets with the world's first post-quantum blockchain platform.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="/contact">
