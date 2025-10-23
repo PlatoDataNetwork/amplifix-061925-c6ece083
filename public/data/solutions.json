@@ -1,39 +1,41 @@
 {
-  "hero_title": "Solutions for",
-  "hero_title_highlight": "Every Stage",
-  "hero_description": "From private companies preparing for growth to public companies managing investor relations, AmplifiX provides tailored solutions for your unique needs.",
-  "hero_cta_primary_text": "Amplifi Your Brand →",
-  "hero_cta_primary_link": "/contact",
-  "hero_cta_secondary_text": "Book A Demo",
-  "hero_cta_secondary_link": "https://calendly.com/amplifix/amplifix-discovery",
-  "solutions": [
-    {
-      "title": "Public Companies",
-      "description": "Comprehensive investor relations and corporate communications solutions for publicly traded companies.",
-      "link_text": "Learn More →",
-      "link": "/solutions/public-companies",
-      "icon": "Building"
-    },
-    {
-      "title": "Private Companies",
-      "description": "Scale your communications strategy with AI-powered PR and stakeholder management solutions.",
-      "link_text": "Learn More →",
-      "link": "/solutions/private-companies",
-      "icon": "Users"
-    },
-    {
-      "title": "IPO Preparation",
-      "description": "Complete preparation for going public with comprehensive communications and compliance support.",
-      "link_text": "Learn More →",
-      "link": "/solutions/ipo-preparation",
-      "icon": "TrendingUp"
-    },
-    {
-      "title": "Fundraising Support",
-      "description": "AI-optimized pitch decks, investor outreach, and fundraising communications management.",
-      "link_text": "Learn More →",
-      "link": "/solutions/fundraising",
-      "icon": "Rocket"
-    }
-  ]
+  "solutions": {
+    "hero_title": "Solutions for",
+    "hero_title_highlight": "Every Stage",
+    "hero_description": "From private companies preparing for growth to public companies managing investor relations, AmplifiX provides tailored solutions for your unique needs.",
+    "hero_cta_primary_text": "Amplifi Your Brand →",
+    "hero_cta_primary_link": "/contact",
+    "hero_cta_secondary_text": "Book A Demo",
+    "hero_cta_secondary_link": "https://calendly.com/amplifix/amplifix-discovery",
+    "solutions_list": [
+      {
+        "title": "Public Companies",
+        "description": "Comprehensive investor relations and corporate communications solutions for publicly traded companies.",
+        "link_text": "Learn More →",
+        "link": "/solutions/public-companies",
+        "icon": "Building"
+      },
+      {
+        "title": "Private Companies",
+        "description": "Scale your communications strategy with AI-powered PR and stakeholder management solutions.",
+        "link_text": "Learn More →",
+        "link": "/solutions/private-companies",
+        "icon": "Users"
+      },
+      {
+        "title": "IPO Preparation",
+        "description": "Complete preparation for going public with comprehensive communications and compliance support.",
+        "link_text": "Learn More →",
+        "link": "/solutions/ipo-preparation",
+        "icon": "TrendingUp"
+      },
+      {
+        "title": "Fundraising Support",
+        "description": "AI-optimized pitch decks, investor outreach, and fundraising communications management.",
+        "link_text": "Learn More →",
+        "link": "/solutions/fundraising",
+        "icon": "Rocket"
+      }
+    ]
+  }
 }

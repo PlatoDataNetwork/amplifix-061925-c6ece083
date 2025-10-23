@@ -1,54 +1,48 @@
 {
-  "hero": {
-    "title": "Get in Touch",
-    "description": "Ready to amplify your corporate communications? Let's discuss how AmplifiX can help your company achieve its communication and growth objectives."
-  },
-  "contact_form": {
-    "title": "Send us a message",
-    "fields": {
-      "first_name": {
-        "label": "First Name",
-        "placeholder": "John"
-      },
-      "last_name": {
-        "label": "Last Name", 
-        "placeholder": "Doe"
-      },
-      "email": {
-        "label": "Email",
-        "placeholder": "john@company.com"
-      },
-      "company": {
-        "label": "Company",
-        "placeholder": "Your Company Name"
-      },
-      "message": {
-        "label": "Message",
-        "placeholder": "Tell us about your corporate communications needs..."
-      }
-    },
-    "submit_button": "Send Message"
-  },
-  "contact_info": {
-    "title": "Contact Information",
-    "description": "We're here to help you amplify your corporate communications and achieve your business objectives.",
-    "details": [
-      {
-        "type": "email",
-        "label": "Email",
-        "value": "support@amplifix.net"
-      },
-      {
-        "type": "address",
-        "label": "Office",
-        "value": "144 E 44th St\nNew York, NY 10017"
-      }
-    ]
-  },
-  "consultation": {
-    "title": "Schedule a Consultation",
-    "description": "Ready to see AmplifiX in action? Schedule a personalized demo to learn how we can help amplify your corporate communications.",
-    "button_text": "Book a Demo",
-    "calendly_link": "https://calendly.com/amplifix/amplifix-discovery"
+  "contact": {
+    "hero_title": "Get in",
+    "hero_title_highlight": "Touch",
+    "hero_description": "Ready to amplify your corporate communications? Let's discuss how AmplifiX can help your company achieve its communication and growth objectives.",
+    "hero_cta_primary_text": "Amplifi Your Brand →",
+    "hero_cta_secondary_text": "Book A Demo",
+    "hero_cta_secondary_link": "https://calendly.com/amplifix/amplifix-discovery",
+    
+    "form_title": "Send us a message",
+    "form_first_name_label": "First Name *",
+    "form_first_name_placeholder": "John",
+    "form_last_name_label": "Last Name *",
+    "form_last_name_placeholder": "Doe",
+    "form_email_label": "Email *",
+    "form_email_placeholder": "john@company.com",
+    "form_company_label": "Company",
+    "form_company_placeholder": "Your Company Name",
+    "form_company_type_label": "Company Type",
+    "form_company_type_placeholder": "Select company type",
+    "form_company_type_public": "Public Company",
+    "form_company_type_private": "Private Company",
+    "form_company_type_preipo": "PRE-IPO Company",
+    "form_message_label": "Message *",
+    "form_message_placeholder": "Tell us about your corporate communications needs...",
+    "form_submit_button": "Send Message",
+    "form_submit_button_loading": "Sending...",
+    
+    "contact_info_title": "Contact Information",
+    "contact_info_description": "We're here to help you amplify your corporate communications and achieve your business objectives.",
+    "contact_email_label": "Email",
+    "contact_email_value": "support@amplifix.net",
+    "contact_office_label": "Office",
+    "contact_office_value": "144 E 44th St\nNew York, NY 10017",
+    
+    "consultation_title": "Schedule a Consultation",
+    "consultation_description": "Ready to see AmplifiX in action? Schedule a personalized demo to learn how we can help amplify your corporate communications.",
+    "consultation_button_text": "Book a Demo",
+    "consultation_calendly_link": "https://calendly.com/amplifix/amplifix-discovery",
+    
+    "toast_missing_title": "Missing Information",
+    "toast_missing_description": "Please fill in all required fields.",
+    "toast_success_title": "Message Sent!",
+    "toast_success_description": "Thank you for your message. We'll get back to you soon.",
+    "toast_error_title": "Error",
+    "toast_error_description": "Failed to send message. Please try again."
   }
 }

@@ -42,7 +42,7 @@ const MainHeader = () => {
           <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center">
             <img 
               src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
-              alt={`${commonData?.branding_name || 'AmplifiX'} Logo`}
+              alt={`${commonData?.common.branding_name || 'AmplifiX'} Logo`}
               className="w-8 h-8 md:w-10 md:h-10"
             />
           </div>
@@ -50,7 +50,7 @@ const MainHeader = () => {
             {isLoading ? (
               <Skeleton className="h-6 w-24" />
             ) : (
-              commonData?.branding_name || 'AmplifiX'
+              commonData?.common.branding_name || 'AmplifiX'
             )}
           </Link>
         </div>
@@ -66,22 +66,22 @@ const MainHeader = () => {
           ) : commonData ? (
             <>
               <Link to="/about" className="text-foreground hover:text-highlight-blue transition-colors">
-                {commonData.nav_menu.find(item => item.label === 'About')?.label || 'About'}
+                {commonData.common.nav_menu.find(item => item.label === 'About')?.label || 'About'}
               </Link>
               <Link to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">
-                {commonData.nav_menu.find(item => item.label === 'Solutions')?.label || 'Solutions'}
+                {commonData.common.nav_menu.find(item => item.label === 'Solutions')?.label || 'Solutions'}
               </Link>
               <Link to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">
-                {commonData.nav_menu.find(item => item.label === 'Showcase')?.label || 'Showcase'}
+                {commonData.common.nav_menu.find(item => item.label === 'Showcase')?.label || 'Showcase'}
               </Link>
                <Link to="/intel" className="text-foreground hover:text-highlight-blue transition-colors">
                  Intel
                </Link>
               <Link to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">
-                {commonData.nav_menu.find(item => item.label === 'FAQ')?.label || 'FAQ'}
+                {commonData.common.nav_menu.find(item => item.label === 'FAQ')?.label || 'FAQ'}
               </Link>
               <Link to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">
-                {commonData.nav_menu.find(item => item.label === 'Contact')?.label || 'Contact'}
+                {commonData.common.nav_menu.find(item => item.label === 'Contact')?.label || 'Contact'}
               </Link>
             </>
           ) : (

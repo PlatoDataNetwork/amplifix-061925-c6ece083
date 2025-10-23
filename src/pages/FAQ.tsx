@@ -12,14 +12,16 @@ interface FAQItem {
 }
 
 interface FAQData {
-  hero_title: string;
-  hero_title_highlight: string;
-  hero_description: string;
-  hero_cta_primary_text: string;
-  hero_cta_primary_link: string;
-  hero_cta_secondary_text: string;
-  hero_cta_secondary_link: string;
-  faqs: FAQItem[];
+  faq: {
+    hero_title: string;
+    hero_title_highlight: string;
+    hero_description: string;
+    hero_cta_primary_text: string;
+    hero_cta_primary_link: string;
+    hero_cta_secondary_text: string;
+    hero_cta_secondary_link: string;
+    faqs: FAQItem[];
+  };
 }
 
 const FAQ = () => {
@@ -64,22 +66,22 @@ const FAQ = () => {
       <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
-            {data.hero_title} <span className="text-highlight-blue">{data.hero_title_highlight}</span>
+            {data.faq.hero_title} <span className="text-highlight-blue">{data.faq.hero_title_highlight}</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            {data.hero_description}
+            {data.faq.hero_description}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-            <Link to={data.hero_cta_primary_link} className="w-full sm:w-auto">
+            <Link to={data.faq.hero_cta_primary_link} className="w-full sm:w-auto">
               <Button 
                 size="lg" 
                 className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {data.hero_cta_primary_text}
+                {data.faq.hero_cta_primary_text}
               </Button>
             </Link>
             <a 
-              href={data.hero_cta_secondary_link}
+              href={data.faq.hero_cta_secondary_link}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto"
@@ -89,7 +91,7 @@ const FAQ = () => {
                 variant="outline" 
                 className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {data.hero_cta_secondary_text}
+                {data.faq.hero_cta_secondary_text}
               </Button>
             </a>
           </div>
@@ -100,7 +102,7 @@ const FAQ = () => {
       <section className="container mx-auto py-16 px-4">
         <div className="max-w-4xl mx-auto">
           <Accordion type="single" collapsible className="w-full space-y-4">
-            {data.faqs.map((faq, index) => (
+            {data.faq.faqs.map((faq, index) => (
               <AccordionItem 
                 key={`faq-${index}`} 
                 value={`item-${index}`} 

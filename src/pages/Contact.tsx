@@ -9,9 +9,59 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useJsonData } from "@/hooks/useJsonData";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface ContactData {
+  contact: {
+    hero_title: string;
+    hero_title_highlight: string;
+    hero_description: string;
+    hero_cta_primary_text: string;
+    hero_cta_secondary_text: string;
+    hero_cta_secondary_link: string;
+    
+    form_title: string;
+    form_first_name_label: string;
+    form_first_name_placeholder: string;
+    form_last_name_label: string;
+    form_last_name_placeholder: string;
+    form_email_label: string;
+    form_email_placeholder: string;
+    form_company_label: string;
+    form_company_placeholder: string;
+    form_company_type_label: string;
+    form_company_type_placeholder: string;
+    form_company_type_public: string;
+    form_company_type_private: string;
+    form_company_type_preipo: string;
+    form_message_label: string;
+    form_message_placeholder: string;
+    form_submit_button: string;
+    form_submit_button_loading: string;
+    
+    contact_info_title: string;
+    contact_info_description: string;
+    contact_email_label: string;
+    contact_email_value: string;
+    contact_office_label: string;
+    contact_office_value: string;
+    
+    consultation_title: string;
+    consultation_description: string;
+    consultation_button_text: string;
+    consultation_calendly_link: string;
+    
+    toast_missing_title: string;
+    toast_missing_description: string;
+    toast_success_title: string;
+    toast_success_description: string;
+    toast_error_title: string;
+    toast_error_description: string;
+  };
+}
 
 const Contact = () => {
-  const { data: contactData } = useJsonData<any>('contact.json');
+  const { data, isLoading, error } = useJsonData<ContactData>('contact.json');
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -41,11 +91,13 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!data) return;
+
     // Basic validation
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.message) {
       toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
+        title: data.contact.toast_missing_title,
+        description: data.contact.toast_missing_description,
         variant: "destructive",
       });
       return;
@@ -54,15 +106,15 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+      const { data: responseData, error } = await supabase.functions.invoke('send-contact-email', {
         body: formData
       });
 
       if (error) throw error;
 
       toast({
-        title: "Message Sent!",
-        description: "Thank you for your message. We'll get back to you soon.",
+        title: data.contact.toast_success_title,
+        description: data.contact.toast_success_description,
       });
 
       // Reset form
@@ -78,8 +130,8 @@ const Contact = () => {
     } catch (error: any) {
       console.error('Error sending email:', error);
       toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
+        title: data.contact.toast_error_title,
+        description: data.contact.toast_error_description,
         variant: "destructive",
       });
     } finally {
@@ -87,19 +139,49 @@ const Contact = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <MainHeader />
+        <div className="pt-24 container mx-auto py-20 px-4">
+          <div className="text-center max-w-4xl mx-auto">
+            <Skeleton className="h-12 w-3/4 mx-auto mb-4" />
+            <Skeleton className="h-6 w-full max-w-2xl mx-auto mb-8" />
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+              <Skeleton className="h-12 w-48" />
+              <Skeleton className="h-12 w-48" />
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <MainHeader />
+        <div className="pt-24 container mx-auto py-20 px-4 text-center">
+          <p className="text-destructive">Failed to load contact content</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <MainHeader />
       
-      {/* Hero Section - Updated with consistent mobile-responsive padding */}
+      {/* Hero Section */}
       <div className="pt-24 container mx-auto py-12 md:py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
-            Get in <span className="text-highlight-blue">Touch</span>
+            {data.contact.hero_title} <span className="text-highlight-blue">{data.contact.hero_title_highlight}</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8 px-4">
-            Ready to amplify your corporate communications? Let's discuss how AmplifiX can help
-            your company achieve its communication and growth objectives.
+            {data.contact.hero_description}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <Button 
@@ -112,10 +194,10 @@ const Contact = () => {
               }}
               className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
             >
-              Amplifi Your Brand →
+              {data.contact.hero_cta_primary_text}
             </Button>
             <a 
-              href="https://calendly.com/amplifix/amplifix-discovery"
+              href={data.contact.hero_cta_secondary_link}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto"
@@ -125,7 +207,7 @@ const Contact = () => {
                 variant="outline" 
                 className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                Book A Demo
+                {data.contact.hero_cta_secondary_text}
               </Button>
             </a>
           </div>
@@ -138,32 +220,32 @@ const Contact = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div className="bg-card p-8 rounded-xl border border-border">
-              <h2 className="text-2xl font-bold mb-6">Send us a message</h2>
+              <h2 className="text-2xl font-bold mb-6">{data.contact.form_title}</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="firstName" className="block text-sm font-medium mb-2">
-                      First Name *
+                      {data.contact.form_first_name_label}
                     </label>
                     <Input 
                       id="firstName" 
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      placeholder="John" 
+                      placeholder={data.contact.form_first_name_placeholder}
                       required
                     />
                   </div>
                   <div>
                     <label htmlFor="lastName" className="block text-sm font-medium mb-2">
-                      Last Name *
+                      {data.contact.form_last_name_label}
                     </label>
                     <Input 
                       id="lastName" 
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleInputChange}
-                      placeholder="Doe" 
+                      placeholder={data.contact.form_last_name_placeholder}
                       required
                     />
                   </div>
@@ -171,7 +253,7 @@ const Contact = () => {
                 
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium mb-2">
-                    Email *
+                    {data.contact.form_email_label}
                   </label>
                   <Input 
                     id="email" 
@@ -179,50 +261,50 @@ const Contact = () => {
                     type="email" 
                     value={formData.email}
                     onChange={handleInputChange}
-                    placeholder="john@company.com" 
+                    placeholder={data.contact.form_email_placeholder}
                     required
                   />
                 </div>
                 
                 <div>
                   <label htmlFor="company" className="block text-sm font-medium mb-2">
-                    Company
+                    {data.contact.form_company_label}
                   </label>
                   <Input 
                     id="company" 
                     name="company"
                     value={formData.company}
                     onChange={handleInputChange}
-                    placeholder="Your Company Name" 
+                    placeholder={data.contact.form_company_placeholder}
                   />
                 </div>
                 
                 <div>
                   <label htmlFor="companyType" className="block text-sm font-medium mb-2">
-                    Company Type
+                    {data.contact.form_company_type_label}
                   </label>
                   <Select value={formData.companyType} onValueChange={(value) => handleSelectChange('companyType', value)}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select company type" />
+                      <SelectValue placeholder={data.contact.form_company_type_placeholder} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="public">Public Company</SelectItem>
-                      <SelectItem value="private">Private Company</SelectItem>
-                      <SelectItem value="pre-ipo">PRE-IPO Company</SelectItem>
+                      <SelectItem value="public">{data.contact.form_company_type_public}</SelectItem>
+                      <SelectItem value="private">{data.contact.form_company_type_private}</SelectItem>
+                      <SelectItem value="pre-ipo">{data.contact.form_company_type_preipo}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium mb-2">
-                    Message *
+                    {data.contact.form_message_label}
                   </label>
                   <Textarea 
                     id="message" 
                     name="message"
                     value={formData.message}
                     onChange={handleInputChange}
-                    placeholder="Tell us about your corporate communications needs..."
+                    placeholder={data.contact.form_message_placeholder}
                     rows={6}
                     required
                   />
@@ -233,7 +315,7 @@ const Contact = () => {
                   disabled={isSubmitting}
                   className="w-full bg-highlight-blue text-white hover:bg-highlight-blue/90 disabled:opacity-50"
                 >
-                  {isSubmitting ? "Sending..." : "Send Message"}
+                  {isSubmitting ? data.contact.form_submit_button_loading : data.contact.form_submit_button}
                 </Button>
               </form>
             </div>
@@ -241,27 +323,26 @@ const Contact = () => {
             {/* Contact Information */}
             <div className="space-y-8">
               <div>
-                <h2 className="text-2xl font-bold mb-6">Contact Information</h2>
+                <h2 className="text-2xl font-bold mb-6">{data.contact.contact_info_title}</h2>
                 <p className="text-muted-foreground mb-8">
-                  We're here to help you amplify your corporate communications and achieve your business objectives.
+                  {data.contact.contact_info_description}
                 </p>
                 
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
                     <Mail className="h-6 w-6 text-highlight-blue mt-1" />
                     <div>
-                      <h3 className="font-medium mb-1">Email</h3>
-                      <p className="text-muted-foreground">support@amplifix.net</p>
+                      <h3 className="font-medium mb-1">{data.contact.contact_email_label}</h3>
+                      <p className="text-muted-foreground">{data.contact.contact_email_value}</p>
                     </div>
                   </div>
                   
                   <div className="flex items-start gap-4">
                     <MapPin className="h-6 w-6 text-highlight-blue mt-1" />
                     <div>
-                      <h3 className="font-medium mb-1">Office</h3>
-                      <p className="text-muted-foreground">
-                        144 E 44th St<br />
-                        New York, NY 10017
+                      <h3 className="font-medium mb-1">{data.contact.contact_office_label}</h3>
+                      <p className="text-muted-foreground" style={{ whiteSpace: 'pre-line' }}>
+                        {data.contact.contact_office_value}
                       </p>
                     </div>
                   </div>
@@ -269,10 +350,9 @@ const Contact = () => {
               </div>
               
               <div className="bg-muted/30 p-6 rounded-xl">
-                <h3 className="font-bold mb-3">Schedule a Consultation</h3>
+                <h3 className="font-bold mb-3">{data.contact.consultation_title}</h3>
                 <p className="text-muted-foreground mb-4">
-                  Ready to see AmplifiX in action? Schedule a personalized demo to learn how we can
-                  help amplify your corporate communications.
+                  {data.contact.consultation_description}
                 </p>
                 <Button 
                   variant="outline" 
@@ -280,11 +360,11 @@ const Contact = () => {
                   asChild
                 >
                   <a 
-                    href={contactData?.consultation?.calendly_link || "https://calendly.com/amplifix/amplifix-discovery"}
+                    href={data.contact.consultation_calendly_link}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {contactData?.consultation?.button_text || "Book a Demo"}
+                    {data.contact.consultation_button_text}
                   </a>
                 </Button>
               </div>
