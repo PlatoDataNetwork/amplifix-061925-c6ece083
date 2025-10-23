@@ -21,12 +21,12 @@ const Footer = () => {
                 />
               </div>
             <h2 className="text-xl font-bold">
-                {isLoading ? <Skeleton className="h-6 w-24" /> : commonData?.branding.name || 'AmplifiX'}
+                {isLoading ? <Skeleton className="h-6 w-24" /> : commonData?.branding_name || 'AmplifiX'}
               </h2>
             </div>
-            {commonData?.branding.description && (
+            {commonData?.branding_description && (
               <p className="text-muted-foreground mb-4">
-                {isLoading ? <Skeleton className="h-4 w-full" /> : commonData.branding.description}
+                {isLoading ? <Skeleton className="h-4 w-full" /> : commonData.branding_description}
               </p>
             )}
             <div className="flex space-x-4">
@@ -47,7 +47,7 @@ const Footer = () => {
           
           <div>
             <h3 className="text-lg font-medium mb-4">
-              {isLoading ? <Skeleton className="h-5 w-20" /> : commonData?.footer.sections.platform.title || 'Platform'}
+              {isLoading ? <Skeleton className="h-5 w-20" /> : commonData?.footer_platform_title || 'Platform'}
             </h3>
             <ul className="space-y-2">
               {isLoading ? (
@@ -55,7 +55,7 @@ const Footer = () => {
                   <li key={i}><Skeleton className="h-4 w-24" /></li>
                 ))
               ) : commonData ? (
-                commonData.footer.sections.platform.links.map((link, index) => (
+                commonData.footer_platform_links.map((link, index) => (
                   <li key={index}>
                     <Link 
                       to={link.label === 'Home' ? '/' : link.label === 'Showcase' ? '/showcase' : link.label === 'FAQ' ? '/faq' : '#'} 
@@ -77,7 +77,7 @@ const Footer = () => {
           
           <div>
             <h3 className="text-lg font-medium mb-4">
-              {isLoading ? <Skeleton className="h-5 w-20" /> : commonData?.footer.sections.solutions.title || 'Solutions'}
+              {isLoading ? <Skeleton className="h-5 w-20" /> : commonData?.footer_solutions_title || 'Solutions'}
             </h3>
             <ul className="space-y-2">
               {isLoading ? (
@@ -85,7 +85,7 @@ const Footer = () => {
                   <li key={i}><Skeleton className="h-4 w-32" /></li>
                 ))
               ) : commonData ? (
-                commonData.footer.sections.solutions.links.map((link, index) => (
+                commonData.footer_solutions_links.map((link, index) => (
                   <li key={index}>
                     <Link 
                       to={link.label === 'Public Companies' ? '/solutions/public-companies' : link.label === 'Private Companies' ? '/solutions/private-companies' : link.label === 'IPO Preparation' ? '/solutions/ipo-preparation' : '#'} 
@@ -107,7 +107,7 @@ const Footer = () => {
           
           <div>
             <h3 className="text-lg font-medium mb-4">
-              {isLoading ? <Skeleton className="h-5 w-20" /> : commonData?.footer.sections.company.title || 'Company'}
+              {isLoading ? <Skeleton className="h-5 w-20" /> : commonData?.footer_company_title || 'Company'}
             </h3>
             <ul className="space-y-2">
               {isLoading ? (
@@ -117,14 +117,14 @@ const Footer = () => {
                 </>
               ) : (
                 <>
-                  <li className="text-muted-foreground">{commonData?.footer.sections.company.contact.email || 'support@amplifix.net'}</li>
+                  <li className="text-muted-foreground">{commonData?.footer_email || 'support@amplifix.net'}</li>
                 </>
               )}
             </ul>
             <div className="flex items-center mt-4 p-3 bg-background rounded-lg border border-border">
-              <div className={`w-2 h-2 rounded-full mr-2 ${commonData?.footer.sections.company.status.indicator === 'online' ? 'bg-green-500' : 'bg-gray-500'}`}></div>
+              <div className={`w-2 h-2 rounded-full mr-2 ${commonData?.footer_status_indicator === 'online' ? 'bg-green-500' : 'bg-gray-500'}`}></div>
               <span className="text-sm">
-                {isLoading ? <Skeleton className="h-4 w-24" /> : commonData?.footer.sections.company.status.text || 'AI Systems Online'}
+                {isLoading ? <Skeleton className="h-4 w-24" /> : commonData?.footer_status_text || 'AI Systems Online'}
               </span>
             </div>
           </div>
@@ -135,7 +135,7 @@ const Footer = () => {
             {isLoading ? (
               <Skeleton className="h-4 w-48" />
             ) : (
-              commonData?.footer.copyright.replace('{year}', new Date().getFullYear().toString()) || `© ${new Date().getFullYear()} AmplifiX. All rights reserved.`
+              commonData?.footer_copyright.replace('{year}', new Date().getFullYear().toString()) || `© ${new Date().getFullYear()} AmplifiX. All rights reserved.`
             )}
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
@@ -144,7 +144,7 @@ const Footer = () => {
                 <Skeleton key={i} className="h-4 w-20" />
               ))
             ) : commonData ? (
-              commonData.footer.legal_links.map((link, index) => (
+              commonData.footer_legal_links.map((link, index) => (
                 <Link key={index} to={
                   link.label === 'Privacy Policy' ? '/privacy-policy' :
                   link.label === 'Compliance' ? '/compliance' :

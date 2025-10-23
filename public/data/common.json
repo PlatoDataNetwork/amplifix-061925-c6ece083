@@ -1,62 +1,38 @@
 {
-  "branding": {
-    "name": "AmplifiX",
-    "description": ""
-  },
-  "navigation": {
-    "main_menu": [
-      { "label": "About" },
-      { "label": "Solutions" },
-      { "label": "Showcase" },
-      { "label": "Intel" },
-      { "label": "FAQ" },
-      { "label": "Contact" }
-    ],
-    "cta_button": {
-      "label": "SILO Showcase"
-    }
-  },
-  "footer": {
-    "sections": {
-      "platform": {
-        "title": "Platform",
-        "links": [
-          { "label": "Home" },
-          { "label": "Showcase" },
-          { "label": "FAQ" }
-        ]
-      },
-      "solutions": {
-        "title": "Solutions",
-        "links": [
-          { "label": "Public Companies" },
-          { "label": "Private Companies" },
-          { "label": "IPO Preparation" }
-        ]
-      },
-      "company": {
-        "title": "Company",
-        "contact": {
-          "email": "support@amplifix.net"
-        },
-        "status": {
-          "text": "AI Systems Online",
-          "indicator": "online"
-        }
-      }
-    },
-    "legal_links": [
-      { "label": "Privacy Policy" },
-      { "label": "Compliance" },
-      { "label": "Terms of Service" },
-      { "label": "Data Processing" }
-    ],
-    "copyright": "© {year} AmplifiX. All rights reserved."
-  },
-  "blog": {
-    "header": {
-      "title": "AmplifiX Intel",
-      "back_text": "Back to Home"
-    }
-  }
+  "branding_name": "AmplifiX",
+  "branding_description": "",
+  "nav_menu": [
+    { "label": "About" },
+    { "label": "Solutions" },
+    { "label": "Showcase" },
+    { "label": "Intel" },
+    { "label": "FAQ" },
+    { "label": "Contact" }
+  ],
+  "nav_cta_label": "SILO Showcase",
+  "footer_platform_title": "Platform",
+  "footer_platform_links": [
+    { "label": "Home" },
+    { "label": "Showcase" },
+    { "label": "FAQ" }
+  ],
+  "footer_solutions_title": "Solutions",
+  "footer_solutions_links": [
+    { "label": "Public Companies" },
+    { "label": "Private Companies" },
+    { "label": "IPO Preparation" }
+  ],
+  "footer_company_title": "Company",
+  "footer_email": "support@amplifix.net",
+  "footer_status_text": "AI Systems Online",
+  "footer_status_indicator": "online",
+  "footer_legal_links": [
+    { "label": "Privacy Policy" },
+    { "label": "Compliance" },
+    { "label": "Terms of Service" },
+    { "label": "Data Processing" }
+  ],
+  "footer_copyright": "© {year} AmplifiX. All rights reserved.",
+  "blog_title": "AmplifiX Intel",
+  "blog_back_text": "Back to Home"
 }
