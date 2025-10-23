@@ -1,90 +1,74 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Check, X, Shield, Zap, Users, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Check, X, Shield, ArrowRight } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
+import { useJsonData } from "@/hooks/useJsonData";
 
 interface PricingData {
-  seo: {
-    title: string;
-    description: string;
-    keywords: string;
-    canonical_url: string;
-  };
-  hero: {
-    title: string;
-    subtitle: string;
-    description: string;
-  };
-  plans: Array<{
-    id: string;
-    name: string;
-    description: string;
-    price: number | null;
-    billing: string;
-    popular: boolean;
-    features: string[];
-    limits: Record<string, string | number>;
-    cta: string;
-    highlight_color: string;
-  }>;
-  comparison: {
-    title: string;
-    features: Array<{
-      category: string;
-      items: Array<{
-        feature: string;
-        startup: boolean;
-        growth: boolean;
-        enterprise: boolean;
+  pricing: {
+    seo: {
+      title: string;
+      description: string;
+      keywords: string;
+      canonical_url: string;
+    };
+    hero: {
+      title: string;
+      subtitle: string;
+      description: string;
+    };
+    plans: Array<{
+      id: string;
+      name: string;
+      description: string;
+      price: number | null;
+      billing: string;
+      popular: boolean;
+      features: string[];
+      limits: Record<string, string | number>;
+      cta: string;
+      highlight_color: string;
+    }>;
+    comparison: {
+      title: string;
+      features: Array<{
+        category: string;
+        items: Array<{
+          feature: string;
+          startup: boolean;
+          growth: boolean;
+          enterprise: boolean;
+        }>;
       }>;
-    }>;
-  };
-  faq: {
-    title: string;
-    items: Array<{
-      question: string;
-      answer: string;
-    }>;
-  };
-  guarantee: {
-    title: string;
-    description: string;
-  };
-  cta: {
-    title: string;
-    description: string;
-    primary_button: string;
-    secondary_button: string;
+    };
+    faq: {
+      title: string;
+      items: Array<{
+        question: string;
+        answer: string;
+      }>;
+    };
+    guarantee: {
+      title: string;
+      description: string;
+    };
+    cta: {
+      title: string;
+      description: string;
+      primary_button: string;
+      secondary_button: string;
+    };
   };
 }
 
 const Pricing = () => {
-  const [data, setData] = useState<PricingData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data, isLoading, error } = useJsonData<PricingData>('pricing.json');
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("monthly");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/data/pricing.json');
-        const pricingData = await response.json();
-        setData(pricingData);
-      } catch (error) {
-        console.error('Error loading pricing data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   if (isLoading) {
     return (
@@ -98,12 +82,12 @@ const Pricing = () => {
     );
   }
 
-  if (!data) {
+  if (error || !data) {
     return (
       <div className="min-h-screen bg-background">
         <MainHeader />
         <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="text-center">Error loading pricing data</div>
+          <div className="text-center">{error || 'Error loading pricing data'}</div>
         </div>
         <Footer />
       </div>
@@ -118,10 +102,10 @@ const Pricing = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>{data.seo.title}</title>
-        <meta name="description" content={data.seo.description} />
-        <meta name="keywords" content={data.seo.keywords} />
-        <link rel="canonical" href={data.seo.canonical_url} />
+        <title>{data.pricing.seo.title}</title>
+        <meta name="description" content={data.pricing.seo.description} />
+        <meta name="keywords" content={data.pricing.seo.keywords} />
+        <link rel="canonical" href={data.pricing.seo.canonical_url} />
       </Helmet>
 
       <MainHeader />
@@ -130,13 +114,13 @@ const Pricing = () => {
       <section className="py-20 px-4">
         <div className="container mx-auto text-center max-w-4xl">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-            {data.hero.title}
+            {data.pricing.hero.title}
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-8">
-            {data.hero.subtitle}
+            {data.pricing.hero.subtitle}
           </p>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            {data.hero.description}
+            {data.pricing.hero.description}
           </p>
         </div>
       </section>
@@ -172,7 +156,7 @@ const Pricing = () => {
 
           {/* Pricing Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-            {data.plans.map((plan) => (
+            {data.pricing.plans.map((plan) => (
               <Card key={plan.id} className={`relative ${plan.popular ? 'border-highlight-blue shadow-lg scale-105' : ''}`}>
                 {plan.popular && (
                   <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-highlight-blue text-white">
@@ -232,7 +216,7 @@ const Pricing = () => {
       {/* Feature Comparison */}
       <section className="py-20 px-4 bg-muted/30">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-3xl font-bold text-center mb-12">{data.comparison.title}</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">{data.pricing.comparison.title}</h2>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -244,7 +228,7 @@ const Pricing = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.comparison.features.map((category) => (
+                {data.pricing.comparison.features.map((category) => (
                   <>
                     <tr key={category.category} className="border-b bg-muted/50">
                       <td className="py-3 px-4 font-semibold" colSpan={4}>
@@ -288,9 +272,9 @@ const Pricing = () => {
       {/* FAQ Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-4xl">
-          <h2 className="text-3xl font-bold text-center mb-12">{data.faq.title}</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">{data.pricing.faq.title}</h2>
           <Accordion type="single" collapsible className="space-y-4">
-            {data.faq.items.map((item, index) => (
+            {data.pricing.faq.items.map((item, index) => (
               <AccordionItem key={index} value={`item-${index}`}>
                 <AccordionTrigger className="text-left">{item.question}</AccordionTrigger>
                 <AccordionContent className="text-muted-foreground">
@@ -308,23 +292,23 @@ const Pricing = () => {
           <div className="flex justify-center mb-6">
             <Shield className="h-12 w-12 text-green-500" />
           </div>
-          <h2 className="text-2xl font-bold mb-4">{data.guarantee.title}</h2>
-          <p className="text-muted-foreground text-lg">{data.guarantee.description}</p>
+          <h2 className="text-2xl font-bold mb-4">{data.pricing.guarantee.title}</h2>
+          <p className="text-muted-foreground text-lg">{data.pricing.guarantee.description}</p>
         </div>
       </section>
 
       {/* Final CTA */}
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl font-bold mb-4">{data.cta.title}</h2>
-          <p className="text-xl text-muted-foreground mb-8">{data.cta.description}</p>
+          <h2 className="text-3xl font-bold mb-4">{data.pricing.cta.title}</h2>
+          <p className="text-xl text-muted-foreground mb-8">{data.pricing.cta.description}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-highlight-blue hover:bg-highlight-blue/90">
-              {data.cta.primary_button}
+              {data.pricing.cta.primary_button}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button size="lg" variant="outline">
-              {data.cta.secondary_button}
+              {data.pricing.cta.secondary_button}
             </Button>
           </div>
         </div>
