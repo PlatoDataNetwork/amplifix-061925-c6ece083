@@ -54,16 +54,16 @@ const Showcase = () => {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12 md:mb-16">
               <h1 className="text-5xl font-bold mb-6">
-                <span className="text-highlight-blue">{showcaseData.hero.title}</span><br />
-                {showcaseData.hero.subtitle}
+                <span className="text-highlight-blue">{showcaseData.showcase.hero.title}</span><br />
+                {showcaseData.showcase.hero.subtitle}
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 leading-relaxed max-w-4xl mx-auto px-2">
-                {showcaseData.hero.description}
+                {showcaseData.showcase.hero.description}
               </p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              {showcaseData.showcases.map((showcase: any, index: number) => (
+              {showcaseData.showcase.showcases.map((showcase: any, index: number) => (
                 <div key={index} className={`relative bg-card p-8 rounded-xl border ${showcase.disabled ? 'border-dashed border-border opacity-60' : 'border-border hover:shadow-lg transition-shadow'}`}>
                   {/* Header with company info */}
                   <div className="flex items-center gap-4 mb-6">
@@ -184,14 +184,14 @@ const Showcase = () => {
         <section className="container mx-auto py-16 px-4 bg-muted/30">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-6">{showcaseData.why_choose.title}</h2>
+              <h2 className="text-4xl font-bold mb-6">{showcaseData.showcase.why_choose.title}</h2>
               <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
-                {showcaseData.why_choose.description}
+                {showcaseData.showcase.why_choose.description}
               </p>
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {showcaseData.why_choose.features.map((feature: any, index: number) => (
+              {showcaseData.showcase.why_choose.features.map((feature: any, index: number) => (
                 <div key={index} className="bg-card p-6 rounded-xl border border-border text-center">
                   {feature.title === 'Growth Focus' && <TrendingUp className="h-12 w-12 text-highlight-blue mx-auto mb-4" />}
                   {feature.title === 'AI Innovation' && <Lightbulb className="h-12 w-12 text-green-500 mx-auto mb-4" />}
@@ -210,19 +210,19 @@ const Showcase = () => {
         {/* Call to Action */}
         <section className="container mx-auto py-16 px-4 bg-card">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-6">{showcaseData.cta.title}</h2>
+            <h2 className="text-4xl font-bold mb-6">{showcaseData.showcase.cta.title}</h2>
             <p className="text-xl text-muted-foreground mb-8">
-              {showcaseData.cta.description}
+              {showcaseData.showcase.cta.description}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to={showcaseData.cta.buttons.primary.link}>
+              <Link to={showcaseData.showcase.cta.buttons.primary.link}>
                 <Button size="lg" className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors">
-                  {showcaseData.cta.buttons.primary.text}
+                  {showcaseData.showcase.cta.buttons.primary.text}
                 </Button>
               </Link>
-              <Link to={showcaseData.cta.buttons.secondary.link}>
+              <Link to={showcaseData.showcase.cta.buttons.secondary.link}>
                 <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors">
-                  {showcaseData.cta.buttons.secondary.text}
+                  {showcaseData.showcase.cta.buttons.secondary.text}
                 </Button>
               </Link>
             </div>

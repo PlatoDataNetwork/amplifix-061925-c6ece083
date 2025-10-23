@@ -1,115 +1,117 @@
 
 {
-  "hero": {
-    "title": "Client Showcase",
-    "subtitle": "Success Stories & Case Studies",
-    "description": "Discover how leading companies leverage AmplifiX's AI-powered platform to transform their corporate communications, enhance investor relations, and accelerate business growth."
-  },
-  "showcases": [
-    {
-      "company_name": "SILO Pharma Inc.",
-      "ticker": "NASDAQ: SILO",
-      "description": "Pioneering neuropsychiatric drug development through AI-driven research and innovative therapeutic approaches for mental health conditions.",
-      "tags": ["Pharmaceutical", "Biotech", "CNS Therapeutics"],
-      "button_text": "Visit Showcase",
-      "link": "/showcase/silo-pharma",
-      "website": "https://silopharma.com/",
-      "stock_url": "https://www.tradingview.com/symbols/NASDAQ-SILO/"
+  "showcase": {
+    "hero": {
+      "title": "Client Showcase",
+      "subtitle": "Success Stories & Case Studies",
+      "description": "Discover how leading companies leverage AmplifiX's AI-powered platform to transform their corporate communications, enhance investor relations, and accelerate business growth."
     },
-    {
-      "company_name": "Int'l Land Alliance",
-      "ticker": "OTCQB: ILAL",
-      "description": "International Land Alliance is a land investment and development company focused on acquiring and developing strategic real estate properties.",
-      "tags": ["Real Estate", "Land Development", "Investment"],
-      "button_text": "View Showcase",
-      "link": "/showcase/international-land-alliance",
-      "website": "https://www.internationallandalliance.com/",
-      "stock_url": "https://www.tradingview.com/symbols/OTC-ILAL/"
-    },
-    {
-      "company_name": "Karbon-X",
-      "ticker": "OTCMKTS: KARX",
-      "description": "Karbon-X is a technology company focused on innovative solutions and carbon management technologies to address environmental challenges.",
-      "tags": ["Technology", "Environmental", "Carbon Management"],
-      "button_text": "View Showcase",
-      "link": "/showcase/karbon-x",
-      "website": "https://www.karbon-x.com/",
-      "stock_url": "https://www.tradingview.com/symbols/OTC-KARX/"
-    },
-    {
-      "company_name": "Micropolis",
-      "ticker": "NYSE-AMEX: MCRP",
-      "description": "Micropolis leverages breakthrough AI to deliver exquisite custom design bespoke robotic solutions, pioneering the future of autonomous mobile robotics.",
-      "tags": ["AI", "Robotics", "Autonomous Systems"],
-      "button_text": "View Showcase",
-      "link": "/showcase/micropolis",
-      "website": "https://www.micropolis.ai/",
-      "stock_url": "https://finance.yahoo.com/quote/MCRP/",
-      "search_url": "https://www.bing.com/copilotsearch?q=Micropolis%20MCRP",
-      "thumbnail": "/lovable-uploads/micropolis-m-icon.png",
-      "type": "stock"
-    },
-    {
-      "company_name": "Naoris Protocol",
-      "ticker": "Crypto",
-      "description": "Naoris Protocol is a decentralized cybersecurity platform leveraging blockchain technology to create a distributed, validator-based security mesh network.",
-      "tags": ["Blockchain", "Cybersecurity", "DeFi"],
-      "button_text": "View Showcase",
-      "link": "https://naorisprotocol.com",
-      "website": "https://www.naorisprotocol.com/",
-      "stock_url": "https://coinmarketcap.com/currencies/naoris-protocol/",
-      "type": "token"
-    },
-    {
-      "company_name": "Abatis",
-      "ticker": "ABTU Token",
-      "description": "The first autonomous cybersecurity solution for Web3 products and users, delivering sovereignty & immutability at pre-foundational level.",
-      "tags": ["Cybersecurity", "Web3", "Blockchain"],
-      "button_text": "View Showcase",
-      "link": "https://abatisabtu.com",
-      "website": "https://abatisabtu.com",
-      "stock_url": "https://abatisabtu.com",
-      "type": "token"
-    }
-  ],
-  "why_choose": {
-    "title": "Why Leading Companies Choose AmplifiX",
-    "description": "Our AI-powered platform delivers measurable results across all aspects of corporate communications and investor relations.",
-    "features": [
+    "showcases": [
       {
-        "title": "Growth Focus",
-        "description": "Accelerate business growth through strategic communications"
+        "company_name": "SILO Pharma Inc.",
+        "ticker": "NASDAQ: SILO",
+        "description": "Pioneering neuropsychiatric drug development through AI-driven research and innovative therapeutic approaches for mental health conditions.",
+        "tags": ["Pharmaceutical", "Biotech", "CNS Therapeutics"],
+        "button_text": "Visit Showcase",
+        "link": "/showcase/silo-pharma",
+        "website": "https://silopharma.com/",
+        "stock_url": "https://www.tradingview.com/symbols/NASDAQ-SILO/"
       },
       {
-        "title": "AI Innovation", 
-        "description": "Cutting-edge AI technology for content creation and optimization"
+        "company_name": "Int'l Land Alliance",
+        "ticker": "OTCQB: ILAL",
+        "description": "International Land Alliance is a land investment and development company focused on acquiring and developing strategic real estate properties.",
+        "tags": ["Real Estate", "Land Development", "Investment"],
+        "button_text": "View Showcase",
+        "link": "/showcase/international-land-alliance",
+        "website": "https://www.internationallandalliance.com/",
+        "stock_url": "https://www.tradingview.com/symbols/OTC-ILAL/"
       },
       {
-        "title": "Expert Team",
-        "description": "Experienced professionals with deep industry knowledge"
+        "company_name": "Karbon-X",
+        "ticker": "OTCMKTS: KARX",
+        "description": "Karbon-X is a technology company focused on innovative solutions and carbon management technologies to address environmental challenges.",
+        "tags": ["Technology", "Environmental", "Carbon Management"],
+        "button_text": "View Showcase",
+        "link": "/showcase/karbon-x",
+        "website": "https://www.karbon-x.com/",
+        "stock_url": "https://www.tradingview.com/symbols/OTC-KARX/"
       },
       {
-        "title": "Proven Results",
-        "description": "Track record of success across multiple industries"
+        "company_name": "Micropolis",
+        "ticker": "NYSE-AMEX: MCRP",
+        "description": "Micropolis leverages breakthrough AI to deliver exquisite custom design bespoke robotic solutions, pioneering the future of autonomous mobile robotics.",
+        "tags": ["AI", "Robotics", "Autonomous Systems"],
+        "button_text": "View Showcase",
+        "link": "/showcase/micropolis",
+        "website": "https://www.micropolis.ai/",
+        "stock_url": "https://finance.yahoo.com/quote/MCRP/",
+        "search_url": "https://www.bing.com/copilotsearch?q=Micropolis%20MCRP",
+        "thumbnail": "/lovable-uploads/micropolis-m-icon.png",
+        "type": "stock"
+      },
+      {
+        "company_name": "Naoris Protocol",
+        "ticker": "Crypto",
+        "description": "Naoris Protocol is a decentralized cybersecurity platform leveraging blockchain technology to create a distributed, validator-based security mesh network.",
+        "tags": ["Blockchain", "Cybersecurity", "DeFi"],
+        "button_text": "View Showcase",
+        "link": "https://naorisprotocol.com",
+        "website": "https://www.naorisprotocol.com/",
+        "stock_url": "https://coinmarketcap.com/currencies/naoris-protocol/",
+        "type": "token"
+      },
+      {
+        "company_name": "Abatis",
+        "ticker": "ABTU Token",
+        "description": "The first autonomous cybersecurity solution for Web3 products and users, delivering sovereignty & immutability at pre-foundational level.",
+        "tags": ["Cybersecurity", "Web3", "Blockchain"],
+        "button_text": "View Showcase",
+        "link": "https://abatisabtu.com",
+        "website": "https://abatisabtu.com",
+        "stock_url": "https://abatisabtu.com",
+        "type": "token"
       }
-    ]
-  },
-  "cta": {
-    "title": "Ready to Amplifi Your Outreach?",
-    "description": "Join the growing list of companies transforming their corporate communications with AmplifiX's AI-powered platform.",
-    "buttons": {
-      "primary": {
-        "text": "Get Started Today",
-        "link": "/contact"
-      },
-      "secondary": {
-        "text": "Explore Features", 
-        "link": "/solutions"
+    ],
+    "why_choose": {
+      "title": "Why Leading Companies Choose AmplifiX",
+      "description": "Our AI-powered platform delivers measurable results across all aspects of corporate communications and investor relations.",
+      "features": [
+        {
+          "title": "Growth Focus",
+          "description": "Accelerate business growth through strategic communications"
+        },
+        {
+          "title": "AI Innovation", 
+          "description": "Cutting-edge AI technology for content creation and optimization"
+        },
+        {
+          "title": "Expert Team",
+          "description": "Experienced professionals with deep industry knowledge"
+        },
+        {
+          "title": "Proven Results",
+          "description": "Track record of success across multiple industries"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Ready to Amplifi Your Outreach?",
+      "description": "Join the growing list of companies transforming their corporate communications with AmplifiX's AI-powered platform.",
+      "buttons": {
+        "primary": {
+          "text": "Get Started Today",
+          "link": "/contact"
+        },
+        "secondary": {
+          "text": "Explore Features", 
+          "link": "/solutions"
+        }
       }
+    },
+    "footer": {
+      "tagline": "AmplifiX - AI-driven corporate communications platform",
+      "description": "Transforming how companies communicate with stakeholders and investors."
     }
-  },
-  "footer": {
-    "tagline": "AmplifiX - AI-driven corporate communications platform",
-    "description": "Transforming how companies communicate with stakeholders and investors."
   }
 }
