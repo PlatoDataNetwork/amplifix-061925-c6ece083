@@ -84,11 +84,11 @@ const AIIntelligenceArticle = () => {
           </article>
           
           {/* Popular Tags Section */}
-          {blogData?.popular_tags && (
+          {blogData?.blog?.popular_tags && (
             <div className="mt-12 pt-8 border-t border-border">
-              <h3 className="text-lg font-semibold mb-4">{blogData.popular_tags.title}</h3>
+              <h3 className="text-lg font-semibold mb-4">{blogData.blog.popular_tags.title}</h3>
               <div className="flex flex-wrap gap-2">
-                {blogData.popular_tags.tags.map((tag: string, index: number) => (
+                {blogData.blog.popular_tags.tags.map((tag: string, index: number) => (
                   <span
                     key={index}
                     onClick={() => handleTagClick(tag)}

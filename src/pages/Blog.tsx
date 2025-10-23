@@ -23,16 +23,18 @@ interface BlogPost {
 }
 
 interface BlogData {
-  hero: {
-    badge_text: string;
-    title: string;
-    description: string;
-  };
-  categories: string[];
-  blog_posts: BlogPost[];
-  popular_tags: {
-    title: string;
-    tags: string[];
+  blog: {
+    hero: {
+      badge_text: string;
+      title: string;
+      description: string;
+    };
+    categories: string[];
+    blog_posts: BlogPost[];
+    popular_tags: {
+      title: string;
+      tags: string[];
+    };
   };
 }
 
@@ -43,9 +45,9 @@ const Blog = () => {
   
   const selectedTag = searchParams.get('tag');
   
-  const allBlogPosts = blogData?.blog_posts || [];
-  const categories = blogData?.categories || ["All", "Technology", "Analytics", "Security", "Insights", "Updates"];
-  const popularTags = blogData?.popular_tags?.tags || ["AI", "Analytics", "Investor Relations", "Corporate Communications", "Intelligence", "Automation", "Data", "Insights", "Technology", "Innovation"];
+  const allBlogPosts = blogData?.blog.blog_posts || [];
+  const categories = blogData?.blog.categories || ["All", "Technology", "Analytics", "Security", "Insights", "Updates"];
+  const popularTags = blogData?.blog.popular_tags?.tags || ["AI", "Analytics", "Investor Relations", "Corporate Communications", "Intelligence", "Automation", "Data", "Insights", "Technology", "Innovation"];
   
   const filteredBlogPosts = useMemo(() => {
     if (!selectedTag) return allBlogPosts;
