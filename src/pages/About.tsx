@@ -56,10 +56,10 @@ const About = () => {
       <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
-            {data.hero.title}
+            {data.about.hero.title}
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            {data.hero.description}
+            {data.about.hero.description}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <Link to="/contact" className="w-full sm:w-auto">
@@ -92,7 +92,7 @@ const About = () => {
       <section className="container mx-auto py-12 md:py-16 px-4 bg-muted/30">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            {data.mission.cards.map((card, index) => {
+            {data.about.mission.cards.map((card, index) => {
               const IconComponent = missionIcons[index];
               return (
                 <div key={index} className="bg-card p-6 md:p-8 rounded-xl border border-border text-center">
@@ -111,10 +111,10 @@ const About = () => {
       {/* Features Section */}
       <section className="container mx-auto py-12 md:py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">{data.features.title}</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">{data.about.features.title}</h2>
           
           <div className="space-y-6">
-            {data.features.items.map((item, index) => (
+            {data.about.features.items.map((item, index) => (
               <div key={index} className="flex items-start gap-4">
                 <CheckCircle className="h-6 w-6 text-highlight-blue mt-1 flex-shrink-0" />
                 <div>

@@ -9,15 +9,17 @@ export interface FeatureItem {
 }
 
 export interface AboutData {
-  hero: {
-    title: string;
-    description: string;
-  };
-  mission: {
-    cards: MissionCard[];
-  };
-  features: {
-    title: string;
-    items: FeatureItem[];
+  about: {
+    hero: {
+      title: string;
+      description: string;
+    };
+    mission: {
+      cards: MissionCard[];
+    };
+    features: {
+      title: string;
+      items: FeatureItem[];
+    };
   };
 }
