@@ -82,9 +82,6 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
         console.log('Detected language from subdomain:', detectedLang);
         setCurrentLanguage(detectedLanguage);
         localStorage.setItem('selectedLanguage', detectedLang);
-        
-        // Auto-translate page on load
-        translatePage(detectedLang);
       }
     } else {
       // Check saved preference as fallback
