@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,6 +31,7 @@ import {
 } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/hooks/use-toast";
+import { useJsonData } from "@/hooks/useJsonData";
 import EmailList from "@/components/EmailList";
 import EmailContent from "@/components/EmailContent";
 import Sidebar from "@/components/Sidebar";
@@ -43,7 +45,78 @@ import AppCenterPage from "@/components/AppCenterPage";
 import BrowserPage from "@/components/BrowserPage";
 import LogsPage from "@/components/LogsPage";
 
+interface DashboardData {
+  dashboard: {
+    seo: {
+      title: string;
+      description: string;
+      keywords: string;
+      og_title: string;
+      og_description: string;
+      twitter_title: string;
+      twitter_description: string;
+      canonical_url: string;
+    };
+    header: {
+      title: string;
+      subtitle: string;
+    };
+    stats_cards: Array<{
+      title: string;
+      value: string;
+      change: string;
+      change_type: string;
+      icon: string;
+      color: string;
+    }>;
+    recent_activity: {
+      title: string;
+      activities: Array<{
+        message: string;
+        timestamp: string;
+        color: string;
+      }>;
+    };
+    notifications: {
+      title: string;
+      items: Array<{
+        title: string;
+        message: string;
+        type: string;
+        color: string;
+      }>;
+    };
+    quick_actions: {
+      title: string;
+      actions: Array<{
+        title: string;
+        icon: string;
+        action: string;
+        variant: string;
+      }>;
+    };
+    upcoming_events: {
+      title: string;
+      events: Array<{
+        title: string;
+        description: string;
+        date: string;
+        time: string;
+        color: string;
+      }>;
+    };
+    navigation: {
+      sidebar_items: Array<{
+        id: string;
+        title: string;
+        icon: string;
+      }>;
+    };
+  };
+}
+
 const Dashboard = () => {
+  const { data: dashboardData, isLoading, error } = useJsonData<DashboardData>('dashboard.json');
   const [activeTab, setActiveTab] = useState("home");
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
   const [showCompose, setShowCompose] = useState(false);
@@ -67,6 +140,36 @@ const Dashboard = () => {
     };
   }, []);
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="h-screen bg-[#0A0A0A] flex items-center justify-center">
+        <p className="text-gray-400">Loading dashboard...</p>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error || !dashboardData) {
+    return (
+      <div className="h-screen bg-[#0A0A0A] flex items-center justify-center">
+        <p className="text-red-400">Failed to load dashboard data</p>
+      </div>
+    );
+  }
+
+  // Helper function to get icon component
+  const getIconComponent = (iconName: string) => {
+    const icons: { [key: string]: any } = {
+      TrendingUp,
+      Activity,
+      Users,
+      FileText,
+      Calendar
+    };
+    return icons[iconName] || TrendingUp;
+  };
+
   // Dashboard Home Content
   const renderDashboardHome = () => {
     return (
@@ -74,63 +177,29 @@ const Dashboard = () => {
         <div className="max-w-7xl mx-auto">
           {/* Welcome Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">Welcome to AmplifiX</h1>
-            <p className="text-gray-400">AI-Powered Corporate Communications Dashboard</p>
+            <h1 className="text-3xl font-bold text-white mb-2">{dashboardData.dashboard.header.title}</h1>
+            <p className="text-gray-400">{dashboardData.dashboard.header.subtitle}</p>
           </div>
 
           {/* Quick Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card className="bg-[#1A1A1A] border-gray-800">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400">Total Campaigns</span>
-                  <TrendingUp className="h-4 w-4 text-green-500" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">24</div>
-                <p className="text-xs text-green-500">+12% from last month</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-[#1A1A1A] border-gray-800">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400">Media Mentions</span>
-                  <Activity className="h-4 w-4 text-blue-500" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">847</div>
-                <p className="text-xs text-blue-500">+8% this week</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-[#1A1A1A] border-gray-800">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400">Investor Contacts</span>
-                  <Users className="h-4 w-4 text-purple-500" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">1,234</div>
-                <p className="text-xs text-purple-500">+5% this quarter</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-[#1A1A1A] border-gray-800">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400">Engagement Rate</span>
-                  <TrendingUp className="h-4 w-4 text-yellow-500" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">89.2%</div>
-                <p className="text-xs text-yellow-500">+3.2% improvement</p>
-              </CardContent>
-            </Card>
+            {dashboardData.dashboard.stats_cards.map((stat, index) => {
+              const IconComponent = getIconComponent(stat.icon);
+              return (
+                <Card key={index} className="bg-[#1A1A1A] border-gray-800">
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-400">{stat.title}</span>
+                      <IconComponent className={`h-4 w-4 text-${stat.color}-500`} />
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-white">{stat.value}</div>
+                    <p className={`text-xs text-${stat.color}-500`}>{stat.change}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
 
           {/* Main Content Grid */}
@@ -139,45 +208,19 @@ const Dashboard = () => {
             <div className="lg:col-span-2">
               <Card className="bg-[#1A1A1A] border-gray-800">
                 <CardHeader>
-                  <h3 className="text-lg font-semibold text-white">Recent Activity</h3>
+                  <h3 className="text-lg font-semibold text-white">{dashboardData.dashboard.recent_activity.title}</h3>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex items-start space-x-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                      <div className="flex-1">
-                        <p className="text-white text-sm">Press release "Q3 Financial Results" published</p>
-                        <p className="text-gray-400 text-xs">2 hours ago</p>
+                    {dashboardData.dashboard.recent_activity.activities.map((activity, index) => (
+                      <div key={index} className="flex items-start space-x-3">
+                        <div className={`w-2 h-2 bg-${activity.color}-500 rounded-full mt-2`}></div>
+                        <div className="flex-1">
+                          <p className="text-white text-sm">{activity.message}</p>
+                          <p className="text-gray-400 text-xs">{activity.timestamp}</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-start space-x-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                      <div className="flex-1">
-                        <p className="text-white text-sm">New investor meeting scheduled with Goldman Sachs</p>
-                        <p className="text-gray-400 text-xs">4 hours ago</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-3">
-                      <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
-                      <div className="flex-1">
-                        <p className="text-white text-sm">AI content analysis completed for tech blog post</p>
-                        <p className="text-gray-400 text-xs">6 hours ago</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-3">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
-                      <div className="flex-1">
-                        <p className="text-white text-sm">Media sentiment report generated</p>
-                        <p className="text-gray-400 text-xs">1 day ago</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-3">
-                      <div className="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
-                      <div className="flex-1">
-                        <p className="text-white text-sm">Crisis communication protocol activated</p>
-                        <p className="text-gray-400 text-xs">2 days ago</p>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -189,24 +232,18 @@ const Dashboard = () => {
               <Card className="bg-[#1A1A1A] border-gray-800">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-white">Notifications</h3>
+                    <h3 className="text-lg font-semibold text-white">{dashboardData.dashboard.notifications.title}</h3>
                     <Bell className="h-4 w-4 text-gray-400" />
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                      <p className="text-red-400 text-sm font-medium">Media Alert</p>
-                      <p className="text-gray-300 text-xs">Negative sentiment detected in tech news</p>
-                    </div>
-                    <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-                      <p className="text-green-400 text-sm font-medium">Campaign Success</p>
-                      <p className="text-gray-300 text-xs">Q3 campaign exceeded targets by 15%</p>
-                    </div>
-                    <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-                      <p className="text-blue-400 text-sm font-medium">Meeting Reminder</p>
-                      <p className="text-gray-300 text-xs">Board meeting tomorrow at 2 PM</p>
-                    </div>
+                    {dashboardData.dashboard.notifications.items.map((item, index) => (
+                      <div key={index} className={`p-3 bg-${item.color}-500/10 border border-${item.color}-500/20 rounded-lg`}>
+                        <p className={`text-${item.color}-400 text-sm font-medium`}>{item.title}</p>
+                        <p className="text-gray-300 text-xs">{item.message}</p>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -214,33 +251,30 @@ const Dashboard = () => {
               {/* Quick Actions */}
               <Card className="bg-[#1A1A1A] border-gray-800">
                 <CardHeader>
-                  <h3 className="text-lg font-semibold text-white">Quick Actions</h3>
+                  <h3 className="text-lg font-semibold text-white">{dashboardData.dashboard.quick_actions.title}</h3>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <Button 
-                      className="w-full bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90"
-                      onClick={() => setShowCompose(true)}
-                    >
-                      <FileText className="h-4 w-4 mr-2" />
-                      Create Press Release
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-gray-700 text-white hover:bg-gray-800"
-                      onClick={() => setActiveTab('calendar')}
-                    >
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Schedule Meeting
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-gray-700 text-white hover:bg-gray-800"
-                      onClick={() => setActiveTab('contacts')}
-                    >
-                      <Users className="h-4 w-4 mr-2" />
-                      Manage Contacts
-                    </Button>
+                    {dashboardData.dashboard.quick_actions.actions.map((action, index) => {
+                      const IconComponent = getIconComponent(action.icon);
+                      const isPrimary = action.variant === 'primary';
+                      
+                      return (
+                        <Button 
+                          key={index}
+                          className={isPrimary ? "w-full bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90" : "w-full border-gray-700 text-white hover:bg-gray-800"}
+                          variant={isPrimary ? undefined : 'outline'}
+                          onClick={() => {
+                            if (action.action === 'compose') setShowCompose(true);
+                            else if (action.action === 'calendar') setActiveTab('calendar');
+                            else if (action.action === 'contacts') setActiveTab('contacts');
+                          }}
+                        >
+                          <IconComponent className="h-4 w-4 mr-2" />
+                          {action.title}
+                        </Button>
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
@@ -251,34 +285,20 @@ const Dashboard = () => {
           <div className="mt-8">
             <Card className="bg-[#1A1A1A] border-gray-800">
               <CardHeader>
-                <h3 className="text-lg font-semibold text-white">Upcoming Events</h3>
+                <h3 className="text-lg font-semibold text-white">{dashboardData.dashboard.upcoming_events.title}</h3>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 bg-[#0F0F0F] rounded-lg border border-gray-800">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-blue-400 font-medium">Board Meeting</span>
-                      <span className="text-xs text-gray-400">Tomorrow</span>
+                  {dashboardData.dashboard.upcoming_events.events.map((event, index) => (
+                    <div key={index} className="p-4 bg-[#0F0F0F] rounded-lg border border-gray-800">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className={`text-sm text-${event.color}-400 font-medium`}>{event.title}</span>
+                        <span className="text-xs text-gray-400">{event.date}</span>
+                      </div>
+                      <p className="text-white text-sm">{event.description}</p>
+                      <p className="text-gray-400 text-xs">{event.time}</p>
                     </div>
-                    <p className="text-white text-sm">Q3 Financial Review</p>
-                    <p className="text-gray-400 text-xs">2:00 PM - 4:00 PM EST</p>
-                  </div>
-                  <div className="p-4 bg-[#0F0F0F] rounded-lg border border-gray-800">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-green-400 font-medium">Investor Call</span>
-                      <span className="text-xs text-gray-400">Dec 15</span>
-                    </div>
-                    <p className="text-white text-sm">Morgan Stanley Meeting</p>
-                    <p className="text-gray-400 text-xs">10:00 AM - 11:00 AM EST</p>
-                  </div>
-                  <div className="p-4 bg-[#0F0F0F] rounded-lg border border-gray-800">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-purple-400 font-medium">Product Launch</span>
-                      <span className="text-xs text-gray-400">Dec 20</span>
-                    </div>
-                    <p className="text-white text-sm">AI Platform 2.0 Announcement</p>
-                    <p className="text-gray-400 text-xs">9:00 AM - 10:30 AM EST</p>
-                  </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -352,6 +372,17 @@ const Dashboard = () => {
 
   return (
     <div className="h-screen bg-[#0A0A0A] text-white flex overflow-hidden">
+      <Helmet>
+        <title>{dashboardData.dashboard.seo.title}</title>
+        <meta name="description" content={dashboardData.dashboard.seo.description} />
+        <meta name="keywords" content={dashboardData.dashboard.seo.keywords} />
+        <meta property="og:title" content={dashboardData.dashboard.seo.og_title} />
+        <meta property="og:description" content={dashboardData.dashboard.seo.og_description} />
+        <meta name="twitter:title" content={dashboardData.dashboard.seo.twitter_title} />
+        <meta name="twitter:description" content={dashboardData.dashboard.seo.twitter_description} />
+        <link rel="canonical" href={dashboardData.dashboard.seo.canonical_url} />
+      </Helmet>
+      
       {/* Chat Panel */}
       <ChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       
