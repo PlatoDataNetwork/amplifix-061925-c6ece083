@@ -47,7 +47,7 @@ const Index = () => {
               {isLoading ? (
                 <Skeleton className="h-4 w-48" />
               ) : (
-                homeData?.hero.badge || 'AI-Powered IR & Corporate Communications'
+                homeData?.home.hero.badge || 'AI-Powered IR & Corporate Communications'
               )}
             </div>
           </div>
@@ -55,14 +55,14 @@ const Index = () => {
             {isLoading ? (
               <Skeleton className="h-16 w-96 mx-auto" />
             ) : (
-              homeData?.hero.title || 'Amplifi Your Communications'
+              homeData?.home.hero.title || 'Amplifi Your Communications'
             )}
           </h2>
           <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-12 max-w-3xl mx-auto px-2">
             {isLoading ? (
               <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
             ) : (
-              homeData?.hero.description || 'AmplifiX leverages cutting-edge AI to transform how public and private companies manage investor relations and corporate communications.'
+              homeData?.home.hero.description || 'AmplifiX leverages cutting-edge AI to transform how public and private companies manage investor relations and corporate communications.'
             )}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
@@ -74,7 +74,7 @@ const Index = () => {
                 {isLoading ? (
                   <Skeleton className="h-4 w-32" />
                 ) : (
-                  homeData?.hero.buttons.primary || 'Amplifi Your Brand →'
+                  homeData?.home.hero.buttons.primary || 'Amplifi Your Brand →'
                 )}
               </Button>
             </Link>
@@ -107,14 +107,14 @@ const Index = () => {
             {isLoading ? (
               <Skeleton className="h-10 w-64 mx-auto" />
             ) : (
-              homeData?.about.title || 'About AmplifiX'
+              homeData?.home.about.title || 'About AmplifiX'
             )}
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto px-2">
             {isLoading ? (
               <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
             ) : (
-              homeData?.about.description || "We're revolutionizing corporate communications through AI-driven insights, automated content generation, and intelligent stakeholder engagement platforms."
+              homeData?.home.about.description || "We're revolutionizing corporate communications through AI-driven insights, automated content generation, and intelligent stakeholder engagement platforms."
             )}
           </p>
         </div>
@@ -129,7 +129,7 @@ const Index = () => {
               </div>
             ))
           ) : homeData ? (
-            homeData.about.features.map((feature, index) => {
+            homeData.home.about.features.map((feature, index) => {
               const IconComponent = index === 0 ? Brain : index === 1 ? TrendingUp : Target;
               return (
                 <div key={index} className="bg-card p-6 rounded-xl border border-border text-center">
@@ -174,14 +174,14 @@ const Index = () => {
             {isLoading ? (
               <Skeleton className="h-10 w-72 mx-auto" />
             ) : (
-              homeData?.features.title || 'Powerful AI Features'
+              homeData?.home.features.title || 'Powerful AI Features'
             )}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             {isLoading ? (
               <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
             ) : (
-              homeData?.features.description || 'Transform your corporate communications with our comprehensive suite of AI-powered tools.'
+              homeData?.home.features.description || 'Transform your corporate communications with our comprehensive suite of AI-powered tools.'
             )}
           </p>
         </div>
@@ -197,7 +197,7 @@ const Index = () => {
               </div>
             ))
           ) : homeData ? (
-            homeData.features.items.map((feature, index) => {
+            homeData.home.features.items.map((feature, index) => {
               const IconComponent = index === 0 ? BarChart3 : index === 1 ? MessageSquare : index === 2 ? Users : Lightbulb;
               return (
                 <div key={index} className="bg-card p-6 rounded-xl border border-border">
@@ -288,14 +288,14 @@ const Index = () => {
             {isLoading ? (
               <Skeleton className="h-10 w-80 mx-auto" />
             ) : (
-              homeData?.solutions.title || 'Solutions for Every Stage'
+              homeData?.home.solutions.title || 'Solutions for Every Stage'
             )}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             {isLoading ? (
               <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
             ) : (
-              homeData?.solutions.description || "Whether you're preparing for an IPO or managing ongoing investor relations, AmplifiX adapts to your company's unique needs."
+              homeData?.home.solutions.description || "Whether you're preparing for an IPO or managing ongoing investor relations, AmplifiX adapts to your company's unique needs."
             )}
           </p>
         </div>
@@ -306,7 +306,7 @@ const Index = () => {
               {isLoading ? (
                 <Skeleton className="h-8 w-48" />
               ) : (
-                homeData?.solutions.public_companies.title || 'Public Companies'
+                homeData?.home.solutions.public_companies.title || 'Public Companies'
               )}
             </h3>
             <div className="space-y-4">
@@ -321,7 +321,7 @@ const Index = () => {
                   </div>
                 ))
               ) : homeData ? (
-                homeData.solutions.public_companies.items.map((item, index) => (
+                homeData.home.solutions.public_companies.items.map((item, index) => (
                   <div key={index} className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
                     <div>
@@ -363,7 +363,7 @@ const Index = () => {
               {isLoading ? (
                 <Skeleton className="h-8 w-48" />
               ) : (
-                homeData?.solutions.private_companies.title || 'Private Companies'
+                homeData?.home.solutions.private_companies.title || 'Private Companies'
               )}
             </h3>
             <div className="space-y-4">
@@ -378,7 +378,7 @@ const Index = () => {
                   </div>
                 ))
               ) : homeData ? (
-                homeData.solutions.private_companies.items.map((item, index) => (
+                homeData.home.solutions.private_companies.items.map((item, index) => (
                   <div key={index} className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
                     <div>
@@ -428,7 +428,7 @@ const Index = () => {
               </div>
             ))
           ) : homeData ? (
-            homeData.stats.map((stat, index) => (
+            homeData.home.stats.map((stat, index) => (
               <div key={index} className="bg-card p-6 rounded-xl border border-border text-center">
                 <div className="text-4xl font-bold text-highlight-blue">{stat.value}</div>
                 <div className="text-muted-foreground">{stat.label}</div>
@@ -464,14 +464,14 @@ const Index = () => {
             {isLoading ? (
               <Skeleton className="h-10 w-96 mx-auto" />
             ) : (
-              homeData?.faq.title || 'Frequently Asked Questions'
+              homeData?.home.faq.title || 'Frequently Asked Questions'
             )}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             {isLoading ? (
               <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
             ) : (
-              homeData?.faq.description || 'Get answers to common questions about AmplifiX and how we can help transform your corporate communications.'
+              homeData?.home.faq.description || 'Get answers to common questions about AmplifiX and how we can help transform your corporate communications.'
             )}
           </p>
         </div>
@@ -488,7 +488,7 @@ const Index = () => {
             </div>
           ) : homeData ? (
             <Accordion type="single" collapsible className="w-full">
-              {homeData.faq.items.map((item, index) => (
+              {homeData.home.faq.items.map((item, index) => (
                 <AccordionItem key={index} value={`item-${index + 1}`}>
                   <AccordionTrigger className="text-left">{item.question}</AccordionTrigger>
                   <AccordionContent>{item.answer}</AccordionContent>
@@ -557,14 +557,14 @@ const Index = () => {
             {isLoading ? (
               <Skeleton className="h-10 w-64 mx-auto" />
             ) : (
-              homeData?.contact.title || 'Get In Touch'
+              homeData?.home.contact.title || 'Get In Touch'
             )}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             {isLoading ? (
               <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
             ) : (
-              homeData?.contact.description || "Ready to amplify your corporate communications? Let's discuss how AmplifiX can transform your IR and PR strategy."
+              homeData?.home.contact.description || "Ready to amplify your corporate communications? Let's discuss how AmplifiX can transform your IR and PR strategy."
             )}
           </p>
         </div>
@@ -575,7 +575,7 @@ const Index = () => {
               {isLoading ? (
                 <Skeleton className="h-8 w-48" />
               ) : (
-                homeData?.contact.form.title || 'Send us a message'
+                homeData?.home.contact.form.title || 'Send us a message'
               )}
             </h3>
             <form className="space-y-6">
@@ -584,13 +584,13 @@ const Index = () => {
                   {isLoading ? (
                     <Skeleton className="h-4 w-24" />
                   ) : (
-                    homeData?.contact.form.fields.company_name.label || 'Company Name'
+                    homeData?.home.contact.form.fields.company_name.label || 'Company Name'
                   )}
                 </label>
                 <input 
                   type="text" 
                   className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-highlight-blue focus:outline-none"
-                  placeholder={homeData?.contact.form.fields.company_name.placeholder || 'Your company'}
+                  placeholder={homeData?.home.contact.form.fields.company_name.placeholder || 'Your company'}
                 />
               </div>
               <div>
@@ -598,13 +598,13 @@ const Index = () => {
                   {isLoading ? (
                     <Skeleton className="h-4 w-24" />
                   ) : (
-                    homeData?.contact.form.fields.email.label || 'Contact Email'
+                    homeData?.home.contact.form.fields.email.label || 'Contact Email'
                   )}
                 </label>
                 <input 
                   type="email" 
                   className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-highlight-blue focus:outline-none"
-                  placeholder={homeData?.contact.form.fields.email.placeholder || 'your@company.com'}
+                  placeholder={homeData?.home.contact.form.fields.email.placeholder || 'your@company.com'}
                 />
               </div>
               <div>
@@ -612,12 +612,12 @@ const Index = () => {
                   {isLoading ? (
                     <Skeleton className="h-4 w-24" />
                   ) : (
-                    homeData?.contact.form.fields.company_type.label || 'Company Type'
+                    homeData?.home.contact.form.fields.company_type.label || 'Company Type'
                   )}
                 </label>
                 <select className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-highlight-blue focus:outline-none">
-                  {homeData?.contact.form.fields.company_type.options ? (
-                    homeData.contact.form.fields.company_type.options.map((option, index) => (
+                  {homeData?.home.contact.form.fields.company_type.options ? (
+                    homeData.home.contact.form.fields.company_type.options.map((option, index) => (
                       <option key={index}>{option}</option>
                     ))
                   ) : (
@@ -634,20 +634,20 @@ const Index = () => {
                   {isLoading ? (
                     <Skeleton className="h-4 w-16" />
                   ) : (
-                    homeData?.contact.form.fields.message.label || 'Message'
+                    homeData?.home.contact.form.fields.message.label || 'Message'
                   )}
                 </label>
                 <textarea 
                   rows={4}
                   className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-highlight-blue focus:outline-none"
-                  placeholder={homeData?.contact.form.fields.message.placeholder || 'Tell us about your needs...'}
+                  placeholder={homeData?.home.contact.form.fields.message.placeholder || 'Tell us about your needs...'}
                 ></textarea>
               </div>
               <Button className="w-full bg-highlight-blue text-white">
                 {isLoading ? (
                   <Skeleton className="h-4 w-24" />
                 ) : (
-                  homeData?.contact.form.submit_button || 'Send Message'
+                  homeData?.home.contact.form.submit_button || 'Send Message'
                 )}
               </Button>
             </form>
@@ -663,7 +663,7 @@ const Index = () => {
                 </div>
               ))
             ) : homeData ? (
-              homeData.contact.contact_info.map((info, index) => (
+              homeData.home.contact.contact_info.map((info, index) => (
                 <div key={index} className="bg-card p-6 rounded-xl border border-border">
                   <h4 className="text-lg font-bold mb-2">{info.title}</h4>
                   <p className="text-muted-foreground mb-2">{info.description}</p>
