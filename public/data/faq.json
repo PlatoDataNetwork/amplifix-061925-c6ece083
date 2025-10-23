@@ -1,8 +1,11 @@
 {
-  "hero": {
-    "title": "Frequently Asked Questions",
-    "description": "Find answers to common questions about AmplifiX and our AI-powered corporate communications solutions."
-  },
+  "hero_title": "Frequently Asked",
+  "hero_title_highlight": "Questions",
+  "hero_description": "Find answers to common questions about AmplifiX and our AI-powered corporate communications solutions.",
+  "hero_cta_primary_text": "Amplifi Your Brand →",
+  "hero_cta_primary_link": "/contact",
+  "hero_cta_secondary_text": "Book A Demo",
+  "hero_cta_secondary_link": "https://calendly.com/amplifix/amplifix-discovery",
   "faqs": [
     {
       "question": "What is AmplifiX and how does it work?",
