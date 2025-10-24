@@ -1,57 +1,66 @@
 {
-  "hero": {
-    "title": "Solutions for Public Companies",
-    "description": "Comprehensive AI-powered investor relations and corporate communications solutions designed specifically for publicly traded companies.",
-    "cta_button": "Schedule a Demo"
-  },
-  "key_features": {
-    "title": "Built for Public Company Compliance",
-    "features": [
-      {
-        "title": "SEC Filing Support",
-        "description": "Automated assistance for 10-K, 10-Q, 8-K filings with AI-powered compliance checking and formatting."
-      },
-      {
-        "title": "Earnings Communications",
-        "description": "Streamlined earnings call preparation, press release generation, and investor materials creation."
-      },
-      {
-        "title": "Analyst Relations",
-        "description": "AI-powered sentiment tracking, analyst coverage management, and relationship optimization."
-      },
-      {
-        "title": "Market Intelligence",
-        "description": "Real-time market sentiment analysis, competitor tracking, and investor behavior insights."
-      },
-      {
-        "title": "Regulatory Compliance",
-        "description": "Automated compliance monitoring, disclosure management, and regulatory requirement tracking."
-      },
-      {
-        "title": "Crisis Management",
-        "description": "Rapid response protocols, stakeholder communication, and reputation management during crises."
-      }
-    ]
-  },
-  "benefits": {
-    "title": "Why Public Companies Choose AmplifiX",
-    "items": [
-      {
-        "title": "Regulatory Expertise",
-        "description": "Built-in knowledge of SEC requirements, disclosure rules, and public company best practices."
-      },
-      {
-        "title": "Institutional-Grade Security",
-        "description": "Enterprise security standards with SOC 2 compliance and data encryption at rest and in transit."
-      },
-      {
-        "title": "Scalable Infrastructure", 
-        "description": "Cloud-native platform that scales with your company's growth and communication needs."
-      },
-      {
-        "title": "24/7 Support",
-        "description": "Dedicated support team with public company IR expertise available around the clock."
-      }
-    ]
+  "public_companies": {
+    "hero": {
+      "title": "Solutions for",
+      "title_highlight": "Public Companies",
+      "description": "Comprehensive AI-powered investor relations and corporate communications solutions designed specifically for publicly traded companies.",
+      "cta_button": "Schedule a Demo"
+    },
+    "key_features": {
+      "title": "Built for Public Company Compliance",
+      "features": [
+        {
+          "title": "SEC Filing Support",
+          "description": "Automated assistance for 10-K, 10-Q, 8-K filings with AI-powered compliance checking and formatting.",
+          "icon": "FileText"
+        },
+        {
+          "title": "Earnings Communications",
+          "description": "Streamlined earnings call preparation, press release generation, and investor materials creation.",
+          "icon": "TrendingUp"
+        },
+        {
+          "title": "Analyst Relations",
+          "description": "AI-powered sentiment tracking, analyst coverage management, and relationship optimization.",
+          "icon": "Users"
+        },
+        {
+          "title": "Market Intelligence",
+          "description": "Real-time market sentiment analysis, competitor tracking, and investor behavior insights.",
+          "icon": "BarChart3"
+        },
+        {
+          "title": "Regulatory Compliance",
+          "description": "Automated compliance monitoring, disclosure management, and regulatory requirement tracking.",
+          "icon": "Shield"
+        },
+        {
+          "title": "Crisis Management",
+          "description": "Rapid response protocols, stakeholder communication, and reputation management during crises.",
+          "icon": "CheckCircle"
+        }
+      ]
+    },
+    "benefits": {
+      "title": "Why Public Companies Choose AmplifiX",
+      "items": [
+        {
+          "title": "Regulatory Expertise",
+          "description": "Built-in knowledge of SEC requirements, disclosure rules, and public company best practices."
+        },
+        {
+          "title": "Institutional-Grade Security",
+          "description": "Enterprise security standards with SOC 2 compliance and data encryption at rest and in transit."
+        },
+        {
+          "title": "Scalable Infrastructure", 
+          "description": "Cloud-native platform that scales with your company's growth and communication needs."
+        },
+        {
+          "title": "24/7 Support",
+          "description": "Dedicated support team with public company IR expertise available around the clock."
+        }
+      ]
+    }
   }
 }
