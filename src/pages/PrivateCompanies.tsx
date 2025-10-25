@@ -1,11 +1,66 @@
 
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import { CheckCircle, Rocket, Target, DollarSign, Globe, Lightbulb } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
+import { useJsonData } from "@/hooks/useJsonData";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface PrivateCompaniesData {
+  private_companies: {
+    hero: {
+      title: string;
+      title_highlight: string;
+      description: string;
+      cta_button: string;
+    };
+    key_features: {
+      title: string;
+      features: Array<{
+        title: string;
+        description: string;
+        icon: string;
+      }>;
+    };
+    benefits: {
+      title: string;
+      items: Array<{
+        title: string;
+        description: string;
+      }>;
+    };
+  };
+}
 
 const PrivateCompanies = () => {
+  const { data, isLoading, error } = useJsonData<PrivateCompaniesData>('private-companies.json');
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <MainHeader />
+        <div className="pt-24 container mx-auto py-20 px-4">
+          <Skeleton className="h-12 w-3/4 mx-auto mb-4" />
+          <Skeleton className="h-6 w-full max-w-2xl mx-auto mb-8" />
+          <Skeleton className="h-10 w-32 mx-auto" />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <MainHeader />
+        <div className="pt-24 container mx-auto py-20 px-4 text-center">
+          <p className="text-destructive">Failed to load content</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <MainHeader />
@@ -14,11 +69,10 @@ const PrivateCompanies = () => {
       <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
-            Solutions for <span className="text-highlight-blue">Private Companies</span>
+            {data.private_companies.hero.title} <span className="text-highlight-blue">{data.private_companies.hero.title_highlight}</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            Scale your communications strategy with AI-powered PR and stakeholder 
-            management solutions tailored for private companies and growth-stage businesses.
+            {data.private_companies.hero.description}
           </p>
           <a 
             href="https://calendly.com/amplifix/amplifix-discovery"
@@ -26,7 +80,7 @@ const PrivateCompanies = () => {
             rel="noopener noreferrer"
           >
             <Button className="bg-highlight-blue text-white hover:bg-highlight-blue/90">
-              Get Started Today
+              {data.private_companies.hero.cta_button}
             </Button>
           </a>
         </div>
@@ -34,104 +88,44 @@ const PrivateCompanies = () => {
 
       {/* Key Features */}
       <section className="container mx-auto py-16 px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">Built for Growth-Stage Companies</h2>
+        <h2 className="text-3xl font-bold text-center mb-12">{data.private_companies.key_features.title}</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="bg-card p-6 rounded-xl border border-border">
-            <DollarSign className="h-12 w-12 text-highlight-blue mb-4" />
-            <h3 className="text-xl font-bold mb-2">Fundraising Support</h3>
-            <p className="text-muted-foreground">
-              AI-optimized pitch decks, investor outreach automation, and due diligence preparation.
-            </p>
-          </div>
-
-          <div className="bg-card p-6 rounded-xl border border-border">
-            <Globe className="h-12 w-12 text-highlight-blue mb-4" />
-            <h3 className="text-xl font-bold mb-2">Brand Building</h3>
-            <p className="text-muted-foreground">
-              Strategic PR campaigns, thought leadership content, and market positioning strategies.
-            </p>
-          </div>
-
-          <div className="bg-card p-6 rounded-xl border border-border">
-            <Target className="h-12 w-12 text-highlight-blue mb-4" />
-            <h3 className="text-xl font-bold mb-2">Stakeholder Engagement</h3>
-            <p className="text-muted-foreground">
-              Investor updates, board communications, and employee engagement platforms.
-            </p>
-          </div>
-
-          <div className="bg-card p-6 rounded-xl border border-border">
-            <Rocket className="h-12 w-12 text-highlight-blue mb-4" />
-            <h3 className="text-xl font-bold mb-2">Growth Marketing</h3>
-            <p className="text-muted-foreground">
-              Content marketing automation, media outreach, and digital presence optimization.
-            </p>
-          </div>
-
-          <div className="bg-card p-6 rounded-xl border border-border">
-            <Lightbulb className="h-12 w-12 text-highlight-blue mb-4" />
-            <h3 className="text-xl font-bold mb-2">Strategic Advisory</h3>
-            <p className="text-muted-foreground">
-              AI-powered insights for market timing, messaging optimization, and competitive positioning.
-            </p>
-          </div>
-
-          <div className="bg-card p-6 rounded-xl border border-border">
-            <CheckCircle className="h-12 w-12 text-highlight-blue mb-4" />
-            <h3 className="text-xl font-bold mb-2">IPO Readiness</h3>
-            <p className="text-muted-foreground">
-              Comprehensive preparation for public market transition and regulatory compliance.
-            </p>
-          </div>
+          {data.private_companies.key_features.features.map((feature, index) => {
+            const getIconComponent = (iconName: string) => {
+              const icons: Record<string, any> = {
+                DollarSign, Globe, Target, Rocket, Lightbulb, CheckCircle
+              };
+              return icons[iconName] || DollarSign;
+            };
+            const IconComponent = getIconComponent(feature.icon);
+            
+            return (
+              <div key={index} className="bg-card p-6 rounded-xl border border-border">
+                <IconComponent className="h-12 w-12 text-highlight-blue mb-4" />
+                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.description}</p>
+              </div>
+            );
+          })}
         </div>
       </section>
 
       {/* Benefits Section */}
       <section className="container mx-auto py-16 px-4 bg-accent/10">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Why Private Companies Love AmplifiX</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">{data.private_companies.benefits.title}</h2>
           
           <div className="space-y-6">
-            <div className="flex items-start gap-4">
-              <CheckCircle className="h-6 w-6 text-highlight-blue mt-1" />
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Cost-Effective Solutions</h3>
-                <p className="text-muted-foreground">
-                  Get enterprise-grade communications capabilities at a fraction of traditional agency costs.
-                </p>
+            {data.private_companies.benefits.items.map((benefit, index) => (
+              <div key={index} className="flex items-start gap-4">
+                <CheckCircle className="h-6 w-6 text-highlight-blue mt-1" />
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">{benefit.title}</h3>
+                  <p className="text-muted-foreground">{benefit.description}</p>
+                </div>
               </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <CheckCircle className="h-6 w-6 text-highlight-blue mt-1" />
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Rapid Implementation</h3>
-                <p className="text-muted-foreground">
-                  Go live in days, not months, with our streamlined onboarding process.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <CheckCircle className="h-6 w-6 text-highlight-blue mt-1" />
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Scalable Growth</h3>
-                <p className="text-muted-foreground">
-                  Platform grows with your business from startup to IPO and beyond.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <CheckCircle className="h-6 w-6 text-highlight-blue mt-1" />
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Expert Guidance</h3>
-                <p className="text-muted-foreground">
-                  Access to experienced communications professionals and strategic advisors.
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
