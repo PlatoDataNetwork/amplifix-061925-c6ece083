@@ -1,66 +1,74 @@
 {
-  "hero": {
-    "title": "AI-Powered Fundraising Solutions",
-    "description": "Accelerate your fundraising process with intelligent investor targeting, automated outreach, and AI-optimized pitch materials that convert.",
-    "cta_button": "Optimize Your Fundraise"
-  },
-  "key_features": {
-    "title": "Complete Fundraising Platform",
-    "features": [
-      {
-        "title": "Intelligent Investor Matching",
-        "description": "AI-powered database of 10,000+ investors with smart matching based on stage, sector, and thesis."
-      },
-      {
-        "title": "Pitch Deck Optimization",
-        "description": "AI analysis of successful pitch decks with recommendations for content, flow, and visual design."
-      },
-      {
-        "title": "Automated Outreach",
-        "description": "Personalized email campaigns with AI-generated messaging tailored to each investor's interests."
-      },
-      {
-        "title": "Deal Room Management",
-        "description": "Secure data rooms with automated due diligence tracking and investor communication logs."
-      },
-      {
-        "title": "Market Intelligence",
-        "description": "Real-time funding trends, valuation benchmarks, and competitive landscape analysis."
-      },
-      {
-        "title": "Term Sheet Analysis",
-        "description": "AI-powered term sheet comparison and negotiation guidance based on market standards."
-      }
-    ]
-  },
-  "process": {
-    "title": "Streamlined Fundraising Process",
-    "steps": [
-      {
-        "step": 1,
-        "title": "Strategy & Preparation",
-        "description": "Define fundraising goals, optimize pitch materials, and develop investor targeting strategy with AI insights."
-      },
-      {
-        "step": 2,
-        "title": "Investor Outreach",
-        "description": "Launch automated outreach campaigns with personalized messaging and intelligent follow-up sequences."
-      },
-      {
-        "step": 3,
-        "title": "Meeting Management",
-        "description": "Schedule and track investor meetings with automated follow-up and next step recommendations."
-      },
-      {
-        "step": 4,
-        "title": "Due Diligence",
-        "description": "Manage secure data rooms and track investor engagement with comprehensive analytics and reporting."
-      },
-      {
-        "step": 5,
-        "title": "Term Negotiation",
-        "description": "Compare term sheets, negotiate with AI-powered market intelligence, and close your round successfully."
-      }
-    ]
+  "fundraising": {
+    "hero": {
+      "title": "AI-Powered Fundraising Solutions",
+      "description": "Accelerate your fundraising process with intelligent investor targeting, automated outreach, and AI-optimized pitch materials that convert.",
+      "cta_button": "Optimize Your Fundraise"
+    },
+    "key_features": {
+      "title": "Complete Fundraising Platform",
+      "features": [
+        {
+          "title": "Intelligent Investor Matching",
+          "description": "AI-powered database of 10,000+ investors with smart matching based on stage, sector, and thesis.",
+          "icon": "Target"
+        },
+        {
+          "title": "Pitch Deck Optimization",
+          "description": "AI analysis of successful pitch decks with recommendations for content, flow, and visual design.",
+          "icon": "DollarSign"
+        },
+        {
+          "title": "Automated Outreach",
+          "description": "Personalized email campaigns with AI-generated messaging tailored to each investor's interests.",
+          "icon": "Users"
+        },
+        {
+          "title": "Deal Room Management",
+          "description": "Secure data rooms with automated due diligence tracking and investor communication logs.",
+          "icon": "BarChart3"
+        },
+        {
+          "title": "Market Intelligence",
+          "description": "Real-time funding trends, valuation benchmarks, and competitive landscape analysis.",
+          "icon": "Lightbulb"
+        },
+        {
+          "title": "Term Sheet Analysis",
+          "description": "AI-powered term sheet comparison and negotiation guidance based on market standards.",
+          "icon": "CheckCircle"
+        }
+      ]
+    },
+    "process": {
+      "title": "Streamlined Fundraising Process",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Strategy & Preparation",
+          "description": "Define fundraising goals, optimize pitch materials, and develop investor targeting strategy with AI insights."
+        },
+        {
+          "step": 2,
+          "title": "Investor Outreach",
+          "description": "Launch automated outreach campaigns with personalized messaging and intelligent follow-up sequences."
+        },
+        {
+          "step": 3,
+          "title": "Meeting Management",
+          "description": "Schedule and track investor meetings with automated follow-up and next step recommendations."
+        },
+        {
+          "step": 4,
+          "title": "Due Diligence",
+          "description": "Manage secure data rooms and track investor engagement with comprehensive analytics and reporting."
+        },
+        {
+          "step": 5,
+          "title": "Term Negotiation",
+          "description": "Compare term sheets, negotiate with AI-powered market intelligence, and close your round successfully."
+        }
+      ]
+    }
   }
 }
