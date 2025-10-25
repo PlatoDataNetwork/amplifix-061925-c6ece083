@@ -1,17 +1,30 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { translateText } from "@/utils/translations";
+import { getLanguageFromSubdomain } from "@/utils/subdomain";
 
 const MobileMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState('en');
+  const location = useLocation();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const closeMenu = () => setIsOpen(false);
+
+  // Detect language changes
+  useEffect(() => {
+    const langCode = getLanguageFromSubdomain() || 
+                     new URLSearchParams(window.location.search).get('lang') || 
+                     localStorage.getItem('preferredLanguage') || 
+                     'en';
+    setCurrentLanguage(langCode);
+  }, [location]);
 
   return (
     <>
@@ -41,42 +54,42 @@ const MobileMenu = () => {
                 className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}
               >
-                About
+                {translateText('About', currentLanguage)}
               </Link>
               <Link 
                 to="/solutions" 
                 className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}
               >
-                Solutions
+                {translateText('Solutions', currentLanguage)}
               </Link>
               <Link 
                 to="/showcase" 
                 className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}
               >
-                Showcase
+                {translateText('Showcase', currentLanguage)}
               </Link>
               <Link 
                 to="/intel" 
                 className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}
               >
-                Intel
+                {translateText('Intel', currentLanguage)}
               </Link>
               <Link 
                 to="/faq" 
                 className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}
               >
-                FAQ
+                {translateText('FAQ', currentLanguage)}
               </Link>
               <Link 
                 to="/contact" 
                 className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800"
                 onClick={closeMenu}
               >
-                Contact
+                {translateText('Contact', currentLanguage)}
               </Link>
               <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                 <ThemeToggle />

@@ -8,9 +8,12 @@ import { useState, useEffect } from "react";
 import { useJsonData } from "@/hooks/useJsonData";
 import { CommonData } from "@/types/common";
 import { Skeleton } from "@/components/ui/skeleton";
+import { translateText } from "@/utils/translations";
+import { getLanguageFromSubdomain } from "@/utils/subdomain";
 
 const MainHeader = () => {
   const [isSticky, setIsSticky] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState('en');
   const location = useLocation();
   const { data: commonData, isLoading, error } = useJsonData<CommonData>('common.json');
 
@@ -30,8 +33,14 @@ const MainHeader = () => {
     setIsSticky(false);
   }, [location.pathname]);
 
-
-  // No longer need external translation service setup - using custom translation system
+  // Detect language changes
+  useEffect(() => {
+    const langCode = getLanguageFromSubdomain() || 
+                     new URLSearchParams(window.location.search).get('lang') || 
+                     localStorage.getItem('preferredLanguage') || 
+                     'en';
+    setCurrentLanguage(langCode);
+  }, [location]);
 
   return (
     <nav className={`${
@@ -66,32 +75,32 @@ const MainHeader = () => {
           ) : commonData ? (
             <>
               <Link to="/about" className="text-foreground hover:text-highlight-blue transition-colors">
-                {commonData.common.nav_menu.find(item => item.label === 'About')?.label || 'About'}
+                {translateText(commonData.common.nav_menu.find(item => item.label === 'About')?.label || 'About', currentLanguage)}
               </Link>
               <Link to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">
-                {commonData.common.nav_menu.find(item => item.label === 'Solutions')?.label || 'Solutions'}
+                {translateText(commonData.common.nav_menu.find(item => item.label === 'Solutions')?.label || 'Solutions', currentLanguage)}
               </Link>
               <Link to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">
-                {commonData.common.nav_menu.find(item => item.label === 'Showcase')?.label || 'Showcase'}
+                {translateText(commonData.common.nav_menu.find(item => item.label === 'Showcase')?.label || 'Showcase', currentLanguage)}
               </Link>
                <Link to="/intel" className="text-foreground hover:text-highlight-blue transition-colors">
-                 Intel
+                 {translateText('Intel', currentLanguage)}
                </Link>
               <Link to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">
-                {commonData.common.nav_menu.find(item => item.label === 'FAQ')?.label || 'FAQ'}
+                {translateText(commonData.common.nav_menu.find(item => item.label === 'FAQ')?.label || 'FAQ', currentLanguage)}
               </Link>
               <Link to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">
-                {commonData.common.nav_menu.find(item => item.label === 'Contact')?.label || 'Contact'}
+                {translateText(commonData.common.nav_menu.find(item => item.label === 'Contact')?.label || 'Contact', currentLanguage)}
               </Link>
             </>
           ) : (
             <>
-              <Link to="/about" className="text-foreground hover:text-highlight-blue transition-colors">About</Link>
-              <Link to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">Solutions</Link>
-              <Link to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">Showcase</Link>
-              <Link to="/intel" className="text-foreground hover:text-highlight-blue transition-colors">Intel</Link>
-              <Link to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">FAQ</Link>
-              <Link to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">Contact</Link>
+              <Link to="/about" className="text-foreground hover:text-highlight-blue transition-colors">{translateText('About', currentLanguage)}</Link>
+              <Link to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">{translateText('Solutions', currentLanguage)}</Link>
+              <Link to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">{translateText('Showcase', currentLanguage)}</Link>
+              <Link to="/intel" className="text-foreground hover:text-highlight-blue transition-colors">{translateText('Intel', currentLanguage)}</Link>
+              <Link to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">{translateText('FAQ', currentLanguage)}</Link>
+              <Link to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">{translateText('Contact', currentLanguage)}</Link>
             </>
           )}
           <ThemeToggle />

@@ -1,12 +1,26 @@
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Linkedin, Twitter, Mail, ExternalLink } from "lucide-react";
 import { useJsonData } from "@/hooks/useJsonData";
 import { CommonData } from "@/types/common";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useEffect } from "react";
+import { translateText } from "@/utils/translations";
+import { getLanguageFromSubdomain } from "@/utils/subdomain";
 
 const Footer = () => {
+  const [currentLanguage, setCurrentLanguage] = useState('en');
+  const location = useLocation();
   const { data: commonData, isLoading, error } = useJsonData<CommonData>('common.json');
+
+  // Detect language changes
+  useEffect(() => {
+    const langCode = getLanguageFromSubdomain() || 
+                     new URLSearchParams(window.location.search).get('lang') || 
+                     localStorage.getItem('preferredLanguage') || 
+                     'en';
+    setCurrentLanguage(langCode);
+  }, [location]);
   return (
     <footer className="bg-card border-t border-border py-12">
       <div className="container mx-auto px-4">
@@ -47,7 +61,7 @@ const Footer = () => {
           
           <div>
             <h3 className="text-lg font-medium mb-4">
-              {isLoading ? <Skeleton className="h-5 w-20" /> : commonData?.common.footer_platform_title || 'Platform'}
+              {isLoading ? <Skeleton className="h-5 w-20" /> : translateText(commonData?.common.footer_platform_title || 'Platform', currentLanguage)}
             </h3>
             <ul className="space-y-2">
               {isLoading ? (
@@ -61,15 +75,15 @@ const Footer = () => {
                       to={link.label === 'Home' ? '/' : link.label === 'Showcase' ? '/showcase' : link.label === 'FAQ' ? '/faq' : '#'} 
                       className="text-muted-foreground hover:text-highlight-blue"
                     >
-                      {link.label}
+                      {translateText(link.label, currentLanguage)}
                     </Link>
                   </li>
                 ))
               ) : (
                 <>
-                  <li><Link to="/" className="text-muted-foreground hover:text-highlight-blue">Home</Link></li>
-                  <li><Link to="/showcase" className="text-muted-foreground hover:text-highlight-blue">Showcase</Link></li>
-                  <li><Link to="/faq" className="text-muted-foreground hover:text-highlight-blue">FAQ</Link></li>
+                  <li><Link to="/" className="text-muted-foreground hover:text-highlight-blue">{translateText('Home', currentLanguage)}</Link></li>
+                  <li><Link to="/showcase" className="text-muted-foreground hover:text-highlight-blue">{translateText('Showcase', currentLanguage)}</Link></li>
+                  <li><Link to="/faq" className="text-muted-foreground hover:text-highlight-blue">{translateText('FAQ', currentLanguage)}</Link></li>
                 </>
               )}
             </ul>
@@ -77,7 +91,7 @@ const Footer = () => {
           
           <div>
             <h3 className="text-lg font-medium mb-4">
-              {isLoading ? <Skeleton className="h-5 w-20" /> : commonData?.common.footer_solutions_title || 'Solutions'}
+              {isLoading ? <Skeleton className="h-5 w-20" /> : translateText(commonData?.common.footer_solutions_title || 'Solutions', currentLanguage)}
             </h3>
             <ul className="space-y-2">
               {isLoading ? (
@@ -91,15 +105,15 @@ const Footer = () => {
                       to={link.label === 'Public Companies' ? '/solutions/public-companies' : link.label === 'Private Companies' ? '/solutions/private-companies' : link.label === 'IPO Preparation' ? '/solutions/ipo-preparation' : '#'} 
                       className="text-muted-foreground hover:text-highlight-blue"
                     >
-                      {link.label}
+                      {translateText(link.label, currentLanguage)}
                     </Link>
                   </li>
                 ))
               ) : (
                 <>
-                  <li><Link to="/solutions/public-companies" className="text-muted-foreground hover:text-highlight-blue">Public Companies</Link></li>
-                  <li><Link to="/solutions/private-companies" className="text-muted-foreground hover:text-highlight-blue">Private Companies</Link></li>
-                  <li><Link to="/solutions/ipo-preparation" className="text-muted-foreground hover:text-highlight-blue">IPO Preparation</Link></li>
+                  <li><Link to="/solutions/public-companies" className="text-muted-foreground hover:text-highlight-blue">{translateText('Public Companies', currentLanguage)}</Link></li>
+                  <li><Link to="/solutions/private-companies" className="text-muted-foreground hover:text-highlight-blue">{translateText('Private Companies', currentLanguage)}</Link></li>
+                  <li><Link to="/solutions/ipo-preparation" className="text-muted-foreground hover:text-highlight-blue">{translateText('IPO Preparation', currentLanguage)}</Link></li>
                 </>
               )}
             </ul>
@@ -107,7 +121,7 @@ const Footer = () => {
           
           <div>
             <h3 className="text-lg font-medium mb-4">
-              {isLoading ? <Skeleton className="h-5 w-20" /> : commonData?.common.footer_company_title || 'Company'}
+              {isLoading ? <Skeleton className="h-5 w-20" /> : translateText(commonData?.common.footer_company_title || 'Company', currentLanguage)}
             </h3>
             <ul className="space-y-2">
               {isLoading ? (
@@ -151,15 +165,15 @@ const Footer = () => {
                   link.label === 'Terms of Service' ? '/terms-of-service' :
                   link.label === 'Data Processing' ? '/data-processing' : '#'
                 } className="text-muted-foreground hover:text-highlight-blue text-sm">
-                  {link.label}
+                  {translateText(link.label, currentLanguage)}
                 </Link>
               ))
             ) : (
               <>
-                <Link to="/privacy-policy" className="text-muted-foreground hover:text-highlight-blue text-sm">Privacy Policy</Link>
-                <Link to="/compliance" className="text-muted-foreground hover:text-highlight-blue text-sm">Compliance</Link>
-                <Link to="/terms-of-service" className="text-muted-foreground hover:text-highlight-blue text-sm">Terms of Service</Link>
-                <Link to="/data-processing" className="text-muted-foreground hover:text-highlight-blue text-sm">Data Processing</Link>
+                <Link to="/privacy-policy" className="text-muted-foreground hover:text-highlight-blue text-sm">{translateText('Privacy Policy', currentLanguage)}</Link>
+                <Link to="/compliance" className="text-muted-foreground hover:text-highlight-blue text-sm">{translateText('Compliance', currentLanguage)}</Link>
+                <Link to="/terms-of-service" className="text-muted-foreground hover:text-highlight-blue text-sm">{translateText('Terms of Service', currentLanguage)}</Link>
+                <Link to="/data-processing" className="text-muted-foreground hover:text-highlight-blue text-sm">{translateText('Data Processing', currentLanguage)}</Link>
               </>
             )}
           </div>
