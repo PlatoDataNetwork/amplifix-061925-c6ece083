@@ -92,7 +92,7 @@ const Index = () => {
                 {isLoading ? (
                   <Skeleton className="h-4 w-24" />
                 ) : (
-                  'Book A Demo'
+                  homeData?.home.hero.buttons.secondary || 'Book A Demo'
                 )}
               </Button>
             </a>
@@ -208,7 +208,7 @@ const Index = () => {
                   <p className="text-muted-foreground">{feature.description}</p>
                   <Link to="/solutions">
                     <Button variant="link" className="text-highlight-blue mt-4 p-0">
-                      Learn more →
+                      {homeData?.home.hero.learn_more || 'Learn more →'}
                     </Button>
                   </Link>
                 </div>

@@ -13,6 +13,8 @@ export interface AboutData {
     hero: {
       title: string;
       description: string;
+      cta_primary: string;
+      cta_secondary: string;
     };
     mission: {
       cards: MissionCard[];

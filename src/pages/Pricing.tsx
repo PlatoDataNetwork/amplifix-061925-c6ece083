@@ -22,6 +22,18 @@ interface PricingData {
       subtitle: string;
       description: string;
     };
+    billing_toggle?: {
+      monthly: string;
+      annual: string;
+      save_text: string;
+      most_popular: string;
+    };
+    comparison_table?: {
+      header_feature: string;
+      header_startup: string;
+      header_growth: string;
+      header_enterprise: string;
+    };
     plans: Array<{
       id: string;
       name: string;
@@ -138,7 +150,7 @@ const Pricing = () => {
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                Monthly
+                {data.pricing.billing_toggle?.monthly || 'Monthly'}
               </button>
               <button
                 onClick={() => setBillingPeriod("annual")}
@@ -148,8 +160,8 @@ const Pricing = () => {
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                Annual
-                <Badge variant="secondary" className="ml-2">Save 20%</Badge>
+                {data.pricing.billing_toggle?.annual || 'Annual'}
+                <Badge variant="secondary" className="ml-2">{data.pricing.billing_toggle?.save_text || 'Save 20%'}</Badge>
               </button>
             </div>
           </div>
@@ -160,7 +172,7 @@ const Pricing = () => {
               <Card key={plan.id} className={`relative ${plan.popular ? 'border-highlight-blue shadow-lg scale-105' : ''}`}>
                 {plan.popular && (
                   <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-highlight-blue text-white">
-                    Most Popular
+                    {data.pricing.billing_toggle?.most_popular || 'Most Popular'}
                   </Badge>
                 )}
                 <CardHeader className="text-center pb-8">
@@ -221,10 +233,10 @@ const Pricing = () => {
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left py-4 px-4">Feature</th>
-                  <th className="text-center py-4 px-4">Startup</th>
-                  <th className="text-center py-4 px-4">Growth</th>
-                  <th className="text-center py-4 px-4">Enterprise</th>
+                  <th className="text-left py-4 px-4">{data.pricing.comparison_table?.header_feature || 'Feature'}</th>
+                  <th className="text-center py-4 px-4">{data.pricing.comparison_table?.header_startup || 'Startup'}</th>
+                  <th className="text-center py-4 px-4">{data.pricing.comparison_table?.header_growth || 'Growth'}</th>
+                  <th className="text-center py-4 px-4">{data.pricing.comparison_table?.header_enterprise || 'Enterprise'}</th>
                 </tr>
               </thead>
               <tbody>

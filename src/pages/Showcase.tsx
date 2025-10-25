@@ -119,8 +119,8 @@ const Showcase = () => {
                       >
                         <Button variant="outline" className="w-full min-h-[44px]">
                           <BarChart3 className="h-4 w-4 mr-2" />
-                          <span className="hidden sm:inline">{showcase.type === 'token' ? 'Live Token Price' : 'Live Stock Price'}</span>
-                          <span className="sm:hidden">{showcase.type === 'token' ? 'Token' : 'Stock'}</span>
+                          <span className="hidden sm:inline">{showcase.type === 'token' ? (showcaseData.showcase.cta.stock_button_labels?.live_token_price || 'Live Token Price') : (showcaseData.showcase.cta.stock_button_labels?.live_stock_price || 'Live Stock Price')}</span>
+                          <span className="sm:hidden">{showcase.type === 'token' ? (showcaseData.showcase.cta.stock_button_labels?.token_short || 'Token') : (showcaseData.showcase.cta.stock_button_labels?.stock_short || 'Stock')}</span>
                         </Button>
                       </a>
                     )}
@@ -135,7 +135,7 @@ const Showcase = () => {
                       >
                         <Button variant="outline" className="w-full min-h-[44px]">
                           <Globe className="h-4 w-4 mr-2" />
-                          Web
+                          {showcaseData.showcase.cta.stock_button_labels?.website || 'Web'}
                         </Button>
                       </a>
                     )}
@@ -149,7 +149,7 @@ const Showcase = () => {
                     >
                       <Button variant="outline" className="w-full min-h-[44px]">
                         <Search className="h-4 w-4 mr-2" />
-                        AmplifiX
+                        {showcaseData.showcase.cta.stock_button_labels?.amplifix_search || 'AmplifiX'}
                       </Button>
                     </a>
                   </div>

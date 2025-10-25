@@ -29,6 +29,12 @@ interface BlogData {
       title: string;
       description: string;
     };
+    filter: {
+      filtered_by_text: string;
+      clear_filter_text: string;
+      no_articles_found: string;
+      view_all_articles: string;
+    };
     categories: string[];
     blog_posts: BlogPost[];
     popular_tags: {
@@ -71,14 +77,22 @@ const Blog = () => {
         <div className="text-center mb-12 md:mb-16">
           <div className="inline-block mb-6">
             <div className="bg-gradient-to-r from-[#8A3FFC]/10 to-[#3B82F6]/10 text-[#8A3FFC] rounded-full px-4 md:px-6 py-2 border border-[#8A3FFC]/20 text-sm md:text-base">
-              Latest Intelligence
+              {blogData?.blog.hero.badge_text || 'Latest Intelligence'}
             </div>
           </div>
           <h1 className="text-3xl md:text-5xl font-bold mb-6">
-            AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intel</span>
+            {blogData?.blog.hero.title ? (
+              blogData.blog.hero.title.includes('Intel') ? (
+                <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intel</span></>
+              ) : (
+                blogData.blog.hero.title
+              )
+            ) : (
+              <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intel</span></>
+            )}
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
-            Stay updated with the latest in AI intelligence, corporate communications insights, and product updates from the AmplifiX team.
+            {blogData?.blog.hero.description || 'Stay updated with the latest in AI intelligence, corporate communications insights, and product updates from the AmplifiX team.'}
           </p>
         </div>
 
@@ -88,7 +102,7 @@ const Blog = () => {
         {selectedTag && (
           <section className="mb-6">
             <div className="flex items-center gap-3">
-              <span className="text-muted-foreground">Filtered by:</span>
+              <span className="text-muted-foreground">{blogData?.blog.filter.filtered_by_text || 'Filtered by:'}:</span>
               <span className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm">
                 #{selectedTag}
               </span>
@@ -98,7 +112,7 @@ const Blog = () => {
                 size="sm"
                 className="text-muted-foreground hover:text-foreground"
               >
-                Clear filter
+                {blogData?.blog.filter.clear_filter_text || 'Clear filter'}
               </Button>
             </div>
           </section>
@@ -141,9 +155,11 @@ const Blog = () => {
           </div>
           {filteredBlogPosts.length === 0 && selectedTag && (
             <div className="text-center py-12">
-              <p className="text-muted-foreground text-lg mb-4">No articles found for tag "#{selectedTag}"</p>
+              <p className="text-muted-foreground text-lg mb-4">
+                {blogData?.blog.filter.no_articles_found || 'No articles found for tag'} "#{selectedTag}"
+              </p>
               <Button onClick={clearFilter} variant="outline">
-                View all articles
+                {blogData?.blog.filter.view_all_articles || 'View all articles'}
               </Button>
             </div>
           )}
@@ -153,7 +169,7 @@ const Blog = () => {
 
         {/* Popular Tags */}
         <section>
-          <h2 className="text-xl md:text-2xl font-bold mb-6">Popular Tags</h2>
+          <h2 className="text-xl md:text-2xl font-bold mb-6">{blogData?.blog.popular_tags.title || 'Popular Tags'}</h2>
           <div className="flex flex-wrap gap-2 md:gap-3">
             {popularTags.map((tag) => (
               <span 

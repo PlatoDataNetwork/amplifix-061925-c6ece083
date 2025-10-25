@@ -8,6 +8,7 @@ export interface HomeData {
         primary: string;
         secondary: string;
       };
+      learn_more: string;
     };
     about: {
       title: string;
