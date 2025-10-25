@@ -15,6 +15,18 @@
       "subtitle": "Transparent pricing for AI-powered corporate communications that scale with your business",
       "description": "From startups building their first investor deck to Fortune 500 companies managing complex global communications, AmplifiX grows with you."
     },
+    "billing_toggle": {
+      "monthly": "Monthly",
+      "annual": "Annual",
+      "save_badge": "Save 20%"
+    },
+    "comparison_table": {
+      "feature_column": "Feature",
+      "startup_column": "Startup",
+      "growth_column": "Growth",
+      "enterprise_column": "Enterprise",
+      "most_popular_badge": "Most Popular"
+    },
     "plans": [
       {
         "id": "startup",

@@ -35,6 +35,10 @@
     ],
     "footer_copyright": "© {year} AmplifiX. All rights reserved.",
     "blog_title": "AmplifiX Intel",
-    "blog_back_text": "Back to Home"
+    "blog_back_text": "Back to Home",
+    "buttons": {
+      "book_demo": "Book A Demo",
+      "learn_more": "Learn more →"
+    }
   }
 }

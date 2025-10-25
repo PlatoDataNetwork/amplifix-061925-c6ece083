@@ -6,8 +6,9 @@
       "description": "AmplifiX leverages cutting-edge AI to transform how public and private companies manage investor relations and corporate communications.",
       "buttons": {
         "primary": "Amplifi Your Brand →",
-        "secondary": "Contact Us"
-      }
+        "secondary": "Book A Demo"
+      },
+      "learn_more": "Learn more →"
     },
     "about": {
       "title": "About AmplifiX",

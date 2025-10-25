@@ -1,0 +1,9 @@
+{
+  "newsletter": {
+    "title": "Stay Updated",
+    "description": "Subscribe to our Intel newsletter and never miss important updates about AI intelligence, new features, and industry insights.",
+    "email_placeholder": "Enter your email",
+    "button_text": "Subscribe",
+    "privacy_text": "No spam, unsubscribe anytime. Read our privacy policy."
+  }
+}

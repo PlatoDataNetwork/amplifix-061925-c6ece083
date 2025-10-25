@@ -2,7 +2,9 @@
   "about": {
     "hero": {
       "title": "About AmplifiX",
-      "description": "AmplifiX is a Global Press Release and Content Syndication Network. SEO Optimized and indexed across 35 Languages. Distribution and Syndication to over 2000+ Publications."
+      "description": "AmplifiX is a Global Press Release and Content Syndication Network. SEO Optimized and indexed across 35 Languages. Distribution and Syndication to over 2000+ Publications.",
+      "cta_primary": "Amplifi Your Brand →",
+      "cta_secondary": "Book A Demo"
     },
     "mission": {
       "cards": [

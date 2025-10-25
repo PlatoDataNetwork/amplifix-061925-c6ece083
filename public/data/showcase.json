@@ -107,6 +107,14 @@
           "text": "Explore Features", 
           "link": "/solutions"
         }
+      },
+      "stock_button_labels": {
+        "live_stock_price": "Live Stock Price",
+        "live_token_price": "Live Token Price",
+        "stock_short": "Stock",
+        "token_short": "Token",
+        "website": "Web",
+        "amplifix_search": "AmplifiX"
       }
     },
     "footer": {

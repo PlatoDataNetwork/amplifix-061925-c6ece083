@@ -5,6 +5,12 @@
       "title": "AmplifiX Intel",
       "description": "Stay updated with the latest in AI intelligence, corporate communications insights, and product updates from the AmplifiX team."
     },
+    "filter": {
+      "filtered_by_text": "Filtered by:",
+      "clear_filter_text": "Clear filter",
+      "no_articles_found": "No articles found for tag",
+      "view_all_articles": "View all articles"
+    },
     "categories": ["All", "Technology", "Analytics", "Security", "Insights", "Updates"],
     "blog_posts": [
       {
@@ -44,6 +50,10 @@
     "popular_tags": {
       "title": "Popular Tags",
       "tags": ["AI", "Analytics", "Investor Relations", "Corporate Communications", "Intelligence", "Automation", "Data", "Insights", "Technology", "Innovation"]
+    },
+    "ui": {
+      "featured_badge": "Featured",
+      "category_technology": "Technology"
     }
   }
 }

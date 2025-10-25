@@ -1,0 +1,137 @@
+{
+  "api": {
+    "navigation": {
+      "back_text": "Back to Home",
+      "title": "MoltenArc API"
+    },
+    "hero": {
+      "badge_text": "Powerful API",
+      "title": "MoltenArc",
+      "title_highlight": "API",
+      "description": "Integrate blockchain-secured messaging into your applications with our comprehensive REST API.",
+      "cta_primary": "Get API Key",
+      "cta_secondary": "View Examples"
+    },
+    "features": {
+      "title": "API Features",
+      "items": [
+        {
+          "icon": "Lock",
+          "title": "Secure Authentication",
+          "description": "OAuth 2.0 and API key authentication with blockchain verification."
+        },
+        {
+          "icon": "Zap",
+          "title": "Real-time Events",
+          "description": "WebSocket connections for instant message delivery and status updates."
+        },
+        {
+          "icon": "Globe",
+          "title": "Global CDN",
+          "description": "Low-latency API endpoints deployed across multiple regions worldwide."
+        }
+      ]
+    },
+    "endpoints": {
+      "title": "API Endpoints",
+      "sections": [
+        {
+          "name": "Messages",
+          "version": "v1",
+          "endpoints": [
+            {
+              "method": "POST",
+              "path": "/api/v1/messages",
+              "description": "Send encrypted message"
+            },
+            {
+              "method": "GET",
+              "path": "/api/v1/messages",
+              "description": "Retrieve messages"
+            },
+            {
+              "method": "DELETE",
+              "path": "/api/v1/messages/:id",
+              "description": "Delete message"
+            }
+          ]
+        },
+        {
+          "name": "Contacts",
+          "version": "v1",
+          "endpoints": [
+            {
+              "method": "POST",
+              "path": "/api/v1/contacts",
+              "description": "Add contact"
+            },
+            {
+              "method": "GET",
+              "path": "/api/v1/contacts",
+              "description": "List contacts"
+            }
+          ]
+        },
+        {
+          "name": "Blockchain",
+          "version": "v1",
+          "endpoints": [
+            {
+              "method": "GET",
+              "path": "/api/v1/blockchain/verify/:hash",
+              "description": "Verify message on blockchain"
+            },
+            {
+              "method": "GET",
+              "path": "/api/v1/blockchain/status",
+              "description": "Check blockchain status"
+            }
+          ]
+        }
+      ]
+    },
+    "quick_start": {
+      "title": "Quick Start Example",
+      "code_title": "Send a Message",
+      "language": "JavaScript"
+    },
+    "rate_limits": {
+      "title": "Rate Limits & Pricing",
+      "tiers": [
+        {
+          "name": "Free Tier",
+          "requests": "100",
+          "requests_label": "requests per hour",
+          "features": [
+            "Basic endpoints access",
+            "Standard rate limiting",
+            "Community support"
+          ]
+        },
+        {
+          "name": "Pro Tier",
+          "requests": "10K",
+          "requests_label": "requests per hour",
+          "featured": true,
+          "features": [
+            "All endpoints access",
+            "Higher rate limits",
+            "Priority support",
+            "Webhook notifications"
+          ]
+        },
+        {
+          "name": "Enterprise",
+          "requests": "Custom",
+          "requests_label": "unlimited requests",
+          "features": [
+            "Custom rate limits",
+            "Dedicated support",
+            "Custom integrations",
+            "SLA guarantees"
+          ]
+        }
+      ]
+    }
+  }
+}
