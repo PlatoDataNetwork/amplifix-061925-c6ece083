@@ -1,59 +1,69 @@
 {
-  "hero": {
-    "title": "IPO Preparation Solutions",
-    "description": "Navigate your path to public markets with confidence. Our comprehensive IPO preparation platform ensures you're ready for the rigorous demands of being a public company.",
-    "cta_button": "Start IPO Assessment"
-  },
-  "ipo_process": {
-    "title": "Complete IPO Readiness Platform",
-    "features": [
-      {
-        "title": "S-1 Preparation",
-        "description": "AI-assisted registration statement preparation with compliance checking and formatting optimization."
-      },
-      {
-        "title": "Compliance Readiness",
-        "description": "Comprehensive SOX compliance preparation, internal controls assessment, and audit readiness."
-      },
-      {
-        "title": "Roadshow Support",
-        "description": "Investor presentation optimization, Q&A preparation, and roadshow logistics management."
-      },
-      {
-        "title": "Timeline Management",
-        "description": "Detailed project management with milestone tracking and critical path optimization."
-      },
-      {
-        "title": "Market Positioning",
-        "description": "Strategic narrative development, competitive analysis, and valuation optimization."
-      },
-      {
-        "title": "Post-IPO Transition",
-        "description": "Seamless transition to public company operations with ongoing IR and compliance support."
-      }
-    ]
-  },
-  "checklist": {
-    "title": "IPO Readiness Checklist",
-    "sections": [
-      {
-        "title": "Financial & Legal Preparation",
-        "items": [
-          "Audited financial statements (3 years)",
-          "SOX compliance implementation",
-          "Corporate governance structure",
-          "Board composition optimization"
-        ]
-      },
-      {
-        "title": "Communications & IR",
-        "items": [
-          "Investment thesis development",
-          "Management presentation materials",
-          "IR website and materials",
-          "Media and analyst strategy"
-        ]
-      }
-    ]
+  "ipo_preparation": {
+    "hero": {
+      "title": "Solutions",
+      "title_highlight": "IPO Preparation",
+      "description": "Navigate your path to public markets with confidence. Our comprehensive IPO preparation platform ensures you're ready for the rigorous demands of being a public company.",
+      "cta_button_text": "Start IPO Assessment",
+      "cta_button_link": "https://calendly.com/amplifix/amplifix-discovery"
+    },
+    "ipo_process": {
+      "title": "Complete IPO Readiness Platform",
+      "features": [
+        {
+          "title": "S-1 Preparation",
+          "description": "AI-assisted registration statement preparation with compliance checking and formatting optimization.",
+          "icon": "FileText"
+        },
+        {
+          "title": "Compliance Readiness",
+          "description": "Comprehensive SOX compliance preparation, internal controls assessment, and audit readiness.",
+          "icon": "Shield"
+        },
+        {
+          "title": "Roadshow Support",
+          "description": "Investor presentation optimization, Q&A preparation, and roadshow logistics management.",
+          "icon": "Users"
+        },
+        {
+          "title": "Timeline Management",
+          "description": "Detailed project management with milestone tracking and critical path optimization.",
+          "icon": "Clock"
+        },
+        {
+          "title": "Market Positioning",
+          "description": "Strategic narrative development, competitive analysis, and valuation optimization.",
+          "icon": "TrendingUp"
+        },
+        {
+          "title": "Post-IPO Transition",
+          "description": "Seamless transition to public company operations with ongoing IR and compliance support.",
+          "icon": "CheckCircle"
+        }
+      ]
+    },
+    "checklist": {
+      "title": "IPO Readiness Checklist",
+      "sections": [
+        {
+          "section_title": "Financial & Legal Preparation",
+          "items": [
+            "Audited financial statements (3 years)",
+            "SOX compliance implementation",
+            "Corporate governance structure",
+            "Board composition optimization"
+          ]
+        },
+        {
+          "section_title": "Communications & IR",
+          "items": [
+            "Investment thesis development",
+            "Management presentation materials",
+            "IR website and materials",
+            "Media and analyst strategy"
+          ]
+        }
+      ]
+    }
   }
 }
