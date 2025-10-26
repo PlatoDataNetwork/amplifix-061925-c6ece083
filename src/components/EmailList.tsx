@@ -1,101 +1,23 @@
 
 import React from "react";
 import { Shield } from "lucide-react";
+import { Email } from "@/types/dashboard";
 
 interface EmailListProps {
   activeTab: string;
   selectedEmail: string | null;
   setSelectedEmail: (id: string) => void;
+  emails: Email[];
+  emptyMessage: string;
 }
 
 const EmailList: React.FC<EmailListProps> = ({ 
   activeTab, 
   selectedEmail, 
-  setSelectedEmail 
+  setSelectedEmail,
+  emails,
+  emptyMessage
 }) => {
-  // Sample email data for demonstration
-  const emails = [
-    { 
-      id: '1', 
-      sender: 'Alice Secure', 
-      subject: 'Protected Document Transfer', 
-      preview: 'I\'ve attached the encrypted documents as requested...', 
-      time: '10:23 AM',
-      isRead: false,
-      isEncrypted: true,
-      folder: 'inbox'
-    },
-    { 
-      id: '2', 
-      sender: 'Security Team', 
-      subject: 'Your encryption keys have been updated', 
-      preview: 'We\'ve updated your encryption keys as part of our regular security protocol...', 
-      time: 'Yesterday',
-      isRead: true,
-      isEncrypted: true,
-      folder: 'inbox'
-    },
-    { 
-      id: '3', 
-      sender: 'Bob Cryptographer', 
-      subject: 'New communication protocol', 
-      preview: 'We\'re implementing a new secure communication protocol starting next week...', 
-      time: 'Aug 24',
-      isRead: true,
-      isEncrypted: true,
-      folder: 'inbox'
-    },
-    { 
-      id: '4', 
-      sender: 'Team Collaboration', 
-      subject: 'Project Delta updates', 
-      preview: 'Here are the latest updates on Project Delta with enhanced security measures...', 
-      time: 'Aug 22',
-      isRead: false,
-      isEncrypted: true,
-      folder: 'inbox'
-    },
-    { 
-      id: '5', 
-      sender: 'Charlie Tech', 
-      subject: 'New authentication method', 
-      preview: 'We\'re rolling out a new multi-factor authentication system for all users...', 
-      time: 'Aug 20',
-      isRead: true,
-      isEncrypted: true,
-      folder: 'inbox'
-    },
-    { 
-      id: '6', 
-      sender: 'Eve Analyzer', 
-      subject: 'Security audit results', 
-      preview: 'I\'ve completed the security audit and wanted to share the results...', 
-      time: 'Aug 18',
-      isRead: true, 
-      isEncrypted: true,
-      folder: 'sent'
-    },
-    { 
-      id: '7', 
-      sender: 'Frank Developer', 
-      subject: 'API security implementation', 
-      preview: 'Here\'s the documentation for the secure API implementation we discussed...', 
-      time: 'Aug 15',
-      isRead: true,
-      isEncrypted: true,
-      folder: 'sent'
-    },
-    { 
-      id: '8', 
-      sender: 'Grace Admin', 
-      subject: 'System access protocols', 
-      preview: 'Please review the updated system access protocols for our secure network...', 
-      time: 'Aug 12',
-      isRead: true,
-      isEncrypted: true,
-      folder: 'archive'
-    }
-  ];
 
   // Filter emails based on active tab
   const filteredEmails = emails.filter(email => email.folder === activeTab);
@@ -129,7 +51,7 @@ const EmailList: React.FC<EmailListProps> = ({
       ))}
       {filteredEmails.length === 0 && (
         <div className="p-8 text-center text-gray-400">
-          No messages in {activeTab}
+          {emptyMessage} {activeTab}
         </div>
       )}
     </div>

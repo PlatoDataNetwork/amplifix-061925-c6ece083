@@ -150,17 +150,17 @@
         }
       ]
     },
-    "navigation": {
+    "sidebar": {
+      "logo_alt": "AmplifiX Logo",
+      "app_name": "AmplifiX",
+      "new_message_button": "New Message",
+      "security_status_label": "Security Status",
+      "security_status_value": "Protected",
       "sidebar_items": [
-        {
-          "id": "home",
-          "title": "Home",
-          "icon": "Home"
-        },
         {
           "id": "inbox",
           "title": "Inbox",
-          "icon": "Mail"
+          "icon": "Inbox"
         },
         {
           "id": "calendar",
@@ -179,12 +179,12 @@
         },
         {
           "id": "clouddrive",
-          "title": "Cloud Drive",
+          "title": "CloudDrive",
           "icon": "Cloud"
         },
         {
           "id": "apps",
-          "title": "App Center",
+          "title": "Apps",
           "icon": "Grid3x3"
         },
         {
@@ -193,11 +193,122 @@
           "icon": "Chrome"
         },
         {
+          "id": "chat",
+          "title": "Chat",
+          "icon": "MessageCircle"
+        },
+        {
           "id": "logs",
-          "title": "Logs",
+          "title": "System Logs",
           "icon": "Logs"
+        },
+        {
+          "id": "trash",
+          "title": "Trash",
+          "icon": "Trash"
         }
       ]
+    },
+    "inbox": {
+      "compose_button": "Compose",
+      "empty_message": "No messages in",
+      "no_messages_in": "No messages in",
+      "emails": [
+        {
+          "id": "1",
+          "sender": "Alice Secure",
+          "subject": "Protected Document Transfer",
+          "preview": "I've attached the encrypted documents as requested...",
+          "time": "10:23 AM",
+          "isRead": false,
+          "isEncrypted": true,
+          "folder": "inbox",
+          "to": "you@secureflowmail.com",
+          "date": "August 28, 2025 at 10:23 AM",
+          "body": "<p>Hello,</p><p>I've attached the encrypted documents as requested. These have been secured with our standard AES-256 encryption protocol.</p><p>The password will be sent via our secure messaging channel as discussed.</p><p>Please confirm receipt when you've successfully decrypted the files.</p><p>Best regards,<br>Alice</p>"
+        },
+        {
+          "id": "2",
+          "sender": "Security Team",
+          "subject": "Your encryption keys have been updated",
+          "preview": "We've updated your encryption keys as part of our regular security protocol...",
+          "time": "Yesterday",
+          "isRead": true,
+          "isEncrypted": true,
+          "folder": "inbox",
+          "to": "you@secureflowmail.com",
+          "date": "August 27, 2025 at 3:45 PM",
+          "body": "<p>Dear User,</p><p>We've updated your encryption keys as part of our regular security protocol. This is an automatic process that happens every 30 days to ensure maximum security of your communications.</p><p>Your new public key fingerprint is: E7CC 9B5E 8F19 2A67 D90C 5A39 D817 3312 F5EC D98A</p><p>All your previous messages remain accessible with your existing credentials.</p><p>If you notice any issues, please contact our support team immediately.</p><p>Regards,<br>SecureFlowMail Security Team</p>"
+        },
+        {
+          "id": "3",
+          "sender": "Bob Cryptographer",
+          "subject": "New communication protocol",
+          "preview": "We're implementing a new secure communication protocol starting next week...",
+          "time": "Aug 24",
+          "isRead": true,
+          "isEncrypted": true,
+          "folder": "inbox"
+        },
+        {
+          "id": "4",
+          "sender": "Team Collaboration",
+          "subject": "Project Delta updates",
+          "preview": "Here are the latest updates on Project Delta with enhanced security measures...",
+          "time": "Aug 22",
+          "isRead": false,
+          "isEncrypted": true,
+          "folder": "inbox"
+        },
+        {
+          "id": "5",
+          "sender": "Charlie Tech",
+          "subject": "New authentication method",
+          "preview": "We're rolling out a new multi-factor authentication system for all users...",
+          "time": "Aug 20",
+          "isRead": true,
+          "isEncrypted": true,
+          "folder": "inbox"
+        },
+        {
+          "id": "6",
+          "sender": "Eve Analyzer",
+          "subject": "Security audit results",
+          "preview": "I've completed the security audit and wanted to share the results...",
+          "time": "Aug 18",
+          "isRead": true,
+          "isEncrypted": true,
+          "folder": "sent"
+        },
+        {
+          "id": "7",
+          "sender": "Frank Developer",
+          "subject": "API security implementation",
+          "preview": "Here's the documentation for the secure API implementation we discussed...",
+          "time": "Aug 15",
+          "isRead": true,
+          "isEncrypted": true,
+          "folder": "sent"
+        },
+        {
+          "id": "8",
+          "sender": "Grace Admin",
+          "subject": "System access protocols",
+          "preview": "Please review the updated system access protocols for our secure network...",
+          "time": "Aug 12",
+          "isRead": true,
+          "isEncrypted": true,
+          "folder": "archive"
+        }
+      ]
+    },
+    "email_actions": {
+      "reply": "Reply",
+      "forward": "Forward",
+      "archive": "Archive",
+      "delete": "Delete",
+      "encrypted_badge": "Encrypted",
+      "select_email_message": "Select an email to view its contents"
     }
   }
 }

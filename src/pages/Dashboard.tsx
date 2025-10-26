@@ -32,6 +32,7 @@ import {
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/hooks/use-toast";
 import { useJsonData } from "@/hooks/useJsonData";
+import { DashboardData } from "@/types/dashboard";
 import EmailList from "@/components/EmailList";
 import EmailContent from "@/components/EmailContent";
 import Sidebar from "@/components/Sidebar";
@@ -45,75 +46,6 @@ import AppCenterPage from "@/components/AppCenterPage";
 import BrowserPage from "@/components/BrowserPage";
 import LogsPage from "@/components/LogsPage";
 
-interface DashboardData {
-  dashboard: {
-    seo: {
-      title: string;
-      description: string;
-      keywords: string;
-      og_title: string;
-      og_description: string;
-      twitter_title: string;
-      twitter_description: string;
-      canonical_url: string;
-    };
-    header: {
-      title: string;
-      subtitle: string;
-    };
-    stats_cards: Array<{
-      title: string;
-      value: string;
-      change: string;
-      change_type: string;
-      icon: string;
-      color: string;
-    }>;
-    recent_activity: {
-      title: string;
-      activities: Array<{
-        message: string;
-        timestamp: string;
-        color: string;
-      }>;
-    };
-    notifications: {
-      title: string;
-      items: Array<{
-        title: string;
-        message: string;
-        type: string;
-        color: string;
-      }>;
-    };
-    quick_actions: {
-      title: string;
-      actions: Array<{
-        title: string;
-        icon: string;
-        action: string;
-        variant: string;
-      }>;
-    };
-    upcoming_events: {
-      title: string;
-      events: Array<{
-        title: string;
-        description: string;
-        date: string;
-        time: string;
-        color: string;
-      }>;
-    };
-    navigation: {
-      sidebar_items: Array<{
-        id: string;
-        title: string;
-        icon: string;
-      }>;
-    };
-  };
-}
 
 const Dashboard = () => {
   const { data: dashboardData, isLoading, error } = useJsonData<DashboardData>('dashboard.json');
@@ -352,19 +284,25 @@ const Dashboard = () => {
               onClick={() => setShowCompose(true)}
               className="text-white bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] border-none hover:opacity-90"
             >
-              Compose
+              {dashboardData.dashboard.inbox.compose_button}
             </Button>
           </div>
           <EmailList 
             activeTab={activeTab}
             selectedEmail={selectedEmail} 
-            setSelectedEmail={setSelectedEmail} 
+            setSelectedEmail={setSelectedEmail}
+            emails={dashboardData.dashboard.inbox.emails}
+            emptyMessage={dashboardData.dashboard.inbox.no_messages_in}
           />
         </div>
         
         {/* Email Content */}
         <div className="flex-1 overflow-y-auto">
-          <EmailContent selectedEmail={selectedEmail} />
+          <EmailContent 
+            selectedEmail={selectedEmail}
+            emails={dashboardData.dashboard.inbox.emails}
+            emailActions={dashboardData.dashboard.email_actions}
+          />
         </div>
       </div>
     );
@@ -391,7 +329,11 @@ const Dashboard = () => {
         isChatOpen ? 'translate-x-[264px]' : 'translate-x-0'
       }`}>
         {/* Sidebar */}
-        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <Sidebar 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab}
+          sidebarData={dashboardData.dashboard.sidebar}
+        />
         
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
