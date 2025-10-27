@@ -1,4 +1,9 @@
 {
+  "page_title": "Contacts",
+  "add_contact_button": "Add Contact",
+  "search_placeholder": "Search contacts...",
+  "email_button": "Email",
+  "call_button": "Call",
   "header": {
     "title": "Contacts",
     "description": "Manage your investor relations, media, and business contacts"

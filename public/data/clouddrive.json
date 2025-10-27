@@ -1,4 +1,10 @@
 {
+  "page_title": "Cloud Drive",
+  "search_placeholder": "Search files...",
+  "folders_title": "Folders",
+  "recent_files_title": "Recent Files",
+  "shared_files_title": "Shared with Me",
+  "storage_label": "Storage",
   "storageInfo": {
     "used": "45.2 GB",
     "total": "100 GB",

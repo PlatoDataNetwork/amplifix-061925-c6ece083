@@ -1,119 +1,43 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Settings } from "lucide-react";
-import { Calendar, MessageCircle, FileText, Image, Brain, Sparkles, Zap, Cpu } from "lucide-react";
+import { Settings, Calendar, MessageCircle, FileText, Image, Brain, Sparkles, Zap, Cpu } from "lucide-react";
+import { useJsonData } from "@/hooks/useJsonData";
+import { AppsData } from "@/types/apps";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const AppCenterPage = () => {
-  const recentlyUsedApps = [
-    {
-      id: 1,
-      name: "Notes",
-      icon: FileText,
-      color: "bg-yellow-600"
-    },
-    {
-      id: 2,
-      name: "Calendar",
-      icon: Calendar,
-      color: "bg-blue-600"
-    },
-    {
-      id: 3,
-      name: "Messages", 
-      icon: MessageCircle,
-      color: "bg-green-600"
-    },
-    {
-      id: 4,
-      name: "Gallery",
-      icon: Image,
-      color: "bg-purple-600"
-    }
-  ];
+  const { data: appsData, isLoading } = useJsonData<AppsData>('apps.json');
 
-  const productivityApps = [
-    {
-      id: 1,
-      name: "Advanced Notes",
-      description: "A powerful note-taking app with markdown support and real-time collaboration.",
-      icon: FileText,
-      color: "bg-yellow-600",
-      status: "installed"
-    },
-    {
-      id: 2,
-      name: "Calendar Pro",
-      description: "Manage your schedule with advanced calendar features and integrations.",
-      icon: Calendar,
-      color: "bg-blue-600",
-      status: "installed"
-    },
-    {
-      id: 3,
-      name: "Task Manager",
-      description: "Organize your tasks with priorities, deadlines, and progress tracking.",
-      icon: FileText,
-      color: "bg-green-600",
-      status: "available"
-    },
-    {
-      id: 4,
-      name: "Document Editor",
-      description: "Create and edit documents with advanced formatting and templates.",
-      icon: FileText,
-      color: "bg-purple-600",
-      status: "available"
-    }
-  ];
+  const getIcon = (iconName: string) => {
+    const icons: Record<string, any> = {
+      FileText, Calendar, MessageCircle, Image, Brain, Sparkles, Zap, Cpu
+    };
+    return icons[iconName] || FileText;
+  };
 
-  const generativeAIApps = [
-    {
-      id: 1,
-      name: "AI Content Writer",
-      description: "Generate high-quality content, blogs, and articles using advanced AI models.",
-      icon: Brain,
-      color: "bg-indigo-600",
-      status: "available"
-    },
-    {
-      id: 2,
-      name: "Image Generator",
-      description: "Create stunning artwork and images from text descriptions with AI.",
-      icon: Sparkles,
-      color: "bg-pink-600",
-      status: "available"
-    },
-    {
-      id: 3,
-      name: "Code Assistant",
-      description: "AI-powered coding companion that helps write, debug, and optimize code.",
-      icon: Cpu,
-      color: "bg-emerald-600",
-      status: "installed"
-    },
-    {
-      id: 4,
-      name: "AI Chatbot",
-      description: "Intelligent conversational AI for customer support and virtual assistance.",
-      icon: Zap,
-      color: "bg-orange-600",
-      status: "available"
-    }
-  ];
+  if (isLoading || !appsData) {
+    return (
+      <div className="flex-1 flex flex-col bg-[#0A0A0A] overflow-hidden">
+        <div className="p-6">
+          <Skeleton className="h-8 w-48 mb-6" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 flex flex-col bg-[#0A0A0A] overflow-hidden">
       {/* Header */}
       <div className="p-6 flex justify-between items-center flex-shrink-0">
-        <h1 className="text-2xl font-bold text-white">App Center</h1>
+        <h1 className="text-2xl font-bold text-white">{appsData.page_title}</h1>
         <Button 
           variant="outline" 
           className="bg-[#0A0A0A] border-gray-700 text-white hover:bg-[#1A1A1A]"
         >
           <Settings className="h-4 w-4 mr-2" />
-          Manage Apps
+          {appsData.manage_apps_button}
         </Button>
       </div>
 
@@ -122,12 +46,12 @@ const AppCenterPage = () => {
         <div className="space-y-8 pb-6">
           {/* Recently Used Apps */}
           <div>
-            <h2 className="text-xl font-semibold text-white mb-4">Recently Used Apps</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">{appsData.recently_used_title}</h2>
             <div className="bg-transparent rounded-lg border border-gray-800 p-6">
               <ScrollArea className="w-full">
                 <div className="flex gap-6 min-w-max">
-                  {recentlyUsedApps.map((app) => {
-                    const IconComponent = app.icon;
+                  {appsData.recentlyUsedApps.map((app) => {
+                    const IconComponent = getIcon(app.icon);
                     return (
                       <div 
                         key={app.id}
@@ -147,10 +71,10 @@ const AppCenterPage = () => {
 
           {/* Productivity Section */}
           <div>
-            <h2 className="text-xl font-semibold text-white mb-4">Productivity</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">{appsData.productivity_title}</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {productivityApps.map((app) => {
-                const IconComponent = app.icon;
+              {appsData.productivityApps.map((app) => {
+                const IconComponent = getIcon(app.icon);
                 return (
                   <div 
                     key={app.id}
@@ -173,7 +97,7 @@ const AppCenterPage = () => {
                         }
                         variant={app.status === "installed" ? "outline" : "default"}
                       >
-                        {app.status === "installed" ? "Open" : "Install"}
+                        {app.status === "installed" ? appsData.open_button : appsData.install_button}
                       </Button>
                     </div>
                     <p className="text-gray-400 text-sm leading-relaxed">
@@ -187,10 +111,10 @@ const AppCenterPage = () => {
 
           {/* Generative AI Section */}
           <div>
-            <h2 className="text-xl font-semibold text-white mb-4">Generative AI</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">{appsData.generative_ai_title}</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {generativeAIApps.map((app) => {
-                const IconComponent = app.icon;
+              {appsData.generativeAIApps.map((app) => {
+                const IconComponent = getIcon(app.icon);
                 return (
                   <div 
                     key={app.id}
@@ -213,7 +137,7 @@ const AppCenterPage = () => {
                         }
                         variant={app.status === "installed" ? "outline" : "default"}
                       >
-                        {app.status === "installed" ? "Open" : "Install"}
+                        {app.status === "installed" ? appsData.open_button : appsData.install_button}
                       </Button>
                     </div>
                     <p className="text-gray-400 text-sm leading-relaxed">

@@ -1,4 +1,17 @@
 {
+  "page_title": "System Logs",
+  "search_placeholder": "Search logs...",
+  "filter_level": "Level",
+  "filter_source": "Source",
+  "filter_category": "Category",
+  "filter_time": "Time Range",
+  "export_button": "Export Logs",
+  "clear_button": "Clear Filters",
+  "refresh_button": "Refresh",
+  "timestamp_label": "Timestamp",
+  "level_label": "Level",
+  "source_label": "Source",
+  "message_label": "Message",
   "logs": [
     {
       "id": "log-1001",

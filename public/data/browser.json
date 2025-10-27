@@ -1,4 +1,10 @@
 {
+  "page_title": "Browser",
+  "new_tab_label": "New Tab",
+  "url_placeholder": "Enter URL or search...",
+  "back_tooltip": "Go back",
+  "forward_tooltip": "Go forward",
+  "refresh_tooltip": "Refresh page",
   "bookmarks": [
     {
       "id": "sec-filings",

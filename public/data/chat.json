@@ -1,4 +1,10 @@
 {
+  "page_title": "Secure Chat",
+  "encryption_status": "End-to-End Encrypted",
+  "send_button": "Send",
+  "message_placeholder": "Type your message...",
+  "back_button": "Back",
+  "close_button": "Close",
   "conversations": [
     {
       "id": "conv-1",

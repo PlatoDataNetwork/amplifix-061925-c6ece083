@@ -1,4 +1,8 @@
 {
+  "page_title": "Calendar",
+  "add_event_button": "Add Event",
+  "today_button": "Today",
+  "filters_title": "Event Types",
   "header": {
     "title": "Calendar",
     "description": "Manage your investor meetings, earnings calls, and important events"

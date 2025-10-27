@@ -1,4 +1,105 @@
 {
+  "page_title": "App Center",
+  "manage_apps_button": "Manage Apps",
+  "recently_used_title": "Recently Used Apps",
+  "productivity_title": "Productivity",
+  "generative_ai_title": "Generative AI",
+  "open_button": "Open",
+  "install_button": "Install",
+  "recentlyUsedApps": [
+    {
+      "id": 1,
+      "name": "Notes",
+      "icon": "FileText",
+      "color": "bg-yellow-600"
+    },
+    {
+      "id": 2,
+      "name": "Calendar",
+      "icon": "Calendar",
+      "color": "bg-blue-600"
+    },
+    {
+      "id": 3,
+      "name": "Messages",
+      "icon": "MessageCircle",
+      "color": "bg-green-600"
+    },
+    {
+      "id": 4,
+      "name": "Gallery",
+      "icon": "Image",
+      "color": "bg-purple-600"
+    }
+  ],
+  "productivityApps": [
+    {
+      "id": 1,
+      "name": "Advanced Notes",
+      "description": "A powerful note-taking app with markdown support and real-time collaboration.",
+      "icon": "FileText",
+      "color": "bg-yellow-600",
+      "status": "installed"
+    },
+    {
+      "id": 2,
+      "name": "Calendar Pro",
+      "description": "Manage your schedule with advanced calendar features and integrations.",
+      "icon": "Calendar",
+      "color": "bg-blue-600",
+      "status": "installed"
+    },
+    {
+      "id": 3,
+      "name": "Task Manager",
+      "description": "Organize your tasks with priorities, deadlines, and progress tracking.",
+      "icon": "FileText",
+      "color": "bg-green-600",
+      "status": "available"
+    },
+    {
+      "id": 4,
+      "name": "Document Editor",
+      "description": "Create and edit documents with advanced formatting and templates.",
+      "icon": "FileText",
+      "color": "bg-purple-600",
+      "status": "available"
+    }
+  ],
+  "generativeAIApps": [
+    {
+      "id": 1,
+      "name": "AI Content Writer",
+      "description": "Generate high-quality content, blogs, and articles using advanced AI models.",
+      "icon": "Brain",
+      "color": "bg-indigo-600",
+      "status": "available"
+    },
+    {
+      "id": 2,
+      "name": "Image Generator",
+      "description": "Create stunning artwork and images from text descriptions with AI.",
+      "icon": "Sparkles",
+      "color": "bg-pink-600",
+      "status": "available"
+    },
+    {
+      "id": 3,
+      "name": "Code Assistant",
+      "description": "AI-powered coding companion that helps write, debug, and optimize code.",
+      "icon": "Cpu",
+      "color": "bg-emerald-600",
+      "status": "installed"
+    },
+    {
+      "id": 4,
+      "name": "AI Chatbot",
+      "description": "Intelligent conversational AI for customer support and virtual assistance.",
+      "icon": "Zap",
+      "color": "bg-orange-600",
+      "status": "available"
+    }
+  ],
   "featuredApps": [
     {
       "id": "slack-integration",
