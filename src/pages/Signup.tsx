@@ -132,8 +132,12 @@ const Signup = () => {
       <main className="flex-1 flex items-center justify-center p-4 py-12">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center space-y-2">
-            <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#8A3FFC] to-[#06B6D4] flex items-center justify-center mb-4">
-              <span className="text-white font-bold text-2xl">A</span>
+            <div className="w-20 h-20 mx-auto flex items-center justify-center mb-4">
+              <img 
+                src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
+                alt="AmplifiX Logo"
+                className="w-full h-full object-contain"
+              />
             </div>
             <h1 className="text-3xl font-bold">{signUpText.title}</h1>
           </div>
