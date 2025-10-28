@@ -40,6 +40,8 @@ import AmplifiX2Article from "./pages/AmplifiX2Article";
 import AIIntelligenceArticle from "./pages/AIIntelligenceArticle";
 import AdvancedAnalyticsArticle from "./pages/AdvancedAnalyticsArticle";
 import InvestorEngagementArticle from "./pages/InvestorEngagementArticle";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 const queryClient = new QueryClient();
 
@@ -82,6 +84,8 @@ const App = () => (
               <Route path="/compliance" element={<Compliance />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="/data-processing" element={<DataProcessing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

@@ -92,6 +92,11 @@ const MainHeader = () => {
               <Link to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">
                 {translateText(commonData.common.nav_menu.find(item => item.label === 'Contact')?.label || 'Contact', currentLanguage)}
               </Link>
+              <Button asChild variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity">
+                <Link to="/login">
+                  {translateText('Login', currentLanguage)}
+                </Link>
+              </Button>
             </>
           ) : (
             <>
@@ -101,6 +106,11 @@ const MainHeader = () => {
               <Link to="/intel" className="text-foreground hover:text-highlight-blue transition-colors">{translateText('Intel', currentLanguage)}</Link>
               <Link to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">{translateText('FAQ', currentLanguage)}</Link>
               <Link to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">{translateText('Contact', currentLanguage)}</Link>
+              <Button asChild variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity">
+                <Link to="/login">
+                  {translateText('Login', currentLanguage)}
+                </Link>
+              </Button>
             </>
           )}
           <ThemeToggle />
