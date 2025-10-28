@@ -47,11 +47,24 @@ const MicropolisPresentation = () => {
             </div>
 
             <div className="bg-card rounded-lg shadow-lg overflow-hidden border">
-              <iframe
-                src="/documents/micropolis-presentation.pdf"
+              <object
+                data="/documents/micropolis-presentation.pdf"
+                type="application/pdf"
                 className="w-full h-[calc(100vh-200px)] min-h-[600px]"
                 title="Micropolis Investor Presentation"
-              />
+              >
+                <div className="p-8 text-center space-y-4">
+                  <p className="text-muted-foreground">
+                    Your browser doesn't support embedded PDFs. Please download the presentation to view it.
+                  </p>
+                  <Button asChild>
+                    <a href="/documents/micropolis-presentation.pdf" download>
+                      <Download className="w-4 h-4 mr-2" />
+                      Download Presentation
+                    </a>
+                  </Button>
+                </div>
+              </object>
             </div>
           </div>
         </main>
