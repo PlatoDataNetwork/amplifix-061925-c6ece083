@@ -3,7 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
-import { ExternalLink, TrendingUp, Shield, Cpu, Zap, Target, Globe, Play, X } from "lucide-react";
+import { ExternalLink, TrendingUp, Shield, Cpu, Zap, Target, Globe, Play, X, FileText } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 
 const MicropolisShowcase = () => {
@@ -85,6 +86,12 @@ const MicropolisShowcase = () => {
                         <TrendingUp className="w-4 h-4" />
                         Live Stock Price
                       </a>
+                    </Button>
+                    <Button asChild size="default" className="gap-2 bg-teal-400 text-black hover:bg-teal-500">
+                      <Link to="/showcase/micropolis/presentation">
+                        <FileText className="w-4 h-4" />
+                        Presentation
+                      </Link>
                     </Button>
                     <Button asChild size="default" className="gap-2 bg-teal-400 text-black hover:bg-teal-500">
                       <a href="https://www.micropolis.ai/" target="_blank" rel="noopener noreferrer">
