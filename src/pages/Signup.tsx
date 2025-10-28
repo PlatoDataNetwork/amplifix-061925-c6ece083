@@ -7,7 +7,7 @@ import { AuthData } from "@/types/auth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import SharedHeader from "@/components/SharedHeader";
+import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 
 const Signup = () => {
@@ -106,7 +106,7 @@ const Signup = () => {
   if (isLoading || !authData) {
     return (
       <div className="min-h-screen flex flex-col">
-        <SharedHeader />
+        <MainHeader />
         <main className="flex-1 flex items-center justify-center p-4">
           <div className="w-full max-w-md space-y-8">
             <Skeleton className="h-12 w-3/4 mx-auto" />
@@ -128,7 +128,7 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <SharedHeader />
+      <MainHeader />
       <main className="flex-1 flex items-center justify-center p-4 py-12">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center space-y-2">
