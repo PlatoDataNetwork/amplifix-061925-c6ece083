@@ -48,7 +48,7 @@ interface BlogData {
 }
 
 const Blog = () => {
-  const { data: blogData } = useJsonData<BlogData>('blog.json');
+  const { data: blogData } = useJsonData<BlogData>('blog-intel.json');
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   

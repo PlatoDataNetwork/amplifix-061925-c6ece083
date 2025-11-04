@@ -20,7 +20,7 @@ interface BlogData {
 }
 
 const FeaturedPost = () => {
-  const { data: blogData } = useJsonData<BlogData>('blog.json');
+  const { data: blogData } = useJsonData<BlogData>('blog-intel.json');
   const featuredPost = blogData?.blog.featured_post;
 
   if (!featuredPost) return null;
