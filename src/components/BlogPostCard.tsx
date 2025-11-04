@@ -17,9 +17,10 @@ interface BlogPost {
 interface BlogPostCardProps {
   post: BlogPost;
   articleLink?: string;
+  buttonText?: string;
 }
 
-const BlogPostCard = ({ post, articleLink }: BlogPostCardProps) => {
+const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: BlogPostCardProps) => {
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case "Security": return <Shield className="h-16 w-16 text-blue-500" />;
@@ -51,12 +52,12 @@ const BlogPostCard = ({ post, articleLink }: BlogPostCardProps) => {
         {articleLink ? (
           <Button variant="link" className="text-blue-500 mt-4 p-0" asChild>
             <Link to={articleLink}>
-              Read Full Article <ArrowRight className="ml-2 h-4 w-4" />
+              {buttonText} <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
         ) : (
           <Button variant="link" className="text-blue-500 mt-4 p-0">
-            Read Full Article <ArrowRight className="ml-2 h-4 w-4" />
+            {buttonText} <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         )}
       </div>

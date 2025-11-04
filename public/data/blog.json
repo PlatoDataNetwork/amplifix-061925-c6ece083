@@ -11,6 +11,25 @@
       "no_articles_found": "No articles found for tag",
       "view_all_articles": "View all articles"
     },
+    "featured_post": {
+      "badge": "Featured",
+      "category": "Technology",
+      "title": "Introducing AmplifiX 2.0: Next-Gen AI Intelligence",
+      "description": "We're excited to announce the launch of AmplifiX 2.0, featuring enhanced AI capabilities, improved analytics, and revolutionary intelligence features that set new standards for corporate communications.",
+      "author": "AmplifiX",
+      "date": "Sept 1, 2025",
+      "button_text": "Read Full Article",
+      "link": "/intel/amplifi-x-2-0-article"
+    },
+    "ui": {
+      "featured_badge": "Featured",
+      "read_full_article": "Read Full Article",
+      "category_technology": "Technology",
+      "category_analytics": "Analytics",
+      "category_security": "Security",
+      "category_insights": "Insights",
+      "category_updates": "Updates"
+    },
     "categories": ["All", "Technology", "Analytics", "Security", "Insights", "Updates"],
     "blog_posts": [
       {
@@ -51,9 +70,39 @@
       "title": "Popular Tags",
       "tags": ["AI", "Analytics", "Investor Relations", "Corporate Communications", "Intelligence", "Automation", "Data", "Insights", "Technology", "Innovation"]
     },
-    "ui": {
-      "featured_badge": "Featured",
-      "category_technology": "Technology"
-    }
+    "gt_translate_keys": [
+      "hero.badge_text",
+      "hero.title",
+      "hero.description",
+      "filter.filtered_by_text",
+      "filter.clear_filter_text",
+      "filter.no_articles_found",
+      "filter.view_all_articles",
+      "featured_post.badge",
+      "featured_post.category",
+      "featured_post.title",
+      "featured_post.description",
+      "featured_post.author",
+      "featured_post.date",
+      "featured_post.button_text",
+      {"key": "featured_post.link", "format": "url"},
+      "ui.featured_badge",
+      "ui.read_full_article",
+      "ui.category_technology",
+      "ui.category_analytics",
+      "ui.category_security",
+      "ui.category_insights",
+      "ui.category_updates",
+      {"key": "categories", "format": "list"},
+      {"key": "blog_posts.#.title", "format": "text"},
+      {"key": "blog_posts.#.excerpt", "format": "text"},
+      {"key": "blog_posts.#.author", "format": "text"},
+      {"key": "blog_posts.#.date", "format": "text"},
+      {"key": "blog_posts.#.read_time", "format": "text"},
+      {"key": "blog_posts.#.category", "format": "text"},
+      {"key": "blog_posts.#.tags", "format": "list"},
+      "popular_tags.title",
+      {"key": "popular_tags.tags", "format": "list"}
+    ]
   }
 }

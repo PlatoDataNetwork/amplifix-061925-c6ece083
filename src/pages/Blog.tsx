@@ -35,6 +35,9 @@ interface BlogData {
       no_articles_found: string;
       view_all_articles: string;
     };
+    ui: {
+      read_full_article: string;
+    };
     categories: string[];
     blog_posts: BlogPost[];
     popular_tags: {
@@ -150,6 +153,7 @@ const Blog = () => {
                   post.id === 3 ? "/intel/investor-engagement-article" :
                   undefined
                 }
+                buttonText={blogData?.blog.ui.read_full_article}
               />
             ))}
           </div>
