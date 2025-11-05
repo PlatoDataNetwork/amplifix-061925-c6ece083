@@ -1,8 +1,10 @@
-import MainHeader from "@/components/MainHeader";
-import Footer from "@/components/Footer";
+import { Shield, Target, TrendingUp, Users, CheckCircle, Award } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { CheckCircle, Users, Target, Award } from "lucide-react";
+import MainHeader from "@/components/MainHeader";
+import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { useJsonData } from "@/hooks/useJsonData";
 import { AboutData } from "@/types/about";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,9 +15,10 @@ const About = () => {
   useLanguage(); // Auto-translates page
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <MainHeader />
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <SEOHead title="About AmplifiX - AI-Powered Corporate Communications" />
+      <MainHeader />
         <div className="container mx-auto py-12 md:py-20 px-4">
           <div className="text-center max-w-4xl mx-auto">
             <Skeleton className="h-12 w-3/4 mx-auto mb-6" />

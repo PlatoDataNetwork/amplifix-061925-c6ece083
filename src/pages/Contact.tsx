@@ -1,5 +1,6 @@
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -143,9 +144,10 @@ const Contact = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <MainHeader />
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <SEOHead title="Contact AmplifiX - Get In Touch With Our Team" />
+      <MainHeader />
         <div className="pt-24 container mx-auto py-20 px-4">
           <div className="text-center max-w-4xl mx-auto">
             <Skeleton className="h-12 w-3/4 mx-auto mb-4" />

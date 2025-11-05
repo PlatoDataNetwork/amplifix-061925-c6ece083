@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Building, Users, Rocket, TrendingUp, LucideIcon } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { useJsonData } from "@/hooks/useJsonData";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -64,6 +65,7 @@ const Solutions = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEOHead title="Solutions - AmplifiX Corporate Communications Platform" />
       <MainHeader />
       
       {/* Hero Section */}

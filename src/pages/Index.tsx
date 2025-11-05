@@ -5,6 +5,7 @@ import { Shield, Zap, LockKeyhole, Star, CheckCircle, Users, Globe, Award, Brain
 import Footer from "@/components/Footer";
 import SignUpModal from "@/components/SignUpModal";
 import MainHeader from "@/components/MainHeader";
+import SEOHead from "@/components/SEOHead";
 import { useState } from "react";
 import { useJsonData } from "@/hooks/useJsonData";
 import { HomeData } from "@/types/home";
@@ -39,6 +40,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
+      <SEOHead />
       <MainHeader />
 
       {/* Hero Section - Optimized for mobile */}

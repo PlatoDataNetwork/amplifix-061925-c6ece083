@@ -7,6 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Check, X, Shield, ArrowRight } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { useJsonData } from "@/hooks/useJsonData";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -115,6 +116,7 @@ const Pricing = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Pricing Plans - AmplifiX Corporate Communications" />
       <Helmet>
         <title>{data.pricing.seo.title}</title>
         <meta name="description" content={data.pricing.seo.description} />

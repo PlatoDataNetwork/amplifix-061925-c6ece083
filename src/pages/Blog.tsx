@@ -1,7 +1,7 @@
-
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import MainHeader from "@/components/MainHeader";
+import SEOHead from "@/components/SEOHead";
 import FeaturedPost from "@/components/FeaturedPost";
 import BlogPostCard from "@/components/BlogPostCard";
 import NewsletterSignup from "@/components/NewsletterSignup";
@@ -75,6 +75,7 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEOHead title="AmplifiX Intelligence - AI & Corporate Communications Insights" />
       <MainHeader />
 
       <div className="pt-24 container mx-auto py-8 md:py-12 px-4">
