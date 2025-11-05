@@ -8,9 +8,8 @@ import NewsletterSignup from "@/components/NewsletterSignup";
 import RSSFeed from "@/components/RSSFeed";
 import { useJsonData } from "@/hooks/useJsonData";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useMemo, useState, useEffect } from "react";
-import { translateText } from "@/utils/translations";
-import { getLanguageFromPath } from "@/utils/language";
+import { useMemo } from "react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface BlogPost {
   id: number;
@@ -53,16 +52,9 @@ const Blog = () => {
   const { data: blogData } = useJsonData<BlogData>('blog-intel.json');
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [currentLanguage, setCurrentLanguage] = useState('en');
+  useLanguage(); // Auto-translates page
   
   const selectedTag = searchParams.get('tag');
-
-  useEffect(() => {
-    const langCode = getLanguageFromPath() || 'en';
-    setCurrentLanguage(langCode);
-  }, []);
-
-  const t = (text: string) => translateText(text, currentLanguage);
   
   const allBlogPosts = blogData?.blog.blog_posts || [];
   const categories = blogData?.blog.categories || ["All", "Technology", "Analytics", "Security", "Insights", "Updates"];
@@ -90,22 +82,22 @@ const Blog = () => {
         <div className="text-center mb-12 md:mb-16">
           <div className="inline-block mb-6">
             <div className="bg-gradient-to-r from-[#8A3FFC]/10 to-[#3B82F6]/10 text-[#8A3FFC] rounded-full px-4 md:px-6 py-2 border border-[#8A3FFC]/20 text-sm md:text-base">
-              {t(blogData?.blog.hero.badge_text || 'Latest Intelligence')}
+              {blogData?.blog.hero.badge_text || 'Latest Intelligence'}
             </div>
           </div>
           <h1 className="text-3xl md:text-5xl font-bold mb-6">
             {blogData?.blog.hero.title ? (
               blogData.blog.hero.title.includes('Intel') ? (
-                <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">{t('Intel')}</span></>
+                <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intel</span></>
               ) : (
-                t(blogData.blog.hero.title)
+                blogData.blog.hero.title
               )
             ) : (
-              <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">{t('Intel')}</span></>
+              <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intel</span></>
             )}
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
-            {t(blogData?.blog.hero.description || 'Stay updated with the latest in AI intelligence, corporate communications insights, and product updates from the AmplifiX team.')}
+            {blogData?.blog.hero.description || 'Stay updated with the latest in AI intelligence, corporate communications insights, and product updates from the AmplifiX team.'}
           </p>
         </div>
 

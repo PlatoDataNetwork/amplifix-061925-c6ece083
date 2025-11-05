@@ -10,8 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useJsonData } from "@/hooks/useJsonData";
 import { Skeleton } from "@/components/ui/skeleton";
-import { translateText } from "@/utils/translations";
-import { getLanguageFromPath } from "@/utils/language";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface ContactData {
   contact: {
@@ -75,13 +74,7 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-
-  useEffect(() => {
-    const langCode = getLanguageFromPath() || 'en';
-    setCurrentLanguage(langCode);
-  }, []);
-
-  const t = (text: string) => translateText(text, currentLanguage);
+  useLanguage(); // Auto-translates page
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

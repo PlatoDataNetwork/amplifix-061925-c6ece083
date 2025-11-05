@@ -5,9 +5,7 @@ import { Link } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useJsonData } from "@/hooks/useJsonData";
-import { translateText } from "@/utils/translations";
-import { getLanguageFromPath } from "@/utils/language";
-import { useState, useEffect } from "react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface FAQItem {
   question: string;
@@ -29,14 +27,7 @@ interface FAQData {
 
 const FAQ = () => {
   const { data, isLoading, error } = useJsonData<FAQData>('faq.json');
-  const [currentLanguage, setCurrentLanguage] = useState('en');
-
-  useEffect(() => {
-    const langCode = getLanguageFromPath() || 'en';
-    setCurrentLanguage(langCode);
-  }, []);
-
-  const t = (text: string) => translateText(text, currentLanguage);
+  useLanguage(); // Auto-translates page
 
   if (isLoading) {
     return (
@@ -77,10 +68,10 @@ const FAQ = () => {
       <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
-            {t(data.faq.hero_title)} <span className="text-highlight-blue">{t(data.faq.hero_title_highlight)}</span>
+            {data.faq.hero_title} <span className="text-highlight-blue">{data.faq.hero_title_highlight}</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            {t(data.faq.hero_description)}
+            {data.faq.hero_description}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <Link to={data.faq.hero_cta_primary_link} className="w-full sm:w-auto">
@@ -120,10 +111,10 @@ const FAQ = () => {
                 className="bg-card p-6 rounded-xl border border-border"
               >
                 <AccordionTrigger className="text-left">
-                  {t(faq.question)}
+                  {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground">
-                  {t(faq.answer)}
+                  {faq.answer}
                 </AccordionContent>
               </AccordionItem>
             ))}

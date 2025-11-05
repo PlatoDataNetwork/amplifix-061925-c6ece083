@@ -8,8 +8,7 @@ import { Check, X, Shield, ArrowRight } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { useJsonData } from "@/hooks/useJsonData";
-import { translateText } from "@/utils/translations";
-import { getLanguageFromPath } from "@/utils/language";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface PricingData {
   pricing: {
@@ -83,14 +82,7 @@ interface PricingData {
 const Pricing = () => {
   const { data, isLoading, error } = useJsonData<PricingData>('pricing.json');
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("monthly");
-  const [currentLanguage, setCurrentLanguage] = useState('en');
-
-  useEffect(() => {
-    const langCode = getLanguageFromPath() || 'en';
-    setCurrentLanguage(langCode);
-  }, []);
-
-  const t = (text: string) => translateText(text, currentLanguage);
+  useLanguage(); // Auto-translates page
 
   if (isLoading) {
     return (

@@ -4,9 +4,7 @@ import { Building, Users, Rocket, TrendingUp, LucideIcon } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { useJsonData } from "@/hooks/useJsonData";
-import { translateText } from "@/utils/translations";
-import { getLanguageFromPath } from "@/utils/language";
-import { useState, useEffect } from "react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface SolutionItem {
   title: string;
@@ -38,14 +36,7 @@ const iconMap: Record<string, LucideIcon> = {
 
 const Solutions = () => {
   const { data, isLoading, error } = useJsonData<SolutionsData>('solutions.json');
-  const [currentLanguage, setCurrentLanguage] = useState('en');
-
-  useEffect(() => {
-    const langCode = getLanguageFromPath() || 'en';
-    setCurrentLanguage(langCode);
-  }, []);
-
-  const t = (text: string) => translateText(text, currentLanguage);
+  useLanguage(); // Auto-translates page
 
   if (isLoading) {
     return (
@@ -79,10 +70,10 @@ const Solutions = () => {
       <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
-            {t(data.solutions.hero_title)} <span className="text-highlight-blue">{t(data.solutions.hero_title_highlight)}</span>
+            {data.solutions.hero_title} <span className="text-highlight-blue">{data.solutions.hero_title_highlight}</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            {t(data.solutions.hero_description)}
+            {data.solutions.hero_description}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <Link to={data.solutions.hero_cta_primary_link} className="w-full sm:w-auto">

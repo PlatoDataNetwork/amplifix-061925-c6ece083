@@ -6,20 +6,11 @@ import { CheckCircle, Users, Target, Award } from "lucide-react";
 import { useJsonData } from "@/hooks/useJsonData";
 import { AboutData } from "@/types/about";
 import { Skeleton } from "@/components/ui/skeleton";
-import { translateText } from "@/utils/translations";
-import { getLanguageFromPath } from "@/utils/language";
-import { useEffect, useState } from "react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const About = () => {
   const { data, isLoading, error } = useJsonData<AboutData>('about.json');
-  const [currentLanguage, setCurrentLanguage] = useState('en');
-
-  useEffect(() => {
-    const langCode = getLanguageFromPath() || 'en';
-    setCurrentLanguage(langCode);
-  }, []);
-
-  const t = (text: string) => translateText(text, currentLanguage);
+  useLanguage(); // Auto-translates page
 
   if (isLoading) {
     return (
@@ -67,10 +58,10 @@ const About = () => {
       <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
-            {t(data.about.hero.title)}
+            {data.about.hero.title}
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            {t(data.about.hero.description)}
+            {data.about.hero.description}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <Link to="/contact" className="w-full sm:w-auto">
@@ -78,7 +69,7 @@ const About = () => {
                 size="lg" 
                 className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {t(data.about.hero.cta_primary)}
+                {data.about.hero.cta_primary}
               </Button>
             </Link>
             <a 
@@ -92,7 +83,7 @@ const About = () => {
                 variant="outline" 
                 className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {t(data.about.hero.cta_secondary)}
+                {data.about.hero.cta_secondary}
               </Button>
             </a>
           </div>
@@ -108,9 +99,9 @@ const About = () => {
               return (
                 <div key={index} className="bg-card p-6 md:p-8 rounded-xl border border-border text-center">
                   <IconComponent className="h-10 w-10 md:h-12 md:w-12 text-highlight-blue mx-auto mb-4" />
-                  <h3 className="text-lg md:text-xl font-bold mb-4">{t(card.title)}</h3>
+                  <h3 className="text-lg md:text-xl font-bold mb-4">{card.title}</h3>
                   <p className="text-sm md:text-base text-muted-foreground">
-                    {t(card.description)}
+                    {card.description}
                   </p>
                 </div>
               );
@@ -122,16 +113,16 @@ const About = () => {
       {/* Features Section */}
       <section className="container mx-auto py-12 md:py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">{t(data.about.features.title)}</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">{data.about.features.title}</h2>
           
           <div className="space-y-6">
             {data.about.features.items.map((item, index) => (
               <div key={index} className="flex items-start gap-4">
                 <CheckCircle className="h-6 w-6 text-highlight-blue mt-1 flex-shrink-0" />
                 <div>
-                  <h3 className="text-base md:text-lg font-bold mb-2">{t(item.title)}</h3>
+                  <h3 className="text-base md:text-lg font-bold mb-2">{item.title}</h3>
                   <p className="text-sm md:text-base text-muted-foreground">
-                    {t(item.description)}
+                    {item.description}
                   </p>
                 </div>
               </div>
