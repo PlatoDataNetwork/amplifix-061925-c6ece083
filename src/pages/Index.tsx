@@ -11,6 +11,7 @@ import { useJsonData } from "@/hooks/useJsonData";
 import { HomeData } from "@/types/home";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useTranslation } from "react-i18next";
 import {
   Accordion,
   AccordionContent,
@@ -19,9 +20,10 @@ import {
 } from "@/components/ui/accordion";
 
 const Index = () => {
+  const { t } = useTranslation(['home', 'common']);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const { data: homeData, isLoading, error } = useJsonData<HomeData>('home.json');
-  useLanguage(); // Auto-translates page
+  useLanguage();
 
   const handleGetStartedClick = () => {
     setIsSignUpModalOpen(true);
@@ -51,7 +53,7 @@ const Index = () => {
               {isLoading ? (
                 <Skeleton className="h-4 w-48" />
               ) : (
-                homeData?.home.hero.badge || 'AI-Powered IR & Corporate Communications'
+                t('home:hero.badge')
               )}
             </div>
           </div>
@@ -59,14 +61,14 @@ const Index = () => {
             {isLoading ? (
               <Skeleton className="h-16 w-96 mx-auto" />
             ) : (
-              homeData?.home.hero.title || 'Amplifi Your Communications'
+              t('home:hero.title')
             )}
           </h2>
           <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-12 max-w-3xl mx-auto px-2">
             {isLoading ? (
               <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
             ) : (
-              homeData?.home.hero.description || 'AmplifiX leverages cutting-edge AI to transform how public and private companies manage investor relations and corporate communications.'
+              t('home:hero.description')
             )}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">

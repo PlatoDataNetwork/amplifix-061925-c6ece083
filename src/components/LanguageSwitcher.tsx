@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Globe, ChevronDown } from "lucide-react";
-import { translatePage } from "@/utils/translations";
+import { useTranslation } from "react-i18next";
 import { getLanguageFromPath, buildLanguageUrl } from "@/utils/language";
 
 interface Language {
@@ -49,17 +49,21 @@ interface LanguageSwitcherProps {
 const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { i18n } = useTranslation();
   const [currentLanguage, setCurrentLanguage] = useState<Language>(languages[0]);
   const [isTranslating, setIsTranslating] = useState(false);
 
   const handleTranslate = async (langCode: string) => {
     setIsTranslating(true);
-    console.log('Switching to language path:', langCode);
+    console.log('Switching to language:', langCode);
     
     try {
       const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
       setCurrentLanguage(selectedLang);
       localStorage.setItem('selectedLanguage', langCode);
+      
+      // Change i18next language
+      await i18n.changeLanguage(langCode);
       
       // Build new path-based URL
       const newPath = buildLanguageUrl(langCode, location.pathname);
@@ -77,24 +81,30 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
     // Detect language from URL path
     const pathLang = getLanguageFromPath();
     
-    if (pathLang && pathLang !== 'en') {
+    if (pathLang) {
       const detectedLanguage = languages.find(lang => lang.code === pathLang);
       if (detectedLanguage) {
         console.log('Detected language from path:', pathLang);
         setCurrentLanguage(detectedLanguage);
         localStorage.setItem('selectedLanguage', pathLang);
+        if (i18n.language !== pathLang) {
+          i18n.changeLanguage(pathLang);
+        }
       }
     } else {
       // Check saved preference as fallback
       const savedLang = localStorage.getItem('selectedLanguage');
-      if (savedLang && savedLang !== 'en') {
+      if (savedLang) {
         const savedLanguage = languages.find(lang => lang.code === savedLang);
         if (savedLanguage) {
           setCurrentLanguage(savedLanguage);
+          if (i18n.language !== savedLang) {
+            i18n.changeLanguage(savedLang);
+          }
         }
       }
     }
-  }, [location.pathname]);
+  }, [location.pathname, i18n]);
 
   if (isMobile) {
     return (

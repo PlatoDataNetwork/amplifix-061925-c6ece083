@@ -1,0 +1,77 @@
+{
+  "hero": {
+    "badge": "AI-Powered IR & Corporate Communications",
+    "title": "Amplifi Your Communications",
+    "description": "AmplifiX leverages cutting-edge AI to transform how public and private companies manage investor relations and corporate communications."
+  },
+  "about": {
+    "title": "About AmplifiX",
+    "description": "We're revolutionizing corporate communications through AI-driven insights, automated content generation, and intelligent stakeholder engagement platforms.",
+    "aiPowered": {
+      "title": "AI-Powered Intelligence",
+      "description": "Advanced machine learning algorithms analyze market sentiment and optimize communications."
+    },
+    "marketLeadership": {
+      "title": "Market Leadership",
+      "description": "Trusted by Fortune 500 companies and emerging growth businesses worldwide."
+    },
+    "strategicFocus": {
+      "title": "Strategic Focus",
+      "description": "Tailored solutions for both public and private companies at every stage of growth."
+    }
+  },
+  "features": {
+    "title": "Powerful AI Features",
+    "description": "Transform your corporate communications with our comprehensive suite of AI-powered tools.",
+    "smartAnalytics": {
+      "title": "Smart Analytics Dashboard",
+      "description": "Real-time insights into market sentiment, media coverage, and investor engagement with AI-powered predictive analytics."
+    },
+    "aiContent": {
+      "title": "AI Content Generation",
+      "description": "Generate compelling press releases, investor updates, and corporate communications tailored to your brand voice and audience."
+    },
+    "stakeholder": {
+      "title": "Stakeholder Management",
+      "description": "Intelligent CRM for investors, analysts, media contacts, and other key stakeholders with automated engagement tracking."
+    },
+    "strategicInsights": {
+      "title": "Strategic Insights",
+      "description": "AI-driven recommendations for timing, messaging, and channel optimization to maximize impact and reach."
+    }
+  },
+  "solutions": {
+    "title": "Solutions for Every Stage",
+    "description": "Whether you're preparing for an IPO or managing ongoing investor relations, AmplifiX adapts to your company's unique needs.",
+    "publicCompanies": {
+      "title": "Public Companies",
+      "earnings": {
+        "title": "Earnings Communications",
+        "description": "Automated earnings call transcripts and investor materials"
+      },
+      "regulatory": {
+        "title": "Regulatory Compliance",
+        "description": "SEC filing assistance and compliance monitoring"
+      },
+      "analyst": {
+        "title": "Analyst Relations",
+        "description": "AI-powered analyst sentiment tracking and engagement"
+      }
+    },
+    "privateCompanies": {
+      "title": "Private Companies",
+      "fundraising": {
+        "title": "Fundraising Support",
+        "description": "Pitch deck optimization and investor outreach automation"
+      },
+      "brandBuilding": {
+        "title": "Brand Building",
+        "description": "Strategic PR campaigns and thought leadership content"
+      },
+      "ipoPrep": {
+        "title": "IPO Preparation",
+        "description": "Comprehensive readiness assessment and roadmap"
+      }
+    }
+  }
+}

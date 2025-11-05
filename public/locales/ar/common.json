@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "about": "حول",
+    "solutions": "الحلول",
+    "showcase": "عرض",
+    "intel": "المعلومات",
+    "faq": "الأسئلة الشائعة",
+    "contact": "اتصال",
+    "login": "تسجيل الدخول"
+  },
+  "buttons": {
+    "bookDemo": "احجز عرضًا تجريبيًا",
+    "learnMore": "اعرف المزيد →",
+    "amplifyBrand": "ضخّم علامتك التجارية →",
+    "contactUs": "اتصل بنا",
+    "sendMessage": "إرسال رسالة"
+  },
+  "footer": {
+    "platform": "المنصة",
+    "solutions": "الحلول",
+    "company": "الشركة",
+    "home": "الرئيسية",
+    "publicCompanies": "الشركات العامة",
+    "privateCompanies": "الشركات الخاصة",
+    "ipoPreparation": "التحضير للاكتتاب العام",
+    "privacyPolicy": "سياسة الخصوصية",
+    "compliance": "الامتثال",
+    "termsOfService": "شروط الخدمة",
+    "dataProcessing": "معالجة البيانات",
+    "copyright": "© {{year}} AmplifiX. جميع الحقوق محفوظة.",
+    "statusOnline": "أنظمة الذكاء الاصطناعي متصلة"
+  }
+}

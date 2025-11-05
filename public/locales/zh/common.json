@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "about": "关于",
+    "solutions": "解决方案",
+    "showcase": "展示",
+    "intel": "智能",
+    "faq": "常见问题",
+    "contact": "联系",
+    "login": "登录"
+  },
+  "buttons": {
+    "bookDemo": "预约演示",
+    "learnMore": "了解更多 →",
+    "amplifyBrand": "放大您的品牌 →",
+    "contactUs": "联系我们",
+    "sendMessage": "发送消息"
+  },
+  "footer": {
+    "platform": "平台",
+    "solutions": "解决方案",
+    "company": "公司",
+    "home": "首页",
+    "publicCompanies": "上市公司",
+    "privateCompanies": "私人公司",
+    "ipoPreparation": "IPO准备",
+    "privacyPolicy": "隐私政策",
+    "compliance": "合规",
+    "termsOfService": "服务条款",
+    "dataProcessing": "数据处理",
+    "copyright": "© {{year}} AmplifiX. 版权所有。",
+    "statusOnline": "AI系统在线"
+  }
+}
