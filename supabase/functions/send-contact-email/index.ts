@@ -12,8 +12,73 @@ interface ContactFormRequest {
   firstName: string;
   lastName: string;
   email: string;
-  company: string;
+  company?: string;
+  companyType?: string;
   message: string;
+}
+
+// Security: Rate limiting using in-memory store (resets on function restart)
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_WINDOW = 60000; // 1 minute
+const MAX_REQUESTS = 3; // 3 requests per minute per IP
+
+// Security: Input validation and sanitization
+function validateAndSanitize(data: ContactFormRequest): ContactFormRequest | null {
+  const nameRegex = /^[a-zA-Z\s'-]{1,50}$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  // Validate firstName
+  if (!data.firstName || !nameRegex.test(data.firstName.trim())) {
+    return null;
+  }
+  
+  // Validate lastName
+  if (!data.lastName || !nameRegex.test(data.lastName.trim())) {
+    return null;
+  }
+  
+  // Validate email
+  if (!data.email || !emailRegex.test(data.email.trim()) || data.email.length > 255) {
+    return null;
+  }
+  
+  // Validate message
+  if (!data.message || data.message.trim().length < 10 || data.message.length > 2000) {
+    return null;
+  }
+  
+  // Sanitize company (optional)
+  const company = data.company ? data.company.trim().substring(0, 100) : "";
+  
+  // Sanitize HTML to prevent XSS
+  const sanitizeHtml = (str: string) => 
+    str.replace(/[<>]/g, (char) => char === '<' ? '&lt;' : '&gt;');
+  
+  return {
+    firstName: sanitizeHtml(data.firstName.trim()),
+    lastName: sanitizeHtml(data.lastName.trim()),
+    email: data.email.trim().toLowerCase(),
+    company: sanitizeHtml(company),
+    companyType: data.companyType,
+    message: sanitizeHtml(data.message.trim())
+  };
+}
+
+function checkRateLimit(identifier: string): boolean {
+  const now = Date.now();
+  const record = rateLimitMap.get(identifier);
+  
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(identifier, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    return true;
+  }
+  
+  if (record.count >= MAX_REQUESTS) {
+    return false;
+  }
+  
+  record.count++;
+  return true;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -23,9 +88,41 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { firstName, lastName, email, company, message }: ContactFormRequest = await req.json();
+    // Security: Rate limiting by IP address
+    const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0] || "unknown";
+    
+    if (!checkRateLimit(clientIp)) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: "Too many requests. Please try again later." 
+        }),
+        {
+          status: 429,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
 
-    console.log("Received contact form submission:", { firstName, lastName, email, company });
+    const rawData: ContactFormRequest = await req.json();
+    
+    // Security: Validate and sanitize all inputs
+    const validatedData = validateAndSanitize(rawData);
+    
+    if (!validatedData) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: "Invalid input data. Please check your form and try again." 
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+    
+    const { firstName, lastName, email, company, message } = validatedData;
 
     // Send notification email to AmplifiX using Brevo API
     const notificationPayload = {
@@ -96,11 +193,6 @@ const handler = async (req: Request): Promise<Response> => {
     const notificationResult = await notificationResponse.json();
     const confirmationResult = await confirmationResponse.json();
 
-    console.log("Emails sent successfully:", { 
-      notification: notificationResult, 
-      confirmation: confirmationResult 
-    });
-
     return new Response(JSON.stringify({ 
       success: true, 
       message: "Email sent successfully" 
@@ -112,7 +204,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
   } catch (error: any) {
-    console.error("Error in send-contact-email function:", error);
+    // Security: Don't expose sensitive error details
     return new Response(
       JSON.stringify({ 
         success: false, 
