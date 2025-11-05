@@ -5,10 +5,12 @@ import { Shield, Zap, LockKeyhole, Star, CheckCircle, Users, Globe, Award, Brain
 import Footer from "@/components/Footer";
 import SignUpModal from "@/components/SignUpModal";
 import MainHeader from "@/components/MainHeader";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useJsonData } from "@/hooks/useJsonData";
 import { HomeData } from "@/types/home";
 import { Skeleton } from "@/components/ui/skeleton";
+import { translateText } from "@/utils/translations";
+import { getLanguageFromPath } from "@/utils/language";
 import {
   Accordion,
   AccordionContent,
@@ -19,6 +21,14 @@ import {
 const Index = () => {
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const { data: homeData, isLoading, error } = useJsonData<HomeData>('home.json');
+  const [currentLanguage, setCurrentLanguage] = useState('en');
+
+  useEffect(() => {
+    const langCode = getLanguageFromPath() || 'en';
+    setCurrentLanguage(langCode);
+  }, []);
+
+  const t = (text: string) => translateText(text, currentLanguage);
 
   const handleGetStartedClick = () => {
     setIsSignUpModalOpen(true);
@@ -47,7 +57,7 @@ const Index = () => {
               {isLoading ? (
                 <Skeleton className="h-4 w-48" />
               ) : (
-                homeData?.home.hero.badge || 'AI-Powered IR & Corporate Communications'
+                t(homeData?.home.hero.badge || 'AI-Powered IR & Corporate Communications')
               )}
             </div>
           </div>
@@ -55,14 +65,14 @@ const Index = () => {
             {isLoading ? (
               <Skeleton className="h-16 w-96 mx-auto" />
             ) : (
-              homeData?.home.hero.title || 'Amplifi Your Communications'
+              t(homeData?.home.hero.title || 'Amplifi Your Communications')
             )}
           </h2>
           <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-12 max-w-3xl mx-auto px-2">
             {isLoading ? (
               <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
             ) : (
-              homeData?.home.hero.description || 'AmplifiX leverages cutting-edge AI to transform how public and private companies manage investor relations and corporate communications.'
+              t(homeData?.home.hero.description || 'AmplifiX leverages cutting-edge AI to transform how public and private companies manage investor relations and corporate communications.')
             )}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
@@ -74,7 +84,7 @@ const Index = () => {
                 {isLoading ? (
                   <Skeleton className="h-4 w-32" />
                 ) : (
-                  homeData?.home.hero.buttons.primary || 'Amplifi Your Brand →'
+                  t(homeData?.home.hero.buttons.primary || 'Amplifi Your Brand →')
                 )}
               </Button>
             </Link>
@@ -92,7 +102,7 @@ const Index = () => {
                 {isLoading ? (
                   <Skeleton className="h-4 w-24" />
                 ) : (
-                  homeData?.home.hero.buttons.secondary || 'Book A Demo'
+                  t(homeData?.home.hero.buttons.secondary || 'Book A Demo')
                 )}
               </Button>
             </a>
@@ -107,14 +117,14 @@ const Index = () => {
             {isLoading ? (
               <Skeleton className="h-10 w-64 mx-auto" />
             ) : (
-              homeData?.home.about.title || 'About AmplifiX'
+              t(homeData?.home.about.title || 'About AmplifiX')
             )}
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto px-2">
             {isLoading ? (
               <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
             ) : (
-              homeData?.home.about.description || "We're revolutionizing corporate communications through AI-driven insights, automated content generation, and intelligent stakeholder engagement platforms."
+              t(homeData?.home.about.description || "We're revolutionizing corporate communications through AI-driven insights, automated content generation, and intelligent stakeholder engagement platforms.")
             )}
           </p>
         </div>
@@ -134,8 +144,8 @@ const Index = () => {
               return (
                 <div key={index} className="bg-card p-6 rounded-xl border border-border text-center">
                   <IconComponent className="h-12 w-12 text-highlight-blue mx-auto mb-4" />
-                  <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+                  <h3 className="text-xl font-bold mb-2">{t(feature.title)}</h3>
+                  <p className="text-muted-foreground">{t(feature.description)}</p>
                 </div>
               );
             })
@@ -174,14 +184,14 @@ const Index = () => {
             {isLoading ? (
               <Skeleton className="h-10 w-72 mx-auto" />
             ) : (
-              homeData?.home.features.title || 'Powerful AI Features'
+              t(homeData?.home.features.title || 'Powerful AI Features')
             )}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             {isLoading ? (
               <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
             ) : (
-              homeData?.home.features.description || 'Transform your corporate communications with our comprehensive suite of AI-powered tools.'
+              t(homeData?.home.features.description || 'Transform your corporate communications with our comprehensive suite of AI-powered tools.')
             )}
           </p>
         </div>
@@ -204,11 +214,11 @@ const Index = () => {
                   <div className="mb-4 w-12 h-12 rounded-lg bg-highlight-blue/20 flex items-center justify-center">
                     <IconComponent className="h-6 w-6 text-highlight-blue" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+                  <h3 className="text-xl font-bold mb-2">{t(feature.title)}</h3>
+                  <p className="text-muted-foreground">{t(feature.description)}</p>
                   <Link to="/solutions">
                     <Button variant="link" className="text-highlight-blue mt-4 p-0">
-                      {homeData?.home.hero.learn_more || 'Learn more →'}
+                      {t(homeData?.home.hero.learn_more || 'Learn more →')}
                     </Button>
                   </Link>
                 </div>
