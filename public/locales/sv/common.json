@@ -29,5 +29,10 @@
     "dataProcessing": "Databehandling",
     "copyright": "© {{year}} AmplifiX. Alla rättigheter förbehållna.",
     "statusOnline": "AI-system online"
+  },
+  "ui": {
+    "loading": "Laddar...",
+    "error": "Kunde inte ladda innehåll. Försök igen senare.",
+    "tryAgain": "Försök igen"
   }
 }

@@ -29,5 +29,10 @@
     "dataProcessing": "数据处理",
     "copyright": "© {{year}} AmplifiX. 版权所有。",
     "statusOnline": "AI系统在线"
+  },
+  "ui": {
+    "loading": "加载中...",
+    "error": "无法加载内容。请稍后重试。",
+    "tryAgain": "重试"
   }
 }

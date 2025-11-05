@@ -4,6 +4,8 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { useJsonData } from "@/hooks/useJsonData";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLanguage } from "@/hooks/useLanguage";
+import { useTranslation } from "react-i18next";
 
 interface PublicCompaniesData {
   public_companies: {
@@ -33,6 +35,8 @@ interface PublicCompaniesData {
 
 const PublicCompanies = () => {
   const { data, isLoading, error } = useJsonData<PublicCompaniesData>('public-companies.json');
+  const { t } = useTranslation('common');
+  useLanguage();
 
   if (isLoading) {
     return (
@@ -55,7 +59,7 @@ const PublicCompanies = () => {
       <div className="min-h-screen bg-background text-foreground">
         <MainHeader />
         <div className="pt-24 container mx-auto py-20 px-4 text-center">
-          <p className="text-destructive">Failed to load content</p>
+          <p className="text-destructive">{t('ui.error')}</p>
         </div>
         <Footer />
       </div>

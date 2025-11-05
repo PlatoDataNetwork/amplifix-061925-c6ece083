@@ -29,5 +29,10 @@
     "dataProcessing": "Data Processing",
     "copyright": "© {{year}} AmplifiX. All rights reserved.",
     "statusOnline": "AI Systems Online"
+  },
+  "ui": {
+    "loading": "Loading...",
+    "error": "Failed to load content. Please try again later.",
+    "tryAgain": "Try Again"
   }
 }

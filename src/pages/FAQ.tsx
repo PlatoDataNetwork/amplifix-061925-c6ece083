@@ -7,6 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Skeleton } from "@/components/ui/skeleton";
 import { useJsonData } from "@/hooks/useJsonData";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useTranslation } from "react-i18next";
 
 interface FAQItem {
   question: string;
@@ -28,7 +29,8 @@ interface FAQData {
 
 const FAQ = () => {
   const { data, isLoading, error } = useJsonData<FAQData>('faq.json');
-  useLanguage(); // Auto-translates page
+  const { t } = useTranslation('common');
+  useLanguage();
 
   if (isLoading) {
   return (
@@ -55,7 +57,7 @@ const FAQ = () => {
       <div className="min-h-screen bg-background text-foreground">
         <MainHeader />
         <div className="pt-24 container mx-auto py-20 px-4 text-center">
-          <p className="text-destructive">Failed to load FAQ content</p>
+          <p className="text-destructive">{t('ui.error')}</p>
         </div>
         <Footer />
       </div>

@@ -29,5 +29,10 @@
     "dataProcessing": "Processamento de dados",
     "copyright": "© {{year}} AmplifiX. Todos os direitos reservados.",
     "statusOnline": "Sistemas de IA online"
+  },
+  "ui": {
+    "loading": "Carregando...",
+    "error": "Falha ao carregar o conteúdo. Por favor, tente novamente mais tarde.",
+    "tryAgain": "Tentar novamente"
   }
 }

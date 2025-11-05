@@ -29,5 +29,10 @@
     "dataProcessing": "Gegevensverwerking",
     "copyright": "© {{year}} AmplifiX. Alle rechten voorbehouden.",
     "statusOnline": "AI-systemen online"
+  },
+  "ui": {
+    "loading": "Laden...",
+    "error": "Kon inhoud niet laden. Probeer het later opnieuw.",
+    "tryAgain": "Probeer opnieuw"
   }
 }

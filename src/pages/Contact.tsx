@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useJsonData } from "@/hooks/useJsonData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useTranslation } from "react-i18next";
 
 interface ContactData {
   contact: {
@@ -64,6 +65,7 @@ interface ContactData {
 
 const Contact = () => {
   const { data, isLoading, error } = useJsonData<ContactData>('contact.json');
+  const { t } = useTranslation('common');
   const [currentLanguage, setCurrentLanguage] = useState('en');
   const [formData, setFormData] = useState({
     firstName: "",
@@ -75,7 +77,7 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  useLanguage(); // Auto-translates page
+  useLanguage();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -168,7 +170,7 @@ const Contact = () => {
       <div className="min-h-screen bg-background text-foreground">
         <MainHeader />
         <div className="pt-24 container mx-auto py-20 px-4 text-center">
-          <p className="text-destructive">Failed to load contact content</p>
+          <p className="text-destructive">{t('ui.error')}</p>
         </div>
         <Footer />
       </div>

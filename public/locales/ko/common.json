@@ -29,5 +29,10 @@
     "dataProcessing": "데이터 처리",
     "copyright": "© {{year}} AmplifiX. 모든 권리 보유.",
     "statusOnline": "AI 시스템 온라인"
+  },
+  "ui": {
+    "loading": "로딩 중...",
+    "error": "콘텐츠를 로드하지 못했습니다. 나중에 다시 시도해 주세요.",
+    "tryAgain": "다시 시도"
   }
 }

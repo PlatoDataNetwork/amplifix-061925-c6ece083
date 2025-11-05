@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { useJsonData } from "@/hooks/useJsonData";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useTranslation } from "react-i18next";
 
 interface PricingData {
   pricing: {
@@ -82,15 +83,16 @@ interface PricingData {
 
 const Pricing = () => {
   const { data, isLoading, error } = useJsonData<PricingData>('pricing.json');
+  const { t } = useTranslation('common');
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("monthly");
-  useLanguage(); // Auto-translates page
+  useLanguage();
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
         <MainHeader />
         <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="text-center">Loading...</div>
+          <div className="text-center">{t('ui.loading')}</div>
         </div>
         <Footer />
       </div>
@@ -102,7 +104,7 @@ const Pricing = () => {
       <div className="min-h-screen bg-background">
         <MainHeader />
         <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="text-center">{error || 'Error loading pricing data'}</div>
+          <div className="text-center">{t('ui.error')}</div>
         </div>
         <Footer />
       </div>

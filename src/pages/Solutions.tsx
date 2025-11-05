@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { useJsonData } from "@/hooks/useJsonData";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useTranslation } from "react-i18next";
 
 interface SolutionItem {
   title: string;
@@ -37,14 +38,15 @@ const iconMap: Record<string, LucideIcon> = {
 
 const Solutions = () => {
   const { data, isLoading, error } = useJsonData<SolutionsData>('solutions.json');
-  useLanguage(); // Auto-translates page
+  const { t } = useTranslation('common');
+  useLanguage();
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <MainHeader />
         <div className="pt-24 container mx-auto py-20 px-4 text-center">
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">{t('ui.loading')}</p>
         </div>
         <Footer />
       </div>
@@ -56,7 +58,7 @@ const Solutions = () => {
       <div className="min-h-screen bg-background text-foreground">
         <MainHeader />
         <div className="pt-24 container mx-auto py-20 px-4 text-center">
-          <p className="text-destructive">Failed to load content. Please try again later.</p>
+          <p className="text-destructive">{t('ui.error')}</p>
         </div>
         <Footer />
       </div>

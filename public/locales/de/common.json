@@ -29,5 +29,10 @@
     "dataProcessing": "Datenverarbeitung",
     "copyright": "© {{year}} AmplifiX. Alle Rechte vorbehalten.",
     "statusOnline": "KI-Systeme online"
+  },
+  "ui": {
+    "loading": "Lädt...",
+    "error": "Inhalt konnte nicht geladen werden. Bitte versuchen Sie es später erneut.",
+    "tryAgain": "Erneut versuchen"
   }
 }

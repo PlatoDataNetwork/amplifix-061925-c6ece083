@@ -29,5 +29,10 @@
     "dataProcessing": "Veri işleme",
     "copyright": "© {{year}} AmplifiX. Tüm hakları saklıdır.",
     "statusOnline": "AI sistemleri çevrimiçi"
+  },
+  "ui": {
+    "loading": "Yükleniyor...",
+    "error": "İçerik yüklenemedi. Lütfen daha sonra tekrar deneyin.",
+    "tryAgain": "Tekrar dene"
   }
 }
