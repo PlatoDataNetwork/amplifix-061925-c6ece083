@@ -64,13 +64,13 @@ const Index = () => {
               t('home:hero.title')
             )}
           </h2>
-          <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-12 max-w-3xl mx-auto px-2">
+          <div className="text-base md:text-xl text-muted-foreground mb-6 md:mb-12 max-w-3xl mx-auto px-2">
             {isLoading ? (
               <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
             ) : (
               t('home:hero.description')
             )}
-          </p>
+          </div>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <Link to="/contact" className="w-full sm:w-auto">
               <Button 
