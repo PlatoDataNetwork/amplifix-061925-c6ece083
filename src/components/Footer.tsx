@@ -6,7 +6,7 @@ import { CommonData } from "@/types/common";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect } from "react";
 import { translateText } from "@/utils/translations";
-import { getLanguageFromSubdomain } from "@/utils/subdomain";
+import { getLanguageFromPath } from "@/utils/language";
 
 const Footer = () => {
   const [currentLanguage, setCurrentLanguage] = useState('en');
@@ -15,8 +15,7 @@ const Footer = () => {
 
   // Detect language changes
   useEffect(() => {
-    const langCode = getLanguageFromSubdomain() || 
-                     new URLSearchParams(window.location.search).get('lang') || 
+    const langCode = getLanguageFromPath() || 
                      localStorage.getItem('preferredLanguage') || 
                      'en';
     setCurrentLanguage(langCode);

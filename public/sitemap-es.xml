@@ -1,67 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  <!-- Homepage -->
-  <url>
-    <loc>https://es.amplifix.net/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://es.amplifix.net/" />
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  
-  <!-- Main Pages -->
-  <url>
-    <loc>https://es.amplifix.net/about</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/about" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://es.amplifix.net/about" />
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://es.amplifix.net/solutions</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/solutions" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://es.amplifix.net/solutions" />
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://es.amplifix.net/showcase</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/showcase" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://es.amplifix.net/showcase" />
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  
-  <url>
-    <loc>https://es.amplifix.net/intel</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/intel" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://es.amplifix.net/intel" />
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://es.amplifix.net/pricing</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/pricing" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://es.amplifix.net/pricing" />
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://es.amplifix.net/contact</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/contact" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://es.amplifix.net/contact" />
-    <lastmod>2025-01-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
+  <url><loc>https://www.amplifix.net/es/</loc><xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/" /><xhtml:link rel="alternate" hreflang="es" href="https://www.amplifix.net/es/" /><lastmod>2025-01-09</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.amplifix.net/es/about</loc><xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/about" /><xhtml:link rel="alternate" hreflang="es" href="https://www.amplifix.net/es/about" /><lastmod>2025-01-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.amplifix.net/es/solutions</loc><xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/solutions" /><xhtml:link rel="alternate" hreflang="es" href="https://www.amplifix.net/es/solutions" /><lastmod>2025-01-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.amplifix.net/es/showcase</loc><xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/showcase" /><xhtml:link rel="alternate" hreflang="es" href="https://www.amplifix.net/es/showcase" /><lastmod>2025-01-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.amplifix.net/es/intel</loc><xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/intel" /><xhtml:link rel="alternate" hreflang="es" href="https://www.amplifix.net/es/intel" /><lastmod>2025-01-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.amplifix.net/es/pricing</loc><xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/pricing" /><xhtml:link rel="alternate" hreflang="es" href="https://www.amplifix.net/es/pricing" /><lastmod>2025-01-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.amplifix.net/es/contact</loc><xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/contact" /><xhtml:link rel="alternate" hreflang="es" href="https://www.amplifix.net/es/contact" /><lastmod>2025-01-09</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
 </urlset>

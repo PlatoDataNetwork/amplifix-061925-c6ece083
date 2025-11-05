@@ -53,8 +53,8 @@ const App = () => (
           <PrivacyPopup />
           <BrowserRouter>
             <Routes>
+              {/* English routes (no prefix) */}
               <Route path="/" element={<Index />} />
-              
               <Route path="/api" element={<API />} />
               <Route path="/intel" element={<Blog />} />
               <Route path="/intel/amplifi-x-2-0-article" element={<AmplifiX2Article />} />
@@ -84,6 +84,39 @@ const App = () => (
               <Route path="/data-processing" element={<DataProcessing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+
+              {/* Language-prefixed routes (e.g., /ar/, /fr/) */}
+              <Route path="/:lang" element={<Index />} />
+              <Route path="/:lang/api" element={<API />} />
+              <Route path="/:lang/intel" element={<Blog />} />
+              <Route path="/:lang/intel/amplifi-x-2-0-article" element={<AmplifiX2Article />} />
+              <Route path="/:lang/intel/ai-intelligence-article" element={<AIIntelligenceArticle />} />
+              <Route path="/:lang/intel/advanced-analytics-article" element={<AdvancedAnalyticsArticle />} />
+              <Route path="/:lang/intel/investor-engagement-article" element={<InvestorEngagementArticle />} />
+              <Route path="/:lang/support" element={<Support />} />
+              <Route path="/:lang/solutions" element={<Solutions />} />
+              <Route path="/:lang/about" element={<About />} />
+              <Route path="/:lang/faq" element={<FAQ />} />
+              <Route path="/:lang/contact" element={<Contact />} />
+              <Route path="/:lang/pricing" element={<Pricing />} />
+              <Route path="/:lang/showcase" element={<Showcase />} />
+              <Route path="/:lang/showcase/silo-pharma" element={<SiloPharmaShowcase />} />
+              <Route path="/:lang/showcase/karbon-x" element={<KarbonXShowcase />} />
+              <Route path="/:lang/showcase/micropolis" element={<MicropolisShowcase />} />
+              <Route path="/:lang/showcase/micropolis/presentation" element={<MicropolisPresentation />} />
+              <Route path="/:lang/showcase/international-land-alliance" element={<InternationalLandAllianceShowcase />} />
+              <Route path="/:lang/showcase/abatis" element={<AbatisShowcase />} />
+              <Route path="/:lang/solutions/public-companies" element={<PublicCompanies />} />
+              <Route path="/:lang/solutions/private-companies" element={<PrivateCompanies />} />
+              <Route path="/:lang/solutions/ipo-preparation" element={<IPOPreparation />} />
+              <Route path="/:lang/solutions/fundraising" element={<Fundraising />} />
+              <Route path="/:lang/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/:lang/compliance" element={<Compliance />} />
+              <Route path="/:lang/terms-of-service" element={<TermsOfService />} />
+              <Route path="/:lang/data-processing" element={<DataProcessing />} />
+              <Route path="/:lang/login" element={<Login />} />
+              <Route path="/:lang/signup" element={<Signup />} />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
