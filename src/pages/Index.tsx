@@ -25,6 +25,71 @@ const Index = () => {
   const { data: homeData, isLoading, error } = useJsonData<HomeData>('home.json');
   useLanguage();
 
+  // Build i18n-driven content arrays so sections translate correctly
+  const aboutFeatures = [
+    {
+      title: t('home:about.aiPowered.title'),
+      description: t('home:about.aiPowered.description'),
+    },
+    {
+      title: t('home:about.marketLeadership.title'),
+      description: t('home:about.marketLeadership.description'),
+    },
+    {
+      title: t('home:about.strategicFocus.title'),
+      description: t('home:about.strategicFocus.description'),
+    },
+  ];
+
+  const featureItems = [
+    {
+      title: t('home:features.smartAnalytics.title'),
+      description: t('home:features.smartAnalytics.description'),
+    },
+    {
+      title: t('home:features.aiContent.title'),
+      description: t('home:features.aiContent.description'),
+    },
+    {
+      title: t('home:features.stakeholder.title'),
+      description: t('home:features.stakeholder.description'),
+    },
+    {
+      title: t('home:features.strategicInsights.title'),
+      description: t('home:features.strategicInsights.description'),
+    },
+  ];
+
+  const publicCompanyItems = [
+    {
+      title: t('home:solutions.publicCompanies.earnings.title'),
+      description: t('home:solutions.publicCompanies.earnings.description'),
+    },
+    {
+      title: t('home:solutions.publicCompanies.regulatory.title'),
+      description: t('home:solutions.publicCompanies.regulatory.description'),
+    },
+    {
+      title: t('home:solutions.publicCompanies.analyst.title'),
+      description: t('home:solutions.publicCompanies.analyst.description'),
+    },
+  ];
+
+  const privateCompanyItems = [
+    {
+      title: t('home:solutions.privateCompanies.fundraising.title'),
+      description: t('home:solutions.privateCompanies.fundraising.description'),
+    },
+    {
+      title: t('home:solutions.privateCompanies.brandBuilding.title'),
+      description: t('home:solutions.privateCompanies.brandBuilding.description'),
+    },
+    {
+      title: t('home:solutions.privateCompanies.ipoPrep.title'),
+      description: t('home:solutions.privateCompanies.ipoPrep.description'),
+    },
+  ];
+
   const handleGetStartedClick = () => {
     setIsSignUpModalOpen(true);
   };
@@ -118,8 +183,8 @@ const Index = () => {
                 <Skeleton className="h-16 w-full" />
               </div>
             ))
-          ) : homeData ? (
-            homeData.home.about.features.map((feature, index) => {
+          ) : (
+            aboutFeatures.map((feature, index) => {
               const IconComponent = index === 0 ? Brain : index === 1 ? TrendingUp : Target;
               return (
                 <div key={index} className="bg-card p-6 rounded-xl border border-border text-center">
@@ -129,30 +194,6 @@ const Index = () => {
                 </div>
               );
             })
-          ) : (
-            <>
-              <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <Brain className="h-12 w-12 text-highlight-blue mx-auto mb-4" />
-                <h3 className="text-xl font-bold mb-2">AI-Powered Intelligence</h3>
-                <p className="text-muted-foreground">
-                  Advanced machine learning algorithms analyze market sentiment and optimize communications.
-                </p>
-              </div>
-              <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <TrendingUp className="h-12 w-12 text-highlight-blue mx-auto mb-4" />
-                <h3 className="text-xl font-bold mb-2">Market Leadership</h3>
-                <p className="text-muted-foreground">
-                  Trusted by Fortune 500 companies and emerging growth businesses worldwide.
-                </p>
-              </div>
-              <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <Target className="h-12 w-12 text-highlight-blue mx-auto mb-4" />
-                <h3 className="text-xl font-bold mb-2">Strategic Focus</h3>
-                <p className="text-muted-foreground">
-                  Tailored solutions for both public and private companies at every stage of growth.
-                </p>
-              </div>
-            </>
           )}
         </div>
       </section>
@@ -178,8 +219,8 @@ const Index = () => {
                 <Skeleton className="h-4 w-24" />
               </div>
             ))
-          ) : homeData ? (
-            homeData.home.features.items.map((feature, index) => {
+          ) : (
+            featureItems.map((feature, index) => {
               const IconComponent = index === 0 ? BarChart3 : index === 1 ? MessageSquare : index === 2 ? Users : Lightbulb;
               return (
                 <div key={index} className="bg-card p-6 rounded-xl border border-border">
@@ -190,75 +231,12 @@ const Index = () => {
                   <p className="text-muted-foreground">{feature.description}</p>
                   <Link to="/solutions">
                     <Button variant="link" className="text-highlight-blue mt-4 p-0">
-                      {homeData?.home.hero.learn_more || 'Learn more →'}
+                      {t('home:hero.learn_more')}
                     </Button>
                   </Link>
                 </div>
               );
             })
-          ) : (
-            <>
-              <div className="bg-card p-6 rounded-xl border border-border">
-                <div className="mb-4 w-12 h-12 rounded-lg bg-highlight-blue/20 flex items-center justify-center">
-                  <BarChart3 className="h-6 w-6 text-highlight-blue" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">Smart Analytics Dashboard</h3>
-                <p className="text-muted-foreground">
-                  Real-time insights into market sentiment, media coverage, and investor engagement 
-                  with AI-powered predictive analytics.
-                </p>
-                <Link to="/solutions">
-                  <Button variant="link" className="text-highlight-blue mt-4 p-0">
-                    Learn more →
-                  </Button>
-                </Link>
-              </div>
-              <div className="bg-card p-6 rounded-xl border border-border">
-                <div className="mb-4 w-12 h-12 rounded-lg bg-highlight-blue/20 flex items-center justify-center">
-                  <MessageSquare className="h-6 w-6 text-highlight-blue" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">AI Content Generation</h3>
-                <p className="text-muted-foreground">
-                  Generate compelling press releases, investor updates, and corporate communications 
-                  tailored to your brand voice and audience.
-                </p>
-                <Link to="/solutions">
-                  <Button variant="link" className="text-highlight-blue mt-4 p-0">
-                    Learn more →
-                  </Button>
-                </Link>
-              </div>
-              <div className="bg-card p-6 rounded-xl border border-border">
-                <div className="mb-4 w-12 h-12 rounded-lg bg-highlight-blue/20 flex items-center justify-center">
-                  <Users className="h-6 w-6 text-highlight-blue" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">Stakeholder Management</h3>
-                <p className="text-muted-foreground">
-                  Intelligent CRM for investors, analysts, media contacts, and other key stakeholders 
-                  with automated engagement tracking.
-                </p>
-                <Link to="/solutions">
-                  <Button variant="link" className="text-highlight-blue mt-4 p-0">
-                    Learn more →
-                  </Button>
-                </Link>
-              </div>
-              <div className="bg-card p-6 rounded-xl border border-border">
-                <div className="mb-4 w-12 h-12 rounded-lg bg-highlight-blue/20 flex items-center justify-center">
-                  <Lightbulb className="h-6 w-6 text-highlight-blue" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">Strategic Insights</h3>
-                <p className="text-muted-foreground">
-                  AI-driven recommendations for timing, messaging, and channel optimization 
-                  to maximize impact and reach.
-                </p>
-                <Link to="/solutions">
-                  <Button variant="link" className="text-highlight-blue mt-4 p-0">
-                    Learn more →
-                  </Button>
-                </Link>
-              </div>
-            </>
           )}
         </div>
       </section>
