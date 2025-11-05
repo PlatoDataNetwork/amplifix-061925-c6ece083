@@ -9,7 +9,7 @@ import { useJsonData } from "@/hooks/useJsonData";
 import { CommonData } from "@/types/common";
 import { Skeleton } from "@/components/ui/skeleton";
 import { translateText } from "@/utils/translations";
-import { getLanguageFromSubdomain } from "@/utils/subdomain";
+import { getLanguageFromPath } from "@/utils/language";
 
 const MainHeader = () => {
   const [isSticky, setIsSticky] = useState(false);
@@ -35,7 +35,7 @@ const MainHeader = () => {
 
   // Detect language changes
   useEffect(() => {
-    const langCode = getLanguageFromSubdomain() || 
+    const langCode = getLanguageFromPath() || 
                      new URLSearchParams(window.location.search).get('lang') || 
                      localStorage.getItem('preferredLanguage') || 
                      'en';

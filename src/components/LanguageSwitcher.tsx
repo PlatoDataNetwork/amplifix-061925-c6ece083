@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu,
@@ -7,8 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Globe, ChevronDown } from "lucide-react";
-import { translatePage } from "@/utils/translations";
-import { getLanguageFromSubdomain, buildLanguageUrl } from "@/utils/subdomain";
+import { getLanguageFromPath, buildLanguageUrl } from "@/utils/language";
 
 interface Language {
   code: string;
@@ -46,23 +46,27 @@ interface LanguageSwitcherProps {
 }
 
 const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [currentLanguage, setCurrentLanguage] = useState<Language>(languages[0]);
   const [isTranslating, setIsTranslating] = useState(false);
 
-  const handleTranslate = async (langCode: string) => {
+  const handleTranslate = (langCode: string) => {
     setIsTranslating(true);
-    console.log('Switching to language subdomain:', langCode);
+    console.log('Switching to language path:', langCode);
     
     try {
       const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
       setCurrentLanguage(selectedLang);
       localStorage.setItem('selectedLanguage', langCode);
       
-      // Redirect to appropriate subdomain
-      const newUrl = buildLanguageUrl(langCode);
-      console.log('Redirecting to:', newUrl);
-      window.location.href = newUrl;
+      // Build new path-based URL and navigate
+      const newPath = buildLanguageUrl(langCode, location.pathname);
+      console.log('Navigating to:', newPath);
+      navigate(newPath);
       
+      // Reload to trigger translations
+      window.location.reload();
     } catch (error) {
       console.error('Language switch failed:', error);
       setIsTranslating(false);
@@ -70,18 +74,15 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
   };
 
   useEffect(() => {
-    // Detect language from subdomain or URL parameter (for development)
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlLang = urlParams.get('lang');
-    const subdomainLang = getLanguageFromSubdomain();
-    const detectedLang = subdomainLang || urlLang;
+    // Detect language from URL path
+    const pathLang = getLanguageFromPath();
     
-    if (detectedLang && detectedLang !== 'en') {
-      const detectedLanguage = languages.find(lang => lang.code === detectedLang);
+    if (pathLang && pathLang !== 'en') {
+      const detectedLanguage = languages.find(lang => lang.code === pathLang);
       if (detectedLanguage) {
-        console.log('Detected language from subdomain:', detectedLang);
+        console.log('Detected language from path:', pathLang);
         setCurrentLanguage(detectedLanguage);
-        localStorage.setItem('selectedLanguage', detectedLang);
+        localStorage.setItem('selectedLanguage', pathLang);
       }
     } else {
       // Check saved preference as fallback
@@ -93,7 +94,7 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
         }
       }
     }
-  }, []);
+  }, [location.pathname]);
 
   if (isMobile) {
     return (

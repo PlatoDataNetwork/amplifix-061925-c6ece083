@@ -6,7 +6,7 @@ import { Menu, X } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { translateText } from "@/utils/translations";
-import { getLanguageFromSubdomain } from "@/utils/subdomain";
+import { getLanguageFromPath } from "@/utils/language";
 
 const MobileMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +19,7 @@ const MobileMenu = () => {
 
   // Detect language changes
   useEffect(() => {
-    const langCode = getLanguageFromSubdomain() || 
+    const langCode = getLanguageFromPath() || 
                      new URLSearchParams(window.location.search).get('lang') || 
                      localStorage.getItem('preferredLanguage') || 
                      'en';
