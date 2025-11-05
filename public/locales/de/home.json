@@ -73,5 +73,109 @@
         "description": "Umfassende Bereitschaftsbewertung und Roadmap"
       }
     }
+  },
+  "stats": [
+    {
+      "value": "35+",
+      "label": "Unterstützte Sprachen"
+    },
+    {
+      "value": "250+",
+      "label": "Verarbeitete Kampagnen"
+    },
+    {
+      "value": "2000+",
+      "label": "Medienpublikationen"
+    },
+    {
+      "value": "99.9%",
+      "label": "Garantierte Betriebszeit"
+    }
+  ],
+  "faq": {
+    "title": "Häufig gestellte Fragen",
+    "description": "Erhalten Sie Antworten auf häufige Fragen zu AmplifiX und wie wir helfen können, Ihre Unternehmenskommunikation zu transformieren.",
+    "items": [
+      {
+        "question": "Was ist AmplifiX und wie funktioniert es?",
+        "answer": "AmplifiX ist eine KI-gestützte Plattform, die die Unternehmenskommunikation für öffentliche und private Unternehmen revolutioniert. Wir verwenden fortschrittliche maschinelle Lernalgorithmen, um die Marktstimmung zu analysieren, überzeugende Inhalte zu generieren und Kommunikationsstrategien über Investor Relations, Public Relations und Unternehmenskommunikationskanäle hinweg zu optimieren."
+      },
+      {
+        "question": "Welche Dienstleistungen bietet AmplifiX an?",
+        "answer": "AmplifiX bietet eine umfassende Suite von Dienstleistungen, einschließlich KI-gesteuerter Inhaltserstellung für Pressemitteilungen und Investoren-Updates, Echtzeit-Marktstimmungsanalyse, Stakeholder-Beziehungsmanagement, automatisierte Medienüberwachung, Krisenkommunikationsunterstützung, Unterstützung bei der Einhaltung von Vorschriften und strategische Kommunikationsplanung, die auf die individuellen Bedürfnisse Ihres Unternehmens zugeschnitten ist."
+      },
+      {
+        "question": "Wie unterstützt AmplifiX öffentliche Unternehmen auf den Kapitalmärkten?",
+        "answer": "Für öffentliche Unternehmen bietet AmplifiX spezialisierte Unterstützung, einschließlich Automatisierung der Gewinnkommunikation, Unterstützung bei SEC-Einreichungen, Analystenbeziehemanagement, Vorbereitung von Investorengesprächen, Verfolgung der Marktstimmung, Compliance-Überwachung und strategische Beratung zur Aufrechterhaltung transparenter und effektiver Kommunikation mit Aktionären und Aufsichtsbehörden."
+      },
+      {
+        "question": "Was unterscheidet AmplifiX von traditionellen IR/PR-Firmen?",
+        "answer": "Im Gegensatz zu traditionellen Firmen kombiniert AmplifiX menschliches Fachwissen mit modernster KI-Technologie, um 24/7-Überwachung, Echtzeit-Einblicke, prädiktive Analysen und automatisierte Inhaltserstellung zu bieten. Unsere Plattform skaliert mit Ihren Bedürfnissen, bietet transparente Preise und liefert messbare Ergebnisse durch datengesteuerte Strategien, die traditionelle Firmen einfach nicht bieten können."
+      },
+      {
+        "question": "Wie hilft AmplifiX beim Investor Relations Management?",
+        "answer": "AmplifiX optimiert Investor Relations durch intelligente CRM-Systeme, automatisierte Investorenkommunikation, Stimmungsanalyse von Investoren-Feedback, Vorbereitung und Nachbereitung von Gewinnmitteilungen, Planung und Verfolgung von Investorenmeetings, Berichterstattung über Leistungskennzahlen und strategische Empfehlungen zur Verbesserung des Investorenengagements und der Zufriedenheit."
+      },
+      {
+        "question": "Kann AmplifiX bei Krisenkommunikation und Reputationsmanagement helfen?",
+        "answer": "Absolut. AmplifiX bietet Echtzeit-Krisenüberwachung, schnelle Reaktionskommunikationsvorlagen, Stakeholder-Benachrichtigungssysteme, Verfolgung der Medienstimmung während Krisen, strategische Beratung zur Botschaft und Post-Krisen-Analyse und Berichterstattung. Unsere KI-Algorithmen können potenzielle Probleme frühzeitig erkennen und ermöglichen proaktive statt reaktive Kommunikationsstrategien."
+      },
+      {
+        "question": "Welche Preispläne bietet AmplifiX an?",
+        "answer": "AmplifiX bietet drei Hauptpreisniveaus: Startup (499 $/Monat) für aufstrebende Unternehmen mit grundlegender KI-Inhaltserstellung und Analysen; Growth (1.499 $/Monat) für wachsende Unternehmen mit erweiterten Funktionen und Stakeholder-CRM; und Enterprise (individuelle Preise) für große Organisationen, die benutzerdefinierte KI-Modelle, White-Label-Optionen und dedizierten Support benötigen. Alle Pläne beinhalten eine kostenlose Testphase."
+      },
+      {
+        "question": "Wie schnell kann mein Unternehmen mit AmplifiX beginnen?",
+        "answer": "Die meisten Unternehmen können innerhalb von 1-2 Wochen integriert werden. Unser Prozess umfasst eine erste Beratung, Plattform-Setup und -Anpassung, Datenintegration, Teamschulung und Strategieentwicklung. Wir bieten dedizierte Onboarding-Spezialisten und umfassende Supportmaterialien, um einen reibungslosen Übergang zur KI-gesteuerten Kommunikationsverwaltung zu gewährleisten."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Kontaktieren Sie uns",
+    "description": "Bereit, Ihre Unternehmenskommunikation zu verstärken? Lassen Sie uns besprechen, wie AmplifiX Ihre IR- und PR-Strategie transformieren kann.",
+    "form": {
+      "title": "Senden Sie uns eine Nachricht",
+      "fields": {
+        "company_name": {
+          "label": "Firmenname",
+          "placeholder": "Ihr Unternehmen"
+        },
+        "email": {
+          "label": "Kontakt-E-Mail",
+          "placeholder": "your@company.com"
+        },
+        "company_type": {
+          "label": "Unternehmenstyp",
+          "options": ["Börsennotiertes Unternehmen", "Privates Unternehmen", "Pre-IPO-Unternehmen"]
+        },
+        "message": {
+          "label": "Nachricht",
+          "placeholder": "Erzählen Sie uns von Ihren Bedürfnissen..."
+        }
+      },
+      "submit_button": "Nachricht senden"
+    },
+    "contact_info": [
+      {
+        "title": "Vertriebsanfragen",
+        "description": "Besprechen Sie Ihre IR/PR-Bedürfnisse mit unseren Experten",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Kundenerfolg",
+        "description": "Erhalten Sie Hilfe mit Ihrem bestehenden Konto",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Partnerschaftsmöglichkeiten",
+        "description": "Erkunden Sie strategische Partnerschaften",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Öffnungszeiten",
+        "description": "Montag - Freitag: 8:00 - 18:00 Uhr (EST)",
+        "additional": "Notfall-Support rund um die Uhr verfügbar"
+      }
+    ]
   }
 }

@@ -73,5 +73,109 @@
         "description": "Evaluación integral de preparación y hoja de ruta"
       }
     }
+  },
+  "stats": [
+    {
+      "value": "35+",
+      "label": "Idiomas compatibles"
+    },
+    {
+      "value": "250+",
+      "label": "Campañas procesadas"
+    },
+    {
+      "value": "2000+",
+      "label": "Publicaciones en medios"
+    },
+    {
+      "value": "99.9%",
+      "label": "Tiempo de actividad garantizado"
+    }
+  ],
+  "faq": {
+    "title": "Preguntas frecuentes",
+    "description": "Obtenga respuestas a preguntas comunes sobre AmplifiX y cómo podemos ayudar a transformar sus comunicaciones corporativas.",
+    "items": [
+      {
+        "question": "¿Qué es AmplifiX y cómo funciona?",
+        "answer": "AmplifiX es una plataforma impulsada por IA que revoluciona las comunicaciones corporativas para empresas públicas y privadas. Utilizamos algoritmos avanzados de aprendizaje automático para analizar el sentimiento del mercado, generar contenido convincente y optimizar estrategias de comunicación en relaciones con inversores, relaciones públicas y canales de mensajería corporativa."
+      },
+      {
+        "question": "¿Qué servicios ofrece AmplifiX?",
+        "answer": "AmplifiX ofrece un conjunto completo de servicios que incluye generación de contenido impulsada por IA para comunicados de prensa y actualizaciones para inversores, análisis de sentimiento del mercado en tiempo real, gestión de relaciones con partes interesadas, monitoreo automatizado de medios, apoyo en comunicación de crisis, asistencia en cumplimiento normativo y planificación estratégica de comunicación adaptada a las necesidades únicas de su empresa."
+      },
+      {
+        "question": "¿Cómo apoya AmplifiX a las empresas públicas en los mercados de capitales?",
+        "answer": "Para empresas públicas, AmplifiX proporciona soporte especializado que incluye automatización de comunicaciones de resultados, asistencia con presentaciones ante la SEC, gestión de relaciones con analistas, preparación de llamadas con inversores, seguimiento del sentimiento del mercado, monitoreo de cumplimiento y orientación estratégica para mantener comunicación transparente y efectiva con accionistas y organismos reguladores."
+      },
+      {
+        "question": "¿Qué diferencia a AmplifiX de las firmas tradicionales de RI/RP?",
+        "answer": "A diferencia de las firmas tradicionales, AmplifiX combina experiencia humana con tecnología de IA de vanguardia para proporcionar monitoreo 24/7, información en tiempo real, análisis predictivos y generación automatizada de contenido. Nuestra plataforma se adapta a sus necesidades, ofrece precios transparentes y proporciona resultados medibles a través de estrategias basadas en datos que las firmas tradicionales simplemente no pueden igualar."
+      },
+      {
+        "question": "¿Cómo ayuda AmplifiX con la gestión de relaciones con inversores?",
+        "answer": "AmplifiX agiliza las relaciones con inversores a través de sistemas CRM inteligentes, comunicaciones automatizadas con inversores, análisis de sentimiento de comentarios de inversores, preparación y seguimiento de llamadas de resultados, programación y seguimiento de reuniones con inversores, informes de métricas de rendimiento y recomendaciones estratégicas para mejorar el compromiso y la satisfacción de los inversores."
+      },
+      {
+        "question": "¿Puede AmplifiX ayudar con la comunicación de crisis y la gestión de la reputación?",
+        "answer": "Absolutamente. AmplifiX proporciona monitoreo de crisis en tiempo real, plantillas de comunicación de respuesta rápida, sistemas de notificación a partes interesadas, seguimiento del sentimiento de los medios durante crisis, orientación estratégica de mensajería y análisis e informes posteriores a la crisis. Nuestros algoritmos de IA pueden detectar problemas potenciales temprano, permitiendo estrategias de comunicación proactivas en lugar de reactivas."
+      },
+      {
+        "question": "¿Qué planes de precios ofrece AmplifiX?",
+        "answer": "AmplifiX ofrece tres niveles de precios principales: Startup ($499/mes) para empresas emergentes con generación de contenido básica de IA y análisis; Crecimiento ($1,499/mes) para empresas en expansión con funciones avanzadas y CRM de partes interesadas; y Empresa (precios personalizados) para grandes organizaciones que requieren modelos de IA personalizados, opciones de marca blanca y soporte dedicado. Todos los planes incluyen un período de prueba gratuito."
+      },
+      {
+        "question": "¿Qué tan rápido puede mi empresa comenzar con AmplifiX?",
+        "answer": "La mayoría de las empresas pueden incorporarse en 1-2 semanas. Nuestro proceso incluye una consulta inicial, configuración y personalización de la plataforma, integración de datos, capacitación del equipo y desarrollo de estrategia. Proporcionamos especialistas de incorporación dedicados y materiales de soporte completos para garantizar una transición fluida a la gestión de comunicaciones impulsada por IA."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Póngase en contacto",
+    "description": "¿Listo para amplificar sus comunicaciones corporativas? Analicemos cómo AmplifiX puede transformar su estrategia de RI y RP.",
+    "form": {
+      "title": "Envíanos un mensaje",
+      "fields": {
+        "company_name": {
+          "label": "Nombre de la empresa",
+          "placeholder": "Su empresa"
+        },
+        "email": {
+          "label": "Correo electrónico de contacto",
+          "placeholder": "your@company.com"
+        },
+        "company_type": {
+          "label": "Tipo de empresa",
+          "options": ["Empresa pública", "Empresa privada", "Empresa pre-OPV"]
+        },
+        "message": {
+          "label": "Mensaje",
+          "placeholder": "Cuéntenos sobre sus necesidades..."
+        }
+      },
+      "submit_button": "Enviar mensaje"
+    },
+    "contact_info": [
+      {
+        "title": "Consultas de ventas",
+        "description": "Discuta sus necesidades de RI/RP con nuestros expertos",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Éxito del cliente",
+        "description": "Obtenga ayuda con su cuenta existente",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Oportunidades de asociación",
+        "description": "Explore asociaciones estratégicas",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Horario de oficina",
+        "description": "Lunes - Viernes: 8:00 AM - 6:00 PM (EST)",
+        "additional": "Soporte de emergencia disponible 24/7"
+      }
+    ]
   }
 }
