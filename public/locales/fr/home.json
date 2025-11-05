@@ -1,0 +1,77 @@
+{
+  "hero": {
+    "badge": "RI et communications d'entreprise alimentées par l'IA",
+    "title": "Amplifiez vos communications",
+    "description": "AmplifiX exploite l'IA de pointe pour transformer la façon dont les entreprises publiques et privées gèrent les relations avec les investisseurs et les communications d'entreprise."
+  },
+  "about": {
+    "title": "À propos d'AmplifiX",
+    "description": "Nous révolutionnons les communications d'entreprise grâce à des informations basées sur l'IA, à la génération automatisée de contenu et à des plateformes intelligentes d'engagement des parties prenantes.",
+    "aiPowered": {
+      "title": "Intelligence alimentée par l'IA",
+      "description": "Des algorithmes d'apprentissage automatique avancés analysent le sentiment du marché et optimisent les communications."
+    },
+    "marketLeadership": {
+      "title": "Leadership sur le marché",
+      "description": "Approuvé par les entreprises du Fortune 500 et les entreprises en croissance émergentes dans le monde entier."
+    },
+    "strategicFocus": {
+      "title": "Approche stratégique",
+      "description": "Solutions sur mesure pour les entreprises publiques et privées à chaque étape de croissance."
+    }
+  },
+  "features": {
+    "title": "Fonctionnalités IA puissantes",
+    "description": "Transformez vos communications d'entreprise avec notre suite complète d'outils alimentés par l'IA.",
+    "smartAnalytics": {
+      "title": "Tableau de bord d'analyse intelligent",
+      "description": "Informations en temps réel sur le sentiment du marché, la couverture médiatique et l'engagement des investisseurs avec des analyses prédictives alimentées par l'IA."
+    },
+    "aiContent": {
+      "title": "Génération de contenu IA",
+      "description": "Générez des communiqués de presse convaincants, des mises à jour pour les investisseurs et des communications d'entreprise adaptées à la voix de votre marque et à votre public."
+    },
+    "stakeholder": {
+      "title": "Gestion des parties prenantes",
+      "description": "CRM intelligent pour les investisseurs, les analystes, les contacts médias et autres parties prenantes clés avec suivi automatisé de l'engagement."
+    },
+    "strategicInsights": {
+      "title": "Informations stratégiques",
+      "description": "Recommandations basées sur l'IA pour le timing, les messages et l'optimisation des canaux afin de maximiser l'impact et la portée."
+    }
+  },
+  "solutions": {
+    "title": "Solutions pour chaque étape",
+    "description": "Que vous vous prépariez à une introduction en bourse ou que vous gériez des relations continues avec les investisseurs, AmplifiX s'adapte aux besoins uniques de votre entreprise.",
+    "publicCompanies": {
+      "title": "Entreprises publiques",
+      "earnings": {
+        "title": "Communications sur les résultats",
+        "description": "Transcriptions automatisées des appels de résultats et documents pour les investisseurs"
+      },
+      "regulatory": {
+        "title": "Conformité réglementaire",
+        "description": "Assistance pour les dépôts SEC et surveillance de la conformité"
+      },
+      "analyst": {
+        "title": "Relations avec les analystes",
+        "description": "Suivi et engagement du sentiment des analystes alimentés par l'IA"
+      }
+    },
+    "privateCompanies": {
+      "title": "Entreprises privées",
+      "fundraising": {
+        "title": "Soutien à la collecte de fonds",
+        "description": "Optimisation des pitch decks et automatisation de la sensibilisation des investisseurs"
+      },
+      "brandBuilding": {
+        "title": "Construction de marque",
+        "description": "Campagnes de relations publiques stratégiques et contenu de leadership d'opinion"
+      },
+      "ipoPrep": {
+        "title": "Préparation à l'introduction en bourse",
+        "description": "Évaluation complète de la préparation et feuille de route"
+      }
+    }
+  }
+}

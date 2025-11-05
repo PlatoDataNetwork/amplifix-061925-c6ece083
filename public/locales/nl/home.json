@@ -1,0 +1,77 @@
+{
+  "hero": {
+    "badge": "AI-aangedreven IR & bedrijfscommunicatie",
+    "title": "Versterk uw communicatie",
+    "description": "AmplifiX maakt gebruik van geavanceerde AI om te transformeren hoe beursgenoteerde en particuliere bedrijven investor relations en bedrijfscommunicatie beheren."
+  },
+  "about": {
+    "title": "Over AmplifiX",
+    "description": "We revolutioneren bedrijfscommunicatie door AI-gedreven inzichten, geautomatiseerde contentgeneratie en intelligente stakeholder-engagementplatforms.",
+    "aiPowered": {
+      "title": "AI-aangedreven intelligentie",
+      "description": "Geavanceerde machine learning-algoritmen analyseren marktsentiment en optimaliseren communicatie."
+    },
+    "marketLeadership": {
+      "title": "Marktleiderschap",
+      "description": "Vertrouwd door Fortune 500-bedrijven en groeiende ondernemingen wereldwijd."
+    },
+    "strategicFocus": {
+      "title": "Strategische focus",
+      "description": "Op maat gemaakte oplossingen voor zowel beursgenoteerde als particuliere bedrijven in elke groeifase."
+    }
+  },
+  "features": {
+    "title": "Krachtige AI-functies",
+    "description": "Transformeer uw bedrijfscommunicatie met ons uitgebreide pakket AI-aangedreven tools.",
+    "smartAnalytics": {
+      "title": "Smart analytics dashboard",
+      "description": "Realtime inzichten in marktsentiment, mediaberichtgeving en betrokkenheid van beleggers met AI-aangedreven voorspellende analyses."
+    },
+    "aiContent": {
+      "title": "AI-contentgeneratie",
+      "description": "Genereer overtuigende persberichten, beleggersupdates en bedrijfscommunicatie afgestemd op uw merkstem en publiek."
+    },
+    "stakeholder": {
+      "title": "Stakeholderbeheer",
+      "description": "Intelligente CRM voor beleggers, analisten, mediacontacten en andere belangrijke stakeholders met geautomatiseerde betrokkenheidsregistratie."
+    },
+    "strategicInsights": {
+      "title": "Strategische inzichten",
+      "description": "AI-gedreven aanbevelingen voor timing, messaging en kanaaloptimalisatie om impact en bereik te maximaliseren."
+    }
+  },
+  "solutions": {
+    "title": "Oplossingen voor elke fase",
+    "description": "Of u zich nu voorbereidt op een beursgang of lopende investor relations beheert, AmplifiX past zich aan de unieke behoeften van uw bedrijf aan.",
+    "publicCompanies": {
+      "title": "Beursgenoteerde bedrijven",
+      "earnings": {
+        "title": "Resultaatcommunicatie",
+        "description": "Geautomatiseerde transcripties van resultaatgesprekken en beleggersmaterialen"
+      },
+      "regulatory": {
+        "title": "Regelgevende naleving",
+        "description": "SEC-indiening assistentie en nalevingsmonitoring"
+      },
+      "analyst": {
+        "title": "Analistenrelaties",
+        "description": "AI-aangedreven tracking en betrokkenheid van analistensentiment"
+      }
+    },
+    "privateCompanies": {
+      "title": "Particuliere bedrijven",
+      "fundraising": {
+        "title": "Ondersteuning bij fondsenwerving",
+        "description": "Pitch deck-optimalisatie en automatisering van beleggersbereik"
+      },
+      "brandBuilding": {
+        "title": "Merkopbouw",
+        "description": "Strategische PR-campagnes en thought leadership-content"
+      },
+      "ipoPrep": {
+        "title": "IPO-voorbereiding",
+        "description": "Uitgebreide gereedheidsbeoordeling en routekaart"
+      }
+    }
+  }
+}

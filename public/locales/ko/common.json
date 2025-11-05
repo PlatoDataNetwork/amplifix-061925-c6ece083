@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "about": "소개",
+    "solutions": "솔루션",
+    "showcase": "쇼케이스",
+    "intel": "인텔",
+    "faq": "FAQ",
+    "contact": "연락처",
+    "login": "로그인"
+  },
+  "buttons": {
+    "bookDemo": "데모 예약",
+    "learnMore": "자세히 보기 →",
+    "amplifyBrand": "브랜드 증폭 →",
+    "contactUs": "문의하기",
+    "sendMessage": "메시지 보내기"
+  },
+  "footer": {
+    "platform": "플랫폼",
+    "solutions": "솔루션",
+    "company": "회사",
+    "home": "홈",
+    "publicCompanies": "상장 기업",
+    "privateCompanies": "비상장 기업",
+    "ipoPreparation": "IPO 준비",
+    "privacyPolicy": "개인정보 처리방침",
+    "compliance": "규정 준수",
+    "termsOfService": "서비스 약관",
+    "dataProcessing": "데이터 처리",
+    "copyright": "© {{year}} AmplifiX. 모든 권리 보유.",
+    "statusOnline": "AI 시스템 온라인"
+  }
+}

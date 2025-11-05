@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "about": "Over",
+    "solutions": "Oplossingen",
+    "showcase": "Showcase",
+    "intel": "Intel",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "login": "Inloggen"
+  },
+  "buttons": {
+    "bookDemo": "Boek demo",
+    "learnMore": "Meer informatie →",
+    "amplifyBrand": "Versterk uw merk →",
+    "contactUs": "Neem contact op",
+    "sendMessage": "Bericht versturen"
+  },
+  "footer": {
+    "platform": "Platform",
+    "solutions": "Oplossingen",
+    "company": "Bedrijf",
+    "home": "Home",
+    "publicCompanies": "Beursgenoteerde bedrijven",
+    "privateCompanies": "Particuliere bedrijven",
+    "ipoPreparation": "IPO-voorbereiding",
+    "privacyPolicy": "Privacybeleid",
+    "compliance": "Naleving",
+    "termsOfService": "Servicevoorwaarden",
+    "dataProcessing": "Gegevensverwerking",
+    "copyright": "© {{year}} AmplifiX. Alle rechten voorbehouden.",
+    "statusOnline": "AI-systemen online"
+  }
+}

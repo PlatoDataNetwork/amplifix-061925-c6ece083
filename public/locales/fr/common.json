@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "about": "À propos",
+    "solutions": "Solutions",
+    "showcase": "Vitrine",
+    "intel": "Intel",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "login": "Connexion"
+  },
+  "buttons": {
+    "bookDemo": "Réserver une démo",
+    "learnMore": "En savoir plus →",
+    "amplifyBrand": "Amplifiez votre marque →",
+    "contactUs": "Nous contacter",
+    "sendMessage": "Envoyer un message"
+  },
+  "footer": {
+    "platform": "Plateforme",
+    "solutions": "Solutions",
+    "company": "Entreprise",
+    "home": "Accueil",
+    "publicCompanies": "Entreprises publiques",
+    "privateCompanies": "Entreprises privées",
+    "ipoPreparation": "Préparation à l'introduction en bourse",
+    "privacyPolicy": "Politique de confidentialité",
+    "compliance": "Conformité",
+    "termsOfService": "Conditions d'utilisation",
+    "dataProcessing": "Traitement des données",
+    "copyright": "© {{year}} AmplifiX. Tous droits réservés.",
+    "statusOnline": "Systèmes IA en ligne"
+  }
+}

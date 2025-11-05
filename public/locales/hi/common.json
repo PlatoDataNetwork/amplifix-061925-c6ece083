@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "about": "हमारे बारे में",
+    "solutions": "समाधान",
+    "showcase": "शोकेस",
+    "intel": "इंटेल",
+    "faq": "FAQ",
+    "contact": "संपर्क",
+    "login": "लॉग इन"
+  },
+  "buttons": {
+    "bookDemo": "डेमो बुक करें",
+    "learnMore": "और जानें →",
+    "amplifyBrand": "अपने ब्रांड को बढ़ाएं →",
+    "contactUs": "हमसे संपर्क करें",
+    "sendMessage": "संदेश भेजें"
+  },
+  "footer": {
+    "platform": "प्लेटफ़ॉर्म",
+    "solutions": "समाधान",
+    "company": "कंपनी",
+    "home": "होम",
+    "publicCompanies": "सार्वजनिक कंपनियां",
+    "privateCompanies": "निजी कंपनियां",
+    "ipoPreparation": "IPO तैयारी",
+    "privacyPolicy": "गोपनीयता नीति",
+    "compliance": "अनुपालन",
+    "termsOfService": "सेवा की शर्तें",
+    "dataProcessing": "डेटा प्रोसेसिंग",
+    "copyright": "© {{year}} AmplifiX. सर्वाधिकार सुरक्षित।",
+    "statusOnline": "AI सिस्टम ऑनलाइन"
+  }
+}

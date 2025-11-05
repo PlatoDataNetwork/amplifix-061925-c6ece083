@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "about": "Hakkında",
+    "solutions": "Çözümler",
+    "showcase": "Vitrin",
+    "intel": "Intel",
+    "faq": "SSS",
+    "contact": "İletişim",
+    "login": "Giriş Yap"
+  },
+  "buttons": {
+    "bookDemo": "Demo ayarla",
+    "learnMore": "Daha fazla bilgi →",
+    "amplifyBrand": "Markanızı güçlendirin →",
+    "contactUs": "Bize ulaşın",
+    "sendMessage": "Mesaj gönder"
+  },
+  "footer": {
+    "platform": "Platform",
+    "solutions": "Çözümler",
+    "company": "Şirket",
+    "home": "Ana Sayfa",
+    "publicCompanies": "Halka açık şirketler",
+    "privateCompanies": "Özel şirketler",
+    "ipoPreparation": "Halka arz hazırlığı",
+    "privacyPolicy": "Gizlilik politikası",
+    "compliance": "Uyumluluk",
+    "termsOfService": "Hizmet şartları",
+    "dataProcessing": "Veri işleme",
+    "copyright": "© {{year}} AmplifiX. Tüm hakları saklıdır.",
+    "statusOnline": "AI sistemleri çevrimiçi"
+  }
+}

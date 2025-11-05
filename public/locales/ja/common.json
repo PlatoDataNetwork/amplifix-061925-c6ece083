@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "about": "概要",
+    "solutions": "ソリューション",
+    "showcase": "ショーケース",
+    "intel": "インテル",
+    "faq": "FAQ",
+    "contact": "お問い合わせ",
+    "login": "ログイン"
+  },
+  "buttons": {
+    "bookDemo": "デモを予約",
+    "learnMore": "詳細を見る →",
+    "amplifyBrand": "ブランドを増幅する →",
+    "contactUs": "お問い合わせ",
+    "sendMessage": "メッセージを送信"
+  },
+  "footer": {
+    "platform": "プラットフォーム",
+    "solutions": "ソリューション",
+    "company": "会社",
+    "home": "ホーム",
+    "publicCompanies": "上場企業",
+    "privateCompanies": "非上場企業",
+    "ipoPreparation": "IPO準備",
+    "privacyPolicy": "プライバシーポリシー",
+    "compliance": "コンプライアンス",
+    "termsOfService": "利用規約",
+    "dataProcessing": "データ処理",
+    "copyright": "© {{year}} AmplifiX. 全著作権所有。",
+    "statusOnline": "AIシステムオンライン"
+  }
+}

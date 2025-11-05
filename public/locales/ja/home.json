@@ -1,0 +1,77 @@
+{
+  "hero": {
+    "badge": "AI駆動のIRおよび企業コミュニケーション",
+    "title": "コミュニケーションを増幅する",
+    "description": "AmplifiXは最先端のAIを活用して、上場企業と非上場企業がIRと企業コミュニケーションを管理する方法を変革します。"
+  },
+  "about": {
+    "title": "AmplifiXについて",
+    "description": "AI駆動のインサイト、自動化されたコンテンツ生成、インテリジェントなステークホルダーエンゲージメントプラットフォームを通じて、企業コミュニケーションを革新しています。",
+    "aiPowered": {
+      "title": "AI駆動のインテリジェンス",
+      "description": "高度な機械学習アルゴリズムが市場センチメントを分析し、コミュニケーションを最適化します。"
+    },
+    "marketLeadership": {
+      "title": "市場リーダーシップ",
+      "description": "世界中のフォーチュン500企業と新興成長企業に信頼されています。"
+    },
+    "strategicFocus": {
+      "title": "戦略的焦点",
+      "description": "成長の各段階で上場企業と非上場企業の両方にカスタマイズされたソリューション。"
+    }
+  },
+  "features": {
+    "title": "強力なAI機能",
+    "description": "AI駆動ツールの包括的なスイートで企業コミュニケーションを変革します。",
+    "smartAnalytics": {
+      "title": "スマート分析ダッシュボード",
+      "description": "AI駆動の予測分析により、市場センチメント、メディアカバレッジ、投資家エンゲージメントに関するリアルタイムインサイト。"
+    },
+    "aiContent": {
+      "title": "AIコンテンツ生成",
+      "description": "ブランドボイスとオーディエンスに合わせた説得力のあるプレスリリース、投資家向けアップデート、企業コミュニケーションを生成します。"
+    },
+    "stakeholder": {
+      "title": "ステークホルダー管理",
+      "description": "投資家、アナリスト、メディアコンタクト、その他の主要なステークホルダーのためのインテリジェントCRMと自動エンゲージメント追跡。"
+    },
+    "strategicInsights": {
+      "title": "戦略的インサイト",
+      "description": "影響とリーチを最大化するためのタイミング、メッセージング、チャネル最適化のAI駆動推奨事項。"
+    }
+  },
+  "solutions": {
+    "title": "各段階のソリューション",
+    "description": "IPOの準備中でも、継続的なIRの管理中でも、AmplifiXは貴社固有のニーズに適応します。",
+    "publicCompanies": {
+      "title": "上場企業",
+      "earnings": {
+        "title": "決算コミュニケーション",
+        "description": "自動化された決算説明会トランスクリプトと投資家向け資料"
+      },
+      "regulatory": {
+        "title": "規制コンプライアンス",
+        "description": "SEC提出支援とコンプライアンス監視"
+      },
+      "analyst": {
+        "title": "アナリスト関係",
+        "description": "AI駆動のアナリストセンチメント追跡とエンゲージメント"
+      }
+    },
+    "privateCompanies": {
+      "title": "非上場企業",
+      "fundraising": {
+        "title": "資金調達サポート",
+        "description": "ピッチデッキの最適化と投資家アウトリーチの自動化"
+      },
+      "brandBuilding": {
+        "title": "ブランド構築",
+        "description": "戦略的PRキャンペーンとソートリーダーシップコンテンツ"
+      },
+      "ipoPrep": {
+        "title": "IPO準備",
+        "description": "包括的な準備評価とロードマップ"
+      }
+    }
+  }
+}

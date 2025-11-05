@@ -1,0 +1,77 @@
+{
+  "hero": {
+    "badge": "AI-driven IR och företagskommunikation",
+    "title": "Förstärk din kommunikation",
+    "description": "AmplifiX utnyttjar banbrytande AI för att transformera hur publika och privata företag hanterar investor relations och företagskommunikation."
+  },
+  "about": {
+    "title": "Om AmplifiX",
+    "description": "Vi revolutionerar företagskommunikation genom AI-drivna insikter, automatiserad innehållsgenerering och intelligenta plattformar för intressentengagemang.",
+    "aiPowered": {
+      "title": "AI-driven intelligens",
+      "description": "Avancerade maskininlärningsalgoritmer analyserar marknadssentiment och optimerar kommunikation."
+    },
+    "marketLeadership": {
+      "title": "Marknadsledarskap",
+      "description": "Betrodd av Fortune 500-företag och växande företag världen över."
+    },
+    "strategicFocus": {
+      "title": "Strategiskt fokus",
+      "description": "Skräddarsydda lösningar för både publika och privata företag i varje tillväxtfas."
+    }
+  },
+  "features": {
+    "title": "Kraftfulla AI-funktioner",
+    "description": "Transformera din företagskommunikation med vår omfattande uppsättning AI-drivna verktyg.",
+    "smartAnalytics": {
+      "title": "Smart analysinstrumentpanel",
+      "description": "Realtidsinsikter om marknadssentiment, mediebevakning och investerarengagemang med AI-drivna prediktiva analyser."
+    },
+    "aiContent": {
+      "title": "AI-innehållsgenerering",
+      "description": "Generera övertygande pressmeddelanden, investeraruppdateringar och företagskommunikation anpassad till ditt varumärke och din publik."
+    },
+    "stakeholder": {
+      "title": "Intressenthantering",
+      "description": "Intelligent CRM för investerare, analytiker, mediakontakter och andra viktiga intressenter med automatiserad engagemangsspårning."
+    },
+    "strategicInsights": {
+      "title": "Strategiska insikter",
+      "description": "AI-drivna rekommendationer för timing, budskap och kanaloptimering för att maximera påverkan och räckvidd."
+    }
+  },
+  "solutions": {
+    "title": "Lösningar för varje fas",
+    "description": "Oavsett om du förbereder dig för en börsnotering eller hanterar pågående investor relations, anpassar sig AmplifiX till ditt företags unika behov.",
+    "publicCompanies": {
+      "title": "Publika företag",
+      "earnings": {
+        "title": "Resultatkommunikation",
+        "description": "Automatiserade transkriptioner av resultatsamtal och investerarmaterial"
+      },
+      "regulatory": {
+        "title": "Regelefterlevnad",
+        "description": "SEC-ansökningsassistans och efterlevnadsövervakning"
+      },
+      "analyst": {
+        "title": "Analytikrelationer",
+        "description": "AI-driven spårning och engagemang av analytiksentiment"
+      }
+    },
+    "privateCompanies": {
+      "title": "Privata företag",
+      "fundraising": {
+        "title": "Finansieringsstöd",
+        "description": "Pitch deck-optimering och automatisering av investerarkontakt"
+      },
+      "brandBuilding": {
+        "title": "Varumärkesbyggande",
+        "description": "Strategiska PR-kampanjer och thought leadership-innehåll"
+      },
+      "ipoPrep": {
+        "title": "IPO-förberedelse",
+        "description": "Omfattande beredskapsbedömning och färdplan"
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "about": "Om",
+    "solutions": "Lösningar",
+    "showcase": "Showcase",
+    "intel": "Intel",
+    "faq": "FAQ",
+    "contact": "Kontakt",
+    "login": "Logga in"
+  },
+  "buttons": {
+    "bookDemo": "Boka demo",
+    "learnMore": "Läs mer →",
+    "amplifyBrand": "Förstärk ditt varumärke →",
+    "contactUs": "Kontakta oss",
+    "sendMessage": "Skicka meddelande"
+  },
+  "footer": {
+    "platform": "Plattform",
+    "solutions": "Lösningar",
+    "company": "Företag",
+    "home": "Hem",
+    "publicCompanies": "Publika företag",
+    "privateCompanies": "Privata företag",
+    "ipoPreparation": "IPO-förberedelse",
+    "privacyPolicy": "Integritetspolicy",
+    "compliance": "Efterlevnad",
+    "termsOfService": "Användarvillkor",
+    "dataProcessing": "Databehandling",
+    "copyright": "© {{year}} AmplifiX. Alla rättigheter förbehållna.",
+    "statusOnline": "AI-system online"
+  }
+}

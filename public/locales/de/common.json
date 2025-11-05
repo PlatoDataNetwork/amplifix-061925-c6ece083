@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "about": "Über uns",
+    "solutions": "Lösungen",
+    "showcase": "Schaufenster",
+    "intel": "Intel",
+    "faq": "FAQ",
+    "contact": "Kontakt",
+    "login": "Anmelden"
+  },
+  "buttons": {
+    "bookDemo": "Demo buchen",
+    "learnMore": "Mehr erfahren →",
+    "amplifyBrand": "Verstärken Sie Ihre Marke →",
+    "contactUs": "Kontaktieren Sie uns",
+    "sendMessage": "Nachricht senden"
+  },
+  "footer": {
+    "platform": "Plattform",
+    "solutions": "Lösungen",
+    "company": "Unternehmen",
+    "home": "Startseite",
+    "publicCompanies": "Börsennotierte Unternehmen",
+    "privateCompanies": "Private Unternehmen",
+    "ipoPreparation": "IPO-Vorbereitung",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "compliance": "Compliance",
+    "termsOfService": "Nutzungsbedingungen",
+    "dataProcessing": "Datenverarbeitung",
+    "copyright": "© {{year}} AmplifiX. Alle Rechte vorbehalten.",
+    "statusOnline": "KI-Systeme online"
+  }
+}

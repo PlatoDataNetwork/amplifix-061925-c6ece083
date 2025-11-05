@@ -1,0 +1,77 @@
+{
+  "hero": {
+    "badge": "AI 기반 IR 및 기업 커뮤니케이션",
+    "title": "커뮤니케이션 증폭",
+    "description": "AmplifiX는 최첨단 AI를 활용하여 상장 및 비상장 기업이 IR 및 기업 커뮤니케이션을 관리하는 방식을 혁신합니다."
+  },
+  "about": {
+    "title": "AmplifiX 소개",
+    "description": "AI 기반 인사이트, 자동화된 콘텐츠 생성, 지능형 이해관계자 참여 플랫폼을 통해 기업 커뮤니케이션을 혁신하고 있습니다.",
+    "aiPowered": {
+      "title": "AI 기반 인텔리전스",
+      "description": "고급 머신러닝 알고리즘이 시장 감정을 분석하고 커뮤니케이션을 최적화합니다."
+    },
+    "marketLeadership": {
+      "title": "시장 리더십",
+      "description": "전 세계 포천 500대 기업과 신흥 성장 기업의 신뢰를 받고 있습니다."
+    },
+    "strategicFocus": {
+      "title": "전략적 초점",
+      "description": "성장 단계별 상장 및 비상장 기업을 위한 맞춤형 솔루션."
+    }
+  },
+  "features": {
+    "title": "강력한 AI 기능",
+    "description": "AI 기반 도구의 포괄적인 제품군으로 기업 커뮤니케이션을 혁신하세요.",
+    "smartAnalytics": {
+      "title": "스마트 분석 대시보드",
+      "description": "AI 기반 예측 분석을 통한 시장 감정, 미디어 보도, 투자자 참여에 대한 실시간 인사이트."
+    },
+    "aiContent": {
+      "title": "AI 콘텐츠 생성",
+      "description": "브랜드 보이스와 청중에 맞춤화된 설득력 있는 보도자료, 투자자 업데이트, 기업 커뮤니케이션을 생성합니다."
+    },
+    "stakeholder": {
+      "title": "이해관계자 관리",
+      "description": "투자자, 애널리스트, 미디어 연락처 및 기타 주요 이해관계자를 위한 자동화된 참여 추적 기능이 있는 지능형 CRM."
+    },
+    "strategicInsights": {
+      "title": "전략적 인사이트",
+      "description": "영향력과 도달 범위를 극대화하기 위한 타이밍, 메시징 및 채널 최적화에 대한 AI 기반 권장 사항."
+    }
+  },
+  "solutions": {
+    "title": "모든 단계를 위한 솔루션",
+    "description": "IPO 준비 중이든 지속적인 IR 관리 중이든, AmplifiX는 귀사의 고유한 요구사항에 적응합니다.",
+    "publicCompanies": {
+      "title": "상장 기업",
+      "earnings": {
+        "title": "실적 커뮤니케이션",
+        "description": "자동화된 실적 발표 녹취록 및 투자자 자료"
+      },
+      "regulatory": {
+        "title": "규제 준수",
+        "description": "SEC 신고 지원 및 규정 준수 모니터링"
+      },
+      "analyst": {
+        "title": "애널리스트 관계",
+        "description": "AI 기반 애널리스트 감정 추적 및 참여"
+      }
+    },
+    "privateCompanies": {
+      "title": "비상장 기업",
+      "fundraising": {
+        "title": "자금 조달 지원",
+        "description": "피치 덱 최적화 및 투자자 접근 자동화"
+      },
+      "brandBuilding": {
+        "title": "브랜드 구축",
+        "description": "전략적 PR 캠페인 및 사고 리더십 콘텐츠"
+      },
+      "ipoPrep": {
+        "title": "IPO 준비",
+        "description": "포괄적인 준비 평가 및 로드맵"
+      }
+    }
+  }
+}

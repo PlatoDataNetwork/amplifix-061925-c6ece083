@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "about": "О нас",
+    "solutions": "Решения",
+    "showcase": "Витрина",
+    "intel": "Интеллект",
+    "faq": "FAQ",
+    "contact": "Контакты",
+    "login": "Войти"
+  },
+  "buttons": {
+    "bookDemo": "Записаться на демо",
+    "learnMore": "Узнать больше →",
+    "amplifyBrand": "Усильте свой бренд →",
+    "contactUs": "Свяжитесь с нами",
+    "sendMessage": "Отправить сообщение"
+  },
+  "footer": {
+    "platform": "Платформа",
+    "solutions": "Решения",
+    "company": "Компания",
+    "home": "Главная",
+    "publicCompanies": "Публичные компании",
+    "privateCompanies": "Частные компании",
+    "ipoPreparation": "Подготовка к IPO",
+    "privacyPolicy": "Политика конфиденциальности",
+    "compliance": "Соответствие",
+    "termsOfService": "Условия использования",
+    "dataProcessing": "Обработка данных",
+    "copyright": "© {{year}} AmplifiX. Все права защищены.",
+    "statusOnline": "Системы ИИ онлайн"
+  }
+}

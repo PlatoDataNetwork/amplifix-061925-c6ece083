@@ -1,0 +1,77 @@
+{
+  "hero": {
+    "badge": "KI-gestützte IR & Unternehmenskommunikation",
+    "title": "Verstärken Sie Ihre Kommunikation",
+    "description": "AmplifiX nutzt modernste KI, um die Art und Weise zu transformieren, wie börsennotierte und private Unternehmen Investor Relations und Unternehmenskommunikation verwalten."
+  },
+  "about": {
+    "title": "Über AmplifiX",
+    "description": "Wir revolutionieren die Unternehmenskommunikation durch KI-gestützte Erkenntnisse, automatisierte Content-Generierung und intelligente Stakeholder-Engagement-Plattformen.",
+    "aiPowered": {
+      "title": "KI-gestützte Intelligenz",
+      "description": "Fortschrittliche Machine-Learning-Algorithmen analysieren Marktstimmung und optimieren Kommunikation."
+    },
+    "marketLeadership": {
+      "title": "Marktführerschaft",
+      "description": "Vertraut von Fortune-500-Unternehmen und aufstrebenden Wachstumsunternehmen weltweit."
+    },
+    "strategicFocus": {
+      "title": "Strategischer Fokus",
+      "description": "Maßgeschneiderte Lösungen für börsennotierte und private Unternehmen in jeder Wachstumsphase."
+    }
+  },
+  "features": {
+    "title": "Leistungsstarke KI-Funktionen",
+    "description": "Transformieren Sie Ihre Unternehmenskommunikation mit unserer umfassenden Suite KI-gestützter Tools.",
+    "smartAnalytics": {
+      "title": "Smart Analytics Dashboard",
+      "description": "Echtzeit-Einblicke in Marktstimmung, Medienberichterstattung und Investorenengagement mit KI-gestützten Predictive Analytics."
+    },
+    "aiContent": {
+      "title": "KI-Content-Generierung",
+      "description": "Generieren Sie überzeugende Pressemitteilungen, Investoren-Updates und Unternehmenskommunikation, die auf Ihre Markenstimme und Ihr Publikum zugeschnitten sind."
+    },
+    "stakeholder": {
+      "title": "Stakeholder-Management",
+      "description": "Intelligentes CRM für Investoren, Analysten, Medienkontakte und andere wichtige Stakeholder mit automatisiertem Engagement-Tracking."
+    },
+    "strategicInsights": {
+      "title": "Strategische Einblicke",
+      "description": "KI-gestützte Empfehlungen für Timing, Messaging und Kanaloptimierung zur Maximierung von Wirkung und Reichweite."
+    }
+  },
+  "solutions": {
+    "title": "Lösungen für jede Phase",
+    "description": "Ob Sie sich auf einen Börsengang vorbereiten oder laufende Investor Relations verwalten, AmplifiX passt sich den einzigartigen Bedürfnissen Ihres Unternehmens an.",
+    "publicCompanies": {
+      "title": "Börsennotierte Unternehmen",
+      "earnings": {
+        "title": "Earnings-Kommunikation",
+        "description": "Automatisierte Earnings-Call-Transkripte und Investorenmaterialien"
+      },
+      "regulatory": {
+        "title": "Regulatorische Compliance",
+        "description": "SEC-Filing-Unterstützung und Compliance-Überwachung"
+      },
+      "analyst": {
+        "title": "Analystenbeziehungen",
+        "description": "KI-gestütztes Tracking und Engagement der Analystenstimmung"
+      }
+    },
+    "privateCompanies": {
+      "title": "Private Unternehmen",
+      "fundraising": {
+        "title": "Fundraising-Unterstützung",
+        "description": "Pitch-Deck-Optimierung und Automatisierung der Investorenansprache"
+      },
+      "brandBuilding": {
+        "title": "Markenaufbau",
+        "description": "Strategische PR-Kampagnen und Thought-Leadership-Content"
+      },
+      "ipoPrep": {
+        "title": "IPO-Vorbereitung",
+        "description": "Umfassende Bereitschaftsbewertung und Roadmap"
+      }
+    }
+  }
+}

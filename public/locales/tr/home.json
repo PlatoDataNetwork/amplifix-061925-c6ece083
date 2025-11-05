@@ -1,0 +1,77 @@
+{
+  "hero": {
+    "badge": "AI destekli IR ve kurumsal iletişim",
+    "title": "İletişiminizi güçlendirin",
+    "description": "AmplifiX, halka açık ve özel şirketlerin yatırımcı ilişkilerini ve kurumsal iletişimlerini yönetme biçimini dönüştürmek için son teknoloji AI kullanır."
+  },
+  "about": {
+    "title": "AmplifiX Hakkında",
+    "description": "AI destekli içgörüler, otomatik içerik üretimi ve akıllı paydaş katılım platformları aracılığıyla kurumsal iletişimde devrim yaratıyoruz.",
+    "aiPowered": {
+      "title": "AI destekli zeka",
+      "description": "Gelişmiş makine öğrenimi algoritmaları piyasa hissiyatını analiz eder ve iletişimi optimize eder."
+    },
+    "marketLeadership": {
+      "title": "Pazar liderliği",
+      "description": "Dünya çapında Fortune 500 şirketleri ve gelişmekte olan büyüme işletmeleri tarafından güvenilir."
+    },
+    "strategicFocus": {
+      "title": "Stratejik odak",
+      "description": "Her büyüme aşamasında hem halka açık hem de özel şirketler için özel çözümler."
+    }
+  },
+  "features": {
+    "title": "Güçlü AI özellikleri",
+    "description": "Kapsamlı AI destekli araçlar paketimizle kurumsal iletişiminizi dönüştürün.",
+    "smartAnalytics": {
+      "title": "Akıllı analiz panosu",
+      "description": "AI destekli tahmine dayalı analizlerle piyasa hissiyatı, medya kapsamı ve yatırımcı katılımı hakkında gerçek zamanlı içgörüler."
+    },
+    "aiContent": {
+      "title": "AI içerik üretimi",
+      "description": "Marka sesinize ve hedef kitlenize uyarlanmış ikna edici basın bültenleri, yatırımcı güncellemeleri ve kurumsal iletişimler oluşturun."
+    },
+    "stakeholder": {
+      "title": "Paydaş yönetimi",
+      "description": "Yatırımcılar, analistler, medya kişileri ve diğer önemli paydaşlar için otomatik katılım takibi ile akıllı CRM."
+    },
+    "strategicInsights": {
+      "title": "Stratejik içgörüler",
+      "description": "Etkiyi ve erişimi maksimize etmek için zamanlama, mesajlaşma ve kanal optimizasyonu için AI destekli öneriler."
+    }
+  },
+  "solutions": {
+    "title": "Her aşama için çözümler",
+    "description": "İster halka arz için hazırlanıyor olun ister devam eden yatırımcı ilişkilerini yönetiyor olun, AmplifiX şirketinizin benzersiz ihtiyaçlarına uyum sağlar.",
+    "publicCompanies": {
+      "title": "Halka açık şirketler",
+      "earnings": {
+        "title": "Kazanç iletişimi",
+        "description": "Otomatik kazanç çağrısı transkriptleri ve yatırımcı materyalleri"
+      },
+      "regulatory": {
+        "title": "Düzenleyici uyumluluk",
+        "description": "SEC dosyalama yardımı ve uyumluluk izleme"
+      },
+      "analyst": {
+        "title": "Analist ilişkileri",
+        "description": "AI destekli analist duyarlılık takibi ve katılımı"
+      }
+    },
+    "privateCompanies": {
+      "title": "Özel şirketler",
+      "fundraising": {
+        "title": "Fon toplama desteği",
+        "description": "Pitch deck optimizasyonu ve yatırımcı erişim otomasyonu"
+      },
+      "brandBuilding": {
+        "title": "Marka oluşturma",
+        "description": "Stratejik PR kampanyaları ve düşünce liderliği içeriği"
+      },
+      "ipoPrep": {
+        "title": "Halka arz hazırlığı",
+        "description": "Kapsamlı hazırlık değerlendirmesi ve yol haritası"
+      }
+    }
+  }
+}
