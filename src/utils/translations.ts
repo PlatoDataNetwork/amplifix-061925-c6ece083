@@ -745,34 +745,17 @@ export function translateText(text: string, targetLanguage: string): string {
     return translations[text][targetLanguage];
   }
   
-  // Try to find partial matches for longer texts - improved matching
   let translatedText = text;
   
-  // Sort keys by length (longest first) for better matching
-  const sortedKeys = Object.keys(translations).sort((a, b) => b.length - a.length);
-  
-  for (const key of sortedKeys) {
-    if (translations[key][targetLanguage]) {
-      // Try exact match first
-      if (translatedText === key) {
-        return translations[key][targetLanguage];
-      }
-      
-      // Try case-insensitive match
-      if (translatedText.toLowerCase() === key.toLowerCase()) {
-        return translations[key][targetLanguage];
-      }
-      
-      // Try partial match - replace if the text contains the key
-      if (translatedText.includes(key)) {
-        translatedText = translatedText.replace(key, translations[key][targetLanguage]);
-      }
-      
-      // Try partial match with case-insensitive
-      if (translatedText.toLowerCase().includes(key.toLowerCase())) {
-        const regex = new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-        translatedText = translatedText.replace(regex, translations[key][targetLanguage]);
-      }
+  // Only match full strings (trimmed/case-insensitive) to avoid mixed-language fragments
+  const keys = Object.keys(translations);
+  for (const key of keys) {
+    const target = translations[key][targetLanguage];
+    if (!target) continue;
+    const a = translatedText.trim();
+    const b = key.trim();
+    if (a === b || a.toLowerCase() === b.toLowerCase()) {
+      return target;
     }
   }
   
@@ -783,6 +766,11 @@ export function translateText(text: string, targetLanguage: string): string {
 const originalTexts = new Map<Element, string>();
 
 export function translatePage(targetLanguage: string) {
+  // Set document language and direction
+  const rtlLangs = ['ar', 'he', 'fa'];
+  document.documentElement.setAttribute('lang', targetLanguage);
+  document.documentElement.setAttribute('dir', rtlLangs.includes(targetLanguage) ? 'rtl' : 'ltr');
+
   // First, restore all original texts if switching languages
   originalTexts.forEach((originalText, element) => {
     if (element.textContent && element.textContent !== originalText) {
