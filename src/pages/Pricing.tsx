@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +8,8 @@ import { Check, X, Shield, ArrowRight } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { useJsonData } from "@/hooks/useJsonData";
+import { translateText } from "@/utils/translations";
+import { getLanguageFromPath } from "@/utils/language";
 
 interface PricingData {
   pricing: {
@@ -81,6 +83,14 @@ interface PricingData {
 const Pricing = () => {
   const { data, isLoading, error } = useJsonData<PricingData>('pricing.json');
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("monthly");
+  const [currentLanguage, setCurrentLanguage] = useState('en');
+
+  useEffect(() => {
+    const langCode = getLanguageFromPath() || 'en';
+    setCurrentLanguage(langCode);
+  }, []);
+
+  const t = (text: string) => translateText(text, currentLanguage);
 
   if (isLoading) {
     return (

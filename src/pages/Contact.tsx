@@ -5,11 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Mail, MapPin } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useJsonData } from "@/hooks/useJsonData";
 import { Skeleton } from "@/components/ui/skeleton";
+import { translateText } from "@/utils/translations";
+import { getLanguageFromPath } from "@/utils/language";
 
 interface ContactData {
   contact: {
@@ -62,6 +64,7 @@ interface ContactData {
 
 const Contact = () => {
   const { data, isLoading, error } = useJsonData<ContactData>('contact.json');
+  const [currentLanguage, setCurrentLanguage] = useState('en');
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -72,6 +75,13 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const langCode = getLanguageFromPath() || 'en';
+    setCurrentLanguage(langCode);
+  }, []);
+
+  const t = (text: string) => translateText(text, currentLanguage);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
