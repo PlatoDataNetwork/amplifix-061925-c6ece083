@@ -2,9 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <!-- Homepage -->
   <url>
-    <loc>https://www.amplifix.net/es/</loc>
+    <loc>https://es.amplifix.net/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://www.amplifix.net/es/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://es.amplifix.net/" />
     <lastmod>2025-01-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -12,54 +12,54 @@
   
   <!-- Main Pages -->
   <url>
-    <loc>https://www.amplifix.net/es/about</loc>
+    <loc>https://es.amplifix.net/about</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/about" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://www.amplifix.net/es/about" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://es.amplifix.net/about" />
     <lastmod>2025-01-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://www.amplifix.net/es/solutions</loc>
+    <loc>https://es.amplifix.net/solutions</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/solutions" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://www.amplifix.net/es/solutions" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://es.amplifix.net/solutions" />
     <lastmod>2025-01-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://www.amplifix.net/es/showcase</loc>
+    <loc>https://es.amplifix.net/showcase</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/showcase" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://www.amplifix.net/es/showcase" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://es.amplifix.net/showcase" />
     <lastmod>2025-01-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
-    <loc>https://www.amplifix.net/es/intel</loc>
+    <loc>https://es.amplifix.net/intel</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/intel" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://www.amplifix.net/es/intel" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://es.amplifix.net/intel" />
     <lastmod>2025-01-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://www.amplifix.net/es/pricing</loc>
+    <loc>https://es.amplifix.net/pricing</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/pricing" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://www.amplifix.net/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://es.amplifix.net/pricing" />
     <lastmod>2025-01-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://www.amplifix.net/es/contact</loc>
+    <loc>https://es.amplifix.net/contact</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.amplifix.net/contact" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://www.amplifix.net/es/contact" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://es.amplifix.net/contact" />
     <lastmod>2025-01-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

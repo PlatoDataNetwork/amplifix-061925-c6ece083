@@ -10,7 +10,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useJsonData } from "@/hooks/useJsonData";
 import { Skeleton } from "@/components/ui/skeleton";
-import { z } from "zod";
 
 interface ContactData {
   contact: {
@@ -61,34 +60,6 @@ interface ContactData {
   };
 }
 
-// Security: Comprehensive input validation schema
-const contactFormSchema = z.object({
-  firstName: z.string()
-    .trim()
-    .min(1, "First name is required")
-    .max(50, "First name must be less than 50 characters")
-    .regex(/^[a-zA-Z\s'-]+$/, "First name contains invalid characters"),
-  lastName: z.string()
-    .trim()
-    .min(1, "Last name is required")
-    .max(50, "Last name must be less than 50 characters")
-    .regex(/^[a-zA-Z\s'-]+$/, "Last name contains invalid characters"),
-  email: z.string()
-    .trim()
-    .email("Invalid email address")
-    .max(255, "Email must be less than 255 characters")
-    .toLowerCase(),
-  company: z.string()
-    .trim()
-    .max(100, "Company name must be less than 100 characters")
-    .optional(),
-  companyType: z.enum(["public", "private", "pre-ipo", ""]).optional(),
-  message: z.string()
-    .trim()
-    .min(10, "Message must be at least 10 characters")
-    .max(2000, "Message must be less than 2000 characters")
-});
-
 const Contact = () => {
   const { data, isLoading, error } = useJsonData<ContactData>('contact.json');
   const [formData, setFormData] = useState({
@@ -122,14 +93,21 @@ const Contact = () => {
     
     if (!data) return;
 
+    // Basic validation
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.message) {
+      toast({
+        title: data.contact.toast_missing_title,
+        description: data.contact.toast_missing_description,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      // Security: Validate all inputs with Zod schema
-      const validatedData = contactFormSchema.parse(formData);
-
       const { data: responseData, error } = await supabase.functions.invoke('send-contact-email', {
-        body: validatedData
+        body: formData
       });
 
       if (error) throw error;
@@ -150,21 +128,12 @@ const Contact = () => {
       });
 
     } catch (error: any) {
-      if (error instanceof z.ZodError) {
-        // Display validation errors
-        const firstError = error.errors[0];
-        toast({
-          title: "Validation Error",
-          description: firstError.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: data.contact.toast_error_title,
-          description: data.contact.toast_error_description,
-          variant: "destructive",
-        });
-      }
+      console.error('Error sending email:', error);
+      toast({
+        title: data.contact.toast_error_title,
+        description: data.contact.toast_error_description,
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
