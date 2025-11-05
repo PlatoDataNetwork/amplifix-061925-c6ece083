@@ -20,6 +20,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'Tietoja',
     no: 'Om',
     da: 'Om',
+    is: 'Um',
     th: 'เกี่ยวกับ',
     he: 'אודות',
     fa: 'درباره'
@@ -43,6 +44,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'Ratkaisut',
     no: 'Løsninger',
     da: 'Løsninger',
+    is: 'Lausnir',
     th: 'โซลูชัน',
     he: 'פתרונות',
     fa: 'راه حل ها'
@@ -66,6 +68,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'Esittely',
     no: 'Utstilling',
     da: 'Showcase',
+    is: 'Sýning',
     th: 'โชว์เคส',
     he: 'תצוגה',
     fa: 'نمایشگاه'
@@ -89,6 +92,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'Intel',
     no: 'Intel',
     da: 'Intel',
+    is: 'Greind',
     th: 'อินเทล',
     he: 'מודיעין',
     fa: 'اطلاعات'
@@ -112,6 +116,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'Usein kysytyt kysymykset',
     no: 'Ofte stilte spørsmål',
     da: 'Ofte stillede spørgsmål',
+    is: 'Algengar spurningar',
     th: 'คำถามที่พบบ่อย',
     he: 'שאלות נפוצות',
     fa: 'سوالات متداول'
@@ -135,6 +140,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'Yhteystiedot',
     no: 'Kontakt',
     da: 'Kontakt',
+    is: 'Tengiliður',
     th: 'ติดต่อ',
     he: 'צור קשר',
     fa: 'تماس'
@@ -159,6 +165,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'Vahvista viestintääsi',
     no: 'Forsterke kommunikasjonen din',
     da: 'Forstærk din kommunikation',
+    is: 'Styrktu samskipti þín',
     th: 'เพิ่มพลังการสื่อสารของคุณ',
     he: 'הגבר את התקשורת שלך',
     fa: 'ارتباطات خود را تقویت کنید'
@@ -182,6 +189,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'AmplifiX Intelligence',
     no: 'AmplifiX Intelligence',
     da: 'AmplifiX Intelligence',
+    is: 'AmplifiX Greind',
     th: 'AmplifiX อินเทลลิเจนซ์',
     he: 'AmplifiX אינטליגנציה',
     fa: 'هوش AmplifiX'
@@ -205,6 +213,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'Pysy ajan tasalla AmplifiX-tiimin uusimmista tekoälyälykkyyden, yritystietojen ja tuotepäivitysten kanssa',
     no: 'Hold deg oppdatert med det nyeste innen AI-intelligens, bedriftsinnsikt og produktoppdateringer fra AmplifiX-teamet',
     da: 'Hold dig opdateret med det seneste inden for AI-intelligens, virksomhedsindsigt og produktopdateringer fra AmplifiX-teamet',
+    is: 'Haltu þér uppfærðum með nýjustu upplýsingum um gervigreind, fyrirtækjagreind og vöruuppfærslur frá AmplifiX teyminu',
     th: 'อัปเดตข้อมูลล่าสุดเกี่ยวกับ AI intelligence, corporate insights และ product updates จากทีม AmplifiX',
     he: 'הישאר מעודכן עם החדשות האחרונות בבינה מלאכותית, תובנות עסקיות ועדכוני מוצרים מצוות AmplifiX',
     fa: 'با آخرین اطلاعات در زمینه هوش مصنوعی، بینش‌های شرکتی و به‌روزرسانی‌های محصول از تیم AmplifiX به‌روز بمانید'
@@ -228,6 +237,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'Suositeltu',
     no: 'Anbefalt',
     da: 'Fremhævet',
+    is: 'Í brennidepli',
     th: 'แนะนำ',
     he: 'מובלט',
     fa: 'ویژه'
@@ -251,6 +261,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'Teknologia',
     no: 'Teknologi',
     da: 'Teknologi',
+    is: 'Tækni',
     th: 'เทคโนโลยี',
     he: 'טכנולוגיה',
     fa: 'فناوری'
@@ -274,6 +285,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'Uusimmat Tiedot',
     no: 'Siste Nytt',
     da: 'Seneste Nyt',
+    is: 'Nýjustu fréttir',
     th: 'ข้อมูลล่าสุด',
     he: 'מידע עדכני',
     fa: 'آخرین اطلاعات'
@@ -297,6 +309,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'AmplifiX hyödyntää huippuluokan tekoälyä muuttamaan tapaa, jolla julkiset ja yksityiset yritykset hallitsevat sijoittajasuhteita ja yritysviestintää.',
     no: 'AmplifiX benytter banebrytende AI til å transformere hvordan offentlige og private selskaper administrerer investorrelasjoner og bedriftskommunikasjon.',
     da: 'AmplifiX udnytter banebrydende AI til at transformere, hvordan offentlige og private virksomheder administrerer investorrelationer og virksomhedskommunikation.',
+    is: 'AmplifiX nýtir nýjustu gervigreind til að umbreyta því hvernig opinber og einkafyrirtæki stjórna fjárfestatengslum og fyrirtækjasamskiptum.',
     th: 'AmplifiX ใช้ AI ล้ำสมัยเพื่อเปลี่ยนแปลงวิธีที่บริษัทมหาชนและเอกชนจัดการความสัมพันธ์กับนักลงทุนและการสื่อสารองค์กร',
     he: 'AmplifiX מנצלת בינה מלאכותית חדישה כדי לשנות את האופן שבו חברות ציבוריות ופרטיות מנהלות יחסי משקיעים ותקשורת תאגידית.',
     fa: 'AmplifiX از هوش مصنوعی پیشرفته برای تغییر نحوه مدیریت روابط سرمایه‌گذاران و ارتباطات شرکتی توسط شرکت‌های دولتی و خصوصی استفاده می‌کند.'
@@ -320,6 +333,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'Vahvista brändiäsi →',
     no: 'Styrk merkevaren din →',
     da: 'Forstærk dit brand →',
+    is: 'Styrktu vörumerkið þitt →',
     th: 'เพิ่มพลังแบรนด์ของคุณ →',
     he: 'הגבר את המותג שלך →',
     fa: 'برند خود را تقویت کنید →'
@@ -343,6 +357,7 @@ export const translations: Record<string, Record<string, string>> = {
     fi: 'Ota yhteyttä',
     no: 'Kontakt oss',
     da: 'Kontakt os',
+    is: 'Hafðu samband',
     th: 'ติดต่อเรา',
     he: 'צור קשר',
     fa: 'با ما تماس بگیرید'
