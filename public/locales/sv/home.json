@@ -73,5 +73,109 @@
         "description": "Omfattande beredskapsbedömning och färdplan"
       }
     }
+  },
+  "stats": [
+    {
+      "value": "35+",
+      "label": "Språk som stöds"
+    },
+    {
+      "value": "250+",
+      "label": "Bearbetade kampanjer"
+    },
+    {
+      "value": "2000+",
+      "label": "Mediepublikationer"
+    },
+    {
+      "value": "99.9%",
+      "label": "Garanterad drifttid"
+    }
+  ],
+  "faq": {
+    "title": "Vanliga frågor",
+    "description": "Få svar på vanliga frågor om AmplifiX och hur vi kan hjälpa till att transformera din företagskommunikation.",
+    "items": [
+      {
+        "question": "Vad är AmplifiX och hur fungerar det?",
+        "answer": "AmplifiX är en AI-driven plattform som revolutionerar företagskommunikation för publika och privata företag. Vi använder avancerade maskininlärningsalgoritmer för att analysera marknadssentiment, generera övertygande innehåll och optimera kommunikationsstrategier inom investor relations, PR och företagsmeddelanden."
+      },
+      {
+        "question": "Vilka tjänster erbjuder AmplifiX?",
+        "answer": "AmplifiX erbjuder en omfattande uppsättning tjänster inklusive AI-driven innehållsgenerering för pressmeddelanden och investeraruppdateringar, realtidsanalys av marknadssentiment, intressenthantering, automatiserad mediaövervakning, stöd vid kriskommunikation, hjälp med regelefterlevnad och strategisk kommunikationsplanering skräddarsydd för ditt företags unika behov."
+      },
+      {
+        "question": "Hur stödjer AmplifiX publika företag på kapitalmarknaderna?",
+        "answer": "För publika företag tillhandahåller AmplifiX specialiserat stöd inklusive automatisering av resultatkommunikation, hjälp med SEC-ansökningar, hantering av analytikrelationer, förberedelse av investerarsamtal, spårning av marknadssentiment, övervakning av efterlevnad och strategisk vägledning för att upprätthålla transparent och effektiv kommunikation med aktieägare och tillsynsmyndigheter."
+      },
+      {
+        "question": "Vad gör AmplifiX annorlunda än traditionella IR/PR-byråer?",
+        "answer": "Till skillnad från traditionella byråer kombinerar AmplifiX mänsklig expertis med banbrytande AI-teknologi för att erbjuda 24/7-övervakning, realtidsinsikter, prediktiva analyser och automatiserad innehållsgenerering. Vår plattform skalar med dina behov, erbjuder transparent prissättning och levererar mätbara resultat genom datadrivna strategier som traditionella byråer helt enkelt inte kan matcha."
+      },
+      {
+        "question": "Hur hjälper AmplifiX med investor relations-hantering?",
+        "answer": "AmplifiX effektiviserar investor relations genom intelligenta CRM-system, automatiserad investerarkommunikation, sentimentanalys av investerarfeedback, förberedelse och uppföljning av resultatsamtal, schemaläggning och spårning av investerarmöten, rapportering av prestandamått och strategiska rekommendationer för att förbättra investerarengagemang och tillfredsställelse."
+      },
+      {
+        "question": "Kan AmplifiX hjälpa till med kriskommunikation och rykteshantering?",
+        "answer": "Absolut. AmplifiX tillhandahåller realtidsövervakning av kriser, snabba responsmallar för kommunikation, notifieringssystem för intressenter, spårning av mediasentiment under kriser, strategisk meddelandevägledning och analys och rapportering efter kriser. Våra AI-algoritmer kan upptäcka potentiella problem tidigt, vilket möjliggör proaktiva snarare än reaktiva kommunikationsstrategier."
+      },
+      {
+        "question": "Vilka prisplaner erbjuder AmplifiX?",
+        "answer": "AmplifiX erbjuder tre huvudprisplaner: Startup (499 kr/månad) för framväxande företag med grundläggande AI-innehållsgenerering och analys; Growth (1 499 kr/månad) för skalande företag med avancerade funktioner och intressent-CRM; och Enterprise (anpassad prissättning) för stora organisationer som kräver anpassade AI-modeller, white-label-alternativ och dedikerad support. Alla planer inkluderar en gratis provperiod."
+      },
+      {
+        "question": "Hur snabbt kan mitt företag komma igång med AmplifiX?",
+        "answer": "De flesta företag kan komma igång inom 1-2 veckor. Vår process inkluderar en inledande konsultation, plattformsinställning och anpassning, dataintegrering, teamutbildning och strategiutveckling. Vi tillhandahåller dedikerade onboarding-specialister och omfattande supportmaterial för att säkerställa en smidig övergång till AI-driven kommunikationshantering."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Kontakta oss",
+    "description": "Redo att förstärka din företagskommunikation? Låt oss diskutera hur AmplifiX kan transformera din IR- och PR-strategi.",
+    "form": {
+      "title": "Skicka oss ett meddelande",
+      "fields": {
+        "company_name": {
+          "label": "Företagsnamn",
+          "placeholder": "Ditt företag"
+        },
+        "email": {
+          "label": "Kontakt-e-post",
+          "placeholder": "din@foretag.se"
+        },
+        "company_type": {
+          "label": "Företagstyp",
+          "options": ["Publikt företag", "Privat företag", "Pre-IPO företag"]
+        },
+        "message": {
+          "label": "Meddelande",
+          "placeholder": "Berätta om dina behov..."
+        }
+      },
+      "submit_button": "Skicka meddelande"
+    },
+    "contact_info": [
+      {
+        "title": "Försäljningsfrågor",
+        "description": "Diskutera dina IR/PR-behov med våra experter",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Kundsupport",
+        "description": "Få hjälp med ditt befintliga konto",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Partnerskapsmöjligheter",
+        "description": "Utforska strategiska partnerskap",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Kontorstider",
+        "description": "Måndag - Fredag: 08:00 - 18:00 (EST)",
+        "additional": "Nödstöd tillgängligt 24/7"
+      }
+    ]
   }
 }

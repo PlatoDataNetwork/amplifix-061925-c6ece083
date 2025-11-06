@@ -73,5 +73,109 @@
         "description": "Kapsamlı hazırlık değerlendirmesi ve yol haritası"
       }
     }
+  },
+  "stats": [
+    {
+      "value": "35+",
+      "label": "Desteklenen Diller"
+    },
+    {
+      "value": "250+",
+      "label": "İşlenen Kampanyalar"
+    },
+    {
+      "value": "2000+",
+      "label": "Medya Yayınları"
+    },
+    {
+      "value": "99.9%",
+      "label": "Garanti Edilen Çalışma Süresi"
+    }
+  ],
+  "faq": {
+    "title": "Sıkça Sorulan Sorular",
+    "description": "AmplifiX hakkında sık sorulan sorulara ve kurumsal iletişiminizi nasıl dönüştürebileceğimize dair yanıtlar alın.",
+    "items": [
+      {
+        "question": "AmplifiX nedir ve nasıl çalışır?",
+        "answer": "AmplifiX, halka açık ve özel şirketler için kurumsal iletişimi devrimleştiren AI destekli bir platformdur. Piyasa hissiyatını analiz etmek, ikna edici içerik üretmek ve yatırımcı ilişkileri, halkla ilişkiler ve kurumsal mesajlaşma kanallarında iletişim stratejilerini optimize etmek için gelişmiş makine öğrenimi algoritmalarını kullanırız."
+      },
+      {
+        "question": "AmplifiX hangi hizmetleri sunuyor?",
+        "answer": "AmplifiX, basın bültenleri ve yatırımcı güncellemeleri için AI destekli içerik üretimi, gerçek zamanlı piyasa hissiyatı analizi, paydaş ilişki yönetimi, otomatik medya izleme, kriz iletişim desteği, düzenleyici uyumluluk yardımı ve şirketinizin benzersiz ihtiyaçlarına göre uyarlanmış stratejik iletişim planlaması dahil olmak üzere kapsamlı bir hizmet paketi sunar."
+      },
+      {
+        "question": "AmplifiX sermaye piyasalarında halka açık şirketleri nasıl destekliyor?",
+        "answer": "Halka açık şirketler için AmplifiX, kazanç iletişim otomasyonu, SEC dosyalama yardımı, analist ilişkileri yönetimi, yatırımcı çağrısı hazırlığı, piyasa hissiyatı takibi, uyumluluk izleme ve hissedarlar ve düzenleyici kurumlarla şeffaf ve etkili iletişim sürdürmek için stratejik rehberlik dahil olmak üzere özel destek sağlar."
+      },
+      {
+        "question": "AmplifiX'i geleneksel IR/PR firmalarından farklı kılan nedir?",
+        "answer": "Geleneksel firmalardan farklı olarak, AmplifiX insan uzmanlığını son teknoloji AI teknolojisi ile birleştirerek 7/24 izleme, gerçek zamanlı içgörüler, tahmine dayalı analizler ve otomatik içerik üretimi sağlar. Platformumuz ihtiyaçlarınıza göre ölçeklenir, şeffaf fiyatlandırma sunar ve geleneksel firmaların basitçe karşılayamayacağı veri odaklı stratejilerle ölçülebilir sonuçlar sunar."
+      },
+      {
+        "question": "AmplifiX yatırımcı ilişkileri yönetimine nasıl yardımcı olur?",
+        "answer": "AmplifiX, akıllı CRM sistemleri, otomatik yatırımcı iletişimi, yatırımcı geri bildirimlerinin hissiyat analizi, kazanç çağrısı hazırlığı ve takibi, yatırımcı toplantı planlama ve takibi, performans ölçüm raporlaması ve yatırımcı katılımını ve memnuniyetini artırmaya yönelik stratejik öneriler aracılığıyla yatırımcı ilişkilerini kolaylaştırır."
+      },
+      {
+        "question": "AmplifiX kriz iletişimi ve itibar yönetimi konusunda yardımcı olabilir mi?",
+        "answer": "Kesinlikle. AmplifiX, gerçek zamanlı kriz izleme, hızlı yanıt iletişim şablonları, paydaş bildirim sistemleri, krizler sırasında medya hissiyatı takibi, stratejik mesajlaşma rehberliği ve kriz sonrası analiz ve raporlama sağlar. AI algoritmalarımız potansiyel sorunları erken tespit edebilir ve reaktif yerine proaktif iletişim stratejilerine olanak tanır."
+      },
+      {
+        "question": "AmplifiX hangi fiyatlandırma planları sunuyor?",
+        "answer": "AmplifiX üç ana fiyatlandırma katmanı sunuyor: Temel AI içerik üretimi ve analiziyle yükselen şirketler için Startup (aylık 499 TL); gelişmiş özellikler ve paydaş CRM'i ile ölçeklenen işletmeler için Growth (aylık 1.499 TL); ve özel AI modelleri, white-label seçenekleri ve özel destek gerektiren büyük kuruluşlar için Enterprise (özel fiyatlandırma). Tüm planlar ücretsiz deneme süresi içerir."
+      },
+      {
+        "question": "Şirketim AmplifiX ile ne kadar hızlı başlayabilir?",
+        "answer": "Çoğu şirket 1-2 hafta içinde başlayabilir. Sürecimiz ilk danışma, platform kurulumu ve özelleştirme, veri entegrasyonu, ekip eğitimi ve strateji geliştirmeyi içerir. AI destekli iletişim yönetimine sorunsuz bir geçiş sağlamak için özel onboarding uzmanları ve kapsamlı destek materyalleri sunuyoruz."
+      }
+    ]
+  },
+  "contact": {
+    "title": "İletişime Geçin",
+    "description": "Kurumsal iletişiminizi güçlendirmeye hazır mısınız? AmplifiX'in IR ve PR stratejinizi nasıl dönüştürebileceğini tartışalım.",
+    "form": {
+      "title": "Bize mesaj gönderin",
+      "fields": {
+        "company_name": {
+          "label": "Şirket Adı",
+          "placeholder": "Şirketiniz"
+        },
+        "email": {
+          "label": "İletişim E-postası",
+          "placeholder": "sizin@sirketiniz.com"
+        },
+        "company_type": {
+          "label": "Şirket Türü",
+          "options": ["Halka Açık Şirket", "Özel Şirket", "Pre-IPO Şirketi"]
+        },
+        "message": {
+          "label": "Mesaj",
+          "placeholder": "İhtiyaçlarınızı bize anlatın..."
+        }
+      },
+      "submit_button": "Mesaj Gönder"
+    },
+    "contact_info": [
+      {
+        "title": "Satış Soruları",
+        "description": "IR/PR ihtiyaçlarınızı uzmanlarımızla tartışın",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Müşteri Başarısı",
+        "description": "Mevcut hesabınızla ilgili yardım alın",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Ortaklık Fırsatları",
+        "description": "Stratejik ortaklıkları keşfedin",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Çalışma Saatleri",
+        "description": "Pazartesi - Cuma: 08:00 - 18:00 (EST)",
+        "additional": "7/24 acil destek mevcut"
+      }
+    ]
   }
 }

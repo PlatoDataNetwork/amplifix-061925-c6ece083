@@ -73,5 +73,109 @@
         "description": "Uitgebreide gereedheidsbeoordeling en routekaart"
       }
     }
+  },
+  "stats": [
+    {
+      "value": "35+",
+      "label": "Ondersteunde talen"
+    },
+    {
+      "value": "250+",
+      "label": "Verwerkte campagnes"
+    },
+    {
+      "value": "2000+",
+      "label": "Mediapublicaties"
+    },
+    {
+      "value": "99.9%",
+      "label": "Gegarandeerde uptime"
+    }
+  ],
+  "faq": {
+    "title": "Veelgestelde vragen",
+    "description": "Krijg antwoorden op veelgestelde vragen over AmplifiX en hoe we uw bedrijfscommunicatie kunnen transformeren.",
+    "items": [
+      {
+        "question": "Wat is AmplifiX en hoe werkt het?",
+        "answer": "AmplifiX is een AI-aangedreven platform dat bedrijfscommunicatie voor beursgenoteerde en particuliere bedrijven revolutioneert. We gebruiken geavanceerde machine learning-algoritmen om marktsentiment te analyseren, overtuigende content te genereren en communicatiestrategieën te optimaliseren via investor relations, public relations en bedrijfsberichtenkanalen."
+      },
+      {
+        "question": "Welke diensten biedt AmplifiX aan?",
+        "answer": "AmplifiX biedt een uitgebreide reeks diensten, waaronder AI-aangedreven contentgeneratie voor persberichten en beleggersupdates, realtime marktsentimentanalyse, stakeholderbeheer, geautomatiseerde mediamonitoring, ondersteuning bij crisiscommunicatie, assistentie bij regelgevende naleving en strategische communicatieplanning afgestemd op de unieke behoeften van uw bedrijf."
+      },
+      {
+        "question": "Hoe ondersteunt AmplifiX beursgenoteerde bedrijven op kapitaalmarkten?",
+        "answer": "Voor beursgenoteerde bedrijven biedt AmplifiX gespecialiseerde ondersteuning, waaronder automatisering van resultaatcommunicatie, SEC-indiening assistentie, beheer van analistenrelaties, voorbereiding van beleggersgesprekken, tracking van marktsentiment, nalevingsmonitoring en strategische begeleiding voor het onderhouden van transparante en effectieve communicatie met aandeelhouders en toezichthoudende instanties."
+      },
+      {
+        "question": "Wat maakt AmplifiX anders dan traditionele IR/PR-bureaus?",
+        "answer": "In tegenstelling tot traditionele bureaus combineert AmplifiX menselijke expertise met geavanceerde AI-technologie om 24/7 monitoring, realtime inzichten, voorspellende analyses en geautomatiseerde contentgeneratie te bieden. Ons platform schaalt mee met uw behoeften, biedt transparante prijzen en levert meetbare resultaten door datagedreven strategieën die traditionele bureaus simpelweg niet kunnen evenaren."
+      },
+      {
+        "question": "Hoe helpt AmplifiX met investor relations management?",
+        "answer": "AmplifiX stroomlijnt investor relations door intelligente CRM-systemen, geautomatiseerde beleggerscommunicatie, sentimentanalyse van beleggersfeedback, voorbereiding en follow-up van resultaatgesprekken, planning en tracking van beleggersvergaderingen, rapportage van prestatie-indicatoren en strategische aanbevelingen voor het verbeteren van beleggersengagement en tevredenheid."
+      },
+      {
+        "question": "Kan AmplifiX helpen met crisiscommunicatie en reputatiemanagement?",
+        "answer": "Absoluut. AmplifiX biedt realtime crisismonitoring, snelle responssjablonen voor communicatie, stakeholder notificatiesystemen, tracking van mediasentiment tijdens crises, strategische messaging-begeleiding en post-crisisanalyse en rapportage. Onze AI-algoritmen kunnen potentiële problemen vroegtijdig detecteren, waardoor proactieve in plaats van reactieve communicatiestrategieën mogelijk zijn."
+      },
+      {
+        "question": "Welke prijsplannen biedt AmplifiX aan?",
+        "answer": "AmplifiX biedt drie hoofdprijslagen: Startup (€499/maand) voor opkomende bedrijven met basis AI-contentgeneratie en analytics; Growth (€1.499/maand) voor schaalbare bedrijven met geavanceerde functies en stakeholder CRM; en Enterprise (aangepaste prijzen) voor grote organisaties die aangepaste AI-modellen, white-label opties en toegewijde ondersteuning nodig hebben. Alle plannen bevatten een gratis proefperiode."
+      },
+      {
+        "question": "Hoe snel kan mijn bedrijf starten met AmplifiX?",
+        "answer": "De meeste bedrijven kunnen binnen 1-2 weken aan boord worden gebracht. Ons proces omvat een eerste consultatie, platforminstallatie en aanpassing, data-integratie, teamtraining en strategieontwikkeling. We bieden toegewijde onboarding-specialisten en uitgebreid ondersteunend materiaal om een soepele overgang naar AI-aangedreven communicatiemanagement te garanderen."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Neem contact op",
+    "description": "Klaar om uw bedrijfscommunicatie te versterken? Laten we bespreken hoe AmplifiX uw IR- en PR-strategie kan transformeren.",
+    "form": {
+      "title": "Stuur ons een bericht",
+      "fields": {
+        "company_name": {
+          "label": "Bedrijfsnaam",
+          "placeholder": "Uw bedrijf"
+        },
+        "email": {
+          "label": "Contact e-mail",
+          "placeholder": "uw@bedrijf.com"
+        },
+        "company_type": {
+          "label": "Bedrijfstype",
+          "options": ["Beursgenoteerd bedrijf", "Particulier bedrijf", "Pre-IPO bedrijf"]
+        },
+        "message": {
+          "label": "Bericht",
+          "placeholder": "Vertel ons over uw behoeften..."
+        }
+      },
+      "submit_button": "Bericht verzenden"
+    },
+    "contact_info": [
+      {
+        "title": "Verkoopaanvragen",
+        "description": "Bespreek uw IR/PR-behoeften met onze experts",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Klantsucces",
+        "description": "Krijg hulp bij uw bestaande account",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Partnershipmogelijkheden",
+        "description": "Verken strategische partnerschappen",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Kantooruren",
+        "description": "Maandag - Vrijdag: 8:00 - 18:00 (EST)",
+        "additional": "24/7 noodhulp beschikbaar"
+      }
+    ]
   }
 }

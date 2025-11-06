@@ -364,40 +364,12 @@ const Index = () => {
       {/* Stats Section */}
       <div className="container mx-auto py-12 md:py-16 px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-          {isLoading ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="bg-card p-6 rounded-xl border border-border text-center">
-                <Skeleton className="h-10 w-20 mx-auto mb-2" />
-                <Skeleton className="h-4 w-24 mx-auto" />
-              </div>
-            ))
-          ) : homeData ? (
-            homeData.home.stats.map((stat, index) => (
-              <div key={index} className="bg-card p-6 rounded-xl border border-border text-center">
-                <div className="text-4xl font-bold text-highlight-blue">{stat.value}</div>
-                <div className="text-muted-foreground">{stat.label}</div>
-              </div>
-            ))
-          ) : (
-            <>
-              <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <div className="text-4xl font-bold text-highlight-blue">500+</div>
-                <div className="text-muted-foreground">Companies Served</div>
-              </div>
-              <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <div className="text-4xl font-bold text-highlight-blue">98%</div>
-                <div className="text-muted-foreground">Client Satisfaction</div>
-              </div>
-              <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <div className="text-4xl font-bold text-highlight-blue">$50B+</div>
-                <div className="text-muted-foreground">Market Cap Managed</div>
-              </div>
-              <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <div className="text-4xl font-bold text-highlight-blue">24/7</div>
-                <div className="text-muted-foreground">AI Monitoring</div>
-              </div>
-            </>
-          )}
+          {[0, 1, 2, 3].map((index) => (
+            <div key={index} className="bg-card p-6 rounded-xl border border-border text-center">
+              <div className="text-4xl font-bold text-highlight-blue">{t(`home:stats.${index}.value`)}</div>
+              <div className="text-muted-foreground">{t(`home:stats.${index}.label`)}</div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -405,92 +377,22 @@ const Index = () => {
       <section id="faq" className="container mx-auto py-12 md:py-16 px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-6">
-            {isLoading ? (
-              <Skeleton className="h-10 w-96 mx-auto" />
-            ) : (
-              homeData?.home.faq.title || 'Frequently Asked Questions'
-            )}
+            {t('home:faq.title')}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            {isLoading ? (
-              <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
-            ) : (
-              homeData?.home.faq.description || 'Get answers to common questions about AmplifiX and how we can help transform your corporate communications.'
-            )}
+            {t('home:faq.description')}
           </p>
         </div>
         
         <div className="max-w-4xl mx-auto">
-          {isLoading ? (
-            <div className="space-y-4">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="border border-border rounded-lg p-4">
-                  <Skeleton className="h-6 w-full mb-2" />
-                  <Skeleton className="h-16 w-full" />
-                </div>
-              ))}
-            </div>
-          ) : homeData ? (
-            <Accordion type="single" collapsible className="w-full">
-              {homeData.home.faq.items.map((item, index) => (
-                <AccordionItem key={index} value={`item-${index + 1}`}>
-                  <AccordionTrigger className="text-left">{item.question}</AccordionTrigger>
-                  <AccordionContent>{item.answer}</AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          ) : (
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1">
-                <AccordionTrigger className="text-left">What is AmplifiX and how does it work?</AccordionTrigger>
-                <AccordionContent>
-                  AmplifiX is an AI-powered platform that revolutionizes corporate communications for public and private companies. We use advanced machine learning algorithms to analyze market sentiment, generate compelling content, and optimize communication strategies across investor relations, public relations, and corporate messaging channels.
-                </AccordionContent>
+          <Accordion type="single" collapsible className="w-full">
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((index) => (
+              <AccordionItem key={index} value={`item-${index + 1}`}>
+                <AccordionTrigger className="text-left">{t(`home:faq.items.${index}.question`)}</AccordionTrigger>
+                <AccordionContent>{t(`home:faq.items.${index}.answer`)}</AccordionContent>
               </AccordionItem>
-              <AccordionItem value="item-2">
-                <AccordionTrigger className="text-left">What services does AmplifiX offer?</AccordionTrigger>
-                <AccordionContent>
-                  AmplifiX offers a comprehensive suite of services including AI-powered content generation for press releases and investor updates, real-time market sentiment analysis, stakeholder relationship management, automated media monitoring, crisis communication support, regulatory compliance assistance, and strategic communication planning tailored to your company's unique needs.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-3">
-                <AccordionTrigger className="text-left">How does AmplifiX support public companies in capital markets?</AccordionTrigger>
-                <AccordionContent>
-                  For public companies, AmplifiX provides specialized support including earnings communication automation, SEC filing assistance, analyst relations management, investor call preparation, market sentiment tracking, compliance monitoring, and strategic guidance for maintaining transparent and effective communication with shareholders and regulatory bodies.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-4">
-                <AccordionTrigger className="text-left">What makes AmplifiX different from traditional IR/PR firms?</AccordionTrigger>
-                <AccordionContent>
-                  Unlike traditional firms, AmplifiX combines human expertise with cutting-edge AI technology to provide 24/7 monitoring, real-time insights, predictive analytics, and automated content generation. Our platform scales with your needs, offers transparent pricing, and delivers measurable results through data-driven strategies that traditional firms simply cannot match.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-5">
-                <AccordionTrigger className="text-left">How does AmplifiX help with investor relations management?</AccordionTrigger>
-                <AccordionContent>
-                  AmplifiX streamlines investor relations through intelligent CRM systems, automated investor communications, sentiment analysis of investor feedback, earnings call preparation and follow-up, investor meeting scheduling and tracking, performance metrics reporting, and strategic recommendations for improving investor engagement and satisfaction.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-6">
-                <AccordionTrigger className="text-left">Can AmplifiX help with crisis communication and reputation management?</AccordionTrigger>
-                <AccordionContent>
-                  Absolutely. AmplifiX provides real-time crisis monitoring, rapid response communication templates, stakeholder notification systems, media sentiment tracking during crises, strategic messaging guidance, and post-crisis analysis and reporting. Our AI algorithms can detect potential issues early, allowing for proactive rather than reactive communication strategies.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-7">
-                <AccordionTrigger className="text-left">What pricing plans does AmplifiX offer?</AccordionTrigger>
-                <AccordionContent>
-                  AmplifiX offers three main pricing tiers: Startup ($499/month) for emerging companies with basic AI content generation and analytics; Growth ($1,499/month) for scaling businesses with advanced features and stakeholder CRM; and Enterprise (custom pricing) for large organizations requiring custom AI models, white-label options, and dedicated support. All plans include a free trial period.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-8">
-                <AccordionTrigger className="text-left">How quickly can my company get started with AmplifiX?</AccordionTrigger>
-                <AccordionContent>
-                  Most companies can be onboarded within 1-2 weeks. Our process includes an initial consultation, platform setup and customization, data integration, team training, and strategy development. We provide dedicated onboarding specialists and comprehensive support materials to ensure a smooth transition to AI-powered communications management.
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          )}
+            ))}
+          </Accordion>
         </div>
       </section>
 
@@ -498,147 +400,74 @@ const Index = () => {
       <section id="contact" className="container mx-auto py-12 md:py-16 px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-6">
-            {isLoading ? (
-              <Skeleton className="h-10 w-64 mx-auto" />
-            ) : (
-              homeData?.home.contact.title || 'Get In Touch'
-            )}
+            {t('home:contact.title')}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            {isLoading ? (
-              <Skeleton className="h-6 w-full max-w-2xl mx-auto" />
-            ) : (
-              homeData?.home.contact.description || "Ready to amplify your corporate communications? Let's discuss how AmplifiX can transform your IR and PR strategy."
-            )}
+            {t('home:contact.description')}
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
           <div className="bg-card p-8 rounded-xl border border-border">
             <h3 className="text-2xl font-bold mb-6">
-              {isLoading ? (
-                <Skeleton className="h-8 w-48" />
-              ) : (
-                homeData?.home.contact.form.title || 'Send us a message'
-              )}
+              {t('home:contact.form.title')}
             </h3>
             <form className="space-y-6">
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  {isLoading ? (
-                    <Skeleton className="h-4 w-24" />
-                  ) : (
-                    homeData?.home.contact.form.fields.company_name.label || 'Company Name'
-                  )}
+                  {t('home:contact.form.fields.company_name.label')}
                 </label>
                 <input 
                   type="text" 
                   className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-highlight-blue focus:outline-none"
-                  placeholder={homeData?.home.contact.form.fields.company_name.placeholder || 'Your company'}
+                  placeholder={t('home:contact.form.fields.company_name.placeholder')}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  {isLoading ? (
-                    <Skeleton className="h-4 w-24" />
-                  ) : (
-                    homeData?.home.contact.form.fields.email.label || 'Contact Email'
-                  )}
+                  {t('home:contact.form.fields.email.label')}
                 </label>
                 <input 
                   type="email" 
                   className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-highlight-blue focus:outline-none"
-                  placeholder={homeData?.home.contact.form.fields.email.placeholder || 'your@company.com'}
+                  placeholder={t('home:contact.form.fields.email.placeholder')}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  {isLoading ? (
-                    <Skeleton className="h-4 w-24" />
-                  ) : (
-                    homeData?.home.contact.form.fields.company_type.label || 'Company Type'
-                  )}
+                  {t('home:contact.form.fields.company_type.label')}
                 </label>
                 <select className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-highlight-blue focus:outline-none">
-                  {homeData?.home.contact.form.fields.company_type.options ? (
-                    homeData.home.contact.form.fields.company_type.options.map((option, index) => (
-                      <option key={index}>{option}</option>
-                    ))
-                  ) : (
-                    <>
-                      <option>Public Company</option>
-                      <option>Private Company</option>
-                      <option>Pre-IPO Company</option>
-                    </>
-                  )}
+                  {[0, 1, 2].map((index) => (
+                    <option key={index}>{t(`home:contact.form.fields.company_type.options.${index}`)}</option>
+                  ))}
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  {isLoading ? (
-                    <Skeleton className="h-4 w-16" />
-                  ) : (
-                    homeData?.home.contact.form.fields.message.label || 'Message'
-                  )}
+                  {t('home:contact.form.fields.message.label')}
                 </label>
                 <textarea 
                   rows={4}
                   className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:border-highlight-blue focus:outline-none"
-                  placeholder={homeData?.home.contact.form.fields.message.placeholder || 'Tell us about your needs...'}
+                  placeholder={t('home:contact.form.fields.message.placeholder')}
                 ></textarea>
               </div>
               <Button className="w-full bg-highlight-blue text-white">
-                {isLoading ? (
-                  <Skeleton className="h-4 w-24" />
-                ) : (
-                  homeData?.home.contact.form.submit_button || 'Send Message'
-                )}
+                {t('home:contact.form.submit_button')}
               </Button>
             </form>
           </div>
           
           <div className="space-y-8">
-            {isLoading ? (
-              Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-card p-6 rounded-xl border border-border">
-                  <Skeleton className="h-6 w-32 mb-2" />
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-40" />
-                </div>
-              ))
-            ) : homeData ? (
-              homeData.home.contact.contact_info.map((info, index) => (
-                <div key={index} className="bg-card p-6 rounded-xl border border-border">
-                  <h4 className="text-lg font-bold mb-2">{info.title}</h4>
-                  <p className="text-muted-foreground mb-2">{info.description}</p>
-                  {info.contact && <a href={`mailto:${info.contact}`} className="text-highlight-blue hover:underline">{info.contact}</a>}
-                  {info.additional && <p className="text-muted-foreground">{info.additional}</p>}
-                </div>
-              ))
-            ) : (
-              <>
-                <div className="bg-card p-6 rounded-xl border border-border">
-                  <h4 className="text-lg font-bold mb-2">Sales Inquiries</h4>
-                  <p className="text-muted-foreground mb-2">Discuss your IR/PR needs with our experts</p>
-                  <a href="mailto:support@amplifix.net" className="text-highlight-blue hover:underline">support@amplifix.net</a>
-                </div>
-                <div className="bg-card p-6 rounded-xl border border-border">
-                  <h4 className="text-lg font-bold mb-2">Customer Success</h4>
-                  <p className="text-muted-foreground mb-2">Get help with your existing account</p>
-                  <a href="mailto:support@amplifix.net" className="text-highlight-blue hover:underline">support@amplifix.net</a>
-                </div>
-                <div className="bg-card p-6 rounded-xl border border-border">
-                  <h4 className="text-lg font-bold mb-2">Partnership Opportunities</h4>
-                  <p className="text-muted-foreground mb-2">Explore strategic partnerships</p>
-                  <a href="mailto:support@amplifix.net" className="text-highlight-blue hover:underline">support@amplifix.net</a>
-                </div>
-                <div className="bg-card p-6 rounded-xl border border-border">
-                  <h4 className="text-lg font-bold mb-2">Office Hours</h4>
-                  <p className="text-muted-foreground">Monday - Friday: 8:00 AM - 6:00 PM (EST)</p>
-                  <p className="text-muted-foreground">Emergency support available 24/7</p>
-                </div>
-              </>
-            )}
+            {[0, 1, 2, 3].map((index) => (
+              <div key={index} className="bg-card p-6 rounded-xl border border-border">
+                <h4 className="text-lg font-bold mb-2">{t(`home:contact.contact_info.${index}.title`)}</h4>
+                <p className="text-muted-foreground mb-2">{t(`home:contact.contact_info.${index}.description`)}</p>
+                {index < 3 && <a href={`mailto:${t(`home:contact.contact_info.${index}.contact`)}`} className="text-highlight-blue hover:underline">{t(`home:contact.contact_info.${index}.contact`)}</a>}
+                {index === 3 && <p className="text-muted-foreground">{t(`home:contact.contact_info.${index}.additional`)}</p>}
+              </div>
+            ))}
           </div>
         </div>
       </section>
