@@ -64,6 +64,11 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
           const wordCount = article.content?.split(/\s+/).length || 0;
           const readTime = Math.max(1, Math.ceil(wordCount / 200));
 
+          // For AI feed, tag with both AI and Plato
+          const isAIFeed = verticalSlug === 'artificial-intelligence';
+          const baseTags = article.categories || [];
+          const tags = isAIFeed ? [...baseTags, 'AI', 'Plato'] : baseTags.length > 0 ? baseTags : [categoryName || verticalSlug];
+
           return {
             id: 1000 + index + (verticalSlug.length * 100), // Unique IDs based on vertical
             title: article.title,
@@ -72,8 +77,8 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
             date: formattedDate,
             read_time: `${readTime} min read`,
             category: categoryName || verticalSlug,
-            image: article.image || '/lovable-uploads/naoris-hero-new.png',
-            tags: article.categories || [categoryName || verticalSlug],
+            image: '', // No images
+            tags: tags,
             external_url: article.link,
             content: article.content
           };
