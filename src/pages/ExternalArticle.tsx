@@ -6,12 +6,14 @@ import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink, Calendar, User, Clock } from "lucide-react";
 import { useExternalJsonFeed } from "@/hooks/useExternalJsonFeed";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { posts, isLoading } = useExternalJsonFeed('https://dashboard.platodata.io/json/artificial-intelligence.json');
   const [article, setArticle] = useState<any>(null);
+  useLanguage(); // Enable translation
 
   useEffect(() => {
     if (posts.length > 0 && id) {
@@ -28,30 +30,30 @@ const ExternalArticle = () => {
         <div className="pt-24 container mx-auto py-8 px-4">
           <div className="max-w-4xl mx-auto">
             <div className="animate-pulse space-y-4">
-              <div className="h-8 bg-muted rounded w-3/4"></div>
-              <div className="h-4 bg-muted rounded w-1/2"></div>
-              <div className="h-64 bg-muted rounded"></div>
-            </div>
+            <div className="h-8 bg-muted rounded w-3/4"></div>
+            <div className="h-4 bg-muted rounded w-1/2"></div>
+            <div className="h-64 bg-muted rounded"></div>
           </div>
         </div>
-        <Footer />
       </div>
-    );
-  }
+      <Footer />
+    </div>
+  );
+}
 
-  if (!article) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <SEOHead title="Article Not Found" />
-        <MainHeader />
-        <div className="pt-24 container mx-auto py-8 px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-3xl font-bold mb-4">Article Not Found</h1>
-            <p className="text-muted-foreground mb-6">The article you're looking for doesn't exist.</p>
-            <Button onClick={() => navigate('/intel')} variant="outline">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Intel
-            </Button>
+if (!article) {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <SEOHead title="Article Not Found" />
+      <MainHeader />
+      <div className="pt-24 container mx-auto py-8 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-3xl font-bold mb-4">Article Not Found</h1>
+          <p className="text-muted-foreground mb-6">The article you're looking for doesn't exist.</p>
+          <Button onClick={() => navigate('/intel')} variant="outline">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Intelligence
+          </Button>
           </div>
         </div>
         <Footer />
@@ -62,7 +64,7 @@ const ExternalArticle = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SEOHead 
-        title={`${article.title} - AmplifiX Intel`}
+        title={`${article.title} - AmplifiX Intelligence`}
         description={article.excerpt}
       />
       <MainHeader />
@@ -76,14 +78,14 @@ const ExternalArticle = () => {
             className="mb-6"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Intel
+            Back to Intelligence
           </Button>
 
           {/* Article Header */}
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-4">
               <span className="bg-blue-500/20 text-blue-500 px-3 py-1 rounded-full text-sm">
-                {article.category}
+                AI Intelligence
               </span>
               {article.external_url && (
                 <a 
