@@ -1,5 +1,6 @@
 
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { Linkedin, Twitter, Mail, ExternalLink } from "lucide-react";
 import { useJsonData } from "@/hooks/useJsonData";
 import { CommonData } from "@/types/common";
@@ -33,18 +34,18 @@ const Footer = () => {
               </p>
             )}
             <div className="flex space-x-4">
-              <Link to="#" className="text-muted-foreground hover:text-highlight-blue" title="X (Twitter)">
+              <LanguageAwareLink to="#" className="text-muted-foreground hover:text-highlight-blue" title="X (Twitter)">
                 <Twitter size={20} />
-              </Link>
-              <Link to="#" className="text-muted-foreground hover:text-highlight-blue" title="LinkedIn">
+              </LanguageAwareLink>
+              <LanguageAwareLink to="#" className="text-muted-foreground hover:text-highlight-blue" title="LinkedIn">
                 <Linkedin size={20} />
-              </Link>
-              <Link to="#" className="text-muted-foreground hover:text-highlight-blue" title="Medium">
+              </LanguageAwareLink>
+              <LanguageAwareLink to="#" className="text-muted-foreground hover:text-highlight-blue" title="Medium">
                 <ExternalLink size={20} />
-              </Link>
-              <Link to="/contact" className="text-muted-foreground hover:text-highlight-blue" title="Email">
+              </LanguageAwareLink>
+              <LanguageAwareLink to="/contact" className="text-muted-foreground hover:text-highlight-blue" title="Email">
                 <Mail size={20} />
-              </Link>
+              </LanguageAwareLink>
             </div>
           </div>
           
@@ -59,9 +60,9 @@ const Footer = () => {
                 ))
               ) : (
                 <>
-                  <li><Link to="/" className="text-muted-foreground hover:text-highlight-blue">{t('footer.home')}</Link></li>
-                  <li><Link to="/showcase" className="text-muted-foreground hover:text-highlight-blue">{t('nav.showcase')}</Link></li>
-                  <li><Link to="/faq" className="text-muted-foreground hover:text-highlight-blue">{t('nav.faq')}</Link></li>
+                  <li><LanguageAwareLink to="/" className="text-muted-foreground hover:text-highlight-blue">{t('footer.home')}</LanguageAwareLink></li>
+                  <li><LanguageAwareLink to="/showcase" className="text-muted-foreground hover:text-highlight-blue">{t('nav.showcase')}</LanguageAwareLink></li>
+                  <li><LanguageAwareLink to="/faq" className="text-muted-foreground hover:text-highlight-blue">{t('nav.faq')}</LanguageAwareLink></li>
                 </>
               )}
             </ul>
@@ -78,9 +79,9 @@ const Footer = () => {
                 ))
               ) : (
                 <>
-                  <li><Link to="/solutions/public-companies" className="text-muted-foreground hover:text-highlight-blue">{t('footer.publicCompanies')}</Link></li>
-                  <li><Link to="/solutions/private-companies" className="text-muted-foreground hover:text-highlight-blue">{t('footer.privateCompanies')}</Link></li>
-                  <li><Link to="/solutions/ipo-preparation" className="text-muted-foreground hover:text-highlight-blue">{t('footer.ipoPreparation')}</Link></li>
+                  <li><LanguageAwareLink to="/solutions/public-companies" className="text-muted-foreground hover:text-highlight-blue">{t('footer.publicCompanies')}</LanguageAwareLink></li>
+                  <li><LanguageAwareLink to="/solutions/private-companies" className="text-muted-foreground hover:text-highlight-blue">{t('footer.privateCompanies')}</LanguageAwareLink></li>
+                  <li><LanguageAwareLink to="/solutions/ipo-preparation" className="text-muted-foreground hover:text-highlight-blue">{t('footer.ipoPreparation')}</LanguageAwareLink></li>
                 </>
               )}
             </ul>
@@ -126,10 +127,10 @@ const Footer = () => {
               ))
             ) : (
               <>
-                <Link to="/privacy-policy" className="text-muted-foreground hover:text-highlight-blue text-sm">{t('footer.privacyPolicy')}</Link>
-                <Link to="/compliance" className="text-muted-foreground hover:text-highlight-blue text-sm">{t('footer.compliance')}</Link>
-                <Link to="/terms-of-service" className="text-muted-foreground hover:text-highlight-blue text-sm">{t('footer.termsOfService')}</Link>
-                <Link to="/data-processing" className="text-muted-foreground hover:text-highlight-blue text-sm">{t('footer.dataProcessing')}</Link>
+                <LanguageAwareLink to="/privacy-policy" className="text-muted-foreground hover:text-highlight-blue text-sm">{t('footer.privacyPolicy')}</LanguageAwareLink>
+                <LanguageAwareLink to="/compliance" className="text-muted-foreground hover:text-highlight-blue text-sm">{t('footer.compliance')}</LanguageAwareLink>
+                <LanguageAwareLink to="/terms-of-service" className="text-muted-foreground hover:text-highlight-blue text-sm">{t('footer.termsOfService')}</LanguageAwareLink>
+                <LanguageAwareLink to="/data-processing" className="text-muted-foreground hover:text-highlight-blue text-sm">{t('footer.dataProcessing')}</LanguageAwareLink>
               </>
             )}
           </div>
