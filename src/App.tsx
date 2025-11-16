@@ -98,6 +98,7 @@ const App = () => (
               <Route path="/:lang/intel/advanced-analytics-article" element={<AdvancedAnalyticsArticle />} />
               <Route path="/:lang/intel/investor-engagement-article" element={<InvestorEngagementArticle />} />
               <Route path="/:lang/intel/external/:id" element={<ExternalArticle />} />
+              <Route path="/:lang/intel/:vertical" element={<VerticalPage />} />
               <Route path="/:lang/support" element={<Support />} />
               <Route path="/:lang/solutions" element={<Solutions />} />
               <Route path="/:lang/about" element={<About />} />
