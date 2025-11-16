@@ -5,20 +5,25 @@ import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink, Calendar, User, Clock } from "lucide-react";
-import { useExternalJsonFeed } from "@/hooks/useExternalJsonFeed";
 import { useRSSFeed } from "@/hooks/useRSSFeed";
+import { usePlatoDataFeed } from "@/hooks/usePlatoDataFeed";
+import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useLanguage } from "@/hooks/useLanguage";
 
 const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { posts: aiPosts, isLoading: aiLoading } = useExternalJsonFeed('https://dashboard.platodata.io/json/artificial-intelligence.json');
-  const { posts: acnPosts, isLoading: acnLoading } = useRSSFeed('https://www.acnnewswire.com/rss/lang/english.xml', 'ACN');
+  const { verticals } = usePlatoVerticals();
   const [article, setArticle] = useState<any>(null);
   useLanguage(); // Enable translation
 
-  const allPosts = [...aiPosts, ...acnPosts];
-  const isLoading = aiLoading || acnLoading;
+  // Load all vertical feeds to find the article
+  const { posts: aiPosts, isLoading: aiLoading } = usePlatoDataFeed('artificial-intelligence', 'AI');
+  const { posts: blockchainPosts, isLoading: blockchainLoading } = usePlatoDataFeed('blockchain', 'Blockchain');
+  const { posts: acnPosts, isLoading: acnLoading } = useRSSFeed('https://www.acnnewswire.com/rss/lang/english.xml', 'ACN');
+
+  const allPosts = [...aiPosts, ...blockchainPosts, ...acnPosts];
+  const isLoading = aiLoading || blockchainLoading || acnLoading;
 
   useEffect(() => {
     if (allPosts.length > 0 && id) {
