@@ -7,6 +7,7 @@ import BlogPostCard from "@/components/BlogPostCard";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import RSSFeed from "@/components/RSSFeed";
 import { useJsonData } from "@/hooks/useJsonData";
+import { useExternalJsonFeed } from "@/hooks/useExternalJsonFeed";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -50,13 +51,18 @@ interface BlogData {
 
 const Blog = () => {
   const { data: blogData } = useJsonData<BlogData>('blog-intel.json');
+  const { posts: externalPosts } = useExternalJsonFeed('https://dashboard.platodata.io/json/artificial-intelligence.json');
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   useLanguage(); // Auto-translates page
   
   const selectedTag = searchParams.get('tag');
   
-  const allBlogPosts = blogData?.blog.blog_posts || [];
+  // Merge local and external blog posts
+  const allBlogPosts = useMemo(() => {
+    const localPosts = blogData?.blog.blog_posts || [];
+    return [...localPosts, ...externalPosts];
+  }, [blogData?.blog.blog_posts, externalPosts]);
   const categories = blogData?.blog.categories || ["All", "Technology", "Analytics", "Security", "Insights", "Updates"];
   const popularTags = blogData?.blog.popular_tags?.tags || ["AI", "Analytics", "Investor Relations", "Corporate Communications", "Intelligence", "Automation", "Data", "Insights", "Technology", "Innovation"];
   
@@ -154,7 +160,7 @@ const Blog = () => {
                   post.id === 1 ? "/intel/ai-intelligence-article" :
                   post.id === 2 ? "/intel/advanced-analytics-article" :
                   post.id === 3 ? "/intel/investor-engagement-article" :
-                  undefined
+                  (post as any).external_url || undefined
                 }
                 buttonText={blogData?.blog.ui.read_full_article}
               />

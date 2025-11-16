@@ -279,7 +279,8 @@ const Index = () => {
                   </div>
                 ))
               ) : (
-                {publicCompanyItems.map((item, index) => (
+                <>
+                  {publicCompanyItems.map((item, index) => (
                   <div key={index} className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
                     <div>
@@ -287,7 +288,8 @@ const Index = () => {
                       <p className="text-muted-foreground">{item.description}</p>
                     </div>
                   </div>
-                ))}
+                  ))}
+                </>
               )}
             </div>
           </div>
