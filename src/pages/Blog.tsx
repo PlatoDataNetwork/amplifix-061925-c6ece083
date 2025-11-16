@@ -59,36 +59,24 @@ const Blog = () => {
   useLanguage(); // Auto-translates page
   
   const selectedTag = searchParams.get('tag');
-  const selectedCategory = searchParams.get('category');
+  const selectedCategory = 'All'; // Main page always shows "All"
   
   // Get the vertical slug for the selected category
-  const selectedVertical = useMemo(() => {
-    if (!selectedCategory || selectedCategory === 'All') return null;
-    return verticals.find(v => v.name === selectedCategory);
-  }, [selectedCategory, verticals]);
+  const selectedVertical = null; // Main page doesn't filter by vertical
   
-  // Dynamically load PlatoData feed based on selected category
-  // For Plato category, use the AI feed slug but keep the Plato name
-  const { posts: platoDataPosts } = usePlatoDataFeed(
-    selectedVertical?.slug || null,
-    selectedCategory || ''
-  );
+  // Don't load any external feeds on main page - just show local posts
+  const { posts: platoDataPosts } = usePlatoDataFeed(null, '');
   
   // Load ACN RSS feed
-  const { posts: acnPosts } = useRSSFeed(
-    'https://www.acnnewswire.com/rss/lang/english.xml', 
-    'ACN'
-  );
+  const { posts: acnPosts } = useRSSFeed('', 'ACN');
   const [visibleCount, setVisibleCount] = useState(9);
   const POSTS_INCREMENT = 9;
   
-  // Merge local, PlatoData, and ACN blog posts
+  // Show only local blog posts on main page
   const allBlogPosts = useMemo(() => {
     const localPosts = blogData?.blog.blog_posts || [];
-    // Show PlatoData posts when a vertical is selected, otherwise show ACN
-    const externalPosts = selectedVertical ? platoDataPosts : acnPosts;
-    return [...localPosts, ...externalPosts];
-  }, [blogData?.blog.blog_posts, platoDataPosts, acnPosts, selectedVertical]);
+    return localPosts;
+  }, [blogData?.blog.blog_posts]);
   
   // Create categories array with "All" first, then alphabetically sorted verticals
   const categories = useMemo(() => {
@@ -139,11 +127,13 @@ const Blog = () => {
 
   const handleCategoryClick = (category: string) => {
     if (category === 'All') {
-      const params = new URLSearchParams(searchParams);
-      params.delete('category');
-      setSearchParams(params);
+      navigate('/intel');
     } else {
-      setSearchParams({ ...Object.fromEntries(searchParams), category });
+      // Find the vertical to get its slug
+      const vertical = verticals.find(v => v.name === category);
+      if (vertical) {
+        navigate(`/intel/${vertical.slug}`);
+      }
     }
   };
 
@@ -177,10 +167,10 @@ const Blog = () => {
             {categories.map((category) => (
               <Button
                 key={category}
-                variant={(!selectedCategory && category === "All") || selectedCategory === category ? "default" : "outline"}
+                variant={selectedCategory === category ? "default" : "outline"}
                 size="sm"
                 onClick={() => handleCategoryClick(category)}
-                className={(!selectedCategory && category === "All") || selectedCategory === category ? "bg-gradient-to-r from-blue-500 to-blue-500 text-xs md:text-sm" : "text-xs md:text-sm"}
+                className={selectedCategory === category ? "bg-gradient-to-r from-blue-500 to-blue-500 text-xs md:text-sm" : "text-xs md:text-sm"}
               >
                 {category}
               </Button>
