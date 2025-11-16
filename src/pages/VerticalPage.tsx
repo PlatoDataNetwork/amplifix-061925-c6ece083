@@ -28,23 +28,24 @@ const VerticalPage = () => {
     return verticals.find(v => v.slug === slug || v.name.toLowerCase() === slug);
   }, [vertical, verticals]);
   
-  // Load the appropriate feed - ACN from DB, others from external APIs
+  // Load from database for AI and Blockchain, external API for others
   const { posts: dbPosts, isLoading: dbLoading, error: dbError } = useArticlesFromDB(
-    verticalInfo?.name === 'ACN' ? 'acn' : null
+    (verticalInfo?.name === 'ACN' || verticalInfo?.name === 'AI' || verticalInfo?.name === 'Blockchain') 
+      ? verticalInfo.slug 
+      : null
   );
   
   const { posts: platoDataPosts, isLoading: platoLoading, error: platoError } = usePlatoDataFeed(
-    verticalInfo?.name !== 'ACN' && verticalInfo?.slug ? verticalInfo.slug : null,
+    (!verticalInfo || verticalInfo.name === 'ACN' || verticalInfo.name === 'AI' || verticalInfo.name === 'Blockchain')
+      ? null 
+      : verticalInfo.slug,
     verticalInfo?.name || ''
   );
   
-  const { posts: acnPosts, isLoading: acnLoading, error: acnError } = useRSSFeed(
-    '', // No longer using RSS for ACN
-    'ACN'
-  );
-  
   const allPosts = useMemo(() => {
-    if (verticalInfo?.name === 'ACN') return dbPosts;
+    if (verticalInfo?.name === 'ACN' || verticalInfo?.name === 'AI' || verticalInfo?.name === 'Blockchain') {
+      return dbPosts;
+    }
     return platoDataPosts;
   }, [verticalInfo, dbPosts, platoDataPosts]);
   
