@@ -14,13 +14,130 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      article_tags: {
+        Row: {
+          article_id: string
+          tag_id: string
+        }
+        Insert: {
+          article_id: string
+          tag_id: string
+        }
+        Update: {
+          article_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_tags_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "article_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      articles: {
+        Row: {
+          author: string | null
+          category: string | null
+          content: string | null
+          created_at: string | null
+          excerpt: string | null
+          external_url: string | null
+          id: string
+          image_url: string | null
+          metadata: Json | null
+          post_id: number | null
+          published_at: string
+          read_time: string | null
+          title: string
+          updated_at: string | null
+          vertical_slug: string
+        }
+        Insert: {
+          author?: string | null
+          category?: string | null
+          content?: string | null
+          created_at?: string | null
+          excerpt?: string | null
+          external_url?: string | null
+          id?: string
+          image_url?: string | null
+          metadata?: Json | null
+          post_id?: number | null
+          published_at: string
+          read_time?: string | null
+          title: string
+          updated_at?: string | null
+          vertical_slug: string
+        }
+        Update: {
+          author?: string | null
+          category?: string | null
+          content?: string | null
+          created_at?: string | null
+          excerpt?: string | null
+          external_url?: string | null
+          id?: string
+          image_url?: string | null
+          metadata?: Json | null
+          post_id?: number | null
+          published_at?: string
+          read_time?: string | null
+          title?: string
+          updated_at?: string | null
+          vertical_slug?: string
+        }
+        Relationships: []
+      }
+      tags: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      search_articles: {
+        Args: {
+          limit_count?: number
+          offset_count?: number
+          search_query: string
+          vertical_filter?: string
+        }
+        Returns: {
+          excerpt: string
+          id: string
+          rank: number
+          title: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
