@@ -38,6 +38,7 @@ import AmplifiX2Article from "./pages/AmplifiX2Article";
 import AIIntelligenceArticle from "./pages/AIIntelligenceArticle";
 import AdvancedAnalyticsArticle from "./pages/AdvancedAnalyticsArticle";
 import InvestorEngagementArticle from "./pages/InvestorEngagementArticle";
+import ExternalArticle from "./pages/ExternalArticle";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
@@ -61,6 +62,7 @@ const App = () => (
               <Route path="/intel/ai-intelligence-article" element={<AIIntelligenceArticle />} />
               <Route path="/intel/advanced-analytics-article" element={<AdvancedAnalyticsArticle />} />
               <Route path="/intel/investor-engagement-article" element={<InvestorEngagementArticle />} />
+              <Route path="/intel/external/:id" element={<ExternalArticle />} />
               <Route path="/support" element={<Support />} />
               <Route path="/solutions" element={<Solutions />} />
               <Route path="/about" element={<About />} />
@@ -93,6 +95,7 @@ const App = () => (
               <Route path="/:lang/intel/ai-intelligence-article" element={<AIIntelligenceArticle />} />
               <Route path="/:lang/intel/advanced-analytics-article" element={<AdvancedAnalyticsArticle />} />
               <Route path="/:lang/intel/investor-engagement-article" element={<InvestorEngagementArticle />} />
+              <Route path="/:lang/intel/external/:id" element={<ExternalArticle />} />
               <Route path="/:lang/support" element={<Support />} />
               <Route path="/:lang/solutions" element={<Solutions />} />
               <Route path="/:lang/about" element={<About />} />
