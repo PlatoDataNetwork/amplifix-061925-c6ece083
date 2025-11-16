@@ -13,6 +13,7 @@ export function usePlatoVerticals() {
   useEffect(() => {
     // Hardcoded verticals from platodata.ai in alphabetical order
     const platoVerticals: Vertical[] = [
+      { name: 'ACN', slug: 'acn', url: 'https://platodata.ai/acn/' },
       { name: 'Aerospace', slug: 'aerospace', url: 'https://platodata.ai/aerospace/' },
       { name: 'AI', slug: 'artificial-intelligence', url: 'https://platodata.ai/artificial-intelligence/' },
       { name: 'AR/VR', slug: 'ar-vr', url: 'https://platodata.ai/ar-vr/' },

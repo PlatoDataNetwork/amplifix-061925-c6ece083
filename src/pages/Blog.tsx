@@ -137,12 +137,12 @@ const Blog = () => {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8">
             {blogData?.blog.hero.title ? (
               blogData.blog.hero.title.includes('Intel') ? (
-                <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intel</span></>
+                <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intelligence</span></>
               ) : (
                 blogData.blog.hero.title
               )
             ) : (
-              <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intel</span></>
+              <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intelligence</span></>
             )}
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4">
