@@ -279,29 +279,15 @@ const Index = () => {
                   </div>
                 ))
               ) : (
-                <>
-                  <div className="flex items-start">
+                {publicCompanyItems.map((item, index) => (
+                  <div key={index} className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
                     <div>
-                      <h4 className="font-semibold">Earnings Communications</h4>
-                      <p className="text-muted-foreground">Automated earnings call transcripts and investor materials</p>
+                      <h4 className="font-semibold">{item.title}</h4>
+                      <p className="text-muted-foreground">{item.description}</p>
                     </div>
                   </div>
-                  <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
-                    <div>
-                      <h4 className="font-semibold">Regulatory Compliance</h4>
-                      <p className="text-muted-foreground">SEC filing assistance and compliance monitoring</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
-                    <div>
-                      <h4 className="font-semibold">Analyst Relations</h4>
-                      <p className="text-muted-foreground">AI-powered analyst sentiment tracking and engagement</p>
-                    </div>
-                  </div>
-                </>
+                ))}
               )}
             </div>
           </div>
