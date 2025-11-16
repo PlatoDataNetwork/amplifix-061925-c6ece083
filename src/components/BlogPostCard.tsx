@@ -38,8 +38,30 @@ const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: B
 
   return (
     <article className="bg-card rounded-xl border border-border overflow-hidden hover:border-blue-500/30 transition-colors">
-      <div className="bg-muted h-48 flex items-center justify-center">
-        {getCategoryIcon(post.category)}
+      <div className="bg-muted h-48 relative overflow-hidden">
+        {post.image ? (
+          <img 
+            src={post.image} 
+            alt={post.title}
+            className="w-full h-full object-cover"
+            loading="lazy"
+            onError={(e) => {
+              // Fallback to icon if image fails to load
+              e.currentTarget.style.display = 'none';
+              const parent = e.currentTarget.parentElement;
+              if (parent) {
+                parent.classList.add('flex', 'items-center', 'justify-center');
+                const iconDiv = document.createElement('div');
+                iconDiv.innerHTML = getCategoryIcon(post.category).type.render(getCategoryIcon(post.category).props);
+                parent.appendChild(iconDiv);
+              }
+            }}
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            {getCategoryIcon(post.category)}
+          </div>
+        )}
       </div>
       <div className="p-6">
         <div className="flex items-center gap-2 mb-3">
