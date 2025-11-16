@@ -51,11 +51,15 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
         }
 
         const responseData = await response.json();
-        // Handle both array and object responses
-        const data: ExternalArticle[] = Array.isArray(responseData) ? responseData : [];
+        // Handle both array and object responses - API now returns { articles: [...] }
+        const data: ExternalArticle[] = Array.isArray(responseData) 
+          ? responseData 
+          : responseData.articles || [];
         
-        const transformedPosts: TransformedBlogPost[] = data.map((article, index) => {
-          const pubDate = new Date(article.pubDate);
+        const transformedPosts: TransformedBlogPost[] = data.map((article: any, index) => {
+          // Handle both old RSS format and new API format
+          const dateString = article.date || article.pubDate;
+          const pubDate = new Date(dateString);
           const formattedDate = pubDate.toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
@@ -71,17 +75,27 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
           const baseTags = article.categories || [];
           const tags = isAIFeed ? [...baseTags, 'AI', 'Plato'] : baseTags.length > 0 ? baseTags : [categoryName || verticalSlug];
 
+          // Extract link from various possible locations
+          const articleLink = article.link || article.metadata?.sourceLink?.[0] || '';
+          
+          // Extract image from metadata if available
+          const articleImage = article.image || article.metadata?.featuredImage?.[0] || '/lovable-uploads/naoris-hero-new.png';
+
+          // Create excerpt from content
+          const plainContent = article.content?.replace(/<[^>]*>/g, '') || '';
+          const excerpt = article.contentSnippet || plainContent.substring(0, 200) || '';
+
           return {
-            id: 1000 + index + (verticalSlug.length * 100), // Unique IDs based on vertical
+            id: article.post_id || (1000 + index + (verticalSlug.length * 100)),
             title: article.title,
-            excerpt: article.contentSnippet || article.content?.substring(0, 200) || '',
+            excerpt: excerpt,
             author: article.author || 'PlatoData',
             date: formattedDate,
             read_time: `${readTime} min read`,
             category: categoryName || verticalSlug,
-            image: article.image || '/lovable-uploads/naoris-hero-new.png',
+            image: articleImage,
             tags: tags,
-            external_url: article.link,
+            external_url: articleLink,
             content: article.content
           };
         });
