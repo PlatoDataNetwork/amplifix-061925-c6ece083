@@ -9,8 +9,17 @@ import RSSFeed from "@/components/RSSFeed";
 import { useJsonData } from "@/hooks/useJsonData";
 import { useExternalJsonFeed } from "@/hooks/useExternalJsonFeed";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface BlogPost {
   id: number;
@@ -57,6 +66,8 @@ const Blog = () => {
   useLanguage(); // Auto-translates page
   
   const selectedTag = searchParams.get('tag');
+  const [currentPage, setCurrentPage] = useState(1);
+  const POSTS_PER_PAGE = 9;
   
   // Merge local and external blog posts
   const allBlogPosts = useMemo(() => {
@@ -70,13 +81,32 @@ const Blog = () => {
     if (!selectedTag) return allBlogPosts;
     return allBlogPosts.filter(post => post.tags?.includes(selectedTag));
   }, [allBlogPosts, selectedTag]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredBlogPosts.length / POSTS_PER_PAGE);
+  const paginatedPosts = useMemo(() => {
+    const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+    return filteredBlogPosts.slice(startIndex, startIndex + POSTS_PER_PAGE);
+  }, [filteredBlogPosts, currentPage]);
+
+  // Reset to page 1 when filter changes
+  useMemo(() => {
+    setCurrentPage(1);
+  }, [selectedTag]);
   
   const handleTagClick = (tag: string) => {
     setSearchParams({ tag });
+    setCurrentPage(1);
   };
   
   const clearFilter = () => {
     setSearchParams({});
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -149,7 +179,7 @@ const Blog = () => {
         {/* Blog Posts Grid */}
         <section className="mb-12 md:mb-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {filteredBlogPosts.map((post) => (
+            {paginatedPosts.map((post) => (
               <BlogPostCard 
                 key={post.id} 
                 post={{
@@ -166,6 +196,58 @@ const Blog = () => {
               />
             ))}
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && filteredBlogPosts.length > 0 && (
+            <div className="mt-12 flex justify-center">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                  
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                    // Show first page, last page, current page, and pages around current
+                    if (
+                      page === 1 ||
+                      page === totalPages ||
+                      (page >= currentPage - 1 && page <= currentPage + 1)
+                    ) {
+                      return (
+                        <PaginationItem key={page}>
+                          <PaginationLink
+                            onClick={() => handlePageChange(page)}
+                            isActive={currentPage === page}
+                            className="cursor-pointer"
+                          >
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    } else if (page === currentPage - 2 || page === currentPage + 2) {
+                      return (
+                        <PaginationItem key={page}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      );
+                    }
+                    return null;
+                  })}
+
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
+
           {filteredBlogPosts.length === 0 && selectedTag && (
             <div className="text-center py-12">
               <p className="text-muted-foreground text-lg mb-4">
