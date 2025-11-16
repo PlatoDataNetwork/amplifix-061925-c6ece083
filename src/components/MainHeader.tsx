@@ -1,6 +1,6 @@
-
 import { Button } from "@/components/ui/button";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import ThemeToggle from "@/components/ThemeToggle";
 import MobileMenu from "@/components/MobileMenu";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -45,13 +45,13 @@ const MainHeader = () => {
               className="w-8 h-8 md:w-10 md:h-10"
             />
           </div>
-          <Link to="/" className="text-xl md:text-2xl font-bold text-foreground">
+          <LanguageAwareLink to="/" className="text-xl md:text-2xl font-bold text-foreground">
             {isLoading ? (
               <Skeleton className="h-6 w-24" />
             ) : (
               commonData?.common.branding_name || 'AmplifiX'
             )}
-          </Link>
+          </LanguageAwareLink>
         </div>
         
         {/* Desktop Navigation */}
@@ -64,28 +64,28 @@ const MainHeader = () => {
             </>
           ) : (
             <>
-              <Link to="/about" className="text-foreground hover:text-highlight-blue transition-colors">
+              <LanguageAwareLink to="/about" className="text-foreground hover:text-highlight-blue transition-colors">
                 {t('nav.about')}
-              </Link>
-              <Link to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">
+              </LanguageAwareLink>
+              <LanguageAwareLink to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">
                 {t('nav.solutions')}
-              </Link>
-              <Link to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">
+              </LanguageAwareLink>
+              <LanguageAwareLink to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">
                 {t('nav.showcase')}
-              </Link>
-              <Link to="/intel" className="text-foreground hover:text-highlight-blue transition-colors">
+              </LanguageAwareLink>
+              <LanguageAwareLink to="/intel" className="text-foreground hover:text-highlight-blue transition-colors">
                 {t('nav.intel')}
-              </Link>
-              <Link to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">
+              </LanguageAwareLink>
+              <LanguageAwareLink to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">
                 {t('nav.faq')}
-              </Link>
-              <Link to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">
+              </LanguageAwareLink>
+              <LanguageAwareLink to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">
                 {t('nav.contact')}
-              </Link>
+              </LanguageAwareLink>
               <Button asChild variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity">
-                <Link to="/login">
+                <LanguageAwareLink to="/login">
                   {t('nav.login')}
-                </Link>
+                </LanguageAwareLink>
               </Button>
             </>
           )}
