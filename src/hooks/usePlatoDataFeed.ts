@@ -89,7 +89,10 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
           const articleLink = article.link || article.metadata?.sourceLink?.[0] || '';
           
           // Extract image from metadata if available
-          const articleImage = article.image || article.metadata?.featuredImage?.[0] || '/lovable-uploads/naoris-hero-new.png';
+          const articleImage = article.image || article.metadata?.featuredImage?.[0] || '';
+
+          // Ensure image is a string, not an object
+          const imageUrl = typeof articleImage === 'string' ? articleImage : '';
 
           // Create excerpt from content
           const plainContent = article.content?.replace(/<[^>]*>/g, '') || '';
@@ -103,7 +106,7 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
             date: formattedDate,
             read_time: `${readTime} min read`,
             category: categoryName || verticalSlug,
-            image: articleImage,
+            image: '',  // No images for AI articles
             tags: tags,
             external_url: articleLink,
             content: article.content
