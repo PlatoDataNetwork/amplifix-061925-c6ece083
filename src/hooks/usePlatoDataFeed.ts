@@ -50,7 +50,9 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
           throw new Error(`Failed to fetch ${verticalSlug} feed`);
         }
 
-        const data: ExternalArticle[] = await response.json();
+        const responseData = await response.json();
+        // Handle both array and object responses
+        const data: ExternalArticle[] = Array.isArray(responseData) ? responseData : [];
         
         const transformedPosts: TransformedBlogPost[] = data.map((article, index) => {
           const pubDate = new Date(article.pubDate);
