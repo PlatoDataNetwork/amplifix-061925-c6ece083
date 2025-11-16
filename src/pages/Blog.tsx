@@ -68,6 +68,7 @@ const Blog = () => {
   }, [selectedCategory, verticals]);
   
   // Dynamically load PlatoData feed based on selected category
+  // For Plato category, use the AI feed slug but keep the Plato name
   const { posts: platoDataPosts } = usePlatoDataFeed(
     selectedVertical?.slug || null,
     selectedCategory || ''

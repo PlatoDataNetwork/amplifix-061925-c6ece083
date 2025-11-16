@@ -50,6 +50,7 @@ export function usePlatoVerticals() {
       { name: 'NFTs', slug: 'nfts', url: 'https://platodata.ai/nfts/' },
       { name: 'Patents', slug: 'patents', url: 'https://platodata.ai/patents/' },
       { name: 'Payments', slug: 'payments', url: 'https://platodata.ai/payments/' },
+      { name: 'Plato', slug: 'artificial-intelligence', url: 'https://platodata.ai/artificial-intelligence/' },
       { name: 'Press Releases', slug: 'press-releases', url: 'https://platodata.ai/press-releases/' },
       { name: 'Private Equity', slug: 'private-equity', url: 'https://platodata.ai/private-equity/' },
       { name: 'Psychedelics', slug: 'psychedelics', url: 'https://platodata.ai/psychedelics/' },

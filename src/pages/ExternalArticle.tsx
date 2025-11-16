@@ -18,12 +18,13 @@ const ExternalArticle = () => {
   useLanguage(); // Enable translation
 
   // Load all vertical feeds to find the article
-  const { posts: aiPosts, isLoading: aiLoading } = usePlatoDataFeed('artificial-intelligence', 'AI');
+  // AI and Plato share the same feed
+  const { posts: aiPlatoPosts, isLoading: aiPlatoLoading } = usePlatoDataFeed('artificial-intelligence', 'AI');
   const { posts: blockchainPosts, isLoading: blockchainLoading } = usePlatoDataFeed('blockchain', 'Blockchain');
   const { posts: acnPosts, isLoading: acnLoading } = useRSSFeed('https://www.acnnewswire.com/rss/lang/english.xml', 'ACN');
 
-  const allPosts = [...aiPosts, ...blockchainPosts, ...acnPosts];
-  const isLoading = aiLoading || blockchainLoading || acnLoading;
+  const allPosts = [...aiPlatoPosts, ...blockchainPosts, ...acnPosts];
+  const isLoading = aiPlatoLoading || blockchainLoading || acnLoading;
 
   useEffect(() => {
     if (allPosts.length > 0 && id) {
