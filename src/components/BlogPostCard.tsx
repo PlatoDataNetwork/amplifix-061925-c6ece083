@@ -56,7 +56,7 @@ const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: B
           </div>
           <span className="text-muted-foreground text-sm">{post.date}</span>
         </div>
-        {articleLink && (
+        {articleLink ? (
           articleLink.startsWith('http') ? (
             <Button variant="link" className="text-blue-500 mt-4 p-0" asChild>
               <a href={articleLink} target="_blank" rel="noopener noreferrer">
@@ -70,6 +70,10 @@ const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: B
               </Link>
             </Button>
           )
+        ) : (
+          <Button variant="link" className="text-blue-500 mt-4 p-0">
+            {buttonText} <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
         )}
       </div>
     </article>
