@@ -15,23 +15,27 @@ const ExternalArticle = () => {
   const navigate = useNavigate();
   const { verticals } = usePlatoVerticals();
   const [article, setArticle] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   useLanguage(); // Enable translation
 
-  // Load all vertical feeds to find the article
-  // AI and Plato share the same feed
-  const { posts: aiPlatoPosts, isLoading: aiPlatoLoading } = usePlatoDataFeed('artificial-intelligence', 'AI');
-  const { posts: blockchainPosts, isLoading: blockchainLoading } = usePlatoDataFeed('blockchain', 'Blockchain');
-  const { posts: acnPosts, isLoading: acnLoading } = useRSSFeed('https://www.acnnewswire.com/rss/lang/english.xml', 'ACN');
-
-  const allPosts = [...aiPlatoPosts, ...blockchainPosts, ...acnPosts];
-  const isLoading = aiPlatoLoading || blockchainLoading || acnLoading;
-
+  // Try to load from cache first
   useEffect(() => {
-    if (allPosts.length > 0 && id) {
-      const foundArticle = allPosts.find(post => post.id.toString() === id);
-      setArticle(foundArticle);
+    if (!id) return;
+    
+    try {
+      const cached = sessionStorage.getItem(`article_${id}`);
+      if (cached) {
+        setArticle(JSON.parse(cached));
+        setIsLoading(false);
+        return;
+      }
+    } catch (e) {
+      console.error('Failed to load cached article:', e);
     }
-  }, [allPosts, id]);
+    
+    // If not in cache, we'll show not found
+    setIsLoading(false);
+  }, [id]);
 
   if (isLoading) {
     return (

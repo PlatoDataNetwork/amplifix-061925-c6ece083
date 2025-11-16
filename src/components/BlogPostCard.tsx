@@ -20,6 +20,14 @@ interface BlogPostCardProps {
   buttonText?: string;
 }
 
+const cacheArticle = (post: BlogPost) => {
+  try {
+    sessionStorage.setItem(`article_${post.id}`, JSON.stringify(post));
+  } catch (e) {
+    console.error('Failed to cache article:', e);
+  }
+};
+
 const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: BlogPostCardProps) => {
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -33,6 +41,8 @@ const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: B
   const handleClick = (e: React.MouseEvent) => {
     if (!articleLink) {
       e.preventDefault();
+    } else {
+      cacheArticle(post);
     }
   };
 
@@ -80,19 +90,19 @@ const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: B
         {articleLink ? (
           articleLink.startsWith('http') ? (
             <Button variant="link" className="text-blue-500 mt-4 p-0" asChild>
-              <a href={articleLink} target="_blank" rel="noopener noreferrer">
+              <a href={articleLink} target="_blank" rel="noopener noreferrer" onClick={handleClick}>
                 {buttonText} <ArrowRight className="ml-2 h-4 w-4" />
               </a>
             </Button>
           ) : (
             <Button variant="link" className="text-blue-500 mt-4 p-0" asChild>
-              <Link to={articleLink}>
+              <Link to={articleLink} onClick={handleClick}>
                 {buttonText} <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           )
         ) : (
-          <Button variant="link" className="text-blue-500 mt-4 p-0">
+          <Button variant="link" className="text-blue-500 mt-4 p-0" onClick={handleClick}>
             {buttonText} <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         )}
