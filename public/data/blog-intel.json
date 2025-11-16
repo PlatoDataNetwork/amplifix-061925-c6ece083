@@ -13,7 +13,7 @@
     },
     "featured_post": {
       "badge": "Featured",
-      "category": "Technology",
+      "category": "AI",
       "title": "Introducing AmplifiX 2.0: Next-Gen AI Intelligence",
       "description": "We're excited to announce the launch of AmplifiX 2.0, featuring enhanced AI capabilities, improved analytics, and revolutionary intelligence features that set new standards for corporate communications.",
       "author": "AmplifiX",
@@ -24,13 +24,13 @@
     "ui": {
       "featured_badge": "Featured",
       "read_full_article": "Read Full Article",
-      "category_technology": "Technology",
+      "category_ai": "AI",
       "category_analytics": "Analytics",
       "category_security": "Security",
       "category_insights": "Insights",
       "category_updates": "Updates"
     },
-    "categories": ["All", "Technology", "Analytics", "Security", "Insights", "Updates"],
+    "categories": ["All", "AI", "Analytics", "Security", "Insights", "Updates"],
     "blog_posts": [
       {
         "id": 1,
@@ -39,9 +39,9 @@
         "author": "AmplifiX",
         "date": "Oct 14, 2025",
         "read_time": "5 min read",
-        "category": "Technology",
+        "category": "AI",
         "image": "blog1",
-        "tags": ["AI", "Technology", "Corporate Communications", "Intelligence"]
+        "tags": ["AI", "Intelligence", "Corporate Communications"]
       },
       {
         "id": 2,
@@ -61,14 +61,14 @@
         "author": "AmplifiX",
         "date": "Oct 14, 2025",
         "read_time": "6 min read",
-        "category": "Technology",
+        "category": "AI",
         "image": "blog3",
-        "tags": ["AI", "Investor Relations", "Technology", "Automation"]
+        "tags": ["AI", "Investor Relations", "Automation"]
       }
     ],
     "popular_tags": {
       "title": "Popular Tags",
-      "tags": ["AI", "Analytics", "Investor Relations", "Corporate Communications", "Intelligence", "Automation", "Data", "Insights", "Technology", "Innovation"]
+      "tags": ["AI", "Analytics", "Investor Relations", "Corporate Communications", "Intelligence", "Automation", "Data", "Insights", "Innovation"]
     },
     "gt_translate_keys": [
       "hero.badge_text",
@@ -88,7 +88,7 @@
       {"key": "featured_post.link", "format": "url"},
       "ui.featured_badge",
       "ui.read_full_article",
-      "ui.category_technology",
+      "ui.category_ai",
       "ui.category_analytics",
       "ui.category_security",
       "ui.category_insights",

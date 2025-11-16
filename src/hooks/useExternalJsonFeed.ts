@@ -55,7 +55,7 @@ export function useExternalJsonFeed(url: string) {
           read_time: '5 min read',
           category: 'AI',
           image: article.image || '/lovable-uploads/naoris-hero-new.png',
-          tags: ['AI', 'Technology', 'Intelligence'],
+          tags: ['AI', 'Intelligence'],
           external_url: article.url,
           content: article.content || article.summary || ''
         }));
