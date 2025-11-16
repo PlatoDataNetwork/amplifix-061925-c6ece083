@@ -2,7 +2,7 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useJsonData } from "@/hooks/useJsonData";
@@ -78,14 +78,14 @@ const FAQ = () => {
             {data.faq.hero_description}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-            <Link to={data.faq.hero_cta_primary_link} className="w-full sm:w-auto">
+            <LanguageAwareLink to={data.faq.hero_cta_primary_link} className="w-full sm:w-auto">
               <Button 
                 size="lg" 
                 className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
                 {data.faq.hero_cta_primary_text}
               </Button>
-            </Link>
+            </LanguageAwareLink>
             <a 
               href={data.faq.hero_cta_secondary_link}
               target="_blank"

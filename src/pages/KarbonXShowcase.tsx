@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Leaf, Recycle, Earth, TreePine, Wind } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
@@ -298,11 +298,11 @@ const KarbonXShowcase = () => {
                   <ExternalLink className="ml-2 h-4 w-4" />
                 </Button>
               </a>
-              <Link to="/contact">
+              <LanguageAwareLink to="/contact">
                 <Button size="lg" variant="outline" className="border-border hover:bg-accent">
                   Discuss Partnership
                 </Button>
-              </Link>
+              </LanguageAwareLink>
             </div>
           </div>
         </section>

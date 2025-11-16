@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
@@ -360,11 +360,11 @@ const SiloPharmaShowcase = () => {
                   <ExternalLink className="ml-2 h-4 w-4" />
                 </Button>
               </a>
-              <Link to="/">
+              <LanguageAwareLink to="/">
                 <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors">
                   Learn About AmplifiX
                 </Button>
-              </Link>
+              </LanguageAwareLink>
             </div>
           </div>
         </section>
