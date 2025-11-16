@@ -26,14 +26,19 @@ interface TransformedBlogPost {
 
 export function useRSSFeed(feedUrl: string, category: string = 'ACN') {
   const [posts, setPosts] = useState<TransformedBlogPost[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchRSSFeed = async () => {
-      setIsLoading(true);
-      setError(null);
-
+useEffect(() => {
+  if (!feedUrl) {
+    setPosts([]);
+    setIsLoading(false);
+    setError(null);
+    return;
+  }
+  const fetchRSSFeed = async () => {
+    setIsLoading(true);
+    setError(null);
       const proxyUrls = [
         `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`,
         `https://corsproxy.io/?${encodeURIComponent(feedUrl)}`,
@@ -117,9 +122,7 @@ export function useRSSFeed(feedUrl: string, category: string = 'ACN') {
       setIsLoading(false);
     };
 
-    if (feedUrl) {
-      fetchRSSFeed();
-    }
+    fetchRSSFeed();
   }, [feedUrl, category]);
 
   return { posts, isLoading, error };
