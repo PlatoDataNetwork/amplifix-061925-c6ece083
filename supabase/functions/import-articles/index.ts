@@ -1,0 +1,259 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { corsHeaders } from '../_shared/cors.ts'
+
+const BATCH_SIZE = 100;
+
+interface PlatoDataArticle {
+  post_id: number;
+  title: string;
+  content: string;
+  date: string;
+  slug: string;
+  metadata?: {
+    sourceLink?: string[];
+    featuredImage?: string[];
+    [key: string]: any;
+  };
+}
+
+interface ImportRequest {
+  vertical: string;
+  limit?: number;
+  offset?: number;
+}
+
+interface ImportStats {
+  success: boolean;
+  vertical: string;
+  totalArticles: number;
+  processedArticles: number;
+  insertedArticles: number;
+  updatedArticles: number;
+  errors: number;
+  batches: number;
+  duration: number;
+}
+
+Deno.serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  const startTime = Date.now();
+
+  try {
+    // Create Supabase client
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      {
+        auth: {
+          persistSession: false,
+        },
+      }
+    );
+
+    // Parse request body
+    const { vertical, limit, offset = 0 }: ImportRequest = await req.json();
+
+    if (!vertical) {
+      return new Response(
+        JSON.stringify({ error: 'Vertical parameter is required' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    console.log(`Starting import for vertical: ${vertical}, offset: ${offset}`);
+
+    // Fetch articles from PlatoData API
+    const apiUrl = `https://dashboard.platodata.io/json/${vertical}.json`;
+    console.log(`Fetching from: ${apiUrl}`);
+
+    const response = await fetch(apiUrl);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${vertical} feed: ${response.statusText}`);
+    }
+
+    const responseData = await response.json();
+    
+    // Handle both array and object responses
+    let articles: PlatoDataArticle[] = Array.isArray(responseData) 
+      ? responseData 
+      : responseData.articles || [];
+
+    console.log(`Fetched ${articles.length} articles from API`);
+
+    // Apply limit and offset if specified
+    if (offset > 0) {
+      articles = articles.slice(offset);
+    }
+    if (limit && limit > 0) {
+      articles = articles.slice(0, limit);
+    }
+
+    if (articles.length === 0) {
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: 'No articles to import',
+          vertical,
+          totalArticles: 0,
+        }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    let insertedCount = 0;
+    let updatedCount = 0;
+    let errorCount = 0;
+    const batchCount = Math.ceil(articles.length / BATCH_SIZE);
+
+    // Process articles in batches
+    for (let i = 0; i < articles.length; i += BATCH_SIZE) {
+      const batchNum = Math.floor(i / BATCH_SIZE) + 1;
+      const batch = articles.slice(i, i + BATCH_SIZE);
+      
+      console.log(`Processing batch ${batchNum}/${batchCount} (${batch.length} articles)`);
+
+      // Transform articles to database format
+      const transformedArticles = batch.map(article => {
+        // Calculate read time
+        const wordCount = article.content?.split(/\s+/).length || 0;
+        const readTime = Math.max(1, Math.ceil(wordCount / 200));
+
+        // Extract image URL
+        const imageUrl = article.metadata?.featuredImage?.[0] || null;
+
+        // Extract external URL
+        const externalUrl = article.metadata?.sourceLink?.[0] || null;
+
+        // Create excerpt from content
+        const plainContent = article.content?.replace(/<[^>]*>/g, '') || '';
+        const excerpt = plainContent.substring(0, 300).trim() || null;
+
+        return {
+          post_id: article.post_id,
+          title: article.title,
+          excerpt,
+          content: article.content,
+          author: 'PlatoData',
+          published_at: new Date(article.date).toISOString(),
+          read_time: `${readTime} min read`,
+          category: vertical === 'artificial-intelligence' ? 'AI' : vertical,
+          vertical_slug: vertical,
+          image_url: imageUrl,
+          external_url: externalUrl,
+          metadata: article.metadata || {},
+        };
+      });
+
+      // Upsert articles (insert or update if post_id already exists)
+      const { data, error } = await supabaseClient
+        .from('articles')
+        .upsert(transformedArticles, { 
+          onConflict: 'post_id',
+          ignoreDuplicates: false 
+        })
+        .select('id, post_id');
+
+      if (error) {
+        console.error(`Batch ${batchNum} error:`, error);
+        errorCount += batch.length;
+        continue;
+      }
+
+      // Count inserts vs updates based on whether the post_id existed before
+      const insertedInBatch = data?.length || 0;
+      insertedCount += insertedInBatch;
+
+      console.log(`Batch ${batchNum} completed: ${insertedInBatch} articles processed`);
+
+      // Extract and insert tags for articles with AI/Plato tags
+      if (vertical === 'artificial-intelligence' && data) {
+        try {
+          // Ensure AI and Plato tags exist
+          const tagsToCreate = [
+            { name: 'AI', slug: 'ai' },
+            { name: 'Plato', slug: 'plato' }
+          ];
+
+          for (const tag of tagsToCreate) {
+            await supabaseClient
+              .from('tags')
+              .upsert(tag, { onConflict: 'slug', ignoreDuplicates: true });
+          }
+
+          // Get tag IDs
+          const { data: tagData } = await supabaseClient
+            .from('tags')
+            .select('id, slug')
+            .in('slug', ['ai', 'plato']);
+
+          if (tagData && tagData.length > 0) {
+            // Create article-tag associations
+            const articleTags = data.flatMap(article => 
+              tagData.map(tag => ({
+                article_id: article.id,
+                tag_id: tag.id
+              }))
+            );
+
+            await supabaseClient
+              .from('article_tags')
+              .upsert(articleTags, { 
+                onConflict: 'article_id,tag_id',
+                ignoreDuplicates: true 
+              });
+          }
+        } catch (tagError) {
+          console.error('Error processing tags:', tagError);
+        }
+      }
+    }
+
+    const duration = Date.now() - startTime;
+
+    const stats: ImportStats = {
+      success: true,
+      vertical,
+      totalArticles: articles.length,
+      processedArticles: articles.length,
+      insertedArticles: insertedCount,
+      updatedArticles: 0,
+      errors: errorCount,
+      batches: batchCount,
+      duration,
+    };
+
+    console.log('Import completed:', stats);
+
+    return new Response(
+      JSON.stringify(stats),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+
+  } catch (error) {
+    console.error('Import error:', error);
+    
+    return new Response(
+      JSON.stringify({ 
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        duration: Date.now() - startTime
+      }),
+      { 
+        status: 500, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+  }
+});
