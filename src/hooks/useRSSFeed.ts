@@ -94,10 +94,15 @@ useEffect(() => {
               day: 'numeric'
             });
 
+            // For ACN, use custom excerpt instead of HTML content
+            const excerpt = category === 'ACN' 
+              ? 'ACN. Your Gateway to the Asian Capital Markets.'
+              : item.contentSnippet || item.content?.substring(0, 200) || '';
+
             return {
               id: 2000 + index, // Start from 2000 to avoid conflicts
               title: item.title,
-              excerpt: item.contentSnippet || item.content?.substring(0, 200) || '',
+              excerpt: excerpt,
               author: item.creator || 'ACN Newswire',
               date: formattedDate,
               read_time: '5 min read',
