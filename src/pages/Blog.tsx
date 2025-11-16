@@ -8,6 +8,7 @@ import NewsletterSignup from "@/components/NewsletterSignup";
 import RSSFeed from "@/components/RSSFeed";
 import { useJsonData } from "@/hooks/useJsonData";
 import { useExternalJsonFeed } from "@/hooks/useExternalJsonFeed";
+import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -52,25 +53,44 @@ interface BlogData {
 const Blog = () => {
   const { data: blogData } = useJsonData<BlogData>('blog-intel.json');
   const { posts: externalPosts } = useExternalJsonFeed('https://dashboard.platodata.io/json/artificial-intelligence.json');
+  const { verticals } = usePlatoVerticals();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   useLanguage(); // Auto-translates page
   
   const selectedTag = searchParams.get('tag');
+  const selectedCategory = searchParams.get('category');
   const [visibleCount, setVisibleCount] = useState(9);
   const POSTS_INCREMENT = 9;
   
+  // Merge local and external blog posts
   const allBlogPosts = useMemo(() => {
     const localPosts = blogData?.blog.blog_posts || [];
     return [...localPosts, ...externalPosts];
   }, [blogData?.blog.blog_posts, externalPosts]);
-  const categories = ["All", "AI", "Analytics", "Security", "Insights", "Updates"];
+  
+  // Create categories array with "All" first, then alphabetically sorted verticals
+  const categories = useMemo(() => {
+    return ['All', ...verticals.map(v => v.name)];
+  }, [verticals]);
+  
   const popularTags = blogData?.blog.popular_tags?.tags || ["AI", "Analytics", "Investor Relations", "Corporate Communications", "Intelligence", "Automation", "Data", "Insights", "Innovation"];
   
   const filteredBlogPosts = useMemo(() => {
-    if (!selectedTag) return allBlogPosts;
-    return allBlogPosts.filter(post => post.tags?.includes(selectedTag));
-  }, [allBlogPosts, selectedTag]);
+    let filtered = allBlogPosts;
+    
+    // Filter by tag
+    if (selectedTag) {
+      filtered = filtered.filter(post => post.tags?.includes(selectedTag));
+    }
+    
+    // Filter by category
+    if (selectedCategory && selectedCategory !== 'All') {
+      filtered = filtered.filter(post => post.category === selectedCategory);
+    }
+    
+    return filtered;
+  }, [allBlogPosts, selectedTag, selectedCategory]);
 
   // Show more logic
   const visiblePosts = useMemo(() => {
@@ -82,7 +102,7 @@ const Blog = () => {
   // Reset visible count when filter changes
   useMemo(() => {
     setVisibleCount(9);
-  }, [selectedTag]);
+  }, [selectedTag, selectedCategory]);
   
   const handleTagClick = (tag: string) => {
     setSearchParams({ tag });
@@ -94,6 +114,16 @@ const Blog = () => {
 
   const handleShowMore = () => {
     setVisibleCount(prev => prev + POSTS_INCREMENT);
+  };
+
+  const handleCategoryClick = (category: string) => {
+    if (category === 'All') {
+      const params = new URLSearchParams(searchParams);
+      params.delete('category');
+      setSearchParams(params);
+    } else {
+      setSearchParams({ ...Object.fromEntries(searchParams), category });
+    }
   };
 
   return (
@@ -153,9 +183,10 @@ const Blog = () => {
             {categories.map((category) => (
               <Button
                 key={category}
-                variant={category === "All" ? "default" : "outline"}
+                variant={(!selectedCategory && category === "All") || selectedCategory === category ? "default" : "outline"}
                 size="sm"
-                className={category === "All" ? "bg-gradient-to-r from-blue-500 to-blue-500 text-xs md:text-sm" : "text-xs md:text-sm"}
+                onClick={() => handleCategoryClick(category)}
+                className={(!selectedCategory && category === "All") || selectedCategory === category ? "bg-gradient-to-r from-blue-500 to-blue-500 text-xs md:text-sm" : "text-xs md:text-sm"}
               >
                 {category}
               </Button>
