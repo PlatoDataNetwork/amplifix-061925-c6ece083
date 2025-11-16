@@ -39,6 +39,7 @@ import AIIntelligenceArticle from "./pages/AIIntelligenceArticle";
 import AdvancedAnalyticsArticle from "./pages/AdvancedAnalyticsArticle";
 import InvestorEngagementArticle from "./pages/InvestorEngagementArticle";
 import ExternalArticle from "./pages/ExternalArticle";
+import VerticalPage from "./pages/VerticalPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
@@ -63,6 +64,7 @@ const App = () => (
               <Route path="/intel/advanced-analytics-article" element={<AdvancedAnalyticsArticle />} />
               <Route path="/intel/investor-engagement-article" element={<InvestorEngagementArticle />} />
               <Route path="/intel/external/:id" element={<ExternalArticle />} />
+              <Route path="/intel/:vertical" element={<VerticalPage />} />
               <Route path="/support" element={<Support />} />
               <Route path="/solutions" element={<Solutions />} />
               <Route path="/about" element={<About />} />

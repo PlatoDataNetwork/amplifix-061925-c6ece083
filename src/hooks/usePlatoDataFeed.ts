@@ -79,7 +79,7 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
             date: formattedDate,
             read_time: `${readTime} min read`,
             category: categoryName || verticalSlug,
-            image: '', // No images
+            image: article.image || '/lovable-uploads/naoris-hero-new.png',
             tags: tags,
             external_url: article.link,
             content: article.content
