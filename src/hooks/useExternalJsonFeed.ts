@@ -8,6 +8,9 @@ interface ExternalArticle {
   author?: string;
   source?: string;
   summary?: string;
+  content?: string;
+  post_id?: number;
+  slug?: string;
 }
 
 export interface TransformedBlogPost {
@@ -21,6 +24,7 @@ export interface TransformedBlogPost {
   image: string;
   tags: string[];
   external_url?: string;
+  content?: string;
 }
 
 export function useExternalJsonFeed(url: string) {
@@ -43,7 +47,7 @@ export function useExternalJsonFeed(url: string) {
         
         // Transform external articles to BlogPost format
         const transformedPosts: TransformedBlogPost[] = (data.articles || data || []).map((article: ExternalArticle, index: number) => ({
-          id: 1000 + index, // Start from 1000 to avoid ID conflicts
+          id: article.post_id || (1000 + index), // Use post_id if available, otherwise use offset
           title: article.title || 'Untitled',
           excerpt: article.summary || 'Read more about this AI article...',
           author: article.author || article.source || 'AI Intelligence',
@@ -52,7 +56,8 @@ export function useExternalJsonFeed(url: string) {
           category: 'AI',
           image: article.image || '/lovable-uploads/naoris-hero-new.png',
           tags: ['AI', 'Technology', 'Intelligence'],
-          external_url: article.url
+          external_url: article.url,
+          content: article.content || article.summary || ''
         }));
         
         setPosts(transformedPosts);
