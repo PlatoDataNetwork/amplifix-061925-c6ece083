@@ -155,6 +155,23 @@ const Blog = () => {
           </p>
         </div>
 
+        {/* Categories */}
+        <section className="mb-8 md:mb-12">
+          <div className="flex flex-wrap gap-2 md:gap-3">
+            {categories.map((category) => (
+              <Button
+                key={category}
+                variant={(!selectedCategory && category === "All") || selectedCategory === category ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleCategoryClick(category)}
+                className={(!selectedCategory && category === "All") || selectedCategory === category ? "bg-gradient-to-r from-blue-500 to-blue-500 text-xs md:text-sm" : "text-xs md:text-sm"}
+              >
+                {category}
+              </Button>
+            ))}
+          </div>
+        </section>
+
         <FeaturedPost />
 
         {/* Filter indicator */}
@@ -176,23 +193,6 @@ const Blog = () => {
             </div>
           </section>
         )}
-
-        {/* Categories */}
-        <section className="mb-8 md:mb-12">
-          <div className="flex flex-wrap gap-2 md:gap-3">
-            {categories.map((category) => (
-              <Button
-                key={category}
-                variant={(!selectedCategory && category === "All") || selectedCategory === category ? "default" : "outline"}
-                size="sm"
-                onClick={() => handleCategoryClick(category)}
-                className={(!selectedCategory && category === "All") || selectedCategory === category ? "bg-gradient-to-r from-blue-500 to-blue-500 text-xs md:text-sm" : "text-xs md:text-sm"}
-              >
-                {category}
-              </Button>
-            ))}
-          </div>
-        </section>
 
         {/* Blog Posts Grid */}
         <section className="mb-12 md:mb-16">
