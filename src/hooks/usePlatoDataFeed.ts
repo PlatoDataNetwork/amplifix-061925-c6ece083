@@ -33,6 +33,7 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
   useEffect(() => {
     // Only fetch if we have a valid vertical slug
     if (!verticalSlug || verticalSlug === 'all') {
+      console.log('usePlatoDataFeed: No vertical slug or "all", skipping fetch');
       setPosts([]);
       setIsLoading(false);
       return;
@@ -44,6 +45,7 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
 
       try {
         const url = `https://dashboard.platodata.io/json/${verticalSlug}.json`;
+        console.log('usePlatoDataFeed: Fetching from', url);
         const response = await fetch(url);
         
         if (!response.ok) {
@@ -51,10 +53,15 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
         }
 
         const responseData = await response.json();
+        console.log('usePlatoDataFeed: Response data type:', Array.isArray(responseData) ? 'array' : 'object');
+        console.log('usePlatoDataFeed: Response keys:', Object.keys(responseData));
+        
         // Handle both array and object responses - API now returns { articles: [...] }
         const data: ExternalArticle[] = Array.isArray(responseData) 
           ? responseData 
           : responseData.articles || [];
+        
+        console.log('usePlatoDataFeed: Found', data.length, 'articles');
         
         const transformedPosts: TransformedBlogPost[] = data.map((article: any, index) => {
           // Handle both old RSS format and new API format
@@ -100,12 +107,14 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
           };
         });
 
+        console.log('usePlatoDataFeed: Transformed', transformedPosts.length, 'posts');
         setPosts(transformedPosts);
       } catch (err) {
         console.error(`Error fetching ${verticalSlug} feed:`, err);
         setError(err instanceof Error ? err.message : 'Failed to fetch feed');
         setPosts([]);
       } finally {
+        console.log('usePlatoDataFeed: Fetch complete, isLoading = false');
         setIsLoading(false);
       }
     };
