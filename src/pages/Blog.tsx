@@ -134,12 +134,7 @@ const Blog = () => {
       <div className="pt-24 container mx-auto py-8 md:py-12 px-4">
         {/* Hero Section */}
         <div className="text-center mb-12 md:mb-16">
-          <div className="inline-block mb-6">
-            <div className="bg-gradient-to-r from-[#8A3FFC]/10 to-[#3B82F6]/10 text-[#8A3FFC] rounded-full px-4 md:px-6 py-2 border border-[#8A3FFC]/20 text-sm md:text-base">
-              {blogData?.blog.hero.badge_text || 'Latest Intelligence'}
-            </div>
-          </div>
-          <h1 className="text-3xl md:text-5xl font-bold mb-6">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8">
             {blogData?.blog.hero.title ? (
               blogData.blog.hero.title.includes('Intel') ? (
                 <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intel</span></>
@@ -150,7 +145,7 @@ const Blog = () => {
               <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intel</span></>
             )}
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4">
             {blogData?.blog.hero.description || 'Stay updated with the latest in AI intelligence, corporate communications insights, and product updates from the AmplifiX team.'}
           </p>
         </div>
