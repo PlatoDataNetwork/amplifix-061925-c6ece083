@@ -28,12 +28,12 @@ const VerticalPage = () => {
   }, [vertical, verticals]);
   
   // Load the appropriate feed
-  const { posts: platoDataPosts, isLoading: platoLoading } = usePlatoDataFeed(
+  const { posts: platoDataPosts, isLoading: platoLoading, error: platoError } = usePlatoDataFeed(
     verticalInfo?.slug || null,
     verticalInfo?.name || ''
   );
   
-  const { posts: acnPosts, isLoading: acnLoading } = useRSSFeed(
+  const { posts: acnPosts, isLoading: acnLoading, error: acnError } = useRSSFeed(
     verticalInfo?.name === 'ACN' ? 'https://www.acnnewswire.com/rss/lang/english.xml' : '',
     'ACN'
   );
@@ -44,6 +44,7 @@ const VerticalPage = () => {
   }, [verticalInfo, platoDataPosts, acnPosts]);
   
   const isLoading = platoLoading || acnLoading;
+  const error = platoError || acnError;
   
   const visiblePosts = useMemo(() => {
     return allPosts.slice(0, visibleCount);
@@ -117,6 +118,18 @@ const VerticalPage = () => {
                 <div className="h-4 bg-muted rounded w-1/2"></div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Error State */}
+        {!isLoading && error && (
+          <div className="text-center py-12">
+            <p className="text-red-500 text-lg mb-4">
+              Error loading articles: {error}
+            </p>
+            <Button onClick={() => window.location.reload()} variant="outline">
+              Retry
+            </Button>
           </div>
         )}
 
