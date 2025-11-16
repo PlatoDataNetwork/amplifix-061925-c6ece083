@@ -2,7 +2,8 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { User, Calendar, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { LanguageAwareLink } from "@/components/LanguageAwareLink";
+import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useJsonData } from "@/hooks/useJsonData";
 
@@ -26,12 +27,12 @@ const AdvancedAnalyticsArticle = () => {
         
         <main className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="mb-8">
-            <Link to="/intel">
+            <LanguageAwareLink to="/intel">
               <Button variant="ghost" className="mb-4">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Intel
               </Button>
-            </Link>
+            </LanguageAwareLink>
             
             <div className="flex items-center gap-4 mb-6">
               <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm">Analytics</span>
@@ -102,12 +103,12 @@ const AdvancedAnalyticsArticle = () => {
           )}
           
           <div className="mt-8 pt-8 border-t border-border">
-            <Link to="/intel">
+            <LanguageAwareLink to="/intel">
               <Button variant="outline">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to All Articles
               </Button>
-            </Link>
+            </LanguageAwareLink>
           </div>
         </main>
         

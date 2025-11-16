@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { Button } from "@/components/ui/button";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useJsonData } from "@/hooks/useJsonData";
@@ -176,9 +177,9 @@ const Login = () => {
 
             <p className="text-center text-muted-foreground text-sm mt-6">
               {signInText.no_account}{' '}
-              <Link to="/signup" className="text-[#8A3FFC] hover:text-[#06B6D4] transition-colors font-medium">
+              <LanguageAwareLink to="/signup" className="text-[#8A3FFC] hover:text-[#06B6D4] transition-colors font-medium">
                 {signInText.sign_up_link}
-              </Link>
+              </LanguageAwareLink>
             </p>
           </div>
         </div>

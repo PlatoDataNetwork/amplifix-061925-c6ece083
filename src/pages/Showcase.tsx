@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home, Search } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
@@ -162,12 +162,12 @@ const Showcase = () => {
                         </Button>
                       </a>
                     ) : (
-                      <Link to={showcase.link}>
+                      <LanguageAwareLink to={showcase.link}>
                         <Button className={`w-full ${showcase.disabled ? '' : 'bg-highlight-blue hover:bg-highlight-blue/90 text-white'}`} disabled={showcase.disabled}>
                           {showcase.button_text}
                           {!showcase.disabled && <ExternalLink className="ml-2 h-4 w-4" />}
                         </Button>
-                      </Link>
+                      </LanguageAwareLink>
                     )
                   ) : (
                     <Button variant="outline" className="w-full" disabled={showcase.disabled}>
@@ -215,16 +215,16 @@ const Showcase = () => {
               {showcaseData.showcase.cta.description}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to={showcaseData.showcase.cta.buttons.primary.link}>
+              <LanguageAwareLink to={showcaseData.showcase.cta.buttons.primary.link}>
                 <Button size="lg" className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors">
                   {showcaseData.showcase.cta.buttons.primary.text}
                 </Button>
-              </Link>
-              <Link to={showcaseData.showcase.cta.buttons.secondary.link}>
+              </LanguageAwareLink>
+              <LanguageAwareLink to={showcaseData.showcase.cta.buttons.secondary.link}>
                 <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors">
                   {showcaseData.showcase.cta.buttons.secondary.text}
                 </Button>
-              </Link>
+              </LanguageAwareLink>
             </div>
           </div>
         </section>

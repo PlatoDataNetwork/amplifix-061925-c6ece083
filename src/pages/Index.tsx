@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
-import { Link } from "react-router-dom";
+import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { Shield, Zap, LockKeyhole, Star, CheckCircle, Users, Globe, Award, Brain, TrendingUp, BarChart3, MessageSquare, Lightbulb, Target } from "lucide-react";
 import Footer from "@/components/Footer";
 import SignUpModal from "@/components/SignUpModal";
@@ -137,14 +137,14 @@ const Index = () => {
             )}
           </div>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-            <Link to="/contact" className="w-full sm:w-auto">
+            <LanguageAwareLink to="/contact" className="w-full sm:w-auto">
               <Button 
                 size="lg" 
                 className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
                 {t('common:buttons.amplifyBrand')}
               </Button>
-            </Link>
+            </LanguageAwareLink>
             <a 
               href="https://calendly.com/amplifix/amplifix-discovery"
               target="_blank"
@@ -229,11 +229,11 @@ const Index = () => {
                   </div>
                   <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
-                  <Link to="/solutions">
+                  <LanguageAwareLink to="/solutions">
                     <Button variant="link" className="text-highlight-blue mt-4 p-0">
                       {t('home:hero.learn_more')}
                     </Button>
-                  </Link>
+                  </LanguageAwareLink>
                 </div>
               );
             })

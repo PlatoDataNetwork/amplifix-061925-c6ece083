@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Bot, Zap, Shield, Cpu, Network } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
@@ -264,10 +264,10 @@ const FynnAIShowcase = () => {
                   </a>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-                  <Link to="/contact" className="flex items-center gap-2">
+                  <LanguageAwareLink to="/contact" className="flex items-center gap-2">
                     <Users className="w-4 h-4" />
                     Discuss Partnership
-                  </Link>
+                  </LanguageAwareLink>
                 </Button>
               </div>
             </div>

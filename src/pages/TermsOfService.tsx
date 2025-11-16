@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
-import { Link } from "react-router-dom";
+import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { FileText, Scale, Shield, AlertTriangle, Users, Zap } from "lucide-react";
 
 const TermsOfService = () => {
@@ -149,7 +149,7 @@ const TermsOfService = () => {
                   <h2 className="text-2xl font-bold mb-4">Data and Privacy</h2>
                   <p className="text-muted-foreground mb-4">
                     Your privacy is important to us. Our use of your personal information is governed by our 
-                    <Link to="/privacy-policy" className="text-highlight-blue hover:underline"> Privacy Policy</Link>, 
+                    <LanguageAwareLink to="/privacy-policy" className="text-highlight-blue hover:underline"> Privacy Policy</LanguageAwareLink>, 
                     which is incorporated into these Terms by reference.
                   </p>
                   
