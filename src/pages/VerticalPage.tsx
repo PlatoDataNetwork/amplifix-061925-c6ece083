@@ -10,6 +10,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { usePlatoDataFeed } from "@/hooks/usePlatoDataFeed";
 import { useRSSFeed } from "@/hooks/useRSSFeed";
+import { useArticlesFromDB } from "@/hooks/useArticlesFromDB";
 import { ArrowLeft } from "lucide-react";
 
 const VerticalPage = () => {
@@ -27,24 +28,28 @@ const VerticalPage = () => {
     return verticals.find(v => v.slug === slug || v.name.toLowerCase() === slug);
   }, [vertical, verticals]);
   
-  // Load the appropriate feed
+  // Load the appropriate feed - ACN from DB, others from external APIs
+  const { posts: dbPosts, isLoading: dbLoading, error: dbError } = useArticlesFromDB(
+    verticalInfo?.name === 'ACN' ? 'acn' : null
+  );
+  
   const { posts: platoDataPosts, isLoading: platoLoading, error: platoError } = usePlatoDataFeed(
-    verticalInfo?.slug || null,
+    verticalInfo?.name !== 'ACN' && verticalInfo?.slug ? verticalInfo.slug : null,
     verticalInfo?.name || ''
   );
   
   const { posts: acnPosts, isLoading: acnLoading, error: acnError } = useRSSFeed(
-    verticalInfo?.name === 'ACN' ? 'https://www.acnnewswire.com/rss/lang/english.xml' : '',
+    '', // No longer using RSS for ACN
     'ACN'
   );
   
   const allPosts = useMemo(() => {
-    if (verticalInfo?.name === 'ACN') return acnPosts;
+    if (verticalInfo?.name === 'ACN') return dbPosts;
     return platoDataPosts;
-  }, [verticalInfo, platoDataPosts, acnPosts]);
+  }, [verticalInfo, dbPosts, platoDataPosts]);
   
-  const isLoading = platoLoading || acnLoading;
-  const error = platoError || acnError;
+  const isLoading = dbLoading || platoLoading;
+  const error = dbError || platoError;
   
   const visiblePosts = useMemo(() => {
     return allPosts.slice(0, visibleCount);
