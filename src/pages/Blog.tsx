@@ -178,7 +178,7 @@ const Blog = () => {
                   post.id === 1 ? "/intel/ai-intelligence-article" :
                   post.id === 2 ? "/intel/advanced-analytics-article" :
                   post.id === 3 ? "/intel/investor-engagement-article" :
-                  (post as any).external_url || undefined
+                  post.id >= 1000 ? (post as any).external_url : undefined
                 }
                 buttonText={blogData?.blog.ui.read_full_article}
               />
