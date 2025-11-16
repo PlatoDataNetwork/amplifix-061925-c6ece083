@@ -57,11 +57,14 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
         console.log('usePlatoDataFeed: Response keys:', Object.keys(responseData));
         
         // Handle both array and object responses - API now returns { articles: [...] }
-        const data: ExternalArticle[] = Array.isArray(responseData) 
+        const allData: ExternalArticle[] = Array.isArray(responseData) 
           ? responseData 
           : responseData.articles || [];
         
-        console.log('usePlatoDataFeed: Found', data.length, 'articles');
+        // Limit to first 50 articles for performance
+        const data = allData.slice(0, 50);
+        
+        console.log('usePlatoDataFeed: Found', allData.length, 'articles, processing first', data.length);
         
         const transformedPosts: TransformedBlogPost[] = data.map((article: any, index) => {
           // Handle both old RSS format and new API format
