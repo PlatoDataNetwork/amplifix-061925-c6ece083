@@ -6,21 +6,26 @@ import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink, Calendar, User, Clock } from "lucide-react";
 import { useExternalJsonFeed } from "@/hooks/useExternalJsonFeed";
+import { useRSSFeed } from "@/hooks/useRSSFeed";
 import { useLanguage } from "@/hooks/useLanguage";
 
 const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { posts, isLoading } = useExternalJsonFeed('https://dashboard.platodata.io/json/artificial-intelligence.json');
+  const { posts: aiPosts, isLoading: aiLoading } = useExternalJsonFeed('https://dashboard.platodata.io/json/artificial-intelligence.json');
+  const { posts: acnPosts, isLoading: acnLoading } = useRSSFeed('https://www.acnnewswire.com/rss/lang/english.xml', 'ACN');
   const [article, setArticle] = useState<any>(null);
   useLanguage(); // Enable translation
 
+  const allPosts = [...aiPosts, ...acnPosts];
+  const isLoading = aiLoading || acnLoading;
+
   useEffect(() => {
-    if (posts.length > 0 && id) {
-      const foundArticle = posts.find(post => post.id.toString() === id);
+    if (allPosts.length > 0 && id) {
+      const foundArticle = allPosts.find(post => post.id.toString() === id);
       setArticle(foundArticle);
     }
-  }, [posts, id]);
+  }, [allPosts, id]);
 
   if (isLoading) {
     return (
@@ -85,7 +90,7 @@ if (!article) {
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-4">
               <span className="bg-blue-500/20 text-blue-500 px-3 py-1 rounded-full text-sm">
-                AI Intelligence
+                {article.category || 'AI Intelligence'}
               </span>
               {article.external_url && (
                 <a 

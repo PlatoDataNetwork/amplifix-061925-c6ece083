@@ -8,6 +8,7 @@ import NewsletterSignup from "@/components/NewsletterSignup";
 import RSSFeed from "@/components/RSSFeed";
 import { useJsonData } from "@/hooks/useJsonData";
 import { useExternalJsonFeed } from "@/hooks/useExternalJsonFeed";
+import { useRSSFeed } from "@/hooks/useRSSFeed";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
@@ -53,6 +54,7 @@ interface BlogData {
 const Blog = () => {
   const { data: blogData } = useJsonData<BlogData>('blog-intel.json');
   const { posts: externalPosts } = useExternalJsonFeed('https://dashboard.platodata.io/json/artificial-intelligence.json');
+  const { posts: acnPosts } = useRSSFeed('https://www.acnnewswire.com/rss/lang/english.xml', 'ACN');
   const { verticals } = usePlatoVerticals();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -63,11 +65,11 @@ const Blog = () => {
   const [visibleCount, setVisibleCount] = useState(9);
   const POSTS_INCREMENT = 9;
   
-  // Merge local and external blog posts
+  // Merge local, external, and ACN blog posts
   const allBlogPosts = useMemo(() => {
     const localPosts = blogData?.blog.blog_posts || [];
-    return [...localPosts, ...externalPosts];
-  }, [blogData?.blog.blog_posts, externalPosts]);
+    return [...localPosts, ...externalPosts, ...acnPosts];
+  }, [blogData?.blog.blog_posts, externalPosts, acnPosts]);
   
   // Create categories array with "All" first, then alphabetically sorted verticals
   const categories = useMemo(() => {
