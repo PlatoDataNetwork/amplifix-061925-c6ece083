@@ -7,8 +7,8 @@ import BlogPostCard from "@/components/BlogPostCard";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import RSSFeed from "@/components/RSSFeed";
 import { useJsonData } from "@/hooks/useJsonData";
-import { useExternalJsonFeed } from "@/hooks/useExternalJsonFeed";
 import { useRSSFeed } from "@/hooks/useRSSFeed";
+import { usePlatoDataFeed } from "@/hooks/usePlatoDataFeed";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
@@ -53,8 +53,6 @@ interface BlogData {
 
 const Blog = () => {
   const { data: blogData } = useJsonData<BlogData>('blog-intel.json');
-  const { posts: externalPosts } = useExternalJsonFeed('https://dashboard.platodata.io/json/artificial-intelligence.json');
-  const { posts: acnPosts } = useRSSFeed('https://www.acnnewswire.com/rss/lang/english.xml', 'ACN');
   const { verticals } = usePlatoVerticals();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -62,14 +60,34 @@ const Blog = () => {
   
   const selectedTag = searchParams.get('tag');
   const selectedCategory = searchParams.get('category');
+  
+  // Get the vertical slug for the selected category
+  const selectedVertical = useMemo(() => {
+    if (!selectedCategory || selectedCategory === 'All') return null;
+    return verticals.find(v => v.name === selectedCategory);
+  }, [selectedCategory, verticals]);
+  
+  // Dynamically load PlatoData feed based on selected category
+  const { posts: platoDataPosts } = usePlatoDataFeed(
+    selectedVertical?.slug || null,
+    selectedCategory || ''
+  );
+  
+  // Load ACN RSS feed
+  const { posts: acnPosts } = useRSSFeed(
+    'https://www.acnnewswire.com/rss/lang/english.xml', 
+    'ACN'
+  );
   const [visibleCount, setVisibleCount] = useState(9);
   const POSTS_INCREMENT = 9;
   
-  // Merge local, external, and ACN blog posts
+  // Merge local, PlatoData, and ACN blog posts
   const allBlogPosts = useMemo(() => {
     const localPosts = blogData?.blog.blog_posts || [];
-    return [...localPosts, ...externalPosts, ...acnPosts];
-  }, [blogData?.blog.blog_posts, externalPosts, acnPosts]);
+    // Show PlatoData posts when a vertical is selected, otherwise show ACN
+    const externalPosts = selectedVertical ? platoDataPosts : acnPosts;
+    return [...localPosts, ...externalPosts];
+  }, [blogData?.blog.blog_posts, platoDataPosts, acnPosts, selectedVertical]);
   
   // Create categories array with "All" first, then alphabetically sorted verticals
   const categories = useMemo(() => {
