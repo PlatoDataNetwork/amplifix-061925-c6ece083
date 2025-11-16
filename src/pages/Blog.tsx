@@ -60,13 +60,12 @@ const Blog = () => {
   const [visibleCount, setVisibleCount] = useState(9);
   const POSTS_INCREMENT = 9;
   
-  // Merge local and external blog posts
   const allBlogPosts = useMemo(() => {
     const localPosts = blogData?.blog.blog_posts || [];
     return [...localPosts, ...externalPosts];
   }, [blogData?.blog.blog_posts, externalPosts]);
-  const categories = blogData?.blog.categories || ["All", "Technology", "Analytics", "Security", "Insights", "Updates"];
-  const popularTags = blogData?.blog.popular_tags?.tags || ["AI", "Analytics", "Investor Relations", "Corporate Communications", "Intelligence", "Automation", "Data", "Insights", "Technology", "Innovation"];
+  const categories = ["All", "AI", "Analytics", "Security", "Insights", "Updates"];
+  const popularTags = blogData?.blog.popular_tags?.tags || ["AI", "Analytics", "Investor Relations", "Corporate Communications", "Intelligence", "Automation", "Data", "Insights", "Innovation"];
   
   const filteredBlogPosts = useMemo(() => {
     if (!selectedTag) return allBlogPosts;

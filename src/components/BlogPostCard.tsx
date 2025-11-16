@@ -24,9 +24,8 @@ const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: B
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case "Security": return <Shield className="h-16 w-16 text-blue-500" />;
-      case "Technology": return <Zap className="h-16 w-16 text-blue-500" />;
-      case "Analytics": return <Globe className="h-16 w-16 text-blue-500" />;
       case "AI": return <Zap className="h-16 w-16 text-blue-500" />;
+      case "Analytics": return <Globe className="h-16 w-16 text-blue-500" />;
       default: return <Globe className="h-16 w-16 text-blue-500" />;
     }
   };
