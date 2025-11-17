@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
+import Parser from 'https://esm.sh/rss-parser@3.13.0'
 
 const ACN_RSS_URL = 'https://www.acnnewswire.com/rss/lang/english.xml';
 
@@ -21,34 +22,19 @@ Deno.serve(async (req) => {
 
     console.log(`Fetching ACN RSS from: ${ACN_RSS_URL}`);
     
-    const response = await fetch(ACN_RSS_URL);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch ACN RSS: ${response.statusText}`);
-    }
+    const parser = new Parser();
+    const feed = await parser.parseURL(ACN_RSS_URL);
     
-    const xmlText = await response.text();
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-    const items = xmlDoc.querySelectorAll('item');
+    console.log(`Found ${feed.items.length} items in RSS feed`);
     
-    console.log(`Found ${items.length} items in RSS feed`);
-    
-    const articles = Array.from(items).map((item, index) => {
-      const title = item.querySelector('title')?.textContent || '';
-      const link = item.querySelector('link')?.textContent || '';
-      const pubDate = item.querySelector('pubDate')?.textContent || '';
-      const author = item.querySelector('creator')?.textContent || 
-                    item.querySelector('author')?.textContent || 
-                    'ACN Newswire';
-      const description = item.querySelector('description')?.textContent || '';
-      const content = item.querySelector('encoded')?.textContent || description;
-      
-      const categoryElements = item.querySelectorAll('category');
-      const categories: string[] = [];
-      categoryElements.forEach((cat) => {
-        const catText = cat.textContent;
-        if (catText) categories.push(catText);
-      });
+    const articles = feed.items.map((item) => {
+      const title = item.title || '';
+      const link = item.link || '';
+      const pubDate = item.pubDate || item.isoDate || '';
+      const author = item.creator || item.author || 'ACN Newswire';
+      const description = item.contentSnippet || item.description || '';
+      const content = item.content || item['content:encoded'] || description;
+      const categories = item.categories || [];
       
       // Generate unique post_id from title and date
       const postId = Math.abs(
