@@ -10,7 +10,6 @@ import { CommonData } from "@/types/common";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
-import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { LogOut, User, Shield, Users as UsersIcon, Database } from "lucide-react";
 import {
   DropdownMenu,
@@ -27,7 +26,6 @@ const MainHeader = () => {
   const location = useLocation();
   const { data: commonData, isLoading, error } = useJsonData<CommonData>('common.json');
   const { user, signOut } = useAuth();
-  const { isAdmin } = useAdminCheck();
 
   const handleSignOut = async () => {
     await signOut();
@@ -101,48 +99,44 @@ const MainHeader = () => {
                 {t('nav.contact')}
               </LanguageAwareLink>
               
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity flex items-center gap-2">
+                    <Shield className="h-4 w-4" />
+                    ADMIN
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem onClick={() => navigate('/admin')}>
+                    <Shield className="h-4 w-4 mr-2" />
+                    Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/admin/import')}>
+                    <Database className="h-4 w-4 mr-2" />
+                    Article Import
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/admin/users')}>
+                    <UsersIcon className="h-4 w-4 mr-2" />
+                    User Management
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               {user ? (
-                <>
-                  {isAdmin && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity flex items-center gap-2">
-                          <Shield className="h-4 w-4" />
-                          ADMIN
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-56">
-                        <DropdownMenuItem onClick={() => navigate('/admin')}>
-                          <Shield className="h-4 w-4 mr-2" />
-                          Dashboard
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => navigate('/admin/import')}>
-                          <Database className="h-4 w-4 mr-2" />
-                          Article Import
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => navigate('/admin/users')}>
-                          <UsersIcon className="h-4 w-4 mr-2" />
-                          User Management
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
-                  
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="icon" className="rounded-full">
-                        <User className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={handleSignOut}>
-                        <LogOut className="h-4 w-4 mr-2" />
-                        Sign Out
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon" className="rounded-full">
+                      <User className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
                 <Button asChild variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity">
                   <LanguageAwareLink to="/login">
