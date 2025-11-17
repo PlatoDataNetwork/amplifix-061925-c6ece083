@@ -112,6 +112,11 @@ const MainHeader = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-56">
+                        <DropdownMenuItem onClick={() => navigate('/admin')}>
+                          <Shield className="h-4 w-4 mr-2" />
+                          Dashboard
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => navigate('/admin/import')}>
                           <Database className="h-4 w-4 mr-2" />
                           Article Import
