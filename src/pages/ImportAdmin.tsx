@@ -6,8 +6,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ImportAdmin = () => {
+  const navigate = useNavigate();
   const [importing, setImporting] = useState<string | null>(null);
   const [results, setResults] = useState<Record<string, any>>({});
   const [metrics, setMetrics] = useState<Record<string, number>>({});
@@ -98,7 +101,17 @@ const ImportAdmin = () => {
       
       <div className="pt-24 container mx-auto py-8 px-4">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8">Article Import Admin</h1>
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="text-4xl font-bold">Article Import Admin</h1>
+            <Button 
+              onClick={() => navigate('/admin/users')}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Users className="h-4 w-4" />
+              User Management
+            </Button>
+          </div>
           
           {/* Metrics Dashboard */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
