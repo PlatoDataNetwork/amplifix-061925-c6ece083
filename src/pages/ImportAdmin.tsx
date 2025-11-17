@@ -1,13 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ImportAdmin = () => {
   const [importing, setImporting] = useState<string | null>(null);
   const [results, setResults] = useState<Record<string, any>>({});
+  const [metrics, setMetrics] = useState<Record<string, number>>({});
+  const [totalArticles, setTotalArticles] = useState(0);
+  const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
+  
+  useEffect(() => {
+    loadMetrics();
+  }, []);
+  
+  const loadMetrics = async () => {
+    try {
+      // Get total articles
+      const { count: total } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true });
+      
+      setTotalArticles(total || 0);
+      
+      // Get articles per vertical
+      const { data: verticalCounts } = await supabase
+        .from('articles')
+        .select('vertical_slug');
+      
+      if (verticalCounts) {
+        const counts: Record<string, number> = {};
+        verticalCounts.forEach(article => {
+          counts[article.vertical_slug] = (counts[article.vertical_slug] || 0) + 1;
+        });
+        setMetrics(counts);
+      }
+    } catch (error) {
+      console.error('Error loading metrics:', error);
+    }
+  };
 
   const importVertical = async (vertical: string, verticalSlug: string) => {
     setImporting(vertical);
@@ -23,6 +58,7 @@ const ImportAdmin = () => {
       toast.success(`${vertical} import completed!`, {
         description: `Imported ${data.insertedArticles} articles`
       });
+      await loadMetrics(); // Refresh metrics after import
     } catch (error) {
       console.error(`Error importing ${vertical}:`, error);
       toast.error(`Failed to import ${vertical}`, {
@@ -45,6 +81,7 @@ const ImportAdmin = () => {
       toast.success('ACN import completed!', {
         description: `Imported ${data.insertedArticles} articles`
       });
+      await loadMetrics(); // Refresh metrics after import
     } catch (error) {
       console.error('Error importing ACN:', error);
       toast.error('Failed to import ACN', {
@@ -55,48 +92,95 @@ const ImportAdmin = () => {
     }
   };
 
-  const verticals = [
-    { name: 'AI Intelligence', slug: 'artificial-intelligence' },
-    { name: 'Blockchain', slug: 'blockchain' },
-  ];
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <MainHeader />
       
       <div className="pt-24 container mx-auto py-8 px-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl font-bold mb-8">Article Import Admin</h1>
           
-          <div className="grid gap-4 mb-8">
-            {verticals.map((vertical) => (
-              <div key={vertical.slug} className="bg-card border border-border rounded-lg p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h2 className="text-2xl font-semibold">{vertical.name}</h2>
-                    <p className="text-muted-foreground">Import from PlatoData API</p>
-                  </div>
-                  <Button
-                    onClick={() => importVertical(vertical.name, vertical.slug)}
-                    disabled={importing !== null}
-                    size="lg"
-                  >
-                    {importing === vertical.name ? 'Importing...' : 'Import All'}
-                  </Button>
+          {/* Metrics Dashboard */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Total Articles</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{totalArticles.toLocaleString()}</div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Active Verticals</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{Object.keys(metrics).length}</div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Total Verticals</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{verticals.length}</div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Coverage</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">
+                  {verticals.length > 0 ? Math.round((Object.keys(metrics).length / verticals.length) * 100) : 0}%
                 </div>
-                
-                {results[vertical.name] && (
-                  <div className="mt-4 p-4 bg-muted rounded">
-                    <p className="text-sm">
-                      ✅ Imported: {results[vertical.name].insertedArticles} articles
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Duration: {(results[vertical.name].duration / 1000).toFixed(1)}s
-                    </p>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="grid gap-4 mb-8">
+            {verticalsLoading ? (
+              <div className="text-center py-8">Loading verticals...</div>
+            ) : (
+              verticals.map((vertical) => (
+                <div key={vertical.slug} className="bg-card border border-border rounded-lg p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-1">
+                        <h2 className="text-xl font-semibold">{vertical.name}</h2>
+                        {metrics[vertical.slug] && (
+                          <span className="px-2 py-1 text-xs bg-primary/10 text-primary rounded-full">
+                            {metrics[vertical.slug].toLocaleString()} articles
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground">{vertical.url}</p>
+                    </div>
+                    <Button
+                      onClick={() => importVertical(vertical.name, vertical.slug)}
+                      disabled={importing !== null}
+                      size="lg"
+                    >
+                      {importing === vertical.name ? 'Importing...' : 'Import'}
+                    </Button>
                   </div>
-                )}
-              </div>
-            ))}
+                  
+                  {results[vertical.name] && (
+                    <div className="mt-4 p-4 bg-muted rounded">
+                      <p className="text-sm">
+                        ✅ Imported: {results[vertical.name].insertedArticles} articles
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Duration: {(results[vertical.name].duration / 1000).toFixed(1)}s
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
             
             <div className="bg-card border border-border rounded-lg p-6">
               <div className="flex items-center justify-between mb-4">
