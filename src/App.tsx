@@ -41,6 +41,7 @@ import InvestorEngagementArticle from "./pages/InvestorEngagementArticle";
 import ExternalArticle from "./pages/ExternalArticle";
 import VerticalPage from "./pages/VerticalPage";
 import ImportAdmin from "./pages/ImportAdmin";
+import AdminRoute from "./components/AdminRoute";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
@@ -89,7 +90,7 @@ const App = () => (
               <Route path="/data-processing" element={<DataProcessing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/admin/import" element={<ImportAdmin />} />
+              <Route path="/admin/import" element={<AdminRoute><ImportAdmin /></AdminRoute>} />
 
               {/* Language-prefixed routes (e.g., /ar/, /fr/) */}
               <Route path="/:lang" element={<Index />} />

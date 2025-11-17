@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import ThemeToggle from "@/components/ThemeToggle";
 import MobileMenu from "@/components/MobileMenu";
@@ -9,12 +9,27 @@ import { useJsonData } from "@/hooks/useJsonData";
 import { CommonData } from "@/types/common";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/hooks/useAuth";
+import { LogOut, User } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const MainHeader = () => {
   const { t } = useTranslation('common');
+  const navigate = useNavigate();
   const [isSticky, setIsSticky] = useState(false);
   const location = useLocation();
   const { data: commonData, isLoading, error } = useJsonData<CommonData>('common.json');
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,11 +97,28 @@ const MainHeader = () => {
               <LanguageAwareLink to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">
                 {t('nav.contact')}
               </LanguageAwareLink>
-              <Button asChild variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity">
-                <LanguageAwareLink to="/login">
-                  {t('nav.login')}
-                </LanguageAwareLink>
-              </Button>
+              
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon" className="rounded-full">
+                      <User className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button asChild variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity">
+                  <LanguageAwareLink to="/login">
+                    {t('nav.login')}
+                  </LanguageAwareLink>
+                </Button>
+              )}
             </>
           )}
           <ThemeToggle />
