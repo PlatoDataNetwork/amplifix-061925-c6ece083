@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainHeader from '@/components/MainHeader';
 import Footer from '@/components/Footer';
-import { Database, Users, FileText, Shield, Activity, Clock } from 'lucide-react';
+import { Database, Users, FileText, Shield, Activity, Clock, LogOut } from 'lucide-react';
 
 interface SystemStats {
   totalUsers: number;
@@ -96,9 +96,21 @@ const AdminDashboard = () => {
       
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <Shield className="h-8 w-8 text-primary" />
-            <h1 className="text-4xl font-bold">Admin Dashboard</h1>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 mb-2">
+              <Shield className="h-8 w-8 text-primary" />
+              <h1 className="text-4xl font-bold">Admin Dashboard</h1>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => {
+                sessionStorage.removeItem('admin_authenticated');
+                window.location.href = '/';
+              }}
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout from Admin
+            </Button>
           </div>
           <p className="text-muted-foreground">
             System overview and management tools
