@@ -101,18 +101,18 @@ if (!article) {
           </Button>
 
           {/* Article Header */}
-          <div className="mb-4">
+          <div className="mb-2">
             <div className="flex items-center gap-2 mb-3">
               <span className="bg-blue-500/20 text-blue-500 px-3 py-1 rounded-full text-sm">
                 {article.category || 'AI Intelligence'}
               </span>
             </div>
             
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">
+            <h1 className="text-3xl md:text-5xl font-bold mb-2">
               {sanitizeText(article.title)}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-muted-foreground text-sm">
+            <div className="flex flex-wrap items-center gap-4 text-muted-foreground text-sm mb-4">
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4" />
                 <span>{article.author}</span>
