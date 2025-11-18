@@ -75,9 +75,10 @@ const Showcase = () => {
                           <span className="text-highlight-blue text-2xl font-bold">K</span>
                         </div>
                       )}
-                      {showcase.company_name === 'Micropolis' && (
+                     {showcase.company_name === 'Micropolis' && (
                         <img src="/lovable-uploads/micropolis-icon.png" alt="Micropolis" className="w-full h-full object-cover rounded-full" />
                       )}
+                      {showcase.company_name === 'Synbio International' && <Microscope className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />}
                       {showcase.company_name === 'FYNN AI' && (
                         <div className="w-8 h-8 rounded-sm bg-background p-1 border border-border/50">
                           <img src="/lovable-uploads/81a540f7-53d1-4835-a86f-983e8a85e38c.png" alt="FYNN AI logo" className="h-full w-full object-contain" />
