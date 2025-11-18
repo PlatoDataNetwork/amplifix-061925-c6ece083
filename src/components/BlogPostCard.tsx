@@ -20,6 +20,11 @@ interface BlogPostCardProps {
   buttonText?: string;
 }
 
+const sanitizeText = (text?: string | null) => {
+  if (!text) return "";
+  return text.replace(/---/g, "").replace(/\*/g, "");
+};
+
 const cacheArticle = (post: BlogPost) => {
   try {
     sessionStorage.setItem(`article_${post.id}`, JSON.stringify(post));
@@ -53,8 +58,8 @@ const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: B
           <span className="bg-blue-500/20 text-blue-500 px-2 py-1 rounded text-sm">{post.category}</span>
           <span className="text-muted-foreground text-sm">{post.readTime}</span>
         </div>
-        <h3 className="text-xl font-bold mb-3 line-clamp-2">{post.title}</h3>
-        <p className="text-muted-foreground mb-4 line-clamp-3">{post.excerpt}</p>
+        <h3 className="text-xl font-bold mb-3 line-clamp-2">{sanitizeText(post.title)}</h3>
+        <p className="text-muted-foreground mb-4 line-clamp-3">{sanitizeText(post.excerpt)}</p>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <User className="h-4 w-4 text-muted-foreground" />
