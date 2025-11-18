@@ -51,6 +51,18 @@
         "type": "stock"
       },
       {
+        "company_name": "Synbio International",
+        "ticker": "OTC: SYIN",
+        "description": "Synbio International is a biotechnology research company focused on developing innovative probiotic solutions to enhance health and wellness through advanced life sciences.",
+        "tags": ["Biotechnology", "Probiotics", "Life Sciences"],
+        "button_text": "View Showcase",
+        "link": "/showcase/synbio",
+        "website": "https://www.synbiointl.com/",
+        "stock_url": "https://www.tradingview.com/symbols/OTC-SYIN/",
+        "search_url": "https://www.bing.com/copilotsearch?q=Synbio%20International%20SYIN",
+        "type": "stock"
+      },
+      {
         "company_name": "Naoris Protocol",
         "ticker": "Crypto",
         "description": "Naoris Protocol is a decentralized cybersecurity platform leveraging blockchain technology to create a distributed, validator-based security mesh network.",
