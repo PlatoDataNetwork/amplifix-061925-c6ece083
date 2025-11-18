@@ -147,8 +147,8 @@ if (!article) {
           </Button>
 
           {/* Article Header */}
-          <div className="mb-2">
-            <div className="flex items-center gap-2 mb-3">
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
               <span className="bg-blue-500/20 text-blue-500 px-3 py-1 rounded-full text-sm">
                 {article.category || 'AI Intelligence'}
               </span>
@@ -176,7 +176,7 @@ if (!article) {
 
           {/* Article Image */}
           {article.image && article.image !== '/lovable-uploads/naoris-hero-new.png' && (
-            <div className="mb-4">
+            <div className="mb-8">
               <img 
                 src={article.image} 
                 alt={article.title}
@@ -189,7 +189,7 @@ if (!article) {
           )}
 
           {/* Article Content */}
-          <div className="prose prose-invert max-w-none mb-4">
+          <div className="prose prose-invert max-w-none mb-8">
             <div 
               className="text-foreground leading-relaxed whitespace-pre-wrap"
               dangerouslySetInnerHTML={{ __html: sanitizeText(article.content || article.excerpt) }}
@@ -198,7 +198,7 @@ if (!article) {
 
           {/* Tags */}
           {tags && tags.length > 0 && (
-            <div className="border-t border-border pt-4">
+            <div className="border-t border-border pt-8">
               <h3 className="text-sm font-semibold mb-3">Tags</h3>
               <div className="flex flex-wrap gap-2">
                 {tags.map((tag: string) => (
