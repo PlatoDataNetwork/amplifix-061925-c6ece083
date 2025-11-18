@@ -43,27 +43,29 @@ const ExternalArticle = () => {
           const parsedArticle = JSON.parse(cached);
           setArticle(parsedArticle);
           
-          // Load tags from database
+          // Load tags from database using the article's UUID, not the post_id from URL
           const { supabase } = await import("@/integrations/supabase/client");
+          const articleUuid = parsedArticle.id;
+          
           const { data: articleTags } = await supabase
             .from('article_tags')
             .select('tags(name)')
-            .eq('article_id', id);
+            .eq('article_id', articleUuid);
           
           if (articleTags && articleTags.length > 0) {
             const tagNames = articleTags.map((at: any) => at.tags.name);
             setTags(tagNames);
           } else {
-            // If no tags exist, trigger tag extraction
+            // If no tags exist, trigger tag extraction using UUID
             await supabase.functions.invoke('extract-article-tags', {
-              body: { articleId: id }
+              body: { articleId: articleUuid }
             });
             
             // Reload tags after extraction
             const { data: newTags } = await supabase
               .from('article_tags')
               .select('tags(name)')
-              .eq('article_id', id);
+              .eq('article_id', articleUuid);
             
             if (newTags && newTags.length > 0) {
               const tagNames = newTags.map((at: any) => at.tags.name);
