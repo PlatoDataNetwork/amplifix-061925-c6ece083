@@ -189,9 +189,9 @@ if (!article) {
           )}
 
           {/* Article Content */}
-          <div className="prose prose-invert max-w-none mb-4">
+          <div className="prose prose-invert max-w-none mb-2">
             <div 
-              className="text-foreground leading-relaxed whitespace-pre-wrap"
+              className="text-foreground leading-relaxed whitespace-pre-wrap [&>*]:mb-2 [&>h2]:mt-4 [&>h3]:mt-4"
               dangerouslySetInnerHTML={{ __html: sanitizeText(article.content || article.excerpt) }}
             />
           </div>
