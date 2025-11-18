@@ -1,0 +1,189 @@
+{
+  "synbio": {
+    "seo": {
+      "title": "Synbio International - AI-Powered Mental Health Diagnostics & Natural Wellness | AmplifiX Showcase",
+      "description": "Discover how Synbio International (OTC: SYIN) is revolutionizing mental health through AI-based diagnostics and natural nutraceuticals that support wellness and healing.",
+      "keywords": "Synbio International, AI diagnostics, mental health, PTSD detection, nutraceuticals, probiotics, OTC SYIN, wellness technology",
+      "canonical": "https://amplifix.ai/showcase/synbio"
+    },
+    "hero": {
+      "badge": "OTC: SYIN",
+      "title": "Supportive Wellness, Intelligent Care",
+      "subtitle": "Synbio International",
+      "description": "Investing in next-gen AI technology to build a healthier future for all and developing natural products that support the body's inherent ability to heal",
+      "buttons": {
+        "primary": {
+          "text": "Visit Website",
+          "url": "https://www.synbiointl.com/",
+          "external": true
+        },
+        "secondary": {
+          "text": "Live Stock Price",
+          "url": "https://www.tradingview.com/symbols/OTC-SYIN/",
+          "external": true
+        },
+        "tertiary": {
+          "text": "Contact Synbio",
+          "url": "mailto:info@synbiointl.com",
+          "external": true
+        }
+      },
+      "stats": [
+        {
+          "label": "AI Technology",
+          "value": "Next-Gen",
+          "icon": "brain"
+        },
+        {
+          "label": "Focus Areas",
+          "value": "2",
+          "icon": "target"
+        },
+        {
+          "label": "Market",
+          "value": "OTC",
+          "icon": "trending-up"
+        },
+        {
+          "label": "Industry",
+          "value": "Biotech",
+          "icon": "microscope"
+        }
+      ]
+    },
+    "company_overview": {
+      "title": "Leading the Future of Health & Wellness",
+      "description": "Synbio International is a biotechnology research company dedicated to improving people's health and wellness through two strategic divisions: AI-based diagnostics technology and natural nutraceutical products.",
+      "pillars": [
+        {
+          "title": "Mission",
+          "description": "To invest in AI-based diagnostics technology and products that improve people's health & wellness by helping to diagnose earlier, quicker, and with increased accuracy, leading to more effective treatments."
+        },
+        {
+          "title": "Vision",
+          "description": "Building a healthier future by combining cutting-edge AI technology with natural products that support the body's inherent ability to heal."
+        },
+        {
+          "title": "Approach",
+          "description": "Dual-focus strategy leveraging artificial intelligence for breakthrough diagnostics while developing natural wellness solutions for everyday health support."
+        }
+      ]
+    },
+    "divisions": {
+      "title": "Our Strategic Divisions",
+      "description": "Synbio International operates through two complementary divisions that address critical needs in mental health diagnostics and natural wellness solutions.",
+      "programs": [
+        {
+          "name": "AI Diagnostic Solutions",
+          "subtitle": "Evolving Care: A New Era in Mental Health",
+          "description": "Investing in AI facial analysis for the groundbreaking identification of mental health conditions. The future of mental health is focused on improved accuracy to increase the standard of treatment for those suffering.",
+          "key_features": [
+            "AI-powered facial analysis technology",
+            "Groundbreaking PTSD diagnostics",
+            "Enhanced diagnostic accuracy",
+            "Earlier detection capabilities",
+            "Improved treatment outcomes"
+          ],
+          "tags": ["AI Technology", "Mental Health", "PTSD", "Diagnostics"]
+        },
+        {
+          "name": "Nutraceuticals Division",
+          "subtitle": "The Power of Nature to Deliver Anxiety Relief",
+          "description": "Developing potent blends of natural ingredients to address stress, anxiety, lack of energy, and immunity. Our nutraceutical products support the body's natural healing processes.",
+          "key_features": [
+            "Natural anxiety relief solutions",
+            "Stress management support",
+            "Energy enhancement",
+            "Immune system support",
+            "Probiotic research & development"
+          ],
+          "tags": ["Natural Products", "Anxiety Relief", "Wellness", "Probiotics"]
+        }
+      ]
+    },
+    "competitive_advantages": {
+      "title": "What Sets Synbio Apart",
+      "description": "Synbio International's unique dual-division approach positions the company at the intersection of advanced AI technology and natural wellness solutions.",
+      "advantages": [
+        {
+          "title": "Dual Innovation Strategy",
+          "description": "Unique combination of cutting-edge AI diagnostics and natural product development addressing multiple aspects of health and wellness.",
+          "icon": "lightbulb"
+        },
+        {
+          "title": "AI-Powered Mental Health",
+          "description": "Revolutionary facial analysis technology for identifying mental health conditions with unprecedented accuracy and speed.",
+          "icon": "brain"
+        },
+        {
+          "title": "Natural Wellness Solutions",
+          "description": "Science-backed nutraceutical products using natural ingredients to support anxiety relief, stress management, and overall wellness.",
+          "icon": "leaf"
+        },
+        {
+          "title": "Focus on PTSD",
+          "description": "Groundbreaking diagnostic solutions specifically targeting PTSD detection and treatment optimization.",
+          "icon": "target"
+        },
+        {
+          "title": "Holistic Approach",
+          "description": "Comprehensive strategy addressing both diagnostic innovation and therapeutic support through natural products.",
+          "icon": "heart"
+        },
+        {
+          "title": "Market Opportunity",
+          "description": "Positioned in rapidly growing mental health and wellness markets with significant unmet needs and expanding demand.",
+          "icon": "trending-up"
+        }
+      ]
+    },
+    "investment_highlights": {
+      "title": "Investment Opportunity",
+      "description": "Synbio International represents a unique investment opportunity in the convergence of AI technology and natural wellness solutions.",
+      "highlights": [
+        {
+          "title": "Growing Mental Health Market",
+          "description": "Mental health diagnostics and treatment market experiencing exponential growth with increasing awareness and demand for innovative solutions.",
+          "icon": "bar-chart"
+        },
+        {
+          "title": "AI Technology Leadership",
+          "description": "Early mover in AI-powered mental health diagnostics with proprietary facial analysis technology for PTSD detection.",
+          "icon": "zap"
+        },
+        {
+          "title": "Natural Wellness Trend",
+          "description": "Positioned in the rapidly expanding nutraceutical market as consumers increasingly seek natural alternatives for health management.",
+          "icon": "trending-up"
+        },
+        {
+          "title": "Dual Revenue Streams",
+          "description": "Diversified business model with complementary revenue opportunities in both technology licensing and product sales.",
+          "icon": "dollar-sign"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Learn More About Synbio International",
+      "description": "Discover how Synbio International is revolutionizing mental health diagnostics and natural wellness through innovative AI technology and research-backed products.",
+      "buttons": {
+        "primary": {
+          "text": "Visit Synbio Website",
+          "link": "https://www.synbiointl.com/"
+        },
+        "secondary": {
+          "text": "Learn About AmplifiX",
+          "link": "/solutions"
+        }
+      }
+    },
+    "footer": {
+      "description": "This showcase demonstrates AmplifiX's capabilities in creating comprehensive corporate narratives for biotechnology and wellness companies.",
+      "disclaimer": "The information presented is for demonstration purposes. For official company information, please visit",
+      "official_link": {
+        "text": "www.synbiointl.com",
+        "url": "https://www.synbiointl.com/"
+      }
+    }
+  }
+}
