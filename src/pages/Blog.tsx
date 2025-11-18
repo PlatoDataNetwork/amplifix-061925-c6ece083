@@ -13,6 +13,10 @@ import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
+import { Input } from "@/components/ui/input";
+import { Search, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Card } from "@/components/ui/card";
 
 interface BlogPost {
   id: number;
@@ -58,6 +62,11 @@ const Blog = () => {
   const navigate = useNavigate();
   useLanguage(); // Auto-translates page
   
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  
   const selectedTag = searchParams.get('tag');
   const selectedCategory = 'All'; // Main page always shows "All"
   
@@ -71,6 +80,44 @@ const Blog = () => {
   const { posts: acnPosts } = useRSSFeed('', 'ACN');
   const [visibleCount, setVisibleCount] = useState(9);
   const POSTS_INCREMENT = 9;
+  
+  // Search function using the database
+  const handleSearch = async (query: string) => {
+    if (!query.trim()) {
+      setShowSearchResults(false);
+      setSearchResults([]);
+      return;
+    }
+    
+    setIsSearching(true);
+    setShowSearchResults(true);
+    
+    try {
+      const { data, error } = await supabase.rpc('search_articles', {
+        search_query: query,
+        limit_count: 50,
+        offset_count: 0
+      });
+      
+      if (error) {
+        console.error('Search error:', error);
+        setSearchResults([]);
+      } else {
+        setSearchResults(data || []);
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+  
+  const clearSearch = () => {
+    setSearchQuery('');
+    setShowSearchResults(false);
+    setSearchResults([]);
+  };
   
   // Show only local blog posts on main page
   const allBlogPosts = useMemo(() => {
@@ -156,32 +203,113 @@ const Blog = () => {
               <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intelligence</span></>
             )}
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4">
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4 mb-8">
             {blogData?.blog.hero.description || 'Stay updated with the latest in AI intelligence, corporate communications insights, and product updates from the AmplifiX team.'}
           </p>
+          
+          {/* Search Bar */}
+          <div className="max-w-3xl mx-auto px-4">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search across all articles and intelligence..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  if (e.target.value.trim()) {
+                    handleSearch(e.target.value);
+                  } else {
+                    clearSearch();
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && searchQuery.trim()) {
+                    handleSearch(searchQuery);
+                  }
+                }}
+                className="pl-12 pr-12 h-14 text-lg rounded-full border-2 focus:border-primary"
+              />
+              {searchQuery && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              )}
+            </div>
+          </div>
         </div>
 
-        {/* Categories */}
-        <section className="mb-8 md:mb-12">
-          <div className="flex flex-wrap gap-2 md:gap-3">
-            {categories.map((category) => (
-              <Button
-                key={category}
-                variant={selectedCategory === category ? "default" : "outline"}
-                size="sm"
-                onClick={() => handleCategoryClick(category)}
-                className={selectedCategory === category ? "bg-gradient-to-r from-blue-500 to-blue-500 text-xs md:text-sm" : "text-xs md:text-sm"}
-              >
-                {category}
-              </Button>
-            ))}
-          </div>
-        </section>
+        {/* Search Results */}
+        {showSearchResults && (
+          <section className="mb-12 max-w-4xl mx-auto">
+            <Card className="p-6">
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold">
+                  {isSearching ? 'Searching...' : `Found ${searchResults.length} result${searchResults.length !== 1 ? 's' : ''}`}
+                </h2>
+              </div>
+              
+              {isSearching ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  Searching through articles...
+                </div>
+              ) : searchResults.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  No articles found matching "{searchQuery}"
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {searchResults.map((result) => (
+                    <div
+                      key={result.id}
+                      className="border-b border-border pb-6 last:border-0 cursor-pointer hover:bg-muted/50 p-4 rounded-lg transition-colors"
+                      onClick={() => navigate(`/intel/external/${result.id}`)}
+                    >
+                      <h3 className="text-lg font-semibold text-primary mb-2 hover:underline">
+                        {result.title}
+                      </h3>
+                      <p className="text-muted-foreground text-sm line-clamp-3 mb-2">
+                        {result.excerpt || 'No excerpt available'}
+                      </p>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <span className="bg-primary/10 text-primary px-2 py-1 rounded">
+                          Relevance: {(result.rank * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </section>
+        )}
 
-        <FeaturedPost />
+        {/* Categories */}
+        {!showSearchResults && (
+          <section className="mb-8 md:mb-12">
+            <div className="flex flex-wrap gap-2 md:gap-3">
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  variant={selectedCategory === category ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleCategoryClick(category)}
+                  className={selectedCategory === category ? "bg-gradient-to-r from-blue-500 to-blue-500 text-xs md:text-sm" : "text-xs md:text-sm"}
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {!showSearchResults && <FeaturedPost />}
 
         {/* Filter indicator */}
-        {selectedTag && (
+        {!showSearchResults && selectedTag && (
           <section className="mb-6">
             <div className="flex items-center gap-3">
               <span className="text-muted-foreground">{blogData?.blog.filter.filtered_by_text || 'Filtered by:'}:</span>
@@ -201,7 +329,8 @@ const Blog = () => {
         )}
 
         {/* Blog Posts Grid */}
-        <section className="mb-12 md:mb-16">
+        {!showSearchResults && (
+          <section className="mb-12 md:mb-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {visiblePosts.map((post) => (
               <BlogPostCard 
@@ -249,11 +378,13 @@ const Blog = () => {
             </div>
           )}
         </section>
+        )}
 
-        <NewsletterSignup />
+        {!showSearchResults && <NewsletterSignup />}
 
         {/* Popular Tags */}
-        <section>
+        {!showSearchResults && (
+          <section>
           <h2 className="text-xl md:text-2xl font-bold mb-6">{blogData?.blog.popular_tags.title || 'Popular Tags'}</h2>
           <div className="flex flex-wrap gap-2 md:gap-3">
             {popularTags.map((tag) => (
@@ -271,6 +402,7 @@ const Blog = () => {
             ))}
           </div>
         </section>
+        )}
       </div>
 
       <Footer />
