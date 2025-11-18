@@ -6,8 +6,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, ArrowUpDown } from "lucide-react";
+import { Users, ArrowUpDown, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -25,6 +26,7 @@ const ImportAdmin = () => {
   const [totalArticles, setTotalArticles] = useState(0);
   const [sortBy, setSortBy] = useState<'name' | 'count'>('count');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [searchQuery, setSearchQuery] = useState('');
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
   useEffect(() => {
@@ -68,8 +70,14 @@ const ImportAdmin = () => {
     articleCount: metrics[v.slug] || 0
   }));
 
+  // Filter by search query
+  const filteredVerticals = verticalsWithCounts.filter(v =>
+    v.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    v.slug.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   // Sort verticals
-  const sortedVerticals = [...verticalsWithCounts].sort((a, b) => {
+  const sortedVerticals = [...filteredVerticals].sort((a, b) => {
     if (sortBy === 'name') {
       return sortOrder === 'asc' 
         ? a.name.localeCompare(b.name)
@@ -182,7 +190,24 @@ const ImportAdmin = () => {
           {/* All Verticals Table */}
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle className="text-2xl">All Verticals Directory</CardTitle>
+              <div className="flex items-center justify-between mb-4">
+                <CardTitle className="text-2xl">All Verticals Directory</CardTitle>
+                <div className="text-sm text-muted-foreground">
+                  Showing {sortedVerticals.length} of {verticals.length} verticals
+                </div>
+              </div>
+              
+              {/* Search Bar */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search verticals by name..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
             </CardHeader>
             <CardContent>
               {verticalsLoading ? (
