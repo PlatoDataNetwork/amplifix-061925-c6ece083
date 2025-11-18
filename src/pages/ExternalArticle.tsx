@@ -4,11 +4,15 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ExternalLink, Calendar, User, Clock } from "lucide-react";
+import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
 import { useRSSFeed } from "@/hooks/useRSSFeed";
 import { usePlatoDataFeed } from "@/hooks/usePlatoDataFeed";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useLanguage } from "@/hooks/useLanguage";
+const sanitizeText = (text?: string | null) => {
+  if (!text) return "";
+  return text.replace(/---/g, "").replace(/\*/g, "");
+};
 
 const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
@@ -79,8 +83,8 @@ if (!article) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SEOHead 
-        title={`${article.title} - AmplifiX Intelligence`}
-        description={article.excerpt}
+        title={`${sanitizeText(article.title)} - AmplifiX Intelligence`}
+        description={sanitizeText(article.excerpt)}
       />
       <MainHeader />
 
@@ -102,20 +106,10 @@ if (!article) {
               <span className="bg-blue-500/20 text-blue-500 px-3 py-1 rounded-full text-sm">
                 {article.category || 'AI Intelligence'}
               </span>
-              {article.external_url && (
-                <a 
-                  href={article.external_url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                </a>
-              )}
             </div>
             
             <h1 className="text-3xl md:text-5xl font-bold mb-6">
-              {article.title}
+              {sanitizeText(article.title)}
             </h1>
 
             <div className="flex flex-wrap items-center gap-4 text-muted-foreground text-sm">
@@ -152,7 +146,7 @@ if (!article) {
           <div className="prose prose-invert max-w-none mb-8">
             <div 
               className="text-foreground leading-relaxed whitespace-pre-wrap"
-              dangerouslySetInnerHTML={{ __html: article.content || article.excerpt }}
+              dangerouslySetInnerHTML={{ __html: sanitizeText(article.content || article.excerpt) }}
             />
           </div>
 
@@ -173,25 +167,6 @@ if (!article) {
             </div>
           )}
 
-          {/* Original Source Link */}
-          {article.external_url && (
-            <div className="mt-8 p-6 bg-card border border-border rounded-xl">
-              <p className="text-sm text-muted-foreground mb-3">
-                This article was originally published externally
-              </p>
-              <Button asChild variant="outline">
-                <a 
-                  href={article.external_url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center"
-                >
-                  View Original Source
-                  <ExternalLink className="ml-2 h-4 w-4" />
-                </a>
-              </Button>
-            </div>
-          )}
         </div>
       </article>
 
