@@ -96,12 +96,30 @@ Deno.serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Get the article
-    const { data: article, error: fetchError } = await supabaseClient
+    // Get the article - try UUID first, then fall back to post_id
+    let article: any;
+    let fetchError: any;
+    
+    // Try as UUID first
+    const uuidResult = await supabaseClient
       .from('articles')
       .select('id, title, content, excerpt')
       .eq('id', articleId)
-      .single();
+      .maybeSingle();
+    
+    if (uuidResult.data) {
+      article = uuidResult.data;
+    } else {
+      // Try as post_id
+      const postIdResult = await supabaseClient
+        .from('articles')
+        .select('id, title, content, excerpt')
+        .eq('post_id', parseInt(articleId))
+        .maybeSingle();
+      
+      article = postIdResult.data;
+      fetchError = postIdResult.error;
+    }
 
     if (fetchError || !article) {
       return new Response(
