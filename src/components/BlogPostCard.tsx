@@ -28,6 +28,7 @@ const sanitizeText = (text?: string | null) => {
     .replace(/https?:\/\/\S+/gi, "")
     .replace(/\[.*?\]\(.*?\)/g, "")
     .replace(/Source:?:?\s*/gi, "")
+    .replace(/Link:?:?\s*/gi, "")
     .replace(/---/g, "")
     .replace(/\*/g, "")
     .trim();
