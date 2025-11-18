@@ -22,7 +22,15 @@ interface BlogPostCardProps {
 
 const sanitizeText = (text?: string | null) => {
   if (!text) return "";
-  return text.replace(/---/g, "").replace(/\*/g, "");
+  return text
+    .replace(/<a\b[^>]*>/gi, "")
+    .replace(/<\/a>/gi, "")
+    .replace(/https?:\/\/\S+/gi, "")
+    .replace(/\[.*?\]\(.*?\)/g, "")
+    .replace(/Source:?:?\s*/gi, "")
+    .replace(/---/g, "")
+    .replace(/\*/g, "")
+    .trim();
 };
 
 const cacheArticle = (post: BlogPost) => {
