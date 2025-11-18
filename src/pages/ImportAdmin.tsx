@@ -212,6 +212,7 @@ const ImportAdmin = () => {
                           <ArrowUpDown className="h-4 w-4" />
                         </Button>
                       </TableHead>
+                      <TableHead>Indexed</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -228,6 +229,17 @@ const ImportAdmin = () => {
                           <span className={`text-lg font-bold ${vertical.articleCount > 0 ? 'text-primary' : 'text-muted-foreground'}`}>
                             {vertical.articleCount.toLocaleString()}
                           </span>
+                        </TableCell>
+                        <TableCell>
+                          {vertical.articleCount > 0 ? (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                              ✓ Indexed
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400">
+                              Not Indexed
+                            </span>
+                          )}
                         </TableCell>
                         <TableCell className="text-right">
                           <Button
