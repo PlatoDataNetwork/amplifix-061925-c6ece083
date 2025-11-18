@@ -198,7 +198,7 @@ if (!article) {
 
           {/* Tags */}
           {tags && tags.length > 0 && (
-            <div className="border-t border-border pt-8">
+            <div className="border-t border-border pt-6">
               <h3 className="text-sm font-semibold mb-3">Tags</h3>
               <div className="flex flex-wrap gap-2">
                 {tags.map((tag: string) => (
