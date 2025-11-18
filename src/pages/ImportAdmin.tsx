@@ -33,24 +33,29 @@ const ImportAdmin = () => {
   
   const loadMetrics = async () => {
     try {
-      // Get total articles
+      // Get total articles count
       const { count: total } = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true });
       
       setTotalArticles(total || 0);
       
-      // Get articles per vertical
-      const { data: verticalCounts } = await supabase
-        .from('articles')
-        .select('vertical_slug');
+      // Get article counts per vertical using the database function
+      const { data: verticalCounts, error } = await supabase
+        .rpc('get_vertical_article_counts');
+      
+      if (error) {
+        console.error('Error fetching vertical counts:', error);
+        return;
+      }
       
       if (verticalCounts) {
         const counts: Record<string, number> = {};
-        verticalCounts.forEach(article => {
-          counts[article.vertical_slug] = (counts[article.vertical_slug] || 0) + 1;
+        verticalCounts.forEach((item: { vertical_slug: string; article_count: number }) => {
+          counts[item.vertical_slug] = item.article_count;
         });
         setMetrics(counts);
+        console.log('Loaded metrics:', counts);
       }
     } catch (error) {
       console.error('Error loading metrics:', error);

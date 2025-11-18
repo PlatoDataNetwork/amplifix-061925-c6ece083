@@ -145,6 +145,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_vertical_article_counts: {
+        Args: never
+        Returns: {
+          article_count: number
+          vertical_slug: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
