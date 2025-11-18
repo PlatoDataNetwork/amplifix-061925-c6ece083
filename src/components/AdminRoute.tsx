@@ -9,7 +9,7 @@ interface AdminRouteProps {
   children: ReactNode;
 }
 
-const ADMIN_PASSWORD = 'admin2025'; // Change this to your desired password
+const ADMIN_PASSWORD = 'Plato1'; // Change this to your desired password
 
 const AdminRoute = ({ children }: AdminRouteProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
