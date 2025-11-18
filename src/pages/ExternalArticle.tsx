@@ -27,6 +27,45 @@ const sanitizeText = (text?: string | null) => {
     .trim();
 };
 
+const formatArticleContent = (text?: string | null) => {
+  if (!text) return "";
+  let cleaned = text
+    .replace(/<a\b[^>]*>/gi, "")
+    .replace(/<\/a>/gi, "")
+    .replace(/https?:\/\/\S+/gi, "")
+    .replace(/\[.*?\]\(.*?\)/g, "")
+    .replace(/Source:?:?\s*/gi, "")
+    .replace(/Link:?:?\s*/gi, "")
+    .replace(/---/g, "")
+    .replace(/\r\n/g, "\n");
+
+  // Convert markdown-style headings (**Heading**) on their own line to <h2>
+  cleaned = cleaned.replace(/^\s*\*\*(.+?)\*\*\s*$/gm, "<h2>$1<\/h2>");
+
+  // Convert remaining bold markers to <strong>
+  cleaned = cleaned.replace(/\*\*(.+?)\*\*/g, "<strong>$1<\/strong>");
+
+  // Normalize multiple blank lines
+  cleaned = cleaned.replace(/\n{3,}/g, "\n\n");
+
+  // Remove leading indentation
+  cleaned = cleaned.replace(/^[ \t]+/gm, "").trim();
+
+  const paragraphs = cleaned
+    .split(/\n{2,}/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+
+  return paragraphs
+    .map((p) => {
+      if (/^<h[1-6]\b|^<ul\b|^<ol\b|^<li\b|^<p\b|^<hr\b/i.test(p)) {
+        return p;
+      }
+      return `<p>${p}<\/p>`;
+    })
+    .join("\n");
+};
+
 const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -47,9 +86,22 @@ const ExternalArticle = () => {
           const parsedArticle = JSON.parse(cached);
           setArticle(parsedArticle);
           
-          // Load tags from database using the article's UUID, not the post_id from URL
           const { supabase } = await import("@/integrations/supabase/client");
-          const articleUuid = parsedArticle.id;
+          const postId = parsedArticle.post_id ?? parsedArticle.id;
+
+          const { data: dbArticle } = await supabase
+            .from('articles')
+            .select('id, post_id')
+            .eq('post_id', postId)
+            .maybeSingle();
+
+          if (!dbArticle) {
+            console.warn("No matching article found in database for post_id", postId);
+            setIsLoading(false);
+            return;
+          }
+
+          const articleUuid = dbArticle.id;
           
           const { data: articleTags } = await supabase
             .from('article_tags')
@@ -60,9 +112,9 @@ const ExternalArticle = () => {
             const tagNames = articleTags.map((at: any) => at.tags.name);
             setTags(tagNames);
           } else {
-            // If no tags exist, trigger tag extraction using UUID
+            // If no tags exist, trigger tag extraction using the article's database ID
             await supabase.functions.invoke('extract-article-tags', {
-              body: { articleId: articleUuid }
+              body: { articleId: dbArticle.post_id ?? postId }
             });
             
             // Reload tags after extraction
@@ -196,7 +248,7 @@ if (!article) {
           <div className="prose prose-invert max-w-none mb-2">
             <div 
               className="text-foreground leading-relaxed whitespace-pre-wrap [&>*]:mb-2 [&>h2]:mt-4 [&>h2]:text-2xl [&>h2]:font-bold [&>h3]:mt-4 [&>h3]:text-xl [&>h3]:font-bold"
-              dangerouslySetInnerHTML={{ __html: sanitizeText(article.content || article.excerpt) }}
+              dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content || article.excerpt) }}
             />
           </div>
 
