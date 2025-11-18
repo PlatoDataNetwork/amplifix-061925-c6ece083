@@ -76,9 +76,6 @@ const ImportAdmin = () => {
     }
   });
 
-  const verticalsWithArticles = verticalsWithCounts.filter(v => v.articleCount > 0).length;
-  const verticalsWithoutArticles = verticals.length - verticalsWithArticles;
-
   const toggleSort = (column: 'name' | 'count') => {
     if (sortBy === column) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -155,7 +152,7 @@ const ImportAdmin = () => {
           </div>
           
           {/* Metrics Dashboard */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Total Articles</CardTitle>
@@ -175,37 +172,12 @@ const ImportAdmin = () => {
                 <p className="text-xs text-muted-foreground mt-1">In directory</p>
               </CardContent>
             </Card>
-            
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">With Articles</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-green-600 dark:text-green-400">{verticalsWithArticles}</div>
-                <p className="text-xs text-muted-foreground mt-1">Verticals with content</p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Without Articles</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{verticalsWithoutArticles}</div>
-                <p className="text-xs text-muted-foreground mt-1">Need importing</p>
-              </CardContent>
-            </Card>
           </div>
           
           {/* All Verticals Table */}
           <Card className="mb-8">
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl">All Verticals Directory</CardTitle>
-                <div className="text-sm text-muted-foreground">
-                  {verticalsWithArticles} with articles • {verticalsWithoutArticles} without articles
-                </div>
-              </div>
+              <CardTitle className="text-2xl">All Verticals Directory</CardTitle>
             </CardHeader>
             <CardContent>
               {verticalsLoading ? (
@@ -235,7 +207,6 @@ const ImportAdmin = () => {
                           <ArrowUpDown className="h-4 w-4" />
                         </Button>
                       </TableHead>
-                      <TableHead>Feed URL</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -259,9 +230,6 @@ const ImportAdmin = () => {
                           <span className={`text-lg font-bold ${vertical.articleCount > 0 ? 'text-primary' : 'text-muted-foreground'}`}>
                             {vertical.articleCount.toLocaleString()}
                           </span>
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground max-w-[300px] truncate">
-                          {vertical.url}
                         </TableCell>
                         <TableCell className="text-right">
                           <Button
