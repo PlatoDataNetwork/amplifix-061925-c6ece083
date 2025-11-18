@@ -134,85 +134,96 @@ if (!article) {
       />
       <MainHeader />
 
-      <article className="pt-24 container mx-auto py-8 md:py-12 px-4">
-        <div className="max-w-4xl mx-auto">
+      <article className="pt-20 pb-16">
+        <div className="container mx-auto px-4">
           {/* Back Button */}
-          <Button 
-            onClick={() => navigate('/intel')} 
-            variant="ghost" 
-            className="mb-6"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Intelligence
-          </Button>
+          <div className="max-w-4xl mx-auto mb-6">
+            <Button 
+              onClick={() => navigate('/intel')} 
+              variant="ghost" 
+              size="sm"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Intelligence
+            </Button>
+          </div>
 
           {/* Article Header */}
-          <div className="mb-2">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="bg-blue-500/20 text-blue-500 px-3 py-1 rounded-full text-sm">
+          <header className="max-w-4xl mx-auto mb-8 border-b border-border pb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="bg-primary/10 text-primary px-3 py-1 rounded text-xs font-medium uppercase tracking-wide">
                 {article.category || 'AI Intelligence'}
               </span>
             </div>
             
-            <h1 className="text-3xl md:text-5xl font-bold mb-2">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
               {sanitizeText(article.title)}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-muted-foreground text-sm mb-4">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4" />
-                <span>{article.author}</span>
+                <span className="font-medium">{article.author}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                <span>{article.date}</span>
+                <time>{article.date}</time>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4" />
                 <span>{article.read_time}</span>
               </div>
             </div>
-          </div>
+          </header>
 
           {/* Article Image */}
           {article.image && article.image !== '/lovable-uploads/naoris-hero-new.png' && (
-            <div className="mb-4">
+            <figure className="max-w-4xl mx-auto mb-12">
               <img 
                 src={article.image} 
                 alt={article.title}
-                className="w-full rounded-xl border border-border"
+                className="w-full rounded-lg shadow-lg"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                 }}
               />
-            </div>
+            </figure>
           )}
 
           {/* Article Content */}
-          <div className="prose prose-invert max-w-none mb-4">
-            <div 
-              className="text-foreground leading-relaxed whitespace-pre-wrap"
-              dangerouslySetInnerHTML={{ __html: sanitizeText(article.content || article.excerpt) }}
-            />
-          </div>
-
-          {/* Tags */}
-          {tags && tags.length > 0 && (
-            <div className="border-t border-border pt-4">
-              <h3 className="text-sm font-semibold mb-3">Tags</h3>
-              <div className="flex flex-wrap gap-2">
-                {tags.map((tag: string) => (
-                  <span 
-                    key={tag}
-                    className="px-3 py-1 rounded-full bg-card border border-border text-sm text-muted-foreground"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
+          <div className="max-w-3xl mx-auto">
+            <div className="prose prose-lg dark:prose-invert max-w-none mb-12">
+              <div 
+                className="text-foreground leading-relaxed text-lg"
+                style={{ 
+                  fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif',
+                  lineHeight: '1.8',
+                  fontSize: '1.125rem'
+                }}
+                dangerouslySetInnerHTML={{ __html: sanitizeText(article.content || article.excerpt) }}
+              />
             </div>
-          )}
 
+            {/* Tags */}
+            {tags && tags.length > 0 && (
+              <footer className="border-t border-border pt-8 mt-12">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-4">
+                  Related Topics
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {tags.map((tag: string) => (
+                    <button
+                      key={tag}
+                      className="px-4 py-2 rounded-full bg-secondary/50 hover:bg-secondary text-sm font-medium text-foreground transition-colors"
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </footer>
+            )}
+          </div>
         </div>
       </article>
 
