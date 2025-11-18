@@ -6,8 +6,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users } from "lucide-react";
+import { Users, ArrowUpDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const ImportAdmin = () => {
   const navigate = useNavigate();
@@ -15,6 +23,8 @@ const ImportAdmin = () => {
   const [results, setResults] = useState<Record<string, any>>({});
   const [metrics, setMetrics] = useState<Record<string, number>>({});
   const [totalArticles, setTotalArticles] = useState(0);
+  const [sortBy, setSortBy] = useState<'name' | 'count'>('count');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
   useEffect(() => {
@@ -47,9 +57,36 @@ const ImportAdmin = () => {
     }
   };
 
-  // Get missing verticals
-  const missingVerticals = verticals.filter(v => !metrics[v.slug]);
-  const importedVerticals = verticals.filter(v => metrics[v.slug]);
+  // Prepare verticals with their article counts
+  const verticalsWithCounts = verticals.map(v => ({
+    ...v,
+    articleCount: metrics[v.slug] || 0
+  }));
+
+  // Sort verticals
+  const sortedVerticals = [...verticalsWithCounts].sort((a, b) => {
+    if (sortBy === 'name') {
+      return sortOrder === 'asc' 
+        ? a.name.localeCompare(b.name)
+        : b.name.localeCompare(a.name);
+    } else {
+      return sortOrder === 'asc'
+        ? a.articleCount - b.articleCount
+        : b.articleCount - a.articleCount;
+    }
+  });
+
+  const verticalsWithArticles = verticalsWithCounts.filter(v => v.articleCount > 0).length;
+  const verticalsWithoutArticles = verticals.length - verticalsWithArticles;
+
+  const toggleSort = (column: 'name' | 'count') => {
+    if (sortBy === column) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(column);
+      setSortOrder('desc');
+    }
+  };
 
   const importVertical = async (vertical: string, verticalSlug: string) => {
     setImporting(vertical);
@@ -125,17 +162,7 @@ const ImportAdmin = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{totalArticles.toLocaleString()}</div>
-                <p className="text-xs text-muted-foreground mt-1">Articles in database</p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Verticals with Articles</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">{Object.keys(metrics).length}</div>
-                <p className="text-xs text-muted-foreground mt-1">Verticals that have content</p>
+                <p className="text-xs text-muted-foreground mt-1">Across all verticals</p>
               </CardContent>
             </Card>
             
@@ -145,155 +172,151 @@ const ImportAdmin = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{verticals.length}</div>
-                <p className="text-xs text-muted-foreground mt-1">Verticals in directory</p>
+                <p className="text-xs text-muted-foreground mt-1">In directory</p>
               </CardContent>
             </Card>
             
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Content Coverage</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">With Articles</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold">
-                  {verticals.length > 0 ? Math.round((Object.keys(metrics).length / verticals.length) * 100) : 0}%
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">% of verticals with articles</p>
+                <div className="text-3xl font-bold text-green-600 dark:text-green-400">{verticalsWithArticles}</div>
+                <p className="text-xs text-muted-foreground mt-1">Verticals with content</p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Without Articles</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{verticalsWithoutArticles}</div>
+                <p className="text-xs text-muted-foreground mt-1">Need importing</p>
               </CardContent>
             </Card>
           </div>
           
-          {/* Missing Verticals Alert */}
-          {missingVerticals.length > 0 && (
-            <>
-              <Card className="mb-8 border-yellow-500/50 bg-yellow-500/5">
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    ⚠️ Missing Verticals ({missingVerticals.length})
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    The following verticals from your directory haven't been imported yet:
-                  </p>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    {missingVerticals.map((vertical) => (
-                      <div key={vertical.slug} className="text-sm px-3 py-2 bg-background border border-border rounded">
-                        {vertical.name}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold mb-4">
-                  Not Yet Imported ({missingVerticals.length})
-                </h2>
-                <div className="grid gap-4">
-                  {missingVerticals.map((vertical) => (
-                    <div key={vertical.slug} className="bg-card border border-border rounded-lg p-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-1">
-                            <h3 className="text-xl font-semibold">{vertical.name}</h3>
-                            <span className="px-2 py-1 text-xs bg-muted text-muted-foreground rounded-full">
-                              No articles
-                            </span>
-                          </div>
-                          <p className="text-sm text-muted-foreground">{vertical.url}</p>
-                        </div>
-                        <Button
-                          onClick={() => importVertical(vertical.name, vertical.slug)}
-                          disabled={importing !== null}
-                          size="lg"
-                          variant="default"
+          {/* All Verticals Table */}
+          <Card className="mb-8">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-2xl">All Verticals Directory</CardTitle>
+                <div className="text-sm text-muted-foreground">
+                  {verticalsWithArticles} with articles • {verticalsWithoutArticles} without articles
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {verticalsLoading ? (
+                <div className="text-center py-8">Loading verticals...</div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[50px]">#</TableHead>
+                      <TableHead>
+                        <Button 
+                          variant="ghost" 
+                          onClick={() => toggleSort('name')}
+                          className="flex items-center gap-1 px-0 hover:bg-transparent"
                         >
-                          {importing === vertical.name ? 'Importing...' : 'Import Now'}
+                          Vertical Name
+                          <ArrowUpDown className="h-4 w-4" />
                         </Button>
-                      </div>
-                      
-                      {results[vertical.name] && (
-                        <div className="mt-4 p-4 bg-muted rounded">
-                          <p className="text-sm">
-                            ✅ Imported: {results[vertical.name].insertedArticles} articles
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            Duration: {(results[vertical.name].duration / 1000).toFixed(1)}s
-                          </p>
-                        </div>
-                      )}
+                      </TableHead>
+                      <TableHead>
+                        <Button 
+                          variant="ghost" 
+                          onClick={() => toggleSort('count')}
+                          className="flex items-center gap-1 px-0 hover:bg-transparent"
+                        >
+                          Article Count
+                          <ArrowUpDown className="h-4 w-4" />
+                        </Button>
+                      </TableHead>
+                      <TableHead>Feed URL</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {sortedVerticals.map((vertical, index) => (
+                      <TableRow key={vertical.slug}>
+                        <TableCell className="font-medium text-muted-foreground">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold">{vertical.name}</span>
+                            {vertical.articleCount === 0 && (
+                              <span className="px-2 py-0.5 text-xs bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 rounded-full border border-yellow-500/20">
+                                No articles
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <span className={`text-lg font-bold ${vertical.articleCount > 0 ? 'text-primary' : 'text-muted-foreground'}`}>
+                            {vertical.articleCount.toLocaleString()}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground max-w-[300px] truncate">
+                          {vertical.url}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            onClick={() => importVertical(vertical.name, vertical.slug)}
+                            disabled={importing !== null}
+                            size="sm"
+                            variant={vertical.articleCount === 0 ? "default" : "outline"}
+                          >
+                            {importing === vertical.name ? 'Importing...' : vertical.articleCount === 0 ? 'Import' : 'Re-import'}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+              
+              {results && Object.keys(results).length > 0 && (
+                <div className="mt-6 space-y-2">
+                  <h3 className="font-semibold text-sm text-muted-foreground">Recent Import Results:</h3>
+                  {Object.entries(results).map(([name, data]: [string, any]) => (
+                    <div key={name} className="p-3 bg-muted rounded-lg">
+                      <p className="text-sm font-medium">
+                        ✅ {name}: Imported {data.insertedArticles} articles ({(data.duration / 1000).toFixed(1)}s)
+                      </p>
                     </div>
                   ))}
                 </div>
-              </div>
-            </>
-          )}
-          
-          <div className="mb-4">
-            <h2 className="text-2xl font-bold">
-              Imported Verticals ({importedVerticals.length})
-            </h2>
-          </div>
-          
-          <div className="grid gap-4 mb-8">
-            {verticalsLoading ? (
-              <div className="text-center py-8">Loading verticals...</div>
-            ) : (
-              importedVerticals.map((vertical) => (
-                <div key={vertical.slug} className="bg-card border border-border rounded-lg p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-1">
-                        <h2 className="text-xl font-semibold">{vertical.name}</h2>
-                        {metrics[vertical.slug] && (
-                          <span className="px-2 py-1 text-xs bg-primary/10 text-primary rounded-full">
-                            {metrics[vertical.slug].toLocaleString()} articles
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground">{vertical.url}</p>
-                    </div>
-                    <Button
-                      onClick={() => importVertical(vertical.name, vertical.slug)}
-                      disabled={importing !== null}
-                      size="lg"
-                    >
-                      {importing === vertical.name ? 'Importing...' : 'Import'}
-                    </Button>
-                  </div>
-                  
-                  {results[vertical.name] && (
-                    <div className="mt-4 p-4 bg-muted rounded">
-                      <p className="text-sm">
-                        ✅ Imported: {results[vertical.name].insertedArticles} articles
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Duration: {(results[vertical.name].duration / 1000).toFixed(1)}s
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ))
-            )}
-            
-            <div className="bg-card border border-border rounded-lg p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="text-2xl font-semibold">ACN Newswire</h2>
-                  <p className="text-muted-foreground">Import from RSS Feed</p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* ACN Newswire Section */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="text-xl">ACN Newswire</CardTitle>
+              <p className="text-sm text-muted-foreground">Import articles from ACN Newswire RSS Feed</p>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-muted-foreground">
+                  Additional article source for comprehensive coverage
                 </div>
                 <Button
                   onClick={importACN}
                   disabled={importing !== null}
                   size="lg"
                 >
-                  {importing === 'ACN' ? 'Importing...' : 'Import All'}
+                  {importing === 'ACN' ? 'Importing...' : 'Import ACN Newswire'}
                 </Button>
               </div>
               
               {results.ACN && (
-                <div className="mt-4 p-4 bg-muted rounded">
-                  <p className="text-sm">
+                <div className="mt-4 p-4 bg-muted rounded-lg">
+                  <p className="text-sm font-medium">
                     ✅ Imported: {results.ACN.insertedArticles} articles
                   </p>
                   <p className="text-sm text-muted-foreground">
@@ -301,8 +324,8 @@ const ImportAdmin = () => {
                   </p>
                 </div>
               )}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-6">
             <h3 className="text-lg font-semibold mb-2">Note:</h3>
