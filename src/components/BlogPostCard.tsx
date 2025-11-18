@@ -31,6 +31,10 @@ const sanitizeText = (text?: string | null) => {
     .replace(/Link:?:?\s*/gi, "")
     .replace(/---/g, "")
     .replace(/\*/g, "")
+    // Normalize newlines and remove extra blank space/indentation
+    .replace(/\r\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/^[ \t]+/gm, "")
     .trim();
 };
 
