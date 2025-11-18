@@ -217,14 +217,7 @@ const ImportAdmin = () => {
                           {index + 1}
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold">{vertical.name}</span>
-                            {vertical.articleCount === 0 && (
-                              <span className="px-2 py-0.5 text-xs bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 rounded-full border border-yellow-500/20">
-                                No articles
-                              </span>
-                            )}
-                          </div>
+                          <span className="font-semibold">{vertical.name}</span>
                         </TableCell>
                         <TableCell>
                           <span className={`text-lg font-bold ${vertical.articleCount > 0 ? 'text-primary' : 'text-muted-foreground'}`}>
