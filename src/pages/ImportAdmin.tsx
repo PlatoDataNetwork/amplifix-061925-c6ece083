@@ -121,15 +121,17 @@ const ImportAdmin = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{totalArticles.toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground mt-1">Articles in database</p>
               </CardContent>
             </Card>
             
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Active Verticals</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Verticals with Articles</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{Object.keys(metrics).length}</div>
+                <p className="text-xs text-muted-foreground mt-1">Verticals that have content</p>
               </CardContent>
             </Card>
             
@@ -139,17 +141,19 @@ const ImportAdmin = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{verticals.length}</div>
+                <p className="text-xs text-muted-foreground mt-1">Verticals in directory</p>
               </CardContent>
             </Card>
             
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Coverage</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">Content Coverage</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">
                   {verticals.length > 0 ? Math.round((Object.keys(metrics).length / verticals.length) * 100) : 0}%
                 </div>
+                <p className="text-xs text-muted-foreground mt-1">% of verticals with articles</p>
               </CardContent>
             </Card>
           </div>
