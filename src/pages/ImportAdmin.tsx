@@ -47,6 +47,10 @@ const ImportAdmin = () => {
     }
   };
 
+  // Get missing verticals
+  const missingVerticals = verticals.filter(v => !metrics[v.slug]);
+  const importedVerticals = verticals.filter(v => metrics[v.slug]);
+
   const importVertical = async (vertical: string, verticalSlug: string) => {
     setImporting(vertical);
     
@@ -158,11 +162,84 @@ const ImportAdmin = () => {
             </Card>
           </div>
           
+          {/* Missing Verticals Alert */}
+          {missingVerticals.length > 0 && (
+            <>
+              <Card className="mb-8 border-yellow-500/50 bg-yellow-500/5">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    ⚠️ Missing Verticals ({missingVerticals.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    The following verticals from your directory haven't been imported yet:
+                  </p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    {missingVerticals.map((vertical) => (
+                      <div key={vertical.slug} className="text-sm px-3 py-2 bg-background border border-border rounded">
+                        {vertical.name}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-4">
+                  Not Yet Imported ({missingVerticals.length})
+                </h2>
+                <div className="grid gap-4">
+                  {missingVerticals.map((vertical) => (
+                    <div key={vertical.slug} className="bg-card border border-border rounded-lg p-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-1">
+                            <h3 className="text-xl font-semibold">{vertical.name}</h3>
+                            <span className="px-2 py-1 text-xs bg-muted text-muted-foreground rounded-full">
+                              No articles
+                            </span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{vertical.url}</p>
+                        </div>
+                        <Button
+                          onClick={() => importVertical(vertical.name, vertical.slug)}
+                          disabled={importing !== null}
+                          size="lg"
+                          variant="default"
+                        >
+                          {importing === vertical.name ? 'Importing...' : 'Import Now'}
+                        </Button>
+                      </div>
+                      
+                      {results[vertical.name] && (
+                        <div className="mt-4 p-4 bg-muted rounded">
+                          <p className="text-sm">
+                            ✅ Imported: {results[vertical.name].insertedArticles} articles
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Duration: {(results[vertical.name].duration / 1000).toFixed(1)}s
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+          
+          <div className="mb-4">
+            <h2 className="text-2xl font-bold">
+              Imported Verticals ({importedVerticals.length})
+            </h2>
+          </div>
+          
           <div className="grid gap-4 mb-8">
             {verticalsLoading ? (
               <div className="text-center py-8">Loading verticals...</div>
             ) : (
-              verticals.map((vertical) => (
+              importedVerticals.map((vertical) => (
                 <div key={vertical.slug} className="bg-card border border-border rounded-lg p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex-1">
