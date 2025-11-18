@@ -93,8 +93,8 @@ const ExternalArticle = () => {
         <SEOHead title="Loading Article..." />
         <MainHeader />
         <div className="pt-24 container mx-auto py-8 px-4">
-        <div className="max-w-4xl">
-          <div className="animate-pulse space-y-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="animate-pulse space-y-4">
             <div className="h-8 bg-muted rounded w-3/4"></div>
             <div className="h-4 bg-muted rounded w-1/2"></div>
             <div className="h-64 bg-muted rounded"></div>
@@ -112,7 +112,7 @@ if (!article) {
       <SEOHead title="Article Not Found" />
       <MainHeader />
       <div className="pt-24 container mx-auto py-8 px-4">
-        <div className="max-w-4xl text-left">
+        <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-3xl font-bold mb-4">Article Not Found</h1>
           <p className="text-muted-foreground mb-6">The article you're looking for doesn't exist.</p>
           <Button onClick={() => navigate('/intel')} variant="outline">
@@ -134,8 +134,8 @@ if (!article) {
       />
       <MainHeader />
 
-      <article className="pt-24 container py-8 md:py-12 px-4">
-        <div className="max-w-4xl">
+      <article className="pt-24 container mx-auto py-8 md:py-12 px-4">
+        <div className="max-w-4xl mx-auto">
           {/* Back Button */}
           <Button 
             onClick={() => navigate('/intel')} 
