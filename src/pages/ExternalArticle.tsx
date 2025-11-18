@@ -17,6 +17,7 @@ const sanitizeText = (text?: string | null) => {
     .replace(/https?:\/\/\S+/gi, "")
     .replace(/\[.*?\]\(.*?\)/g, "")
     .replace(/Source:?:?\s*/gi, "")
+    .replace(/Link:?:?\s*/gi, "")
     .replace(/---/g, "")
     .replace(/\*/g, "")
     .trim();
@@ -28,25 +29,60 @@ const ExternalArticle = () => {
   const { verticals } = usePlatoVerticals();
   const [article, setArticle] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [tags, setTags] = useState<string[]>([]);
   useLanguage(); // Enable translation
 
   // Try to load from cache first
   useEffect(() => {
     if (!id) return;
     
-    try {
-      const cached = sessionStorage.getItem(`article_${id}`);
-      if (cached) {
-        setArticle(JSON.parse(cached));
-        setIsLoading(false);
-        return;
+    const loadArticle = async () => {
+      try {
+        const cached = sessionStorage.getItem(`article_${id}`);
+        if (cached) {
+          const parsedArticle = JSON.parse(cached);
+          setArticle(parsedArticle);
+          
+          // Load tags from database
+          const { supabase } = await import("@/integrations/supabase/client");
+          const { data: articleTags } = await supabase
+            .from('article_tags')
+            .select('tags(name)')
+            .eq('article_id', id);
+          
+          if (articleTags && articleTags.length > 0) {
+            const tagNames = articleTags.map((at: any) => at.tags.name);
+            setTags(tagNames);
+          } else {
+            // If no tags exist, trigger tag extraction
+            await supabase.functions.invoke('extract-article-tags', {
+              body: { articleId: id }
+            });
+            
+            // Reload tags after extraction
+            const { data: newTags } = await supabase
+              .from('article_tags')
+              .select('tags(name)')
+              .eq('article_id', id);
+            
+            if (newTags && newTags.length > 0) {
+              const tagNames = newTags.map((at: any) => at.tags.name);
+              setTags(tagNames);
+            }
+          }
+          
+          setIsLoading(false);
+          return;
+        }
+      } catch (e) {
+        console.error('Failed to load article:', e);
       }
-    } catch (e) {
-      console.error('Failed to load cached article:', e);
-    }
+      
+      // If not in cache, we'll show not found
+      setIsLoading(false);
+    };
     
-    // If not in cache, we'll show not found
-    setIsLoading(false);
+    loadArticle();
   }, [id]);
 
   if (isLoading) {
@@ -159,11 +195,11 @@ if (!article) {
           </div>
 
           {/* Tags */}
-          {article.tags && article.tags.length > 0 && (
+          {tags && tags.length > 0 && (
             <div className="border-t border-border pt-4">
               <h3 className="text-sm font-semibold mb-3">Tags</h3>
               <div className="flex flex-wrap gap-2">
-                {article.tags.map((tag: string) => (
+                {tags.map((tag: string) => (
                   <span 
                     key={tag}
                     className="px-3 py-1 rounded-full bg-card border border-border text-sm text-muted-foreground"
