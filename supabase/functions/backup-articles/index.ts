@@ -37,19 +37,42 @@ Deno.serve(async (req) => {
       userId = user?.id;
     }
 
-    // Fetch all articles
-    const { data: articles, error: fetchError } = await supabase
-      .from('articles')
-      .select('*');
+    // Fetch ALL articles using pagination (Supabase default limit is 1000)
+    let allArticles: any[] = [];
+    let from = 0;
+    const pageSize = 1000;
+    let hasMore = true;
 
-    if (fetchError) {
-      console.error('Error fetching articles:', fetchError);
-      throw fetchError;
+    console.log('Fetching all articles...');
+
+    while (hasMore) {
+      const { data: articles, error: fetchError } = await supabase
+        .from('articles')
+        .select('*')
+        .range(from, from + pageSize - 1);
+
+      if (fetchError) {
+        console.error('Error fetching articles:', fetchError);
+        throw fetchError;
+      }
+
+      if (articles && articles.length > 0) {
+        allArticles = allArticles.concat(articles);
+        console.log(`Fetched ${allArticles.length} articles so far...`);
+        
+        if (articles.length < pageSize) {
+          hasMore = false;
+        } else {
+          from += pageSize;
+        }
+      } else {
+        hasMore = false;
+      }
     }
 
-    console.log(`Found ${articles?.length || 0} articles to backup`);
+    console.log(`Found ${allArticles.length} total articles to backup`);
 
-    if (!articles || articles.length === 0) {
+    if (!allArticles || allArticles.length === 0) {
       return new Response(
         JSON.stringify({ 
           success: true, 
@@ -61,7 +84,7 @@ Deno.serve(async (req) => {
     }
 
     // Create backup records
-    const backupRecords = articles.map(article => ({
+    const backupRecords = allArticles.map(article => ({
       backup_name: backupName,
       backup_description: backupDescription || null,
       article_id: article.id,
