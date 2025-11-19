@@ -13,7 +13,10 @@ import {
   DollarSign,
   Leaf,
   Microscope,
-  ScanFace
+  ScanFace,
+  Smartphone,
+  FileText,
+  Users
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
@@ -61,6 +64,16 @@ interface SynbioData {
       description: string;
       advantages: Array<{ title: string; description: string; icon: string }>;
     };
+    mental_health_ai: {
+      title: string;
+      subtitle: string;
+      description: string;
+      treatment_cycle: {
+        title: string;
+        steps: Array<{ number: number; title: string; icon: string }>;
+      };
+      benefits: Array<{ title: string; description: string; icon: string }>;
+    };
     investment_highlights: {
       title: string;
       description: string;
@@ -88,6 +101,9 @@ const iconMap: Record<string, any> = {
   'trending-up': TrendingUp,
   microscope: Microscope,
   'scan-face': ScanFace,
+  smartphone: Smartphone,
+  'file-text': FileText,
+  users: Users,
   lightbulb: Lightbulb,
   leaf: Leaf,
   heart: Heart,
@@ -294,6 +310,71 @@ const SynbioShowcase = () => {
                     </Card>
                   );
                 })}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mental Health AI Section */}
+        <div className="py-20 bg-gradient-to-br from-background via-highlight-blue/5 to-background">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-4xl font-bold text-center mb-6 text-foreground">
+                {content.mental_health_ai.title}
+              </h2>
+              <p className="text-xl text-muted-foreground text-center mb-12 max-w-4xl mx-auto leading-relaxed">
+                {content.mental_health_ai.description}
+              </p>
+
+              {/* Treatment Cycle */}
+              <div className="mb-16">
+                <h3 className="text-3xl font-semibold text-center mb-10 text-foreground">
+                  {content.mental_health_ai.treatment_cycle.title}
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {content.mental_health_ai.treatment_cycle.steps.map((step, index) => {
+                    const Icon = iconMap[step.icon];
+                    return (
+                      <div key={index} className="relative">
+                        <Card className="bg-card border-border hover:border-highlight-blue/50 transition-all h-full">
+                          <CardContent className="p-8 text-center">
+                            <div className="w-16 h-16 rounded-full bg-highlight-blue/10 flex items-center justify-center mx-auto mb-6">
+                              <span className="text-3xl font-bold text-highlight-blue">{step.number}</span>
+                            </div>
+                            {Icon && <Icon className="h-12 w-12 text-highlight-blue mx-auto mb-4" />}
+                            <p className="text-muted-foreground text-lg leading-relaxed">{step.title}</p>
+                          </CardContent>
+                        </Card>
+                        {index < content.mental_health_ai.treatment_cycle.steps.length - 1 && (
+                          <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
+                            <div className="w-8 h-0.5 bg-highlight-blue/30"></div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Benefits */}
+              <div>
+                <h3 className="text-3xl font-semibold text-center mb-10 text-foreground">
+                  Key Benefits
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {content.mental_health_ai.benefits.map((benefit, index) => {
+                    const Icon = iconMap[benefit.icon];
+                    return (
+                      <Card key={index} className="bg-card border-border hover:border-highlight-blue/50 transition-all">
+                        <CardContent className="p-8">
+                          {Icon && <Icon className="h-10 w-10 text-highlight-blue mb-4" />}
+                          <h4 className="text-2xl font-semibold mb-3 text-foreground">{benefit.title}</h4>
+                          <p className="text-muted-foreground leading-relaxed">{benefit.description}</p>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>

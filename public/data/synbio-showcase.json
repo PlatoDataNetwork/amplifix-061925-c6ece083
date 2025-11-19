@@ -137,6 +137,53 @@
         }
       ]
     },
+    "mental_health_ai": {
+      "title": "AI-Powered Mental Health Diagnostics",
+      "subtitle": "Screening for Mental Health Conditions",
+      "description": "AI-powered medical technologies are evolving into solutions for clinical practice. Deep learning algorithms can process enormous amounts of data provided by wearables, smartphones and other mobile devices enabling early, rapid and more accurate diagnosis that will lead to more effective treatments whilst reducing the cost of healthcare for patients and governments.",
+      "treatment_cycle": {
+        "title": "Patient + Clinician Treatment Cycle",
+        "steps": [
+          {
+            "number": 1,
+            "title": "Patient downloads application & photographs face",
+            "icon": "smartphone"
+          },
+          {
+            "number": 2,
+            "title": "Facial data analyzed using proprietary AI-driven software",
+            "icon": "scan-face"
+          },
+          {
+            "number": 3,
+            "title": "Mental health assessment reported to patient and clinician",
+            "icon": "file-text"
+          }
+        ]
+      },
+      "benefits": [
+        {
+          "title": "Reduce Subjectivity",
+          "description": "Subjectivity or lack of awareness by clinicians can lead to misdiagnosis or no diagnosis. Objective data-driven screenings can reduce confusion.",
+          "icon": "target"
+        },
+        {
+          "title": "Increase Accessibility",
+          "description": "Lack of access, awareness and affordability of treatment options leads patients back to the beginning in a cycle of frustration and misinformation.",
+          "icon": "users"
+        },
+        {
+          "title": "Serve a Great Need",
+          "description": "More than half of adults in the US suffering from mental health issues do not receive treatment. Depression is the leading cause of disability for individuals aged 15-44.",
+          "icon": "heart"
+        },
+        {
+          "title": "Monitor & Improve",
+          "description": "Patients interact with an application, providing assessments for a clinician who can adapt and improve treatment based on the results.",
+          "icon": "trending-up"
+        }
+      ]
+    },
     "investment_highlights": {
       "title": "Investment Opportunity",
       "description": "Synbio International represents a unique investment opportunity in the convergence of AI technology and natural wellness solutions.",
