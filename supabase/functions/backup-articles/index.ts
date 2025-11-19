@@ -46,6 +46,24 @@ Deno.serve(async (req) => {
 
     console.log('Starting batch backup process...');
 
+    // Get total count first
+    const { count: totalCount } = await supabase
+      .from('articles')
+      .select('*', { count: 'exact', head: true });
+
+    console.log(`Total articles to backup: ${totalCount || 0}`);
+
+    // Broadcast initial progress
+    await supabase.channel(`backup-progress-${backupName}`).send({
+      type: 'broadcast',
+      event: 'progress',
+      payload: { 
+        backed: 0, 
+        total: totalCount || 0,
+        status: 'starting'
+      }
+    });
+
     while (hasMore) {
       // Fetch a batch of articles
       const { data: articles, error: fetchError } = await supabase
@@ -96,6 +114,17 @@ Deno.serve(async (req) => {
         }
 
         totalBacked += chunk.length;
+        
+        // Broadcast progress update
+        await supabase.channel(`backup-progress-${backupName}`).send({
+          type: 'broadcast',
+          event: 'progress',
+          payload: { 
+            backed: totalBacked, 
+            total: totalCount || 0,
+            status: 'processing'
+          }
+        });
       }
 
       console.log(`Backed up ${totalBacked} articles so far...`);
@@ -107,6 +136,17 @@ Deno.serve(async (req) => {
         from += fetchSize;
       }
     }
+
+    // Broadcast completion
+    await supabase.channel(`backup-progress-${backupName}`).send({
+      type: 'broadcast',
+      event: 'progress',
+      payload: { 
+        backed: totalBacked, 
+        total: totalCount || 0,
+        status: 'completed'
+      }
+    });
 
     if (totalBacked === 0) {
       return new Response(

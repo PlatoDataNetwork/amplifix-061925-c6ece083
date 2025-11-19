@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import MainHeader from "@/components/MainHeader";
@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Loader2, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -15,6 +16,8 @@ const ArticleFormatter = () => {
   const [isBackingUp, setIsBackingUp] = useState(false);
   const [backupCreated, setBackupCreated] = useState(false);
   const [currentBackupName, setCurrentBackupName] = useState<string>("");
+  const [backupProgress, setBackupProgress] = useState({ backed: 0, total: 0, status: '' });
+  const channelRef = useRef<any>(null);
   const [result, setResult] = useState<{
     success: boolean;
     total?: number;
@@ -24,11 +27,36 @@ const ArticleFormatter = () => {
     message?: string;
   } | null>(null);
 
+  // Cleanup channel on unmount
+  useEffect(() => {
+    return () => {
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+      }
+    };
+  }, []);
+
   const handleCreateBackup = async () => {
     const backupName = `pre-format-${Date.now()}`;
     setIsBackingUp(true);
+    setBackupProgress({ backed: 0, total: 0, status: 'starting' });
 
     try {
+      // Set up realtime channel for progress updates
+      const channel = supabase.channel(`backup-progress-${backupName}`);
+      channelRef.current = channel;
+
+      channel
+        .on('broadcast', { event: 'progress' }, (payload) => {
+          console.log('Progress update:', payload);
+          setBackupProgress(payload.payload);
+        })
+        .subscribe((status) => {
+          if (status === 'SUBSCRIBED') {
+            console.log('Subscribed to backup progress channel');
+          }
+        });
+
       toast.info("Creating backup of all articles...");
 
       const { data, error } = await supabase.functions.invoke('backup-articles', {
@@ -52,6 +80,11 @@ const ArticleFormatter = () => {
       toast.error("Failed to create backup");
     } finally {
       setIsBackingUp(false);
+      // Clean up channel
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
     }
   };
 
@@ -183,6 +216,21 @@ const ArticleFormatter = () => {
                   <>Create Backup</>
                 )}
               </Button>
+
+              {/* Progress Bar */}
+              {isBackingUp && backupProgress.total > 0 && (
+                <div className="space-y-2">
+                  <Progress 
+                    value={(backupProgress.backed / backupProgress.total) * 100} 
+                    className="h-2"
+                  />
+                  <p className="text-sm text-muted-foreground text-center">
+                    Backing up {backupProgress.backed.toLocaleString()} of {backupProgress.total.toLocaleString()} articles
+                    ({Math.round((backupProgress.backed / backupProgress.total) * 100)}%)
+                  </p>
+                </div>
+              )}
+
               {backupCreated && (
                 <Alert className="bg-green-50 border-green-200">
                   <CheckCircle className="h-4 w-4 text-green-600" />
