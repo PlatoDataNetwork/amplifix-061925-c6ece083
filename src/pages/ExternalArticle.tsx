@@ -5,85 +5,10 @@ import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, User, Clock, Share2, Twitter, Linkedin, Facebook, Mail, Link as LinkIcon } from "lucide-react";
-import { useRSSFeed } from "@/hooks/useRSSFeed";
-import { usePlatoDataFeed } from "@/hooks/usePlatoDataFeed";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
-const sanitizeText = (text?: string | null) => {
-  if (!text) return "";
-  return text
-    .replace(/<a\b[^>]*>/gi, "")
-    .replace(/<\/a>/gi, "")
-    .replace(/https?:\/\/\S+/gi, "")
-    .replace(/\[.*?\]\(.*?\)/g, "")
-    .replace(/Source:?:?\s*/gi, "")
-    .replace(/Link:?:?\s*/gi, "")
-    .replace(/---/g, "")
-    .replace(/\*/g, "")
-    // Normalize newlines and remove extra blank space/indentation
-    .replace(/\r\n/g, "\n")
-    .replace(/\n{3,}/g, "\n\n")
-    .replace(/^[ \t]+/gm, "")
-    .trim();
-};
-
-const formatArticleContent = (text?: string | null) => {
-  if (!text) return "";
-  let cleaned = text
-    .replace(/<a\b[^>]*>/gi, "")
-    .replace(/<\/a>/gi, "")
-    .replace(/https?:\/\/\S+/gi, "")
-    .replace(/\[.*?\]\(.*?\)/g, "")
-    .replace(/Source:?:?\s*/gi, "")
-    .replace(/Link:?:?\s*/gi, "")
-    .replace(/---/g, "")
-    .replace(/\r\n/g, "\n");
-
-  // Convert markdown-style headings (**Heading**) on their own line to <h2>
-  cleaned = cleaned.replace(/^\s*\*\*(.+?)\*\*\s*$/gm, "<h2>$1<\/h2>");
-
-  // Convert remaining bold markers to <strong>
-  cleaned = cleaned.replace(/\*\*(.+?)\*\*/g, "<strong>$1<\/strong>");
-  
-  // Make question headers bold (lines ending with ?)
-  cleaned = cleaned.replace(/^\s*([A-Z][^?\n]+\?)\s*$/gm, "<h2>$1</h2>");
-  
-  // Make title-case section headers bold (lines with multiple capital letters, likely headers)
-  cleaned = cleaned.replace(/^\s*([A-Z][A-Za-z\s]+(?:Prototypes|Features|Questions|Air|Dream)[A-Za-z\s]*)\s*$/gm, (match) => {
-    // Don't double-wrap if already wrapped
-    if (match.includes('<h2>') || match.includes('<strong>')) return match;
-    // Check if it has multiple capital letters (likely a title)
-    const capitalCount = (match.match(/[A-Z]/g) || []).length;
-    if (capitalCount >= 3) {
-      return `<h2>${match.trim()}</h2>`;
-    }
-    return match;
-  });
-  
-  // Make numbered list headers bold ONLY (e.g., "1. Lightweight Design", "2. High-Resolution Displays")
-  cleaned = cleaned.replace(/^(\d+\.\s+[A-Z][A-Za-z\s\-]+)\s*$/gm, "<strong>$1</strong>");
-
-  // Normalize multiple blank lines
-  cleaned = cleaned.replace(/\n{3,}/g, "\n\n");
-
-  // Remove leading indentation
-  cleaned = cleaned.replace(/^[ \t]+/gm, "").trim();
-
-  const paragraphs = cleaned
-    .split(/\n{2,}/)
-    .map((p) => p.trim())
-    .filter(Boolean);
-
-  return paragraphs
-    .map((p) => {
-      if (/^<h[1-6]\b|^<ul\b|^<ol\b|^<li\b|^<p\b|^<hr\b/i.test(p)) {
-        return p;
-      }
-      return `<p>${p}<\/p>`;
-    })
-    .join("\n");
-};
+import { sanitizeText, formatArticleContent, formatArticleTags } from "@/utils/articleFormatting";
 
 const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
@@ -355,51 +280,14 @@ if (!article) {
             <div className="pt-4">
               <h3 className="text-sm font-semibold mb-3">Tags</h3>
               <div className="flex flex-wrap gap-2">
-                {(() => {
-                  // Create a Set to track unique single words (case-insensitive)
-                  const uniqueTags = new Set<string>();
-                  const allTags = [...tags];
-                  
-                  // Add vertical as first tag if it exists - display as AR-VR
-                  if (article.vertical_slug) {
-                    allTags.unshift('AR-VR');
-                  }
-                  
-                  return allTags
-                    .map((tag: string, index: number) => {
-                      const singleWord = tag.split(/[\s-]+/)[0];
-                      const lowerWord = singleWord.toLowerCase();
-                      
-                      // For the first tag (vertical), skip uniqueness check
-                      if (index === 0 && article.vertical_slug) {
-                        return (
-                          <span 
-                            key="vertical-tag"
-                            className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer"
-                          >
-                            #AR-VR
-                          </span>
-                        );
-                      }
-                      
-                      // Skip if we've already seen this word
-                      if (uniqueTags.has(lowerWord)) {
-                        return null;
-                      }
-                      
-                      uniqueTags.add(lowerWord);
-                      
-                      return (
-                        <span 
-                          key={tag}
-                          className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer"
-                        >
-                          #{singleWord}
-                        </span>
-                      );
-                    })
-                    .filter(Boolean);
-                })()}
+                {formatArticleTags(tags, article.vertical_slug, 'AR-VR').map((tagData) => (
+                  <span 
+                    key={tagData.key}
+                    className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer"
+                  >
+                    {tagData.label}
+                  </span>
+                ))}
               </div>
             </div>
           )}
