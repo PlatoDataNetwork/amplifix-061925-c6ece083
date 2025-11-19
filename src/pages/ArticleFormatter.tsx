@@ -142,15 +142,23 @@ const ArticleFormatter = () => {
       <div className="container mx-auto px-4 pt-24 pb-12">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="flex items-center gap-4 mb-8">
-            <Button
-              variant="outline"
-              onClick={() => navigate("/admin")}
-              className="gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Admin
-            </Button>
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <Button
+                variant="outline"
+                onClick={() => navigate("/admin")}
+                className="gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Admin
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/admin/articles/backups")}
+              >
+                Manage Backups
+              </Button>
+            </div>
             <h1 className="text-3xl font-bold">Bulk Article Formatter</h1>
           </div>
 
@@ -236,15 +244,6 @@ const ArticleFormatter = () => {
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <AlertDescription>
                     Backup created: <strong>{currentBackupName}</strong>
-                    <br />
-                    <Button
-                      variant="link"
-                      size="sm"
-                      onClick={() => navigate('/admin/articles/backups')}
-                      className="p-0 h-auto text-green-700"
-                    >
-                      View all backups →
-                    </Button>
                   </AlertDescription>
                 </Alert>
               )}
