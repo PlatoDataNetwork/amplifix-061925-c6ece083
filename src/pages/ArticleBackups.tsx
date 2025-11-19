@@ -29,17 +29,20 @@ const ArticleBackups = () => {
 
   const loadBackups = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('article_backups')
         .select('backup_name, backup_description, created_at')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error loading backups:", error);
+        throw error;
+      }
 
       // Group by backup_name and count articles
       const backupMap = new Map<string, Backup>();
       
-      data?.forEach((item) => {
+      data?.forEach((item: any) => {
         const existing = backupMap.get(item.backup_name);
         if (existing) {
           existing.article_count++;
@@ -107,18 +110,21 @@ const ArticleBackups = () => {
     setProcessingBackup(backupName);
 
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('article_backups')
         .delete()
         .eq('backup_name', backupName);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Delete error:", error);
+        throw error;
+      }
 
       toast.success("Backup deleted successfully");
-      loadBackups();
+      await loadBackups(); // Refresh the list
     } catch (error) {
       console.error("Error deleting backup:", error);
-      toast.error("Failed to delete backup");
+      toast.error("Failed to delete backup. Please check console for details.");
     } finally {
       setProcessingBackup(null);
     }
