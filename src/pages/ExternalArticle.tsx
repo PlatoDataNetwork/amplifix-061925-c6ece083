@@ -46,6 +46,16 @@ const formatArticleContent = (text?: string | null) => {
   // Convert remaining bold markers to <strong>
   cleaned = cleaned.replace(/\*\*(.+?)\*\*/g, "<strong>$1<\/strong>");
   
+  // Make section headers bold (standalone lines that end with ?)
+  cleaned = cleaned.replace(/^([A-Z][^?\n]*\?\s*)$/gm, "<h2>$1</h2>");
+  
+  // Make other major section headers bold (lines that look like titles)
+  cleaned = cleaned.replace(/^([A-Z][A-Za-z\s]+(?:Prototypes|Features|Questions|Air)[^\n]*)$/gm, (match) => {
+    // Don't double-wrap if already an h2
+    if (match.includes('<h2>')) return match;
+    return `<h2>${match}</h2>`;
+  });
+  
   // Make numbered list headers bold (e.g., "1. Header Text")
   // This matches the pattern at the start of a line and bolds only that line
   cleaned = cleaned.replace(/^(\d+\.\s+[^\n]+)$/gm, "<strong>$1</strong>");
