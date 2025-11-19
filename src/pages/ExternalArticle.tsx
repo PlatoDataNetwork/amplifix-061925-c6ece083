@@ -266,11 +266,11 @@ if (!article) {
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4" />
-                <span>{article.read_time}</span>
+                <span>3 Min Read</span>
               </div>
               
               {/* Share Section Inline */}
-              <div className="flex items-center gap-2 ml-auto">
+              <div className="flex items-center gap-2">
                 <Share2 className="h-4 w-4" />
                 <button
                   onClick={() => shareArticle('twitter')}
