@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import MainHeader from "@/components/MainHeader";
@@ -17,7 +17,6 @@ const ArticleFormatter = () => {
   const [backupCreated, setBackupCreated] = useState(false);
   const [currentBackupName, setCurrentBackupName] = useState<string>("");
   const [backupProgress, setBackupProgress] = useState({ backed: 0, total: 0, status: '' });
-  const channelRef = useRef<any>(null);
   const [result, setResult] = useState<{
     success: boolean;
     total?: number;
@@ -27,109 +26,95 @@ const ArticleFormatter = () => {
     message?: string;
   } | null>(null);
 
-  // Cleanup channel on unmount
-  useEffect(() => {
-    return () => {
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-      }
-    };
-  }, []);
-
   const handleCreateBackup = async () => {
     const backupName = `pre-format-${Date.now()}`;
     setIsBackingUp(true);
     setBackupProgress({ backed: 0, total: 0, status: 'starting' });
 
     try {
-      // Set up realtime channel for progress updates
-      const channel = supabase.channel(`backup-progress-${backupName}`);
-      channelRef.current = channel;
+      toast.info("Starting backup process...");
 
-      channel
-        .on('broadcast', { event: 'progress' }, (payload) => {
-          console.log('Progress update:', payload);
-          const progressData = payload.payload;
-          setBackupProgress(progressData);
-          
-          // Handle completion states
-          if (progressData.status === 'completed') {
-            setBackupCreated(true);
-            setCurrentBackupName(backupName);
-            setIsBackingUp(false);
-            toast.success(`Backup completed: ${progressData.backed.toLocaleString()} articles saved`);
-            
-            // Clean up channel after completion
-            if (channelRef.current) {
-              supabase.removeChannel(channelRef.current);
-              channelRef.current = null;
-            }
-          } else if (progressData.status === 'interrupted') {
-            setIsBackingUp(false);
-            toast.warning(`Backup interrupted: ${progressData.backed.toLocaleString()} articles were saved before timeout. You may need to create a new backup.`);
-            
-            // Clean up channel
-            if (channelRef.current) {
-              supabase.removeChannel(channelRef.current);
-              channelRef.current = null;
-            }
-          } else if (progressData.status === 'error') {
-            setIsBackingUp(false);
-            toast.error(`Backup failed: ${progressData.error || 'Unknown error'}`);
-            
-            // Clean up channel
-            if (channelRef.current) {
-              supabase.removeChannel(channelRef.current);
-              channelRef.current = null;
-            }
-          }
-        })
-        .subscribe((status) => {
-          if (status === 'SUBSCRIBED') {
-            console.log('Subscribed to backup progress channel');
+      // Get total count first
+      const { count: totalCount } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true });
+
+      if (!totalCount || totalCount === 0) {
+        toast.info('No articles found to backup');
+        setIsBackingUp(false);
+        return;
+      }
+
+      setBackupProgress({ backed: 0, total: totalCount, status: 'processing' });
+
+      const chunkSize = 5000;
+      const totalChunks = Math.ceil(totalCount / chunkSize);
+      let totalBacked = 0;
+      let chunkIndex = 0;
+      let hasMore = true;
+
+      console.log(`Starting chunked backup: ${totalChunks} chunks for ${totalCount} articles`);
+
+      while (hasMore && chunkIndex < totalChunks) {
+        console.log(`Processing chunk ${chunkIndex + 1} of ${totalChunks}`);
+
+        const { data, error } = await supabase.functions.invoke('backup-articles-chunked', {
+          body: {
+            backupName,
+            backupDescription: 'Automatic backup before bulk formatting operation',
+            chunkIndex,
+            chunkSize
           }
         });
 
-      toast.info("Starting backup process...");
-
-      const { data, error } = await supabase.functions.invoke('backup-articles', {
-        body: {
-          backupName,
-          backupDescription: 'Automatic backup before bulk formatting operation'
+        if (error) {
+          console.error(`Error in chunk ${chunkIndex}:`, error);
+          throw error;
         }
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to backup chunk');
+        }
+
+        totalBacked += data.backedUp;
+        hasMore = data.hasMore;
+        chunkIndex++;
+
+        // Update progress
+        setBackupProgress({
+          backed: totalBacked,
+          total: totalCount,
+          status: 'processing'
+        });
+
+        console.log(`Progress: ${totalBacked} / ${totalCount} articles backed up`);
+
+        // Brief pause between chunks to avoid overwhelming the system
+        if (hasMore) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+      }
+
+      // Mark as complete
+      setBackupProgress({
+        backed: totalBacked,
+        total: totalCount,
+        status: 'completed'
       });
 
-      if (error) throw error;
+      setBackupCreated(true);
+      setCurrentBackupName(backupName);
+      toast.success(`Backup completed: ${totalBacked.toLocaleString()} articles saved in ${chunkIndex} chunks`);
 
-      if (data.success) {
-        if (data.status === 'processing') {
-          toast.success(`Backup started for ${data.totalArticles.toLocaleString()} articles. Progress will update in real-time.`);
-        } else {
-          // Immediate completion (empty backup)
-          setBackupCreated(true);
-          setCurrentBackupName(backupName);
-          setIsBackingUp(false);
-          toast.info(data.message);
-          
-          // Clean up channel
-          if (channelRef.current) {
-            supabase.removeChannel(channelRef.current);
-            channelRef.current = null;
-          }
-        }
-      } else {
-        throw new Error(data.error || 'Failed to create backup');
-      }
     } catch (error) {
       console.error("Error creating backup:", error);
-      toast.error("Failed to start backup");
+      toast.error("Failed to create backup");
+      setBackupProgress(prev => ({
+        ...prev,
+        status: 'error'
+      }));
+    } finally {
       setIsBackingUp(false);
-      
-      // Clean up channel on error
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-        channelRef.current = null;
-      }
     }
   };
 
