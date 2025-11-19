@@ -36,6 +36,9 @@ export const formatArticleContent = (text?: string | null): string => {
     .replace(/---/g, "")
     .replace(/\r\n/g, "\n");
 
+  // Remove specific unwanted text
+  cleaned = cleaned.replace(/While Pimax has not yet released the full technical specifications of the Dream Air, the prototypes showcased during the unveiling event highlight several innovative features:\s*/gi, "");
+
   // Convert markdown-style headings (**Heading**) on their own line to <h2>
   cleaned = cleaned.replace(/^\s*\*\*(.+?)\*\*\s*$/gm, "<h2>$1</h2>");
 
