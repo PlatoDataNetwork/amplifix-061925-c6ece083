@@ -45,6 +45,10 @@ const formatArticleContent = (text?: string | null) => {
 
   // Convert remaining bold markers to <strong>
   cleaned = cleaned.replace(/\*\*(.+?)\*\*/g, "<strong>$1<\/strong>");
+  
+  // Make numbered list headers bold (e.g., "1. Header Text")
+  // This matches the pattern at the start of a line and bolds only that line
+  cleaned = cleaned.replace(/^(\d+\.\s+[^\n]+)$/gm, "<strong>$1</strong>");
 
   // Normalize multiple blank lines
   cleaned = cleaned.replace(/\n{3,}/g, "\n\n");
@@ -61,10 +65,6 @@ const formatArticleContent = (text?: string | null) => {
     .map((p) => {
       if (/^<h[1-6]\b|^<ul\b|^<ol\b|^<li\b|^<p\b|^<hr\b/i.test(p)) {
         return p;
-      }
-      // Make numbered list headers bold (e.g., "1. Header Text")
-      if (/^\d+\.\s+(.+)/.test(p)) {
-        return `<p><strong>${p}</strong></p>`;
       }
       return `<p>${p}<\/p>`;
     })
