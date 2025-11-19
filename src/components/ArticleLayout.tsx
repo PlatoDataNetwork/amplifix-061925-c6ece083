@@ -58,7 +58,7 @@ const ArticleLayout = ({
 
       <MainHeader />
       
-      <main className="container mx-auto px-4 py-6 max-w-3xl">
+      <main className="container mx-auto px-4 py-4 max-w-3xl">
         {/* Back Navigation */}
         <LanguageAwareLink to="/intel">
           <Button variant="ghost" size="sm" className="mb-4 -ml-2">
@@ -68,7 +68,7 @@ const ArticleLayout = ({
         </LanguageAwareLink>
         
         {/* Article Header */}
-        <header className="mb-6">
+        <header className="mb-4">
           {/* Category Badge */}
           <span className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-3">
             {category}
@@ -108,25 +108,25 @@ const ArticleLayout = ({
         </header>
 
         {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-6" />
+        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-4" />
         
         {/* Article Content */}
-        <article className="prose prose-lg max-w-none dark:prose-invert
+        <article className="prose prose-base md:prose-lg max-w-none dark:prose-invert
           prose-headings:font-bold prose-headings:tracking-tight
-          prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4
-          prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
-          prose-p:mb-4 prose-p:leading-relaxed
+          prose-h2:text-xl md:prose-h2:text-2xl prose-h2:mt-6 prose-h2:mb-2
+          prose-h3:text-lg md:prose-h3:text-xl prose-h3:mt-4 prose-h3:mb-2
+          prose-p:mb-3 prose-p:leading-relaxed
           prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-          prose-strong:text-foreground prose-strong:font-semibold
-          prose-ul:my-4 prose-ol:my-4
-          prose-li:my-1">
+          prose-strong:text-foreground prose-strong:font-bold
+          prose-ul:my-2 prose-ol:my-2
+          prose-li:my-0.5">
           {children}
         </article>
         
         {/* Popular Tags Section */}
         {blogData?.blog?.popular_tags && (
           <>
-            <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent my-8" />
+            <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent my-6" />
             <div className="mb-6">
               <h3 className="text-base font-semibold mb-3">
                 {blogData.blog.popular_tags.title}
@@ -147,7 +147,7 @@ const ArticleLayout = ({
         )}
         
         {/* Bottom Navigation */}
-        <div className="pt-6 border-t border-border/50">
+        <div className="pt-4 border-t border-border/50">
           <LanguageAwareLink to="/intel">
             <Button variant="outline" size="sm">
               <ArrowLeft className="mr-2 h-4 w-4" />
