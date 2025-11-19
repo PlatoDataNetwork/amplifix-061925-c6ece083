@@ -221,18 +221,18 @@ const SynbioShowcase = () => {
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-2 gap-4 md:gap-6">
                 {content.hero.stats.map((stat, index) => {
                   const Icon = iconMap[stat.icon];
                   return (
                     <Card key={index} className="bg-card border-border hover:border-highlight-blue/50 transition-colors">
-                      <CardContent className="p-6">
-                        {Icon && <Icon className="h-8 w-8 text-highlight-blue mb-3" />}
-                         <p className="text-3xl font-bold text-foreground mb-1">{stat.value}</p>
+                      <CardContent className="p-4 md:p-6">
+                        {Icon && <Icon className="h-6 w-6 md:h-8 md:w-8 text-highlight-blue mb-2 md:mb-3" />}
+                         <p className="text-2xl md:text-3xl font-bold text-foreground mb-1 leading-tight">{stat.value}</p>
                          {stat.subvalue && (
-                           <p className="text-3xl font-bold text-foreground mb-1">{stat.subvalue}</p>
+                           <p className="text-xs md:text-sm text-muted-foreground/80">{stat.subvalue}</p>
                          )}
-                         <p className="text-sm text-muted-foreground">{stat.label}</p>
+                         <p className="text-xs md:text-sm text-muted-foreground mt-1">{stat.label}</p>
                       </CardContent>
                     </Card>
                   );
