@@ -4,11 +4,12 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
+import { ArrowLeft, Calendar, User, Clock, Share2, Twitter, Linkedin, Facebook, Mail, Link as LinkIcon } from "lucide-react";
 import { useRSSFeed } from "@/hooks/useRSSFeed";
 import { usePlatoDataFeed } from "@/hooks/usePlatoDataFeed";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useLanguage } from "@/hooks/useLanguage";
+import { toast } from "sonner";
 const sanitizeText = (text?: string | null) => {
   if (!text) return "";
   return text
@@ -74,6 +75,32 @@ const ExternalArticle = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [tags, setTags] = useState<string[]>([]);
   useLanguage(); // Enable translation
+
+  const shareArticle = (platform: string) => {
+    const url = window.location.href;
+    const title = article?.title ? sanitizeText(article.title) : '';
+    const text = article?.excerpt ? sanitizeText(article.excerpt) : '';
+
+    switch (platform) {
+      case 'twitter':
+        window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`, '_blank');
+        break;
+      case 'linkedin':
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+        break;
+      case 'facebook':
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+        break;
+      case 'email':
+        window.location.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(text + '\n\n' + url)}`;
+        break;
+      case 'copy':
+        navigator.clipboard.writeText(url).then(() => {
+          toast.success('Link copied to clipboard!');
+        });
+        break;
+    }
+  };
 
   // Try to load from cache first
   useEffect(() => {
@@ -227,6 +254,51 @@ if (!article) {
                 <Clock className="h-4 w-4" />
                 <span>{article.read_time}</span>
               </div>
+            </div>
+          </div>
+
+          {/* Share Section */}
+          <div className="mb-6 flex items-center gap-3 pb-6 border-b border-border">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Share2 className="h-4 w-4" />
+              <span>Share:</span>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => shareArticle('twitter')}
+                className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                aria-label="Share on Twitter"
+              >
+                <Twitter className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => shareArticle('linkedin')}
+                className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                aria-label="Share on LinkedIn"
+              >
+                <Linkedin className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => shareArticle('facebook')}
+                className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                aria-label="Share on Facebook"
+              >
+                <Facebook className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => shareArticle('email')}
+                className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                aria-label="Share via Email"
+              >
+                <Mail className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => shareArticle('copy')}
+                className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                aria-label="Copy Link"
+              >
+                <LinkIcon className="h-4 w-4" />
+              </button>
             </div>
           </div>
 
