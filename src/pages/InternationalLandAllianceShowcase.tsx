@@ -29,15 +29,15 @@ const InternationalLandAllianceShowcase = () => {
         <section className="pt-24 container mx-auto py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <div className="inline-flex items-center gap-3 bg-blue-500/10 px-6 py-3 rounded-full mb-6">
-                <Sun className="h-6 w-6 text-blue-500" />
-                <span className="text-blue-500 font-semibold">OTCQB: ILAL</span>
+              <div className="inline-flex items-center gap-3 bg-purple-500/10 px-6 py-3 rounded-full mb-6">
+                <Sun className="h-6 w-6 text-purple-500" />
+                <span className="text-purple-500 font-semibold">OTCQB: ILAL</span>
               </div>
               <div className="mb-6">
                 <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
                   International Land Alliance
                 </h1>
-                <p className="text-2xl md:text-3xl text-highlight-blue font-semibold">
+                <p className="text-2xl md:text-3xl text-purple-500 font-semibold">
                   Your search for paradise starts and ends here
                 </p>
               </div>
@@ -48,7 +48,7 @@ const InternationalLandAllianceShowcase = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="https://ila.company/" target="_blank" rel="noopener noreferrer">
-                  <Button size="lg" className="bg-highlight-blue text-white hover:bg-highlight-blue/90">
+                  <Button size="lg" className="bg-purple-500 text-white hover:bg-purple-500/90">
                     Visit ILA Website
                     <ExternalLink className="ml-2 h-4 w-4" />
                   </Button>
@@ -65,7 +65,7 @@ const InternationalLandAllianceShowcase = () => {
             {/* Company Overview Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
               <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <MapPin className="h-12 w-12 text-highlight-blue mx-auto mb-4" />
+                <MapPin className="h-12 w-12 text-purple-500 mx-auto mb-4" />
                 <h3 className="text-lg font-bold mb-2">Prime Locations</h3>
                 <p className="text-muted-foreground text-sm">
                   Strategic properties across Baja's most desirable coastal and inland locations
@@ -103,8 +103,8 @@ const InternationalLandAllianceShowcase = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="bg-card p-8 rounded-xl border border-border">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <Waves className="h-6 w-6 text-blue-500" />
+                  <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center">
+                    <Waves className="h-6 w-6 text-purple-500" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold">Oasis Park Resort</h3>
@@ -178,14 +178,14 @@ const InternationalLandAllianceShowcase = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <MapPin className="h-12 w-12 text-highlight-blue mx-auto mb-4" />
+                <MapPin className="h-12 w-12 text-purple-500 mx-auto mb-4" />
                 <h3 className="text-lg font-bold mb-2">Strategic Location</h3>
                 <p className="text-muted-foreground text-sm">
                   Based in San Diego with deep knowledge of Baja's best locations
                 </p>
               </div>
               <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <Building className="h-12 w-12 text-green-500 mx-auto mb-4" />
+                <Building className="h-12 w-12 text-purple-500 mx-auto mb-4" />
                 <h3 className="text-lg font-bold mb-2">Master Planning</h3>
                 <p className="text-muted-foreground text-sm">
                   Professional development with full infrastructure and community amenities
@@ -199,7 +199,7 @@ const InternationalLandAllianceShowcase = () => {
                 </p>
               </div>
               <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <DollarSign className="h-12 w-12 text-blue-500 mx-auto mb-4" />
+                <DollarSign className="h-12 w-12 text-purple-500 mx-auto mb-4" />
                 <h3 className="text-lg font-bold mb-2">Affordable Access</h3>
                 <p className="text-muted-foreground text-sm">
                   Entry-level pricing with financing options for broader accessibility
@@ -222,7 +222,7 @@ const InternationalLandAllianceShowcase = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className="bg-card p-8 rounded-xl border border-border">
-                <TrendingUp className="h-12 w-12 text-highlight-blue mb-6" />
+                <TrendingUp className="h-12 w-12 text-purple-500 mb-6" />
                 <h3 className="text-xl font-bold mb-4">Growing Demand</h3>
                 <p className="text-muted-foreground mb-4">
                   Increasing U.S. retiree migration to Mexico combined with rising vacation 
@@ -241,7 +241,7 @@ const InternationalLandAllianceShowcase = () => {
               </div>
 
               <div className="bg-card p-8 rounded-xl border border-border">
-                <Globe className="h-12 w-12 text-green-500 mb-6" />
+                <Globe className="h-12 w-12 text-purple-500 mb-6" />
                 <h3 className="text-xl font-bold mb-4">Geographic Advantage</h3>
                 <p className="text-muted-foreground mb-4">
                   Strategic positioning in Baja provides easy cross-border access while 
@@ -282,7 +282,7 @@ const InternationalLandAllianceShowcase = () => {
         </section>
 
         {/* Call to Action */}
-        <section className="container mx-auto py-16 px-4 bg-gradient-to-r from-highlight-blue/10 to-green-500/10">
+        <section className="container mx-auto py-16 px-4 bg-gradient-to-r from-purple-500/10 to-purple-500/5">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold mb-6">Discover Your Paradise</h2>
             <p className="text-xl text-muted-foreground mb-8">
@@ -291,7 +291,7 @@ const InternationalLandAllianceShowcase = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="https://ila.company/" target="_blank" rel="noopener noreferrer">
-                <Button size="lg" className="bg-highlight-blue text-white hover:bg-highlight-blue/90">
+                <Button size="lg" className="bg-purple-500 text-white hover:bg-purple-500/90">
                   Explore Properties
                   <ExternalLink className="ml-2 h-4 w-4" />
                 </Button>

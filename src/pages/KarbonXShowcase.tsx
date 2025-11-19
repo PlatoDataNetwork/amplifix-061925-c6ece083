@@ -30,9 +30,9 @@ const KarbonXShowcase = () => {
         <section className="pt-24 container mx-auto py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <div className="inline-flex items-center gap-3 bg-highlight-blue/10 px-6 py-3 rounded-full mb-6">
-                <Earth className="h-6 w-6 text-highlight-blue" />
-                <span className="text-highlight-blue font-semibold">Carbon Solutions Leader</span>
+              <div className="inline-flex items-center gap-3 bg-green-500/10 px-6 py-3 rounded-full mb-6">
+                <Earth className="h-6 w-6 text-green-500" />
+                <span className="text-green-500 font-semibold">Carbon Solutions Leader</span>
               </div>
               <div className="mb-6">
                 <img 
@@ -51,7 +51,7 @@ const KarbonXShowcase = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="https://www.karbon-x.com/" target="_blank" rel="noopener noreferrer">
-                  <Button size="lg" className="bg-highlight-blue text-white hover:bg-highlight-blue/90">
+                  <Button size="lg" className="bg-green-500 text-white hover:bg-green-500/90">
                     Visit Karbon-X
                     <ExternalLink className="ml-2 h-4 w-4" />
                   </Button>
@@ -68,7 +68,7 @@ const KarbonXShowcase = () => {
             {/* Company Overview Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
               <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <Globe className="h-12 w-12 text-highlight-blue mx-auto mb-4" />
+                <Globe className="h-12 w-12 text-green-500 mx-auto mb-4" />
                 <h3 className="text-lg font-bold mb-2">Global Reach</h3>
                 <p className="text-muted-foreground text-sm">
                   Operating carbon projects across UK, Nepal, India and expanding globally
@@ -82,7 +82,7 @@ const KarbonXShowcase = () => {
                 </p>
               </div>
               <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <Target className="h-12 w-12 text-purple-500 mx-auto mb-4" />
+                <Target className="h-12 w-12 text-green-500 mx-auto mb-4" />
                 <h3 className="text-lg font-bold mb-2">Tailored Solutions</h3>
                 <p className="text-muted-foreground text-sm">
                   Custom carbon solutions for individuals and businesses of all sizes
@@ -180,7 +180,7 @@ const KarbonXShowcase = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <Earth className="h-12 w-12 text-highlight-blue mx-auto mb-4" />
+                <Earth className="h-12 w-12 text-green-500 mx-auto mb-4" />
                 <h3 className="text-lg font-bold mb-2">Planet Before Profit</h3>
                 <p className="text-muted-foreground text-sm">
                   Mission-driven approach prioritizing climate impact over financial returns
@@ -194,14 +194,14 @@ const KarbonXShowcase = () => {
                 </p>
               </div>
               <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <Target className="h-12 w-12 text-purple-500 mx-auto mb-4" />
+                <Target className="h-12 w-12 text-green-500 mx-auto mb-4" />
                 <h3 className="text-lg font-bold mb-2">Tailored Solutions</h3>
                 <p className="text-muted-foreground text-sm">
                   Custom carbon strategies adapted to specific needs and requirements
                 </p>
               </div>
               <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <BarChart3 className="h-12 w-12 text-blue-500 mx-auto mb-4" />
+                <BarChart3 className="h-12 w-12 text-green-500 mx-auto mb-4" />
                 <h3 className="text-lg font-bold mb-2">Measurable Impact</h3>
                 <p className="text-muted-foreground text-sm">
                   Transparent tracking and reporting of carbon reduction achievements
@@ -224,7 +224,7 @@ const KarbonXShowcase = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className="bg-card p-8 rounded-xl border border-border">
-                <TrendingUp className="h-12 w-12 text-highlight-blue mb-6" />
+                <TrendingUp className="h-12 w-12 text-green-500 mb-6" />
                 <h3 className="text-xl font-bold mb-4">Growing Market Demand</h3>
                 <p className="text-muted-foreground mb-4">
                   Carbon credit market projected to reach $100B+ by 2030 driven by regulatory 
@@ -284,7 +284,7 @@ const KarbonXShowcase = () => {
         </section>
 
         {/* Call to Action */}
-        <section className="container mx-auto py-16 px-4 bg-gradient-to-r from-highlight-blue/10 to-green-500/10">
+        <section className="container mx-auto py-16 px-4 bg-gradient-to-r from-green-500/10 to-green-500/5">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold mb-6">Partner with Climate Leaders</h2>
             <p className="text-xl text-muted-foreground mb-8">
@@ -293,7 +293,7 @@ const KarbonXShowcase = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="https://www.karbon-x.com/" target="_blank" rel="noopener noreferrer">
-                <Button size="lg" className="bg-highlight-blue text-white hover:bg-highlight-blue/90">
+                <Button size="lg" className="bg-green-500 text-white hover:bg-green-500/90">
                   Explore Karbon-X Platform
                   <ExternalLink className="ml-2 h-4 w-4" />
                 </Button>

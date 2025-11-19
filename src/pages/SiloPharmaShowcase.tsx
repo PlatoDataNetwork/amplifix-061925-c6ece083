@@ -31,7 +31,7 @@ const SiloPharmaShowcase = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
                 <div className="inline-block mb-6">
-                  <div className="bg-green-500/10 text-green-500 rounded-full px-4 py-2 border border-green-500/20 text-sm font-medium">
+                  <div className="bg-highlight-blue/10 text-highlight-blue rounded-full px-4 py-2 border border-highlight-blue/20 text-sm font-medium">
                     NASDAQ: SILO
                   </div>
                 </div>
@@ -66,7 +66,7 @@ const SiloPharmaShowcase = () => {
               </div>
               
               <div className="relative">
-                <div className="bg-gradient-to-br from-highlight-blue/20 to-green-500/20 rounded-2xl p-8 border border-border">
+                <div className="bg-gradient-to-br from-highlight-blue/20 to-highlight-blue/10 rounded-2xl p-8 border border-border">
                   <div className="grid grid-cols-2 gap-6">
                     <div className="bg-card p-6 rounded-xl border border-border text-center">
                       <Pill className="h-8 w-8 text-highlight-blue mx-auto mb-2" />
@@ -74,17 +74,17 @@ const SiloPharmaShowcase = () => {
                       <div className="text-sm text-muted-foreground">Drug Programs</div>
                     </div>
                     <div className="bg-card p-6 rounded-xl border border-border text-center">
-                      <Beaker className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                      <Beaker className="h-8 w-8 text-highlight-blue mx-auto mb-2" />
                       <div className="text-2xl font-bold">Novel</div>
                       <div className="text-sm text-muted-foreground">Therapeutics</div>
                     </div>
                     <div className="bg-card p-6 rounded-xl border border-border text-center">
-                      <Brain className="h-8 w-8 text-purple-500 mx-auto mb-2" />
+                      <Brain className="h-8 w-8 text-highlight-blue mx-auto mb-2" />
                       <div className="text-2xl font-bold">CNS</div>
                       <div className="text-sm text-muted-foreground">Focus</div>
                     </div>
                     <div className="bg-card p-6 rounded-xl border border-border text-center">
-                      <Microscope className="h-8 w-8 text-blue-500 mx-auto mb-2" />
+                      <Microscope className="h-8 w-8 text-highlight-blue mx-auto mb-2" />
                       <div className="text-2xl font-bold">AI-Driven</div>
                       <div className="text-sm text-muted-foreground">Research</div>
                     </div>
@@ -117,7 +117,7 @@ const SiloPharmaShowcase = () => {
               </div>
               
               <div className="bg-card p-8 rounded-xl border border-border text-center">
-                <Target className="h-12 w-12 text-green-500 mx-auto mb-4" />
+                <Target className="h-12 w-12 text-highlight-blue mx-auto mb-4" />
                 <h3 className="text-xl font-bold mb-4">Mission</h3>
                 <p className="text-muted-foreground">
                   To develop next-generation therapeutics that target the pathophysiology of 
@@ -163,7 +163,7 @@ const SiloPharmaShowcase = () => {
                     </p>
                     <div className="flex flex-wrap gap-2">
                       <span className="bg-highlight-blue/10 text-highlight-blue px-3 py-1 rounded-full text-sm">Treatment-Resistant Depression</span>
-                      <span className="bg-green-500/10 text-green-500 px-3 py-1 rounded-full text-sm">Intranasal Delivery</span>
+                      <span className="bg-highlight-blue/10 text-highlight-blue px-3 py-1 rounded-full text-sm">Intranasal Delivery</span>
                     </div>
                   </div>
                 </div>
@@ -171,8 +171,8 @@ const SiloPharmaShowcase = () => {
 
               <div className="bg-card p-8 rounded-xl border border-border">
                 <div className="flex items-start gap-6">
-                  <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
-                    <Brain className="h-8 w-8 text-green-500" />
+                  <div className="w-16 h-16 rounded-full bg-highlight-blue/20 flex items-center justify-center flex-shrink-0">
+                    <Brain className="h-8 w-8 text-highlight-blue" />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-2xl font-bold mb-4">SPC-15 (Psilocybin)</h3>
@@ -238,7 +238,7 @@ const SiloPharmaShowcase = () => {
                 </div>
                 
                 <div className="flex items-start gap-4">
-                  <CheckCircle className="h-6 w-6 text-green-500 mt-1 flex-shrink-0" />
+                  <CheckCircle className="h-6 w-6 text-highlight-blue mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="text-lg font-bold mb-2">Psychedelic Medicine Focus</h3>
                     <p className="text-muted-foreground">
@@ -319,7 +319,7 @@ const SiloPharmaShowcase = () => {
               </div>
               
               <div className="bg-card p-6 rounded-xl border border-border text-center">
-                <Lightbulb className="h-12 w-12 text-green-500 mx-auto mb-4" />
+                <Lightbulb className="h-12 w-12 text-highlight-blue mx-auto mb-4" />
                 <h3 className="text-lg font-bold mb-2">Innovation</h3>
                 <p className="text-muted-foreground text-sm">
                   Novel approaches to established compounds with improved delivery systems
@@ -346,7 +346,7 @@ const SiloPharmaShowcase = () => {
         </section>
 
         {/* Call to Action */}
-        <section className="container mx-auto py-16 px-4 bg-gradient-to-r from-highlight-blue/10 to-green-500/10">
+        <section className="container mx-auto py-16 px-4 bg-gradient-to-r from-highlight-blue/10 to-highlight-blue/5">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold mb-6">Stay Connected with SILO Pharma</h2>
             <p className="text-xl text-muted-foreground mb-8">
