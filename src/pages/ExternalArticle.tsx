@@ -313,7 +313,7 @@ if (!article) {
           )}
 
           {/* Article Content */}
-          <div className="prose prose-invert max-w-none mb-6">
+          <div className="prose prose-invert max-w-none mb-3">
             <div 
               className="text-foreground leading-relaxed whitespace-pre-wrap [&>*]:mb-2 [&>h2]:mt-4 [&>h2]:text-2xl [&>h2]:font-bold [&>h3]:mt-4 [&>h3]:text-xl [&>h3]:font-bold"
               dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content || article.excerpt) }}
@@ -321,28 +321,50 @@ if (!article) {
           </div>
 
           {/* AmplifiX Branding */}
-          <div className="mb-6 text-center py-4">
+          <div className="mb-6 text-center py-2">
             <p className="text-2xl font-bold text-foreground">
-              AmplifiX is Powered by Plato Data Intelligence. Your Vertical. Your Edge
+              AmplifiX is Powered by Plato Data Intelligence.
             </p>
           </div>
 
           {/* Tags */}
-          {tags && tags.length > 0 && (
+          {(tags.length > 0 || article.vertical_slug) && (
             <div className="pt-4">
               <h3 className="text-sm font-semibold mb-3">Tags</h3>
               <div className="flex flex-wrap gap-2">
-                {tags.map((tag: string) => {
-                  const singleWord = tag.split(/[\s-]+/)[0];
-                  return (
-                    <span 
-                      key={tag}
-                      className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer"
-                    >
-                      #{singleWord}
-                    </span>
-                  );
-                })}
+                {(() => {
+                  // Create a Set to track unique single words (case-insensitive)
+                  const uniqueTags = new Set<string>();
+                  const allTags = [...tags];
+                  
+                  // Add vertical as first tag if it exists
+                  if (article.vertical_slug) {
+                    allTags.unshift(article.vertical_slug);
+                  }
+                  
+                  return allTags
+                    .map((tag: string) => {
+                      const singleWord = tag.split(/[\s-]+/)[0];
+                      const lowerWord = singleWord.toLowerCase();
+                      
+                      // Skip if we've already seen this word
+                      if (uniqueTags.has(lowerWord)) {
+                        return null;
+                      }
+                      
+                      uniqueTags.add(lowerWord);
+                      
+                      return (
+                        <span 
+                          key={tag}
+                          className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer"
+                        >
+                          #{singleWord}
+                        </span>
+                      );
+                    })
+                    .filter(Boolean);
+                })()}
               </div>
             </div>
           )}
