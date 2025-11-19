@@ -37,30 +37,30 @@ export const formatArticleContent = (text?: string | null): string => {
     "",
   );
 
-  // Convert markdown-style headings (**Heading**) on their own line to <h2>
-  cleaned = cleaned.replace(/^\s*\*\*(.+?)\*\*\s*$/gm, "<h2>$1</h2>");
+  // Convert markdown-style headings (**Heading**) on their own line to headers
+  cleaned = cleaned.replace(/^\s*\*\*(.+?)\*\*\s*$/gm, "###HEADER###$1###ENDHEADER###");
 
   // Convert remaining bold markers to <strong>
   cleaned = cleaned.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
 
-  // Make question headers bold (lines ending with ?)
-  cleaned = cleaned.replace(/^\s*([A-Z][^?\n]+\?)\s*$/gm, "<h2>$1</h2>");
+  // Make question headers (lines ending with ?)
+  cleaned = cleaned.replace(/^\s*([A-Z][^?\n]+\?)\s*$/gm, "###HEADER###$1###ENDHEADER###");
 
-  // Make title-case section headers bold (lines with multiple capital letters, likely headers)
+  // Make title-case section headers
   cleaned = cleaned.replace(
     /^\s*([A-Z][A-Za-z\s]+(?:Prototypes|Features|Questions|Air|Dream)[A-Za-z\s]*)\s*$/gm,
     (match) => {
-      if (match.includes("<h2>") || match.includes("<strong>")) return match;
+      if (match.includes("###HEADER###")) return match;
       const capitalCount = (match.match(/[A-Z]/g) || []).length;
       if (capitalCount >= 3) {
-        return `<h2>${match.trim()}</h2>`;
+        return `###HEADER###${match.trim()}###ENDHEADER###`;
       }
       return match;
     },
   );
 
-  // Make numbered list headers bold ONLY
-  cleaned = cleaned.replace(/^(\d+\.\s+[A-Z][A-Za-z\s\-]+)\s*$/gm, "<strong>$1</strong>");
+  // Mark numbered list headers
+  cleaned = cleaned.replace(/^(\d+\.\s+[A-Z][A-Za-z\s\-]+)\s*$/gm, "###NUMHEADER###$1###ENDNUMHEADER###");
 
   // Normalize multiple blank lines
   cleaned = cleaned.replace(/\n{3,}/g, "\n\n");
@@ -73,31 +73,27 @@ export const formatArticleContent = (text?: string | null): string => {
     .map((p) => p.trim())
     .filter(Boolean);
 
-  const mergedParagraphs: string[] = [];
+  const result: string[] = [];
 
   for (let i = 0; i < paragraphs.length; i++) {
     const current = paragraphs[i];
-    const isNumberedHeading = /^<strong\b[^>]*>\d+\.\s+[^<]+<\/strong>$/.test(current);
-    const isH2Header = /^<h2\b[^>]*>[^<]+<\/h2>$/.test(current);
-    const isAnyHeading = isNumberedHeading || isH2Header;
+    const isHeader = current.includes("###HEADER###");
+    const isNumHeader = current.includes("###NUMHEADER###");
 
-    if (isAnyHeading && i + 1 < paragraphs.length) {
+    if ((isHeader || isNumHeader) && i + 1 < paragraphs.length) {
+      const headerText = current.replace(/###(NUM)?HEADER###/g, "").replace(/###END(NUM)?HEADER###/g, "");
       const body = paragraphs[i + 1];
-      // Add consistent spacing above all sections except the first
-      const spacing = i > 0 ? " style='margin-top: 3rem !important;'" : "";
-      mergedParagraphs.push(`<p${spacing}><strong>${current.replace(/<\/?strong>/g, "").replace(/<\/?h2>/g, "")}</strong><br/>${body}</p>`);
-      i++;
+      const spacing = i > 0 ? " class='mt-12'" : "";
+      result.push(`<div${spacing}><div class='text-xl font-bold mb-0'>${headerText}</div><p class='mt-2'>${body}</p></div>`);
+      i++; // Skip next paragraph as it's merged
+    } else if (isHeader || isNumHeader) {
+      const headerText = current.replace(/###(NUM)?HEADER###/g, "").replace(/###END(NUM)?HEADER###/g, "");
+      const spacing = i > 0 ? " class='mt-12'" : "";
+      result.push(`<div${spacing}><div class='text-xl font-bold'>${headerText}</div></div>`);
     } else {
-      mergedParagraphs.push(current);
+      result.push(`<p>${current}</p>`);
     }
   }
 
-  return mergedParagraphs
-    .map((p) => {
-      if (/^<h[1-6]\b|^<ul\b|^<ol\b|^<li\b|^<p\b|^<hr\b/i.test(p)) {
-        return p;
-      }
-      return `<p>${p}</p>`;
-    })
-    .join("\n");
+  return result.join("\n");
 };

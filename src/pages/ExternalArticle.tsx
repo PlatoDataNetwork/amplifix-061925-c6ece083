@@ -257,7 +257,7 @@ if (!article) {
           {/* Article Content */}
           <div className="prose prose-invert max-w-none mb-2">
             <div 
-              className="text-foreground leading-relaxed whitespace-pre-wrap [&>p]:mb-4 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:leading-tight [&>h3]:text-xl [&>h3]:font-bold"
+              className="text-foreground leading-relaxed [&>div]:mb-6 [&>p]:mb-4 [&>p]:leading-relaxed"
               dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content || article.excerpt) }}
             />
           </div>
