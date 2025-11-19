@@ -37,42 +37,78 @@ Deno.serve(async (req) => {
       userId = user?.id;
     }
 
-    // Fetch ALL articles using pagination (Supabase default limit is 1000)
-    let allArticles: any[] = [];
+    // Process and backup articles in batches to avoid memory issues
     let from = 0;
-    const pageSize = 1000;
+    const fetchSize = 500; // Fetch 500 at a time
+    const insertSize = 100; // Insert 100 at a time
+    let totalBacked = 0;
     let hasMore = true;
 
-    console.log('Fetching all articles...');
+    console.log('Starting batch backup process...');
 
     while (hasMore) {
+      // Fetch a batch of articles
       const { data: articles, error: fetchError } = await supabase
         .from('articles')
         .select('*')
-        .range(from, from + pageSize - 1);
+        .range(from, from + fetchSize - 1);
 
       if (fetchError) {
         console.error('Error fetching articles:', fetchError);
         throw fetchError;
       }
 
-      if (articles && articles.length > 0) {
-        allArticles = allArticles.concat(articles);
-        console.log(`Fetched ${allArticles.length} articles so far...`);
-        
-        if (articles.length < pageSize) {
-          hasMore = false;
-        } else {
-          from += pageSize;
-        }
-      } else {
+      if (!articles || articles.length === 0) {
         hasMore = false;
+        break;
+      }
+
+      console.log(`Processing batch: ${from + 1} to ${from + articles.length}`);
+
+      // Create backup records for this batch
+      const backupRecords = articles.map(article => ({
+        backup_name: backupName,
+        backup_description: backupDescription || null,
+        article_id: article.id,
+        post_id: article.post_id,
+        title: article.title,
+        content: article.content,
+        excerpt: article.excerpt,
+        author: article.author,
+        image_url: article.image_url,
+        vertical_slug: article.vertical_slug,
+        published_at: article.published_at,
+        metadata: article.metadata,
+        created_by: userId
+      }));
+
+      // Insert backups in smaller chunks
+      for (let i = 0; i < backupRecords.length; i += insertSize) {
+        const chunk = backupRecords.slice(i, i + insertSize);
+        
+        const { error: insertError } = await supabase
+          .from('article_backups')
+          .insert(chunk);
+
+        if (insertError) {
+          console.error('Error inserting backup chunk:', insertError);
+          throw insertError;
+        }
+
+        totalBacked += chunk.length;
+      }
+
+      console.log(`Backed up ${totalBacked} articles so far...`);
+
+      // Check if we got fewer articles than requested (end of data)
+      if (articles.length < fetchSize) {
+        hasMore = false;
+      } else {
+        from += fetchSize;
       }
     }
 
-    console.log(`Found ${allArticles.length} total articles to backup`);
-
-    if (!allArticles || allArticles.length === 0) {
+    if (totalBacked === 0) {
       return new Response(
         JSON.stringify({ 
           success: true, 
@@ -81,43 +117,6 @@ Deno.serve(async (req) => {
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
-    }
-
-    // Create backup records
-    const backupRecords = allArticles.map(article => ({
-      backup_name: backupName,
-      backup_description: backupDescription || null,
-      article_id: article.id,
-      post_id: article.post_id,
-      title: article.title,
-      content: article.content,
-      excerpt: article.excerpt,
-      author: article.author,
-      image_url: article.image_url,
-      vertical_slug: article.vertical_slug,
-      published_at: article.published_at,
-      metadata: article.metadata,
-      created_by: userId
-    }));
-
-    // Insert backups in batches of 100
-    const batchSize = 100;
-    let totalBacked = 0;
-
-    for (let i = 0; i < backupRecords.length; i += batchSize) {
-      const batch = backupRecords.slice(i, i + batchSize);
-      
-      const { error: insertError } = await supabase
-        .from('article_backups')
-        .insert(batch);
-
-      if (insertError) {
-        console.error('Error inserting backup batch:', insertError);
-        throw insertError;
-      }
-
-      totalBacked += batch.length;
-      console.log(`Backed up ${totalBacked}/${backupRecords.length} articles`);
     }
 
     console.log(`Backup complete: ${backupName} - ${totalBacked} articles`);
