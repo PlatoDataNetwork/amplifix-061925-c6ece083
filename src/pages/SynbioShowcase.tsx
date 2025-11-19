@@ -172,11 +172,9 @@ const SynbioShowcase = () => {
         <meta property="og:description" content={content.seo.description} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={content.seo.canonical} />
-        <meta property="og:image" content="https://platodata.ai/lovable-uploads/synbio-social-thumbnail.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={content.seo.title} />
         <meta name="twitter:description" content={content.seo.description} />
-        <meta name="twitter:image" content="https://platodata.ai/lovable-uploads/synbio-social-thumbnail.png" />
         <link rel="canonical" href={content.seo.canonical} />
       </Helmet>
       
