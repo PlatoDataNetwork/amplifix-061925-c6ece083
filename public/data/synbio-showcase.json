@@ -7,7 +7,8 @@
       "canonical": "https://amplifix.ai/showcase/synbio"
     },
     "hero": {
-      "badge": "OTC: SYIN",
+      "badge": "OTC:SYIN",
+      "badge_subtitle": "Reporting",
       "title": "Investing in AI-powered diagnostics for Mental Health",
       "subtitle": "Synbio Int'l",
       "description": "Investing in next-gen AI technology to build a healthier future for all and developing natural products that support the body's inherent ability to heal",

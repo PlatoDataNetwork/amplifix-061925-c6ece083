@@ -33,6 +33,7 @@ interface SynbioData {
     };
     hero: {
       badge: string;
+      badge_subtitle?: string;
       title: string;
       subtitle: string;
       description: string;
@@ -164,8 +165,11 @@ const SynbioShowcase = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
                 <div className="inline-block mb-6">
-                  <div className="bg-primary/10 text-primary rounded-full px-4 py-2 border border-primary/20 text-sm font-medium">
-                    {content.hero.badge}
+                  <div className="bg-primary/10 text-primary rounded-full px-4 py-2 border border-primary/20 text-sm font-medium text-center">
+                    <div>{content.hero.badge}</div>
+                    {content.hero.badge_subtitle && (
+                      <div className="text-xs mt-1">{content.hero.badge_subtitle}</div>
+                    )}
                   </div>
                 </div>
                 <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
