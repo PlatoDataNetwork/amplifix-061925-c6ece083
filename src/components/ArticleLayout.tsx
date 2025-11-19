@@ -113,13 +113,13 @@ const ArticleLayout = ({
         {/* Article Content */}
         <article className="prose prose-base md:prose-lg max-w-none dark:prose-invert
           prose-headings:font-bold prose-headings:tracking-tight
-          prose-h2:text-xl md:prose-h2:text-2xl prose-h2:mt-6 prose-h2:mb-2
-          prose-h3:text-lg md:prose-h3:text-xl prose-h3:mt-4 prose-h3:mb-2
-          prose-p:mb-3 prose-p:leading-relaxed
+          prose-h2:text-xl md:prose-h2:text-2xl prose-h2:mt-4 prose-h2:mb-1
+          prose-h3:text-lg md:prose-h3:text-xl prose-h3:mt-3 prose-h3:mb-1
+          prose-p:mb-1 prose-p:leading-relaxed
           prose-a:text-primary prose-a:no-underline hover:prose-a:underline
           prose-strong:text-foreground prose-strong:font-bold
-          prose-ul:my-2 prose-ol:my-2
-          prose-li:my-0.5">
+          prose-ul:my-1 prose-ol:my-1
+          prose-li:my-0">
           {children}
         </article>
         
