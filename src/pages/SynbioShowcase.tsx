@@ -75,6 +75,28 @@ interface SynbioData {
       };
       benefits: Array<{ title: string; description: string; icon: string }>;
     };
+    nutraceuticals: {
+      title: string;
+      subtitle: string;
+      description: string;
+      nature_recipe: {
+        title: string;
+        description: string;
+      };
+      ingredients: Array<{ name: string; icon: string }>;
+      strategy: {
+        title: string;
+        manufacturing: {
+          title: string;
+          description: string;
+        };
+        phases: Array<{
+          title: string;
+          description?: string;
+          items: string[];
+        }>;
+      };
+    };
     investment_highlights: {
       title: string;
       description: string;
@@ -378,6 +400,94 @@ const SynbioShowcase = () => {
                       </Card>
                     );
                   })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Nutraceuticals Section */}
+        <div className="bg-muted/30 py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-12">
+                <span className="text-primary font-semibold text-lg">{content.nutraceuticals.subtitle}</span>
+                <h2 className="text-5xl font-bold mb-4 text-foreground mt-2">
+                  {content.nutraceuticals.title}
+                </h2>
+                <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                  {content.nutraceuticals.description}
+                </p>
+              </div>
+
+              {/* Nature's Recipe */}
+              <Card className="bg-card border-border mb-12">
+                <CardContent className="p-10">
+                  <h3 className="text-3xl font-bold mb-4 text-foreground">{content.nutraceuticals.nature_recipe.title}</h3>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    {content.nutraceuticals.nature_recipe.description}
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Key Ingredients */}
+              <div className="mb-12">
+                <h3 className="text-3xl font-semibold text-center mb-8 text-foreground">Key Ingredients</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  {content.nutraceuticals.ingredients.map((ingredient, index) => {
+                    const Icon = iconMap[ingredient.icon];
+                    return (
+                      <Card key={index} className="bg-card border-border hover:border-primary/50 transition-all">
+                        <CardContent className="p-6 text-center">
+                          {Icon && <Icon className="h-12 w-12 text-primary mx-auto mb-3" />}
+                          <p className="font-semibold text-foreground">{ingredient.name}</p>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Go-To-Market Strategy */}
+              <div className="space-y-8">
+                <h3 className="text-3xl font-semibold text-center mb-10 text-foreground">
+                  {content.nutraceuticals.strategy.title}
+                </h3>
+
+                {/* Manufacturing */}
+                <Card className="bg-card border-border">
+                  <CardContent className="p-8">
+                    <h4 className="text-2xl font-semibold mb-3 text-foreground">
+                      {content.nutraceuticals.strategy.manufacturing.title}
+                    </h4>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {content.nutraceuticals.strategy.manufacturing.description}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Phases */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {content.nutraceuticals.strategy.phases.map((phase, index) => (
+                    <Card key={index} className="bg-card border-border">
+                      <CardContent className="p-8">
+                        <h4 className="text-2xl font-semibold mb-4 text-foreground">{phase.title}</h4>
+                        {phase.description && (
+                          <p className="text-muted-foreground mb-4">{phase.description}</p>
+                        )}
+                        <ul className="space-y-2">
+                          {phase.items.map((item, itemIndex) => (
+                            <li key={itemIndex} className="flex items-start gap-3">
+                              <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <div className="h-2 w-2 rounded-full bg-primary"></div>
+                              </div>
+                              <p className="text-muted-foreground">{item}</p>
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
               </div>
             </div>
