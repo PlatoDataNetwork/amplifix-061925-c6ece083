@@ -123,28 +123,6 @@ const ImportAdmin = () => {
     }
   };
 
-  const importACN = async () => {
-    setImporting('ACN');
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('import-acn');
-
-      if (error) throw error;
-
-      setResults(prev => ({ ...prev, ACN: data }));
-      toast.success('ACN import completed!', {
-        description: `Imported ${data.insertedArticles} articles`
-      });
-      await loadMetrics(); // Refresh metrics after import
-    } catch (error) {
-      console.error('Error importing ACN:', error);
-      toast.error('Failed to import ACN', {
-        description: error instanceof Error ? error.message : 'Unknown error'
-      });
-    } finally {
-      setImporting(null);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -297,38 +275,6 @@ const ImportAdmin = () => {
             </CardContent>
           </Card>
 
-          {/* ACN Newswire Section */}
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="text-xl">ACN Newswire</CardTitle>
-              <p className="text-sm text-muted-foreground">Import articles from ACN Newswire RSS Feed</p>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-muted-foreground">
-                  Additional article source for comprehensive coverage
-                </div>
-                <Button
-                  onClick={importACN}
-                  disabled={importing !== null}
-                  size="lg"
-                >
-                  {importing === 'ACN' ? 'Importing...' : 'Import ACN Newswire'}
-                </Button>
-              </div>
-              
-              {results.ACN && (
-                <div className="mt-4 p-4 bg-muted rounded-lg">
-                  <p className="text-sm font-medium">
-                    ✅ Imported: {results.ACN.insertedArticles} articles
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Duration: {(results.ACN.duration / 1000).toFixed(1)}s
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
 
           <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-6">
             <h3 className="text-lg font-semibold mb-2">Note:</h3>
