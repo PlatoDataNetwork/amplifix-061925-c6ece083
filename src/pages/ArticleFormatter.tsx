@@ -17,6 +17,12 @@ const ArticleFormatter = () => {
   const [backupCreated, setBackupCreated] = useState(false);
   const [currentBackupName, setCurrentBackupName] = useState<string>("");
   const [backupProgress, setBackupProgress] = useState({ backed: 0, total: 0, status: '' });
+  const [backupSummary, setBackupSummary] = useState<{
+    duration: number;
+    totalRows: number;
+    chunksProcessed: number;
+    startTime: number;
+  } | null>(null);
   const [result, setResult] = useState<{
     success: boolean;
     total?: number;
@@ -28,8 +34,10 @@ const ArticleFormatter = () => {
 
   const handleCreateBackup = async () => {
     const backupName = `pre-format-${Date.now()}`;
+    const startTime = Date.now();
     setIsBackingUp(true);
     setBackupProgress({ backed: 0, total: 0, status: 'starting' });
+    setBackupSummary(null);
 
     try {
       toast.info("Starting backup process...");
@@ -96,10 +104,18 @@ const ArticleFormatter = () => {
       }
 
       // Mark as complete
+      const duration = Date.now() - startTime;
       setBackupProgress({
         backed: totalBacked,
         total: totalCount,
         status: 'completed'
+      });
+
+      setBackupSummary({
+        duration,
+        totalRows: totalBacked,
+        chunksProcessed: chunkIndex,
+        startTime
       });
 
       setBackupCreated(true);
@@ -271,6 +287,36 @@ const ArticleFormatter = () => {
                       Large backup in progress. This may take several minutes...
                     </p>
                   )}
+                </div>
+              )}
+
+              {/* Backup Summary */}
+              {backupSummary && backupProgress.status === 'completed' && (
+                <div className="mt-6 p-4 bg-muted/50 rounded-lg border">
+                  <h4 className="font-semibold mb-3 flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    Backup Summary
+                  </h4>
+                  <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <p className="text-muted-foreground mb-1">Duration</p>
+                      <p className="font-medium">
+                        {Math.floor(backupSummary.duration / 1000 / 60)}m {Math.floor((backupSummary.duration / 1000) % 60)}s
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground mb-1">Total Rows Backed Up</p>
+                      <p className="font-medium">{backupSummary.totalRows.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground mb-1">Chunks Processed</p>
+                      <p className="font-medium">{backupSummary.chunksProcessed}</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 pt-3 border-t text-xs text-muted-foreground">
+                    <p>Started: {new Date(backupSummary.startTime).toLocaleTimeString()}</p>
+                    <p>Backup Name: <span className="font-mono">{currentBackupName}</span></p>
+                  </div>
                 </div>
               )}
 
