@@ -255,7 +255,7 @@ if (!article) {
           {/* Article Content */}
           <div className="prose prose-invert max-w-none mb-2">
             <div 
-              className="text-foreground leading-relaxed whitespace-pre-wrap [&>*]:mb-2 [&>h2]:mt-6 [&>h2]:mb-2 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:leading-tight [&>h3]:mt-4 [&>h3]:text-xl [&>h3]:font-bold [&>strong]:mt-6 [&>strong]:block"
+              className="text-foreground leading-relaxed whitespace-pre-wrap [&>p]:mb-6 [&>p]:leading-relaxed [&>h2]:mt-8 [&>h2]:mb-4 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:leading-tight [&>h3]:mt-6 [&>h3]:mb-3 [&>h3]:text-xl [&>h3]:font-bold [&>strong]:mt-6 [&>strong]:mb-3 [&>strong]:block [&>ul]:my-4 [&>ul]:space-y-2 [&>ol]:my-4 [&>ol]:space-y-2"
               dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content || article.excerpt) }}
             />
           </div>
