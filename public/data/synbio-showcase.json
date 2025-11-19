@@ -23,8 +23,8 @@
           "external": true
         },
         "tertiary": {
-          "text": "Presentation",
-          "url": "/showcase/synbio-presentation",
+          "text": "Interactive",
+          "url": "/showcase/synbio-interactive",
           "external": false
         },
         "quaternary": {
