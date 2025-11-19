@@ -49,7 +49,40 @@ const ArticleFormatter = () => {
       channel
         .on('broadcast', { event: 'progress' }, (payload) => {
           console.log('Progress update:', payload);
-          setBackupProgress(payload.payload);
+          const progressData = payload.payload;
+          setBackupProgress(progressData);
+          
+          // Handle completion states
+          if (progressData.status === 'completed') {
+            setBackupCreated(true);
+            setCurrentBackupName(backupName);
+            setIsBackingUp(false);
+            toast.success(`Backup completed: ${progressData.backed.toLocaleString()} articles saved`);
+            
+            // Clean up channel after completion
+            if (channelRef.current) {
+              supabase.removeChannel(channelRef.current);
+              channelRef.current = null;
+            }
+          } else if (progressData.status === 'interrupted') {
+            setIsBackingUp(false);
+            toast.warning(`Backup interrupted: ${progressData.backed.toLocaleString()} articles were saved before timeout. You may need to create a new backup.`);
+            
+            // Clean up channel
+            if (channelRef.current) {
+              supabase.removeChannel(channelRef.current);
+              channelRef.current = null;
+            }
+          } else if (progressData.status === 'error') {
+            setIsBackingUp(false);
+            toast.error(`Backup failed: ${progressData.error || 'Unknown error'}`);
+            
+            // Clean up channel
+            if (channelRef.current) {
+              supabase.removeChannel(channelRef.current);
+              channelRef.current = null;
+            }
+          }
         })
         .subscribe((status) => {
           if (status === 'SUBSCRIBED') {
@@ -57,7 +90,7 @@ const ArticleFormatter = () => {
           }
         });
 
-      toast.info("Creating backup of all articles...");
+      toast.info("Starting backup process...");
 
       const { data, error } = await supabase.functions.invoke('backup-articles', {
         body: {
@@ -69,18 +102,30 @@ const ArticleFormatter = () => {
       if (error) throw error;
 
       if (data.success) {
-        setBackupCreated(true);
-        setCurrentBackupName(backupName);
-        toast.success(`Backup created: ${data.totalArticles} articles saved`);
+        if (data.status === 'processing') {
+          toast.success(`Backup started for ${data.totalArticles.toLocaleString()} articles. Progress will update in real-time.`);
+        } else {
+          // Immediate completion (empty backup)
+          setBackupCreated(true);
+          setCurrentBackupName(backupName);
+          setIsBackingUp(false);
+          toast.info(data.message);
+          
+          // Clean up channel
+          if (channelRef.current) {
+            supabase.removeChannel(channelRef.current);
+            channelRef.current = null;
+          }
+        }
       } else {
         throw new Error(data.error || 'Failed to create backup');
       }
     } catch (error) {
       console.error("Error creating backup:", error);
-      toast.error("Failed to create backup");
-    } finally {
+      toast.error("Failed to start backup");
       setIsBackingUp(false);
-      // Clean up channel
+      
+      // Clean up channel on error
       if (channelRef.current) {
         supabase.removeChannel(channelRef.current);
         channelRef.current = null;
@@ -233,9 +278,14 @@ const ArticleFormatter = () => {
                     className="h-2"
                   />
                   <p className="text-sm text-muted-foreground text-center">
-                    Backing up {backupProgress.backed.toLocaleString()} of {backupProgress.total.toLocaleString()} articles
+                    {backupProgress.status === 'processing' ? 'Backing up' : 'Starting backup of'} {backupProgress.backed.toLocaleString()} of {backupProgress.total.toLocaleString()} articles
                     ({Math.round((backupProgress.backed / backupProgress.total) * 100)}%)
                   </p>
+                  {backupProgress.total > 50000 && (
+                    <p className="text-xs text-muted-foreground text-center">
+                      Large backup in progress. This may take several minutes...
+                    </p>
+                  )}
                 </div>
               )}
 
