@@ -12,6 +12,9 @@ import { toast } from "sonner";
 const ArticleFormatter = () => {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isBackingUp, setIsBackingUp] = useState(false);
+  const [backupCreated, setBackupCreated] = useState(false);
+  const [currentBackupName, setCurrentBackupName] = useState<string>("");
   const [result, setResult] = useState<{
     success: boolean;
     total?: number;
@@ -21,10 +24,47 @@ const ArticleFormatter = () => {
     message?: string;
   } | null>(null);
 
+  const handleCreateBackup = async () => {
+    const backupName = `pre-format-${Date.now()}`;
+    setIsBackingUp(true);
+
+    try {
+      toast.info("Creating backup of all articles...");
+
+      const { data, error } = await supabase.functions.invoke('backup-articles', {
+        body: {
+          backupName,
+          backupDescription: 'Automatic backup before bulk formatting operation'
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        setBackupCreated(true);
+        setCurrentBackupName(backupName);
+        toast.success(`Backup created: ${data.totalArticles} articles saved`);
+      } else {
+        throw new Error(data.error || 'Failed to create backup');
+      }
+    } catch (error) {
+      console.error("Error creating backup:", error);
+      toast.error("Failed to create backup");
+    } finally {
+      setIsBackingUp(false);
+    }
+  };
+
   const handleFormatAllArticles = async () => {
+    if (!backupCreated) {
+      toast.error("Please create a backup first!");
+      return;
+    }
+
     if (!confirm(
       "⚠️ WARNING: This will apply formatting to ALL articles in the database.\n\n" +
-      "This operation cannot be undone. Are you sure you want to continue?"
+      `A backup has been created (${currentBackupName}).\n` +
+      "You can restore from this backup if needed. Continue?"
     )) {
       return;
     }
@@ -110,18 +150,71 @@ const ArticleFormatter = () => {
             </CardContent>
           </Card>
 
+          {/* Backup Card */}
+          <Card className={backupCreated ? 'border-green-500' : ''}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                Step 1: Create Backup
+                {backupCreated && <CheckCircle className="h-5 w-5 text-green-600" />}
+              </CardTitle>
+              <CardDescription>
+                First, create a backup of all articles so you can restore them if needed
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button
+                onClick={handleCreateBackup}
+                disabled={isBackingUp || backupCreated}
+                size="lg"
+                variant={backupCreated ? "outline" : "default"}
+                className="w-full gap-2"
+              >
+                {isBackingUp ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    Creating Backup...
+                  </>
+                ) : backupCreated ? (
+                  <>
+                    <CheckCircle className="h-5 w-5" />
+                    Backup Created
+                  </>
+                ) : (
+                  <>Create Backup</>
+                )}
+              </Button>
+              {backupCreated && (
+                <Alert className="bg-green-50 border-green-200">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <AlertDescription>
+                    Backup created: <strong>{currentBackupName}</strong>
+                    <br />
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={() => navigate('/admin/articles/backups')}
+                      className="p-0 h-auto text-green-700"
+                    >
+                      View all backups →
+                    </Button>
+                  </AlertDescription>
+                </Alert>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Action Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Format All Articles</CardTitle>
+              <CardTitle>Step 2: Format All Articles</CardTitle>
               <CardDescription>
-                Click the button below to start the bulk formatting process
+                Apply the formatting template to all articles in the database
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Button
                 onClick={handleFormatAllArticles}
-                disabled={isProcessing}
+                disabled={isProcessing || !backupCreated}
                 size="lg"
                 className="w-full gap-2"
               >
@@ -134,6 +227,11 @@ const ArticleFormatter = () => {
                   <>Format All Articles</>
                 )}
               </Button>
+              {!backupCreated && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  Create a backup first to enable formatting
+                </p>
+              )}
             </CardContent>
           </Card>
 
