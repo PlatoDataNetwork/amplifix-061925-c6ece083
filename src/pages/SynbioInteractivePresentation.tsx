@@ -116,9 +116,9 @@ const SynbioInteractivePresentation = () => {
       subtitle: "Screening Using Artificial Intelligence",
       content: (
         <div className="space-y-8">
-          <Card className="bg-gradient-to-br from-card to-highlight-blue/5 border-highlight-blue/20">
+          <Card className="bg-gradient-to-br from-card to-purple-500/10 border-purple-500/30">
             <CardContent className="p-8 text-center">
-              <Brain className="w-20 h-20 text-highlight-blue mb-6 mx-auto" />
+              <Brain className="w-20 h-20 text-purple-500 mb-6 mx-auto" />
               <h3 className="text-3xl font-bold mb-6">AI-Powered Mental Health Screening</h3>
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
                 The Company will initially focus heavily on using Artificial Intelligence-powered solutions to detect mental health conditions.
@@ -127,17 +127,17 @@ const SynbioInteractivePresentation = () => {
           </Card>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="bg-card border-border">
+            <Card className="bg-gradient-to-br from-card to-purple-500/5 border-purple-500/20">
               <CardContent className="p-6">
-                <CheckCircle className="w-10 h-10 text-green-500 mb-4" />
+                <CheckCircle className="w-10 h-10 text-purple-500 mb-4" />
                 <h4 className="text-lg font-bold mb-2">Non-Invasive</h4>
                 <p className="text-muted-foreground">Simple facial analysis using mobile devices</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-border">
+            <Card className="bg-gradient-to-br from-card to-purple-500/5 border-purple-500/20">
               <CardContent className="p-6">
-                <CheckCircle className="w-10 h-10 text-green-500 mb-4" />
+                <CheckCircle className="w-10 h-10 text-purple-500 mb-4" />
                 <h4 className="text-lg font-bold mb-2">Immediate Results</h4>
                 <p className="text-muted-foreground">Instant screening based on biological data</p>
               </CardContent>
@@ -441,6 +441,28 @@ const SynbioInteractivePresentation = () => {
       
       <div className="min-h-screen bg-background">
         <MainHeader />
+        
+        {/* Synbio Presentation Header */}
+        <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-40">
+          <div className="container mx-auto px-4 py-4 max-w-6xl">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-highlight-blue to-purple-500 rounded-lg flex items-center justify-center">
+                <Brain className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold">
+                  <span className="text-highlight-blue">Synbio</span> International
+                </h2>
+                <p className="text-xs text-muted-foreground">Investor Presentation</p>
+              </div>
+              <div className="ml-auto">
+                <div className="inline-block bg-highlight-blue/10 text-highlight-blue rounded-full px-3 py-1 border border-highlight-blue/20 text-sm font-medium">
+                  OTC: SYIN
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div className="container mx-auto px-4 py-8 max-w-6xl">
           {/* Header */}
