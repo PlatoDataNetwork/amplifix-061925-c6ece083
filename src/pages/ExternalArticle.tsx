@@ -235,7 +235,7 @@ if (!article) {
         <div className="max-w-4xl mx-auto">
           {/* Article Header */}
           <div className="mb-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-6">
               <span className="bg-transparent border border-blue-500 text-blue-500 px-3 py-1 text-sm">
                 AR/VR
               </span>
