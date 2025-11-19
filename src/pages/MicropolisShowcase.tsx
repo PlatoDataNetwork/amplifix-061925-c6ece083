@@ -45,7 +45,7 @@ const MicropolisShowcase = () => {
         <main className="flex-1">
           {/* Hero Section */}
           <section className="relative py-12 md:py-20 px-4 overflow-visible">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/5" />
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-transparent to-orange-500/5" />
             <div className="container mx-auto max-w-6xl relative z-10">
               <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div className="space-y-4 md:space-y-6">
@@ -57,7 +57,7 @@ const MicropolisShowcase = () => {
                     />
                   </div>
                   <div>
-                    <p className="text-primary font-semibold mb-2 text-sm md:text-base">NYSE-AMEX: MCRP</p>
+                    <p className="text-orange-500 font-semibold mb-2 text-sm md:text-base">NYSE-AMEX: MCRP</p>
                     <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4 pb-2 md:pb-3 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
                       Leveraging Breakthrough AI
                     </h1>
@@ -71,7 +71,7 @@ const MicropolisShowcase = () => {
                 </div>
                 <div className="space-y-12">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-2xl blur-xl" />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/20 to-transparent rounded-2xl blur-xl" />
                     <img 
                       src="/lovable-uploads/micropolis-hero.png" 
                       alt="Micropolis Robotics Exhibition Booth"
@@ -130,7 +130,7 @@ const MicropolisShowcase = () => {
               </div>
               
               <div className="mb-8 md:mb-12 relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-2xl blur-lg" />
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-orange-500/10 to-orange-500/5 rounded-2xl blur-lg" />
                 <img 
                   src="/lovable-uploads/micropolis-robots-duo.png" 
                   alt="Micropolis Autonomous Mobile Patrol Robots"
@@ -142,8 +142,8 @@ const MicropolisShowcase = () => {
               <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
                 <Card className="bg-transparent border-blue-400/30 hover:border-blue-400/50 transition-all">
                   <CardContent className="pt-6">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                      <Cpu className="w-6 h-6 text-primary" />
+                    <div className="w-12 h-12 rounded-lg bg-orange-500/10 flex items-center justify-center mb-4">
+                      <Cpu className="w-6 h-6 text-orange-500" />
                     </div>
                     <h3 className="text-xl font-semibold mb-3">AI-Powered Intelligence</h3>
                     <p className="text-muted-foreground">
@@ -154,8 +154,8 @@ const MicropolisShowcase = () => {
 
                 <Card className="bg-transparent border-blue-400/30 hover:border-blue-400/50 transition-all">
                   <CardContent className="pt-6">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                      <Shield className="w-6 h-6 text-primary" />
+                    <div className="w-12 h-12 rounded-lg bg-orange-500/10 flex items-center justify-center mb-4">
+                      <Shield className="w-6 h-6 text-orange-500" />
                     </div>
                     <h3 className="text-xl font-semibold mb-3">Security Solutions</h3>
                     <p className="text-muted-foreground">
@@ -166,8 +166,8 @@ const MicropolisShowcase = () => {
 
                 <Card className="bg-transparent border-blue-400/30 hover:border-blue-400/50 transition-all">
                   <CardContent className="pt-6">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                      <Target className="w-6 h-6 text-primary" />
+                    <div className="w-12 h-12 rounded-lg bg-orange-500/10 flex items-center justify-center mb-4">
+                      <Target className="w-6 h-6 text-orange-500" />
                     </div>
                     <h3 className="text-xl font-semibold mb-3">Custom Solutions</h3>
                     <p className="text-muted-foreground">
@@ -203,8 +203,8 @@ const MicropolisShowcase = () => {
                   </p>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
-                        <Zap className="w-3 h-3 text-primary" />
+                      <div className="w-6 h-6 rounded-full bg-orange-500/10 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Zap className="w-3 h-3 text-orange-500" />
                       </div>
                       <div>
                         <h4 className="font-semibold mb-1">M01-P & M02-P Patrol Vehicles</h4>
@@ -214,8 +214,8 @@ const MicropolisShowcase = () => {
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
-                        <Zap className="w-3 h-3 text-primary" />
+                      <div className="w-6 h-6 rounded-full bg-orange-500/10 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Zap className="w-3 h-3 text-orange-500" />
                       </div>
                       <div>
                         <h4 className="font-semibold mb-1">Microspot AI Brain</h4>
@@ -244,8 +244,8 @@ const MicropolisShowcase = () => {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="text-center space-y-3 p-6 rounded-lg bg-transparent border border-blue-400/30">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <Cpu className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-full bg-orange-500/10 flex items-center justify-center mx-auto">
+                    <Cpu className="w-6 h-6 text-orange-500" />
                   </div>
                   <h3 className="font-semibold">Breakthrough AI</h3>
                   <p className="text-sm text-muted-foreground">
@@ -254,8 +254,8 @@ const MicropolisShowcase = () => {
                 </div>
                 
                 <div className="text-center space-y-3 p-6 rounded-lg bg-transparent border border-blue-400/30">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <Target className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-full bg-orange-500/10 flex items-center justify-center mx-auto">
+                    <Target className="w-6 h-6 text-orange-500" />
                   </div>
                   <h3 className="font-semibold">Custom Design</h3>
                   <p className="text-sm text-muted-foreground">
@@ -264,8 +264,8 @@ const MicropolisShowcase = () => {
                 </div>
                 
                 <div className="text-center space-y-3 p-6 rounded-lg bg-transparent border border-blue-400/30">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <Shield className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-full bg-orange-500/10 flex items-center justify-center mx-auto">
+                    <Shield className="w-6 h-6 text-orange-500" />
                   </div>
                   <h3 className="font-semibold">Proven Security</h3>
                   <p className="text-sm text-muted-foreground">
@@ -274,8 +274,8 @@ const MicropolisShowcase = () => {
                 </div>
                 
                 <div className="text-center space-y-3 p-6 rounded-lg bg-transparent border border-blue-400/30">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <Globe className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-full bg-orange-500/10 flex items-center justify-center mx-auto">
+                    <Globe className="w-6 h-6 text-orange-500" />
                   </div>
                   <h3 className="font-semibold">Global Innovation</h3>
                   <p className="text-sm text-muted-foreground">
@@ -291,7 +291,7 @@ const MicropolisShowcase = () => {
             <div className="container mx-auto max-w-6xl">
               <div className="text-center mb-12">
                 <div className="inline-block px-4 py-2 bg-transparent border border-blue-400/30 rounded-full mb-4">
-                  <span className="text-primary font-semibold text-sm">AmplifiX Research</span>
+                  <span className="text-orange-500 font-semibold text-sm">AmplifiX Research</span>
                 </div>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
                   Investment Research & Analysis
@@ -307,7 +307,7 @@ const MicropolisShowcase = () => {
 
               {/* Executive Summary */}
               <div className="mb-12 p-6 md:p-8 bg-transparent border border-blue-400/30 rounded-2xl">
-                <h3 className="text-2xl font-bold mb-4 text-primary">Executive Summary</h3>
+                <h3 className="text-2xl font-bold mb-4 text-orange-500">Executive Summary</h3>
                 <p className="text-muted-foreground leading-relaxed">
                   Micropolis is a Dubai-based robotics company designing and manufacturing unmanned ground vehicles (UGVs) and autonomous mobile robots (AMRs) for public-safety, industrial and "smart city" applications. Products include the M-Platform base vehicles, M-Patrol autonomous security patrol vehicles (developed with Dubai Police), and Microspot AI software powered by NVIDIA Orin and proprietary control electronics.
                 </p>
@@ -317,11 +317,11 @@ const MicropolisShowcase = () => {
               <div className="mb-12">
                 <h3 className="text-2xl md:text-3xl font-bold mb-8 text-center">Investment Thesis</h3>
                 <div className="grid md:grid-cols-2 gap-6">
-                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-orange-500/5 to-transparent border border-blue-400/30 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="flex items-start gap-4 mb-4">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <TrendingUp className="w-5 h-5 text-primary" />
+                        <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+                          <TrendingUp className="w-5 h-5 text-orange-500" />
                         </div>
                         <div>
                           <h4 className="font-bold text-lg mb-2">Category Growth + Focused Use-Cases</h4>
@@ -333,11 +333,11 @@ const MicropolisShowcase = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-orange-500/5 to-transparent border border-blue-400/30 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="flex items-start gap-4 mb-4">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <Cpu className="w-5 h-5 text-primary" />
+                        <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+                          <Cpu className="w-5 h-5 text-orange-500" />
                         </div>
                         <div>
                           <h4 className="font-bold text-lg mb-2">Full-Stack Vertical Integration</h4>
@@ -349,11 +349,11 @@ const MicropolisShowcase = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-orange-500/5 to-transparent border border-blue-400/30 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="flex items-start gap-4 mb-4">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <Shield className="w-5 h-5 text-primary" />
+                        <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+                          <Shield className="w-5 h-5 text-orange-500" />
                         </div>
                         <div>
                           <h4 className="font-bold text-lg mb-2">Building Commercial Proof</h4>
@@ -365,11 +365,11 @@ const MicropolisShowcase = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-orange-500/5 to-transparent border border-blue-400/30 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="flex items-start gap-4 mb-4">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <Target className="w-5 h-5 text-primary" />
+                        <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+                          <Target className="w-5 h-5 text-orange-500" />
                         </div>
                         <div>
                           <h4 className="font-bold text-lg mb-2">Risks Real but Manageable</h4>
@@ -388,7 +388,7 @@ const MicropolisShowcase = () => {
                 <h3 className="text-2xl md:text-3xl font-bold mb-6">Recent Developments (2025 YTD)</h3>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3 pb-4 border-b border-border/50">
-                    <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    <div className="w-2 h-2 rounded-full bg-orange-500 mt-2 flex-shrink-0" />
                     <div>
                       <h4 className="font-semibold mb-1">Dubai Police Deployment</h4>
                       <p className="text-sm text-muted-foreground">
@@ -397,7 +397,7 @@ const MicropolisShowcase = () => {
                     </div>
                   </div>
                   <div className="flex items-start gap-3 pb-4 border-b border-border/50">
-                    <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    <div className="w-2 h-2 rounded-full bg-orange-500 mt-2 flex-shrink-0" />
                     <div>
                       <h4 className="font-semibold mb-1">Sustainable City 2.0 Agreement</h4>
                       <p className="text-sm text-muted-foreground">
@@ -406,7 +406,7 @@ const MicropolisShowcase = () => {
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    <div className="w-2 h-2 rounded-full bg-orange-500 mt-2 flex-shrink-0" />
                     <div>
                       <h4 className="font-semibold mb-1">Swedish Port Cleaning Pilot</h4>
                       <p className="text-sm text-muted-foreground">
@@ -453,11 +453,11 @@ const MicropolisShowcase = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-blue-400/30 rounded-2xl">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-orange-500/5 to-transparent border border-blue-400/30 rounded-2xl">
                     <CardContent className="pt-6">
                       <div className="text-center mb-4">
-                        <div className="inline-block px-3 py-1 bg-primary/10 border border-primary/30 rounded-full mb-2">
-                          <span className="text-primary font-semibold text-sm">Base Case</span>
+                        <div className="inline-block px-3 py-1 bg-orange-500/10 border border-orange-500/30 rounded-full mb-2">
+                          <span className="text-orange-500 font-semibold text-sm">Base Case</span>
                         </div>
                       </div>
                       <div className="space-y-3">
