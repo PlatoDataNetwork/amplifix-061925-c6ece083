@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      article_backups: {
+        Row: {
+          article_id: string
+          author: string | null
+          backup_description: string | null
+          backup_name: string
+          content: string | null
+          created_at: string
+          created_by: string | null
+          excerpt: string | null
+          id: string
+          image_url: string | null
+          metadata: Json | null
+          post_id: number | null
+          published_at: string
+          title: string
+          vertical_slug: string
+        }
+        Insert: {
+          article_id: string
+          author?: string | null
+          backup_description?: string | null
+          backup_name: string
+          content?: string | null
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          metadata?: Json | null
+          post_id?: number | null
+          published_at: string
+          title: string
+          vertical_slug: string
+        }
+        Update: {
+          article_id?: string
+          author?: string | null
+          backup_description?: string | null
+          backup_name?: string
+          content?: string | null
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          metadata?: Json | null
+          post_id?: number | null
+          published_at?: string
+          title?: string
+          vertical_slug?: string
+        }
+        Relationships: []
+      }
       article_tags: {
         Row: {
           article_id: string
