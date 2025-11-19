@@ -236,8 +236,8 @@ if (!article) {
           {/* Article Header */}
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-2">
-              <span className="bg-blue-500/20 text-blue-500 px-3 py-1 rounded-full text-sm">
-                {article.category || 'AI Intelligence'}
+              <span className="bg-transparent border border-blue-500 text-blue-500 px-3 py-1 text-sm">
+                AR/VR
               </span>
             </div>
             
