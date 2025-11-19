@@ -87,6 +87,13 @@ const AdminDashboard = () => {
       icon: Database,
       action: () => navigate('/admin/import'),
       color: 'from-purple-500 to-pink-500'
+    },
+    {
+      title: 'Article Editor',
+      description: 'Edit and update article content',
+      icon: FileText,
+      action: () => navigate('/admin/articles'),
+      color: 'from-green-500 to-emerald-500'
     }
   ];
 

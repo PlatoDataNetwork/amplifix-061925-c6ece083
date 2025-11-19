@@ -44,6 +44,7 @@ import VerticalPage from "./pages/VerticalPage";
 import ImportAdmin from "./pages/ImportAdmin";
 import UserManagement from "./pages/UserManagement";
 import AdminDashboard from "./pages/AdminDashboard";
+import ArticleEditor from "./pages/ArticleEditor";
 import AdminRoute from "./components/AdminRoute";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -97,6 +98,8 @@ const App = () => (
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           <Route path="/admin/import" element={<AdminRoute><ImportAdmin /></AdminRoute>} />
           <Route path="/admin/users" element={<AdminRoute><UserManagement /></AdminRoute>} />
+          <Route path="/admin/articles" element={<AdminRoute><ArticleEditor /></AdminRoute>} />
+          <Route path="/admin/articles/edit/:id" element={<AdminRoute><ArticleEditor /></AdminRoute>} />
 
               {/* Language-prefixed routes (e.g., /ar/, /fr/) */}
               <Route path="/:lang" element={<Index />} />
