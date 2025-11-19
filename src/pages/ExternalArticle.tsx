@@ -10,6 +10,7 @@ import { usePlatoDataFeed } from "@/hooks/usePlatoDataFeed";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
+import { sanitizeText, formatArticleContent } from "@/utils/articleFormatter";
 const sanitizeText = (text?: string | null) => {
   if (!text) return "";
   return text
