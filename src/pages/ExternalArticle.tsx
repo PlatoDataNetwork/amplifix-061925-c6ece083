@@ -94,10 +94,12 @@ const formatArticleContent = (text?: string | null) => {
 
     if (isAnyHeading && i + 1 < paragraphs.length) {
       const body = paragraphs[i + 1];
-      // Add spacing to all numbered sections except the first one
-      const pClass = (isNumberedHeading && !firstNumberedSection) ? " class='mt-6'" : "";
+      // Add strong spacing to all numbered sections except the first one
+      const pAttrs = (isNumberedHeading && !firstNumberedSection)
+        ? " class='mt-10' style='margin-top: 3rem !important;'"
+        : "";
       if (isNumberedHeading) firstNumberedSection = false;
-      mergedParagraphs.push(`<p${pClass}>${current}<br/>${body}<\/p>`);
+      mergedParagraphs.push(`<p${pAttrs}>${current}<br/>${body}<\/p>`);
       i++; // Skip the next paragraph since it's already merged
     } else {
       mergedParagraphs.push(current);
