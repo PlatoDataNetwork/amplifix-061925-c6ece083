@@ -233,16 +233,6 @@ if (!article) {
 
       <article className="pt-24 container mx-auto py-8 md:py-12 px-4">
         <div className="max-w-4xl mx-auto">
-          {/* Back Button */}
-          <Button 
-            onClick={() => navigate('/intel')} 
-            variant="ghost" 
-            className="mb-6"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Intelligence
-          </Button>
-
           {/* Article Header */}
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-2">
@@ -255,59 +245,71 @@ if (!article) {
               {sanitizeText(article.title)}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-muted-foreground text-sm mb-2">
-              <div className="flex items-center gap-2">
-                <User className="h-4 w-4" />
-                <span>{article.author}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                <span>{article.date}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                <span>3 Min Read</span>
+            <div className="flex flex-wrap items-center justify-between gap-4 text-muted-foreground text-sm mb-2">
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  <span>{article.author}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  <span>{article.date}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  <span>3 Min Read</span>
+                </div>
+                
+                {/* Share Section Inline */}
+                <div className="flex items-center gap-2">
+                  <Share2 className="h-4 w-4" />
+                  <button
+                    onClick={() => shareArticle('twitter')}
+                    className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                    aria-label="Share on Twitter"
+                  >
+                    <Twitter className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => shareArticle('linkedin')}
+                    className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                    aria-label="Share on LinkedIn"
+                  >
+                    <Linkedin className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => shareArticle('facebook')}
+                    className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                    aria-label="Share on Facebook"
+                  >
+                    <Facebook className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => shareArticle('email')}
+                    className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                    aria-label="Share via Email"
+                  >
+                    <Mail className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => shareArticle('copy')}
+                    className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                    aria-label="Copy Link"
+                  >
+                    <LinkIcon className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
               
-              {/* Share Section Inline */}
-              <div className="flex items-center gap-2">
-                <Share2 className="h-4 w-4" />
-                <button
-                  onClick={() => shareArticle('twitter')}
-                  className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
-                  aria-label="Share on Twitter"
-                >
-                  <Twitter className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => shareArticle('linkedin')}
-                  className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
-                  aria-label="Share on LinkedIn"
-                >
-                  <Linkedin className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => shareArticle('facebook')}
-                  className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
-                  aria-label="Share on Facebook"
-                >
-                  <Facebook className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => shareArticle('email')}
-                  className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
-                  aria-label="Share via Email"
-                >
-                  <Mail className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => shareArticle('copy')}
-                  className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
-                  aria-label="Copy Link"
-                >
-                  <LinkIcon className="h-4 w-4" />
-                </button>
-              </div>
+              {/* Back Button - Right Aligned */}
+              <Button 
+                onClick={() => navigate('/intel')} 
+                variant="ghost" 
+                className="ml-auto"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Intelligence
+              </Button>
             </div>
           </div>
 
