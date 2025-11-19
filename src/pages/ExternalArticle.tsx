@@ -96,7 +96,7 @@ const formatArticleContent = (text?: string | null) => {
       const body = paragraphs[i + 1];
       // Add strong spacing to all numbered sections except the first one
       const pAttrs = (isNumberedHeading && !firstNumberedSection)
-        ? " class='mt-10' style='margin-top: 3rem !important;'"
+        ? " style='margin-top: 4rem !important;'"
         : "";
       if (isNumberedHeading) firstNumberedSection = false;
       mergedParagraphs.push(`<p${pAttrs}>${current}<br/>${body}<\/p>`);
