@@ -62,8 +62,8 @@ const formatArticleContent = (text?: string | null) => {
   });
   
   // Make numbered list headers bold ONLY (e.g., "1. Lightweight Design", "2. High-Resolution Displays")
-  // Add padding-top to first item
-  cleaned = cleaned.replace(/^(1\.\s+[A-Z][A-Za-z\s\-]+)\s*$/m, "<strong class='block pt-6'>$1</strong>");
+  // Add padding-top to first item and remove margin-bottom
+  cleaned = cleaned.replace(/^(1\.\s+[A-Z][A-Za-z\s\-]+)\s*$/m, "<strong class='block pt-6 mb-0'>$1</strong>");
   cleaned = cleaned.replace(/^(\d+\.\s+[A-Z][A-Za-z\s\-]+)\s*$/gm, "<strong>$1</strong>");
 
   // Normalize multiple blank lines
