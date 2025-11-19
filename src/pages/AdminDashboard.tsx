@@ -94,6 +94,13 @@ const AdminDashboard = () => {
       icon: FileText,
       action: () => navigate('/admin/articles'),
       color: 'from-green-500 to-emerald-500'
+    },
+    {
+      title: 'Bulk Formatter',
+      description: 'Apply formatting to all articles',
+      icon: Activity,
+      action: () => navigate('/admin/articles/format'),
+      color: 'from-orange-500 to-red-500'
     }
   ];
 
