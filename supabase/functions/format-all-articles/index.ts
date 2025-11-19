@@ -70,20 +70,20 @@ Deno.serve(async (req) => {
 
     console.log('Starting article formatting process...');
 
-    // Fetch all articles
-    const { data: articles, error: fetchError } = await supabase
+    // First, get the total count
+    const { count: totalCount, error: countError } = await supabase
       .from('articles')
-      .select('id, post_id, content, title')
+      .select('id', { count: 'exact', head: true })
       .not('content', 'is', null);
 
-    if (fetchError) {
-      console.error('Error fetching articles:', fetchError);
-      throw fetchError;
+    if (countError) {
+      console.error('Error counting articles:', countError);
+      throw countError;
     }
 
-    console.log(`Found ${articles?.length || 0} articles to process`);
+    console.log(`Found ${totalCount || 0} articles to process`);
 
-    if (!articles || articles.length === 0) {
+    if (!totalCount || totalCount === 0) {
       return new Response(
         JSON.stringify({ 
           success: true, 
@@ -94,72 +94,104 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Process articles in batches of 10
-    const batchSize = 10;
-    let processed = 0;
-    let errors = 0;
+    // Process articles in chunks (fetch 1000 at a time)
+    const fetchSize = 1000;
+    const processBatchSize = 10;
+    let totalProcessed = 0;
+    let totalErrors = 0;
     const errorDetails: Array<{ id: string; post_id: number; error: string }> = [];
 
-    for (let i = 0; i < articles.length; i += batchSize) {
-      const batch = articles.slice(i, i + batchSize);
-      console.log(`Processing batch ${Math.floor(i / batchSize) + 1} of ${Math.ceil(articles.length / batchSize)}`);
+    for (let offset = 0; offset < totalCount; offset += fetchSize) {
+      console.log(`Fetching articles ${offset} to ${offset + fetchSize} of ${totalCount}`);
+      
+      // Fetch a chunk of articles
+      const { data: articles, error: fetchError } = await supabase
+        .from('articles')
+        .select('id, post_id, content, title')
+        .not('content', 'is', null)
+        .range(offset, offset + fetchSize - 1);
 
-      const updates = batch.map(async (article) => {
-        try {
-          const formattedContent = formatArticleContent(article.content);
-          
-          const { error: updateError } = await supabase
-            .from('articles')
-            .update({
-              content: formattedContent,
-              updated_at: new Date().toISOString(),
-            })
-            .eq('id', article.id);
+      if (fetchError) {
+        console.error('Error fetching articles:', fetchError);
+        throw fetchError;
+      }
 
-          if (updateError) {
-            console.error(`Error updating article ${article.post_id}:`, updateError);
-            errors++;
+      if (!articles || articles.length === 0) {
+        console.log('No more articles to process');
+        break;
+      }
+
+      console.log(`Processing ${articles.length} articles in this chunk`);
+
+      // Process this chunk in smaller batches
+      for (let i = 0; i < articles.length; i += processBatchSize) {
+        const batch = articles.slice(i, i + processBatchSize);
+        const overallBatch = Math.floor((offset + i) / processBatchSize) + 1;
+        const totalBatches = Math.ceil(totalCount / processBatchSize);
+        console.log(`Processing batch ${overallBatch} of ${totalBatches}`);
+
+        const updates = batch.map(async (article) => {
+          try {
+            const formattedContent = formatArticleContent(article.content);
+            
+            const { error: updateError } = await supabase
+              .from('articles')
+              .update({
+                content: formattedContent,
+                updated_at: new Date().toISOString(),
+              })
+              .eq('id', article.id);
+
+            if (updateError) {
+              console.error(`Error updating article ${article.post_id}:`, updateError);
+              totalErrors++;
+              errorDetails.push({
+                id: article.id,
+                post_id: article.post_id,
+                error: updateError.message
+              });
+              return false;
+            }
+
+            totalProcessed++;
+            console.log(`✓ Formatted article ${article.post_id}: ${article.title}`);
+            return true;
+          } catch (err) {
+            console.error(`Error processing article ${article.post_id}:`, err);
+            totalErrors++;
             errorDetails.push({
               id: article.id,
               post_id: article.post_id,
-              error: updateError.message
+              error: err instanceof Error ? err.message : 'Unknown error'
             });
             return false;
           }
+        });
 
-          processed++;
-          console.log(`✓ Formatted article ${article.post_id}: ${article.title}`);
-          return true;
-        } catch (err) {
-          console.error(`Error processing article ${article.post_id}:`, err);
-          errors++;
-          errorDetails.push({
-            id: article.id,
-            post_id: article.post_id,
-            error: err instanceof Error ? err.message : 'Unknown error'
-          });
-          return false;
+        await Promise.all(updates);
+        
+        // Small delay between batches to avoid overwhelming the database
+        if (i + processBatchSize < articles.length) {
+          await new Promise(resolve => setTimeout(resolve, 100));
         }
-      });
-
-      await Promise.all(updates);
+      }
       
-      // Small delay between batches to avoid overwhelming the database
-      if (i + batchSize < articles.length) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+      // Delay between chunks
+      if (offset + fetchSize < totalCount) {
+        await new Promise(resolve => setTimeout(resolve, 200));
       }
     }
 
-    console.log(`Formatting complete. Processed: ${processed}, Errors: ${errors}`);
+    console.log(`Formatting complete. Processed: ${totalProcessed}, Errors: ${totalErrors}`);
 
     return new Response(
       JSON.stringify({
         success: true,
         message: `Article formatting complete`,
-        total: articles.length,
-        processed,
-        errors,
-        errorDetails: errors > 0 ? errorDetails : undefined
+        total: totalCount,
+        processed: totalProcessed,
+        errors: totalErrors,
+        errorDetails: totalErrors > 0 ? errorDetails : undefined
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
