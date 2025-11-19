@@ -473,11 +473,6 @@ const SynbioInteractivePresentation = () => {
                 Back to Showcase
               </Button>
             </LanguageAwareLink>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">
-                Slide {currentSlide + 1} of {slides.length}
-              </p>
-            </div>
             <div className="w-32" />
           </div>
 
@@ -494,18 +489,12 @@ const SynbioInteractivePresentation = () => {
           </div>
 
           {/* Navigation */}
-          <div className="flex items-center justify-center gap-4">
-            <Button
-              onClick={prevSlide}
-              disabled={currentSlide === 0}
-              variant="outline"
-              size="lg"
-            >
-              <ChevronLeft className="mr-2 h-5 w-5" />
-              Previous
-            </Button>
-
-            <div className="flex gap-2">
+          <div className="flex flex-col items-center gap-4">
+            <p className="text-sm text-muted-foreground font-medium">
+              Slide {currentSlide + 1} of {slides.length}
+            </p>
+            
+            <div className="flex gap-2 mb-2">
               {slides.map((_, index) => (
                 <button
                   key={index}
@@ -520,15 +509,29 @@ const SynbioInteractivePresentation = () => {
               ))}
             </div>
 
-            <Button
-              onClick={nextSlide}
-              disabled={currentSlide === slides.length - 1}
-              variant="outline"
-              size="lg"
-            >
-              Next
-              <ChevronRight className="ml-2 h-5 w-5" />
-            </Button>
+            <div className="flex items-center gap-4 w-full max-w-2xl">
+              <Button
+                onClick={prevSlide}
+                disabled={currentSlide === 0}
+                variant="outline"
+                size="lg"
+                className="flex-1"
+              >
+                <ChevronLeft className="mr-2 h-5 w-5" />
+                Previous
+              </Button>
+
+              <Button
+                onClick={nextSlide}
+                disabled={currentSlide === slides.length - 1}
+                variant="outline"
+                size="lg"
+                className="flex-1"
+              >
+                Next
+                <ChevronRight className="ml-2 h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
