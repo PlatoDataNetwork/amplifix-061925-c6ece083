@@ -83,6 +83,18 @@
         "website": "https://abatisabtu.com",
         "stock_url": "https://abatisabtu.com",
         "type": "token"
+      },
+      {
+        "company_name": "Facial DX",
+        "ticker": "Private",
+        "description": "Revolutionizing global health and wellness with AI-powered facial analysis to screen for head injury, PTSD, depression, and despair.",
+        "tags": ["AI Health Diagnostics", "Mental Health", "Medical Technology"],
+        "button_text": "View Showcase",
+        "link": "/showcase/facial-dx",
+        "website": "https://facialdx.com/",
+        "thumbnail": "/lovable-uploads/facialdx-thumbnail.png",
+        "type": "private",
+        "disabled": false
       }
     ],
     "why_choose": {
