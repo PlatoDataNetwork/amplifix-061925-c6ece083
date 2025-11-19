@@ -313,7 +313,7 @@ if (!article) {
           )}
 
           {/* Article Content */}
-          <div className="prose prose-invert max-w-none mb-3">
+          <div className="prose prose-invert max-w-none mb-2">
             <div 
               className="text-foreground leading-relaxed whitespace-pre-wrap [&>*]:mb-2 [&>h2]:mt-4 [&>h2]:text-2xl [&>h2]:font-bold [&>h3]:mt-4 [&>h3]:text-xl [&>h3]:font-bold"
               dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content || article.excerpt) }}
@@ -321,9 +321,18 @@ if (!article) {
           </div>
 
           {/* AmplifiX Branding */}
-          <div className="mb-6 text-center py-2">
+          <div className="mb-6 text-center pt-2">
             <p className="text-2xl font-bold text-foreground">
-              AmplifiX is Powered by Plato Data Intelligence.
+              AmplifiX is Powered by{' '}
+              <a 
+                href="https://platodata.io" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:text-blue-400 transition-colors"
+              >
+                Plato Data Intelligence
+              </a>
+              .
             </p>
           </div>
 
