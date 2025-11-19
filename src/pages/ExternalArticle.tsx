@@ -46,6 +46,9 @@ const formatArticleContent = (text?: string | null) => {
   // Convert remaining bold markers to <strong>
   cleaned = cleaned.replace(/\*\*(.+?)\*\*/g, "<strong>$1<\/strong>");
   
+  // Make question headers bold (lines ending with ?)
+  cleaned = cleaned.replace(/^\s*([A-Z][^?\n]+\?)\s*$/gm, "<h2>$1</h2>");
+  
   // Make numbered list headers bold ONLY (e.g., "1. Lightweight Design")
   cleaned = cleaned.replace(/^(\d+\.\s+[A-Z][A-Za-z\s]+)\s*$/gm, "<strong>$1</strong>");
 
