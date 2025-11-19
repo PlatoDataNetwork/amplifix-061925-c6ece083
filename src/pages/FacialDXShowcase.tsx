@@ -9,16 +9,16 @@ const FacialDXShowcase = () => {
   return (
     <>
       <Helmet>
-        <title>Facial DX - AI-Powered Health Screening Technology | AmplifiX Showcase</title>
-        <meta name="description" content="Discover how Facial DX is revolutionizing global health and wellness with cutting-edge AI and machine learning to screen for head injury, PTSD, depression, and despair through non-invasive facial analysis." />
-        <meta name="keywords" content="Facial DX, AI health diagnostics, head injury detection, PTSD screening, TBI detection, depression screening, AI facial analysis, mental health technology, veteran health" />
-        <meta property="og:title" content="Facial DX - AI-Powered Health Screening Technology" />
+        <title>FacialDX - AI-Powered Health Screening Technology | AmplifiX Showcase</title>
+        <meta name="description" content="Discover how FacialDX is revolutionizing global health and wellness with cutting-edge AI and machine learning to screen for head injury, PTSD, depression, and despair through non-invasive facial analysis." />
+        <meta name="keywords" content="FacialDX, AI health diagnostics, head injury detection, PTSD screening, TBI detection, depression screening, AI facial analysis, mental health technology, veteran health" />
+        <meta property="og:title" content="FacialDX - AI-Powered Health Screening Technology" />
         <meta property="og:description" content="Non-invasive AI screening for head injury, PTSD, depression, and despair through advanced facial analysis." />
         <meta property="og:image" content={thumbnailImage} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://amplifix.ai/showcase/facial-dx" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Facial DX - Revolutionizing Health Diagnostics" />
+        <meta name="twitter:title" content="FacialDX - Revolutionizing Health Diagnostics" />
         <meta name="twitter:description" content="AI-powered facial analysis for early detection of psychological and physiological conditions." />
         <meta name="twitter:image" content={thumbnailImage} />
         <link rel="canonical" href="https://amplifix.ai/showcase/facial-dx" />
@@ -38,7 +38,7 @@ const FacialDXShowcase = () => {
                   </div>
                 </div>
                 <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
-                  <span className="text-highlight-blue">Facial DX</span><br />
+                  <span className="text-highlight-blue">FacialDX</span><br />
                   Revolutionizing Global Health & Wellness
                 </h1>
                 <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
@@ -62,7 +62,7 @@ const FacialDXShowcase = () => {
               <div className="relative">
                 <img 
                   src={thumbnailImage}
-                  alt="Facial DX AI Screening Technology"
+                  alt="FacialDX AI Screening Technology"
                   className="w-full rounded-lg shadow-2xl border border-border"
                 />
               </div>
@@ -74,7 +74,7 @@ const FacialDXShowcase = () => {
         <div className="bg-muted/30 py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">About Facial DX</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">About FacialDX</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-card p-6 rounded-lg border border-border">
                   <Brain className="w-12 h-12 text-highlight-blue mb-4" />
@@ -122,7 +122,7 @@ const FacialDXShowcase = () => {
                   <div>
                     <h3 className="text-xl font-bold mb-2">Mobile & Web Access</h3>
                     <p className="text-muted-foreground">
-                      Access Facial DX through our mobile or web-based application for convenient screening anywhere, anytime.
+                      Access FacialDX through our mobile or web-based application for convenient screening anywhere, anytime.
                     </p>
                   </div>
                 </div>
@@ -170,7 +170,7 @@ const FacialDXShowcase = () => {
             <div className="max-w-6xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Supporting Our Heroes</h2>
               <p className="text-xl text-muted-foreground text-center mb-12 max-w-4xl mx-auto">
-                Facial DX is designed to support those who face the greatest challenges—veterans, first responders, firefighters, law enforcement, EMTs, and ambulance crews who carry invisible scars.
+                FacialDX is designed to support those who face the greatest challenges—veterans, first responders, firefighters, law enforcement, EMTs, and ambulance crews who carry invisible scars.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-card p-6 rounded-lg border border-border text-center">
@@ -203,7 +203,7 @@ const FacialDXShowcase = () => {
         <div className="py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">Experience Facial DX Today</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">Experience FacialDX Today</h2>
               <p className="text-xl text-muted-foreground mb-8">
                 Limited time: Try our free head injury analysis and discover how AI-powered facial screening can provide early insights into your health.
               </p>
