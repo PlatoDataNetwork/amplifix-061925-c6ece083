@@ -85,8 +85,9 @@ const formatArticleContent = (text?: string | null) => {
   for (let i = 0; i < paragraphs.length; i++) {
     const current = paragraphs[i];
     const isNumberedHeading = /^<strong\b[^>]*>\d+\.\s+[^<]+<\/strong>$/.test(current);
+    const isQuestionHeader = /^<h2\b[^>]*>[^<]+\?<\/h2>$/.test(current);
 
-    if (isNumberedHeading && i + 1 < paragraphs.length) {
+    if ((isNumberedHeading || isQuestionHeader) && i + 1 < paragraphs.length) {
       const body = paragraphs[i + 1];
       mergedParagraphs.push(`<p>${current}<br/>${body}<\/p>`);
       i++; // Skip the next paragraph since it's already merged
