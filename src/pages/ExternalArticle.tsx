@@ -108,63 +108,59 @@ const ExternalArticle = () => {
     
     const loadArticle = async () => {
       try {
-        const cached = sessionStorage.getItem(`article_${id}`);
-        if (cached) {
-          const parsedArticle = JSON.parse(cached);
-          setArticle(parsedArticle);
+        // Clear any cached version to get fresh data
+        sessionStorage.removeItem(`article_${id}`);
+        
+        const { supabase } = await import("@/integrations/supabase/client");
+        
+        // Load directly from database
+        const { data: dbArticle } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('post_id', parseInt(id))
+          .maybeSingle();
+
+        if (!dbArticle) {
+          console.warn("No matching article found in database for post_id", id);
+          setIsLoading(false);
+          return;
+        }
+
+        // Use the fresh data from database
+        setArticle(dbArticle);
+        const articleUuid = dbArticle.id;
+        
+        const { data: articleTags } = await supabase
+          .from('article_tags')
+          .select('tags(name)')
+          .eq('article_id', articleUuid);
+        
+        if (articleTags && articleTags.length > 0) {
+          const tagNames = articleTags.map((at: any) => at.tags.name);
+          setTags(tagNames);
+        } else {
+          // If no tags exist, trigger tag extraction using the article's database ID
+          await supabase.functions.invoke('extract-article-tags', {
+            body: { articleId: dbArticle.post_id ?? id }
+          });
           
-          const { supabase } = await import("@/integrations/supabase/client");
-          const postId = parsedArticle.post_id ?? parsedArticle.id;
-
-          const { data: dbArticle } = await supabase
-            .from('articles')
-            .select('id, post_id')
-            .eq('post_id', postId)
-            .maybeSingle();
-
-          if (!dbArticle) {
-            console.warn("No matching article found in database for post_id", postId);
-            setIsLoading(false);
-            return;
-          }
-
-          const articleUuid = dbArticle.id;
-          
-          const { data: articleTags } = await supabase
+          // Reload tags after extraction
+          const { data: newTags } = await supabase
             .from('article_tags')
             .select('tags(name)')
             .eq('article_id', articleUuid);
           
-          if (articleTags && articleTags.length > 0) {
-            const tagNames = articleTags.map((at: any) => at.tags.name);
+          if (newTags && newTags.length > 0) {
+            const tagNames = newTags.map((at: any) => at.tags.name);
             setTags(tagNames);
-          } else {
-            // If no tags exist, trigger tag extraction using the article's database ID
-            await supabase.functions.invoke('extract-article-tags', {
-              body: { articleId: dbArticle.post_id ?? postId }
-            });
-            
-            // Reload tags after extraction
-            const { data: newTags } = await supabase
-              .from('article_tags')
-              .select('tags(name)')
-              .eq('article_id', articleUuid);
-            
-            if (newTags && newTags.length > 0) {
-              const tagNames = newTags.map((at: any) => at.tags.name);
-              setTags(tagNames);
-            }
           }
-          
-          setIsLoading(false);
-          return;
         }
+        
+        setIsLoading(false);
       } catch (e) {
         console.error('Failed to load article:', e);
+        setIsLoading(false);
       }
-      
-      // If not in cache, we'll show not found
-      setIsLoading(false);
     };
     
     loadArticle();
@@ -325,8 +321,8 @@ if (!article) {
           </div>
 
           {/* AmplifiX Branding */}
-          <div className="mb-6 text-center">
-            <p className="text-sm text-muted-foreground">
+          <div className="mb-6 text-center py-4">
+            <p className="text-2xl font-bold text-foreground">
               AmplifiX is Powered by Plato Data Intelligence. Your Vertical. Your Edge
             </p>
           </div>
