@@ -50,9 +50,7 @@ export const formatArticleContent = (text?: string | null): string => {
   cleaned = cleaned.replace(
     /^\s*([A-Z][A-Za-z\s]+(?:Prototypes|Features|Questions|Air|Dream)[A-Za-z\s]*)\s*$/gm,
     (match) => {
-      // Don't double-wrap if already wrapped
       if (match.includes("<h2>") || match.includes("<strong>")) return match;
-      // Check if it has multiple capital letters (likely a title)
       const capitalCount = (match.match(/[A-Z]/g) || []).length;
       if (capitalCount >= 3) {
         return `<h2>${match.trim()}</h2>`;
@@ -61,11 +59,8 @@ export const formatArticleContent = (text?: string | null): string => {
     },
   );
 
-  // Make numbered list headers bold ONLY (e.g., "1. Lightweight Design", "2. High-Resolution Displays")
+  // Make numbered list headers bold ONLY
   cleaned = cleaned.replace(/^(\d+\.\s+[A-Z][A-Za-z\s\-]+)\s*$/gm, "<strong>$1</strong>");
-
-  // Add extra line break after introductory lines that precede lists (lines ending with colon)
-  cleaned = cleaned.replace(/([^:\n]+:)(\n)(\d+\.)/g, "$1\n\n$3");
 
   // Normalize multiple blank lines
   cleaned = cleaned.replace(/\n{3,}/g, "\n\n");
@@ -79,35 +74,19 @@ export const formatArticleContent = (text?: string | null): string => {
     .filter(Boolean);
 
   const mergedParagraphs: string[] = [];
-  let firstNumberedSection = true;
-  let firstH2Section = true;
-  let firstH3Section = true;
 
   for (let i = 0; i < paragraphs.length; i++) {
     const current = paragraphs[i];
-    // Detect all heading types: numbered headings, H2, H3
     const isNumberedHeading = /^<strong\b[^>]*>\d+\.\s+[^<]+<\/strong>$/.test(current);
     const isH2Header = /^<h2\b[^>]*>[^<]+<\/h2>$/.test(current);
-    const isH3Header = /^<h3\b[^>]*>[^<]+<\/h3>$/.test(current);
-    const isAnyHeading = isNumberedHeading || isH2Header || isH3Header;
+    const isAnyHeading = isNumberedHeading || isH2Header;
 
     if (isAnyHeading && i + 1 < paragraphs.length) {
       const body = paragraphs[i + 1];
-      // Add spacing to all section types except the first of certain kinds
-      let pAttrs = "";
-      if (isNumberedHeading && !firstNumberedSection) {
-        pAttrs = " style='margin-top: 4rem !important;'";
-      } else if (isH2Header && i > 0) {
-        // Always add strong spacing above H2 sections that are not at the very top
-        pAttrs = " style='margin-top: 4rem !important;'";
-      } else if (isH3Header && !firstH3Section) {
-        pAttrs = " style='margin-top: 2rem !important;'";
-      }
-      if (isNumberedHeading) firstNumberedSection = false;
-      if (isH2Header) firstH2Section = false;
-      if (isH3Header) firstH3Section = false;
-      mergedParagraphs.push(`<p${pAttrs}>${current}<br/>${body}</p>`);
-      i++; // Skip the next paragraph since it's already merged
+      // Add consistent spacing above all sections except the first
+      const spacing = i > 0 ? " style='margin-top: 3rem !important;'" : "";
+      mergedParagraphs.push(`<p${spacing}><strong>${current.replace(/<\/?strong>/g, "").replace(/<\/?h2>/g, "")}</strong><br/>${body}</p>`);
+      i++;
     } else {
       mergedParagraphs.push(current);
     }
