@@ -99,7 +99,7 @@ const formatArticleContent = (text?: string | null) => {
       // Add spacing to all section types except the first of each
       let pAttrs = "";
       if (isNumberedHeading && !firstNumberedSection) {
-        pAttrs = " style='margin-top: 2.5rem !important;'";
+        pAttrs = " style='margin-top: 4rem !important;'";
       } else if (isH2Header && !firstH2Section) {
         pAttrs = " style='margin-top: 2.5rem !important;'";
       } else if (isH3Header && !firstH3Section) {
