@@ -47,6 +47,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminRoute from "./components/AdminRoute";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import UpdateArticleContent from "./pages/UpdateArticleContent";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +71,7 @@ const App = () => (
               <Route path="/intel/investor-engagement-article" element={<InvestorEngagementArticle />} />
               <Route path="/intel/external/:id" element={<ExternalArticle />} />
               <Route path="/intel/:vertical" element={<VerticalPage />} />
+              <Route path="/update-article-2650394" element={<UpdateArticleContent />} />
               <Route path="/support" element={<Support />} />
               <Route path="/solutions" element={<Solutions />} />
               <Route path="/about" element={<About />} />
