@@ -89,6 +89,7 @@ const SEOHead = ({ title, description }: SEOHeadProps) => {
       <meta property="og:description" content={finalDescription} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={`${baseUrl}${location.pathname}`} />
+      <meta property="og:image" content={`${baseUrl}/lovable-uploads/synbio-social-thumbnail.png`} />
       <meta property="og:locale" content={currentLocale} />
       
       {/* OG Alternate Locales */}
@@ -107,6 +108,7 @@ const SEOHead = ({ title, description }: SEOHeadProps) => {
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={finalTitle} />
       <meta name="twitter:description" content={finalDescription} />
+      <meta name="twitter:image" content={`${baseUrl}/lovable-uploads/synbio-social-thumbnail.png`} />
       
       {/* Canonical URL */}
       <link rel="canonical" href={`${baseUrl}${location.pathname}`} />
