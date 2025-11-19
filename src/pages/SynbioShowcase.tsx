@@ -12,7 +12,8 @@ import {
   BarChart3,
   DollarSign,
   Leaf,
-  Microscope
+  Microscope,
+  ScanFace
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
@@ -86,6 +87,7 @@ const iconMap: Record<string, any> = {
   target: Target,
   'trending-up': TrendingUp,
   microscope: Microscope,
+  'scan-face': ScanFace,
   lightbulb: Lightbulb,
   leaf: Leaf,
   heart: Heart,

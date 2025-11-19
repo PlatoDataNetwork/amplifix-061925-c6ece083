@@ -46,8 +46,8 @@
         },
         {
           "label": "Industry",
-          "value": "Biotech",
-          "icon": "microscope"
+          "value": "Facial Analysis",
+          "icon": "scan-face"
         }
       ]
     },
