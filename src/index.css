@@ -261,3 +261,57 @@
   height: 1px !important;
   opacity: 0 !important;
 }
+
+/* ReactQuill Editor Styles */
+.ql-container {
+  @apply bg-background text-foreground;
+}
+
+.ql-editor {
+  @apply min-h-[400px] text-foreground;
+}
+
+.ql-toolbar {
+  @apply bg-card border-border;
+}
+
+.ql-stroke {
+  @apply stroke-foreground;
+}
+
+.ql-fill {
+  @apply fill-foreground;
+}
+
+.ql-picker-label {
+  @apply text-foreground;
+}
+
+.ql-picker-options {
+  @apply bg-card border-border;
+}
+
+.ql-editor.ql-blank::before {
+  @apply text-muted-foreground;
+}
+
+.dark .ql-container {
+  @apply bg-card;
+}
+
+.dark .ql-toolbar {
+  @apply border-border;
+}
+
+.dark .ql-stroke {
+  @apply stroke-foreground;
+}
+
+.dark .ql-fill {
+  @apply fill-foreground;
+}
+
+.dark .ql-picker-label,
+.dark .ql-picker-options {
+  @apply text-foreground bg-card;
+}

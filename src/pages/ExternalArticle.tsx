@@ -4,9 +4,10 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, User, Clock, Share2, Twitter, Linkedin, Facebook, Mail, Link as LinkIcon } from "lucide-react";
+import { ArrowLeft, Calendar, User, Clock, Share2, Twitter, Linkedin, Facebook, Mail, Link as LinkIcon, Edit } from "lucide-react";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { toast } from "sonner";
 import { sanitizeText, formatArticleContent, formatArticleTags } from "@/utils/articleFormatting";
 
@@ -14,6 +15,7 @@ const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { verticals } = usePlatoVerticals();
+  const { isAdmin } = useAdminCheck();
   const [article, setArticle] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [tags, setTags] = useState<string[]>([]);
@@ -227,14 +229,26 @@ if (!article) {
               </div>
               
               {/* Back Button - Right Aligned */}
-              <Button 
-                onClick={() => navigate(`/intel/${article.vertical_slug || ''}`)} 
-                variant="ghost" 
-                className="ml-auto text-blue-500 hover:text-blue-400"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Intelligence
-              </Button>
+              <div className="flex items-center gap-2 ml-auto">
+                {isAdmin && article?.id && (
+                  <Button 
+                    onClick={() => navigate(`/admin/articles/edit/${article.id}`)} 
+                    variant="outline"
+                    className="gap-2"
+                  >
+                    <Edit className="h-4 w-4" />
+                    Edit Article
+                  </Button>
+                )}
+                <Button 
+                  onClick={() => navigate(`/intel/${article.vertical_slug || ''}`)} 
+                  variant="ghost" 
+                  className="text-blue-500 hover:text-blue-400"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to Intelligence
+                </Button>
+              </div>
             </div>
           </div>
 
