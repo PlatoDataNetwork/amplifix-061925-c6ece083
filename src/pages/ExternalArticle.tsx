@@ -80,6 +80,12 @@ const formatArticleContent = (text?: string | null) => {
     .map((p) => p.trim())
     .filter(Boolean);
 
+  // If the first paragraph is a numbered "1." heading, merge it with the next
+  // paragraph so the text appears directly beneath the heading with no extra gap.
+  if (paragraphs.length >= 2 && /^<strong\b[^>]*>1\.\s+[^<]+<\/strong>$/m.test(paragraphs[0])) {
+    paragraphs.splice(0, 2, `${paragraphs[0]}<br/>${paragraphs[1]}`);
+  }
+
   return paragraphs
     .map((p) => {
       if (/^<h[1-6]\b|^<ul\b|^<ol\b|^<li\b|^<p\b|^<hr\b/i.test(p)) {
