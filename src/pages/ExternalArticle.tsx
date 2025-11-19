@@ -237,7 +237,7 @@ if (!article) {
               </span>
             </div>
             
-            <h1 className="text-3xl md:text-5xl font-bold mb-2">
+            <h1 className="text-3xl md:text-5xl font-bold mb-6 pb-4 border-b border-border">
               {sanitizeText(article.title)}
             </h1>
 
@@ -254,51 +254,46 @@ if (!article) {
                 <Clock className="h-4 w-4" />
                 <span>{article.read_time}</span>
               </div>
-            </div>
-          </div>
-
-          {/* Share Section */}
-          <div className="mb-6 flex items-center gap-3 pb-6 border-b border-border">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Share2 className="h-4 w-4" />
-              <span>Share:</span>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => shareArticle('twitter')}
-                className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
-                aria-label="Share on Twitter"
-              >
-                <Twitter className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => shareArticle('linkedin')}
-                className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
-                aria-label="Share on LinkedIn"
-              >
-                <Linkedin className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => shareArticle('facebook')}
-                className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
-                aria-label="Share on Facebook"
-              >
-                <Facebook className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => shareArticle('email')}
-                className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
-                aria-label="Share via Email"
-              >
-                <Mail className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => shareArticle('copy')}
-                className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
-                aria-label="Copy Link"
-              >
-                <LinkIcon className="h-4 w-4" />
-              </button>
+              
+              {/* Share Section Inline */}
+              <div className="flex items-center gap-2 ml-auto">
+                <Share2 className="h-4 w-4" />
+                <button
+                  onClick={() => shareArticle('twitter')}
+                  className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                  aria-label="Share on Twitter"
+                >
+                  <Twitter className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => shareArticle('linkedin')}
+                  className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                  aria-label="Share on LinkedIn"
+                >
+                  <Linkedin className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => shareArticle('facebook')}
+                  className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                  aria-label="Share on Facebook"
+                >
+                  <Facebook className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => shareArticle('email')}
+                  className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                  aria-label="Share via Email"
+                >
+                  <Mail className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => shareArticle('copy')}
+                  className="p-2 rounded-lg bg-card border border-border hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-colors"
+                  aria-label="Copy Link"
+                >
+                  <LinkIcon className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           </div>
 
