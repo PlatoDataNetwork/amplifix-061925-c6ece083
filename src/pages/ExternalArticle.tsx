@@ -236,7 +236,7 @@ if (!article) {
           {/* Article Header */}
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-6">
-              <span className="bg-transparent border border-blue-500 text-blue-500 px-3 py-1 text-sm">
+              <span className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer">
                 AR/VR
               </span>
             </div>
@@ -303,9 +303,9 @@ if (!article) {
               
               {/* Back Button - Right Aligned */}
               <Button 
-                onClick={() => navigate('/intel')} 
+                onClick={() => navigate(`/intel/${article.vertical_slug || ''}`)} 
                 variant="ghost" 
-                className="ml-auto"
+                className="ml-auto text-blue-500 hover:text-blue-400"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Intelligence
