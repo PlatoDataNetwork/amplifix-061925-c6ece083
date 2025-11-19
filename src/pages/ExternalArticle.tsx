@@ -64,8 +64,8 @@ const formatArticleContent = (text?: string | null) => {
   // Make numbered list headers bold ONLY (e.g., "1. Lightweight Design", "2. High-Resolution Displays")
   cleaned = cleaned.replace(/^(\d+\.\s+[A-Z][A-Za-z\s\-]+)\s*$/gm, "<strong>$1</strong>");
   
-  // Add extra line break after "several innovative features:" or similar introductory lines
-  cleaned = cleaned.replace(/(several innovative features:)/gi, "$1\n\n");
+  // Add extra line break after introductory lines that precede lists (lines ending with colon)
+  cleaned = cleaned.replace(/([^:\n]+:)(\n)(\d+\.)/g, "$1\n\n$3");
 
   // Normalize multiple blank lines
   cleaned = cleaned.replace(/\n{3,}/g, "\n\n");
