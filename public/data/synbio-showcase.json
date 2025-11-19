@@ -185,6 +185,48 @@
         }
       ]
     },
+    "nutraceuticals": {
+      "title": "Healing Force™",
+      "subtitle": "Nutraceuticals Division",
+      "description": "Addressing the nutritional concerns of people worried about stress, anxiety, lack of energy, and immunity",
+      "nature_recipe": {
+        "title": "Nature's Recipe",
+        "description": "A premium nutraceutical blend crafted from potent botanical extracts used to ease occasional anxiety and stress, supporting a balanced mood. Healing Force™ is created to nutritionally support the body's inherent ability to respond to the symptoms of overly anxious moods and promote a sense of calm and relaxation."
+      },
+      "ingredients": [
+        { "name": "Kanna", "icon": "leaf" },
+        { "name": "Passionflower", "icon": "leaf" },
+        { "name": "Lemon Balm", "icon": "leaf" },
+        { "name": "Ashwagandha", "icon": "leaf" }
+      ],
+      "strategy": {
+        "title": "Go-To-Market Strategy",
+        "manufacturing": {
+          "title": "Manufacturing",
+          "description": "Doctor-formulated with a breakthrough manufacturing process that combines ingredients in optimal extract strengths and dose levels."
+        },
+        "phases": [
+          {
+            "title": "Phase 1",
+            "description": "Employing direct response television strategy including:",
+            "items": [
+              "Infomercials",
+              "Digital/Social",
+              "Traditional Radio",
+              "Sponsored Podcast"
+            ]
+          },
+          {
+            "title": "Phase 2",
+            "items": [
+              "Print, Direct Mail & Catalog",
+              "International Marketing",
+              "Member Subscriptions/loyalty"
+            ]
+          }
+        ]
+      }
+    },
     "investment_highlights": {
       "title": "Investment Opportunity",
       "description": "Synbio International represents a unique investment opportunity in the convergence of AI technology and natural wellness solutions.",
