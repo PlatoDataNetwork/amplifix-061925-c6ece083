@@ -41,8 +41,8 @@
           "icon": "target"
         },
         {
-          "label": "Market",
-          "value": "OTC",
+          "label": "Reporting",
+          "value": "OTC:SYIN",
           "icon": "trending-up"
         },
         {
