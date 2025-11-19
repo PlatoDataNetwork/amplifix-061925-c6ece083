@@ -64,16 +64,34 @@ const Showcase = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {showcaseData.showcase.showcases.map((showcase: any, index: number) => (
-                <div key={index} className={`relative bg-card p-8 rounded-xl border ${showcase.disabled ? 'border-dashed border-border opacity-60' : 'border-border hover:shadow-lg transition-shadow'}`}>
+                <div key={index} className={`relative bg-gradient-to-br ${
+                  showcase.disabled 
+                    ? 'from-card to-muted/50 border-dashed border-border opacity-60' 
+                    : index % 4 === 0 
+                      ? 'from-card via-card to-highlight-blue/5 border-highlight-blue/20 hover:border-highlight-blue/40' 
+                      : index % 4 === 1 
+                        ? 'from-card via-card to-purple-500/5 border-purple-500/20 hover:border-purple-500/40'
+                        : index % 4 === 2
+                          ? 'from-card via-card to-green-500/5 border-green-500/20 hover:border-green-500/40'
+                          : 'from-card via-card to-orange-500/5 border-orange-500/20 hover:border-orange-500/40'
+                } p-8 rounded-xl border hover:shadow-xl transition-all duration-300`}>
                   {/* Header with company info */}
                   <div className="flex items-center gap-4 mb-6">
-                     <div className={`w-12 h-12 rounded-full ${showcase.disabled ? 'bg-muted' : 'bg-transparent border border-highlight-blue'} flex items-center justify-center flex-shrink-0 shadow-sm`}>
+                     <div className={`w-12 h-12 rounded-full ${
+                       showcase.disabled 
+                         ? 'bg-muted' 
+                         : index % 4 === 0 
+                           ? 'bg-gradient-to-br from-highlight-blue/10 to-highlight-blue/30 border-highlight-blue/50' 
+                           : index % 4 === 1 
+                             ? 'bg-gradient-to-br from-purple-500/10 to-purple-500/30 border-purple-500/50'
+                             : index % 4 === 2
+                               ? 'bg-gradient-to-br from-green-500/10 to-green-500/30 border-green-500/50'
+                               : 'bg-gradient-to-br from-orange-500/10 to-orange-500/30 border-orange-500/50'
+                     } flex items-center justify-center flex-shrink-0 shadow-sm border`}>
                       {showcase.company_name === 'SILO Pharma Inc.' && <Pill className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />}
-                      {showcase.company_name === 'Int\'l Land Alliance' && <Home className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />}
+                      {showcase.company_name === 'Int\'l Land Alliance' && <Home className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-purple-500'}`} />}
                       {showcase.company_name === 'Karbon-X' && (
-                        <div className="w-full h-full rounded-full bg-transparent border border-highlight-blue flex items-center justify-center">
-                          <span className="text-highlight-blue text-2xl font-bold">K</span>
-                        </div>
+                        <span className="text-green-500 text-2xl font-bold">K</span>
                       )}
                      {showcase.company_name === 'Micropolis' && (
                         <img src="/lovable-uploads/micropolis-icon.png" alt="Micropolis" className="w-full h-full object-cover rounded-full" />
@@ -85,21 +103,27 @@ const Showcase = () => {
                         </div>
                       )}
                       {showcase.company_name === 'Naoris Protocol' && (
-                        <div className="w-full h-full rounded-full bg-transparent border border-highlight-blue flex items-center justify-center">
-                          <img src="/lovable-uploads/naoris-icon.png" alt="Naoris Protocol" className="w-8 h-8 object-contain" />
-                        </div>
+                        <img src="/lovable-uploads/naoris-icon.png" alt="Naoris Protocol" className="w-8 h-8 object-contain" />
                       )}
                       {showcase.company_name === 'Abatis' && (
-                        <div className="w-full h-full rounded-full bg-transparent border border-highlight-blue flex items-center justify-center">
-                          <span className="text-highlight-blue text-2xl font-bold">A</span>
-                        </div>
+                        <span className="text-green-500 text-2xl font-bold">A</span>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className={`text-xl font-bold whitespace-nowrap ${showcase.disabled ? 'text-muted-foreground' : ''}`}>
                         {showcase.company_name}
                       </h3>
-                      <p className="text-sm text-muted-foreground mt-1">
+                      <p className={`text-sm font-semibold mt-1 ${
+                        showcase.disabled 
+                          ? 'text-muted-foreground'
+                          : index % 4 === 0 
+                            ? 'text-highlight-blue' 
+                            : index % 4 === 1 
+                              ? 'text-purple-500'
+                              : index % 4 === 2
+                                ? 'text-green-500'
+                                : 'text-orange-500'
+                      }`}>
                         {showcase.ticker || showcase.subtitle}
                       </p>
                     </div>
@@ -157,14 +181,34 @@ const Showcase = () => {
                   {showcase.link ? (
                     showcase.link.startsWith('http') ? (
                       <a href={showcase.link} target="_blank" rel="noopener noreferrer">
-                        <Button className={`w-full ${showcase.disabled ? '' : 'bg-highlight-blue hover:bg-highlight-blue/90 text-white'}`} disabled={showcase.disabled}>
+                        <Button className={`w-full ${
+                          showcase.disabled 
+                            ? '' 
+                            : index % 4 === 0 
+                              ? 'bg-highlight-blue hover:bg-highlight-blue/90 text-white' 
+                              : index % 4 === 1 
+                                ? 'bg-purple-500 hover:bg-purple-600 text-white'
+                                : index % 4 === 2
+                                  ? 'bg-green-500 hover:bg-green-600 text-white'
+                                  : 'bg-orange-500 hover:bg-orange-600 text-white'
+                        }`} disabled={showcase.disabled}>
                           {showcase.button_text}
                           {!showcase.disabled && <ExternalLink className="ml-2 h-4 w-4" />}
                         </Button>
                       </a>
                     ) : (
                       <LanguageAwareLink to={showcase.link}>
-                        <Button className={`w-full ${showcase.disabled ? '' : 'bg-highlight-blue hover:bg-highlight-blue/90 text-white'}`} disabled={showcase.disabled}>
+                        <Button className={`w-full ${
+                          showcase.disabled 
+                            ? '' 
+                            : index % 4 === 0 
+                              ? 'bg-highlight-blue hover:bg-highlight-blue/90 text-white' 
+                              : index % 4 === 1 
+                                ? 'bg-purple-500 hover:bg-purple-600 text-white'
+                                : index % 4 === 2
+                                  ? 'bg-green-500 hover:bg-green-600 text-white'
+                                  : 'bg-orange-500 hover:bg-orange-600 text-white'
+                        }`} disabled={showcase.disabled}>
                           {showcase.button_text}
                           {!showcase.disabled && <ExternalLink className="ml-2 h-4 w-4" />}
                         </Button>
