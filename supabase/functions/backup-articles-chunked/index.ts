@@ -85,13 +85,54 @@ Deno.serve(async (req) => {
     for (let i = 0; i < backupRecords.length; i += insertBatchSize) {
       const batch = backupRecords.slice(i, i + insertBatchSize);
       
-      const { error: insertError } = await supabase
-        .from('article_backups')
-        .insert(batch);
+      // Use SQL insert to bypass schema cache issues
+      const values = batch.map(record => {
+        const escapedTitle = record.title.replace(/'/g, "''");
+        const escapedContent = record.content ? record.content.replace(/'/g, "''") : null;
+        const escapedExcerpt = record.excerpt ? record.excerpt.replace(/'/g, "''") : null;
+        const escapedAuthor = record.author ? record.author.replace(/'/g, "''") : null;
+        const escapedImageUrl = record.image_url ? record.image_url.replace(/'/g, "''") : null;
+        const escapedDescription = record.backup_description ? record.backup_description.replace(/'/g, "''") : null;
+        
+        return `(
+          '${record.backup_name}',
+          ${escapedDescription ? `'${escapedDescription}'` : 'NULL'},
+          '${record.article_id}',
+          ${record.post_id || 'NULL'},
+          '${escapedTitle}',
+          ${escapedContent ? `'${escapedContent}'` : 'NULL'},
+          ${escapedExcerpt ? `'${escapedExcerpt}'` : 'NULL'},
+          ${escapedAuthor ? `'${escapedAuthor}'` : 'NULL'},
+          ${escapedImageUrl ? `'${escapedImageUrl}'` : 'NULL'},
+          '${record.vertical_slug}',
+          '${record.published_at}',
+          ${record.metadata ? `'${JSON.stringify(record.metadata)}'::jsonb` : 'NULL'},
+          ${record.created_by ? `'${record.created_by}'` : 'NULL'}
+        )`;
+      }).join(',');
+
+      const insertQuery = `
+        INSERT INTO public.article_backups (
+          backup_name, backup_description, article_id, post_id, title, 
+          content, excerpt, author, image_url, vertical_slug, 
+          published_at, metadata, created_by
+        ) VALUES ${values}
+      `;
+
+      const { error: insertError } = await supabase.rpc('execute_sql', { 
+        sql: insertQuery 
+      });
 
       if (insertError) {
-        console.error('Error inserting backup batch:', insertError);
-        throw insertError;
+        // Fallback to regular insert if RPC fails
+        const { error: fallbackError } = await supabase
+          .from('article_backups')
+          .insert(batch);
+
+        if (fallbackError) {
+          console.error('Error inserting backup batch:', fallbackError);
+          throw fallbackError;
+        }
       }
 
       totalInserted += batch.length;
