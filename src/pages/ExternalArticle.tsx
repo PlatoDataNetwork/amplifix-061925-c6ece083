@@ -84,10 +84,13 @@ const formatArticleContent = (text?: string | null) => {
 
   for (let i = 0; i < paragraphs.length; i++) {
     const current = paragraphs[i];
+    // Detect all heading types: numbered headings, H2, H3
     const isNumberedHeading = /^<strong\b[^>]*>\d+\.\s+[^<]+<\/strong>$/.test(current);
-    const isQuestionHeader = /^<h2\b[^>]*>[^<]+\?<\/h2>$/.test(current);
+    const isH2Header = /^<h2\b[^>]*>[^<]+<\/h2>$/.test(current);
+    const isH3Header = /^<h3\b[^>]*>[^<]+<\/h3>$/.test(current);
+    const isAnyHeading = isNumberedHeading || isH2Header || isH3Header;
 
-    if ((isNumberedHeading || isQuestionHeader) && i + 1 < paragraphs.length) {
+    if (isAnyHeading && i + 1 < paragraphs.length) {
       const body = paragraphs[i + 1];
       mergedParagraphs.push(`<p>${current}<br/>${body}<\/p>`);
       i++; // Skip the next paragraph since it's already merged
