@@ -63,6 +63,9 @@ const formatArticleContent = (text?: string | null) => {
   
   // Make numbered list headers bold ONLY (e.g., "1. Lightweight Design", "2. High-Resolution Displays")
   cleaned = cleaned.replace(/^(\d+\.\s+[A-Z][A-Za-z\s\-]+)\s*$/gm, "<strong>$1</strong>");
+  
+  // Add horizontal line before first numbered list item (1.)
+  cleaned = cleaned.replace(/(<strong>1\.\s+[^<]+<\/strong>)/g, "<hr class='my-6 border-border' />\n$1");
 
   // Normalize multiple blank lines
   cleaned = cleaned.replace(/\n{3,}/g, "\n\n");
@@ -236,7 +239,7 @@ if (!article) {
           {/* Article Header */}
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-6">
-              <span className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer">
+              <span className="px-4 py-2 bg-blue-500 text-white text-sm font-medium transition-colors">
                 AR/VR
               </span>
             </div>
