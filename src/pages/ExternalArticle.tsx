@@ -319,7 +319,7 @@ if (!article) {
           {/* Article Content */}
           <div className="prose prose-invert max-w-none mb-2">
             <div 
-              className="text-foreground leading-relaxed whitespace-pre-wrap [&>*]:mb-2 [&>h2]:mt-6 [&>h2]:mb-4 [&>h2]:text-3xl [&>h2]:font-bold [&>h3]:mt-4 [&>h3]:text-xl [&>h3]:font-bold"
+              className="text-foreground leading-relaxed whitespace-pre-wrap [&>*]:mb-2 [&>h2]:mt-6 [&>h2]:mb-4 [&>h2]:text-3xl [&>h2]:font-bold [&>h2]:leading-tight [&>h3]:mt-4 [&>h3]:text-xl [&>h3]:font-bold"
               dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content || article.excerpt) }}
             />
           </div>
@@ -349,15 +349,27 @@ if (!article) {
                   const uniqueTags = new Set<string>();
                   const allTags = [...tags];
                   
-                  // Add vertical as first tag if it exists
+                  // Add vertical as first tag if it exists - display as AR-VR
                   if (article.vertical_slug) {
-                    allTags.unshift(article.vertical_slug);
+                    allTags.unshift('AR-VR');
                   }
                   
                   return allTags
-                    .map((tag: string) => {
+                    .map((tag: string, index: number) => {
                       const singleWord = tag.split(/[\s-]+/)[0];
                       const lowerWord = singleWord.toLowerCase();
+                      
+                      // For the first tag (vertical), skip uniqueness check
+                      if (index === 0 && article.vertical_slug) {
+                        return (
+                          <span 
+                            key="vertical-tag"
+                            className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer"
+                          >
+                            #AR-VR
+                          </span>
+                        );
+                      }
                       
                       // Skip if we've already seen this word
                       if (uniqueTags.has(lowerWord)) {
