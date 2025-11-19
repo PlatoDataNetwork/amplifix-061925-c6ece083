@@ -93,7 +93,9 @@ const formatArticleContent = (text?: string | null) => {
 
     if (isAnyHeading && i + 1 < paragraphs.length) {
       const body = paragraphs[i + 1];
-      mergedParagraphs.push(`<p>${current}<br/>${body}<\/p>`);
+      const isFirstSection = mergedParagraphs.length === 0;
+      const pClass = isFirstSection ? "" : " class='mt-4'";
+      mergedParagraphs.push(`<p${pClass}>${current}<br/>${body}<\/p>`);
       i++; // Skip the next paragraph since it's already merged
     } else {
       mergedParagraphs.push(current);
