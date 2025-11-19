@@ -10,7 +10,80 @@ import { usePlatoDataFeed } from "@/hooks/usePlatoDataFeed";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
-import { sanitizeText, formatArticleContent } from "@/utils/articleFormatter";
+const sanitizeText = (text?: string | null) => {
+  if (!text) return "";
+  return text
+    .replace(/<a\b[^>]*>/gi, "")
+    .replace(/<\/a>/gi, "")
+    .replace(/https?:\/\/\S+/gi, "")
+    .replace(/\[.*?\]\(.*?\)/g, "")
+    .replace(/Source:?:?\s*/gi, "")
+    .replace(/Link:?:?\s*/gi, "")
+    .replace(/---/g, "")
+    .replace(/\*/g, "")
+    // Normalize newlines and remove extra blank space/indentation
+    .replace(/\r\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/^[ \t]+/gm, "")
+    .trim();
+};
+
+const formatArticleContent = (text?: string | null) => {
+  if (!text) return "";
+  let cleaned = text
+    .replace(/<a\b[^>]*>/gi, "")
+    .replace(/<\/a>/gi, "")
+    .replace(/https?:\/\/\S+/gi, "")
+    .replace(/\[.*?\]\(.*?\)/g, "")
+    .replace(/Source:?:?\s*/gi, "")
+    .replace(/Link:?:?\s*/gi, "")
+    .replace(/---/g, "")
+    .replace(/\r\n/g, "\n");
+
+  // Convert markdown-style headings (**Heading**) on their own line to <h2>
+  cleaned = cleaned.replace(/^\s*\*\*(.+?)\*\*\s*$/gm, "<h2>$1<\/h2>");
+
+  // Convert remaining bold markers to <strong>
+  cleaned = cleaned.replace(/\*\*(.+?)\*\*/g, "<strong>$1<\/strong>");
+  
+  // Make question headers bold (lines ending with ?)
+  cleaned = cleaned.replace(/^\s*([A-Z][^?\n]+\?)\s*$/gm, "<h2>$1</h2>");
+  
+  // Make title-case section headers bold (lines with multiple capital letters, likely headers)
+  cleaned = cleaned.replace(/^\s*([A-Z][A-Za-z\s]+(?:Prototypes|Features|Questions|Air|Dream)[A-Za-z\s]*)\s*$/gm, (match) => {
+    // Don't double-wrap if already wrapped
+    if (match.includes('<h2>') || match.includes('<strong>')) return match;
+    // Check if it has multiple capital letters (likely a title)
+    const capitalCount = (match.match(/[A-Z]/g) || []).length;
+    if (capitalCount >= 3) {
+      return `<h2>${match.trim()}</h2>`;
+    }
+    return match;
+  });
+  
+  // Make numbered list headers bold ONLY (e.g., "1. Lightweight Design", "2. High-Resolution Displays")
+  cleaned = cleaned.replace(/^(\d+\.\s+[A-Z][A-Za-z\s\-]+)\s*$/gm, "<strong>$1</strong>");
+
+  // Normalize multiple blank lines
+  cleaned = cleaned.replace(/\n{3,}/g, "\n\n");
+
+  // Remove leading indentation
+  cleaned = cleaned.replace(/^[ \t]+/gm, "").trim();
+
+  const paragraphs = cleaned
+    .split(/\n{2,}/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+
+  return paragraphs
+    .map((p) => {
+      if (/^<h[1-6]\b|^<ul\b|^<ol\b|^<li\b|^<p\b|^<hr\b/i.test(p)) {
+        return p;
+      }
+      return `<p>${p}<\/p>`;
+    })
+    .join("\n");
+};
 
 const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
@@ -163,7 +236,7 @@ if (!article) {
           {/* Article Header */}
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-6">
-              <span className="px-4 py-2 bg-blue-500 text-white text-sm font-medium transition-colors">
+              <span className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer">
                 AR/VR
               </span>
             </div>
@@ -257,7 +330,7 @@ if (!article) {
           {/* Article Content */}
           <div className="prose prose-invert max-w-none mb-2">
             <div 
-              className="text-foreground leading-relaxed [&>div]:mb-6 [&>p]:mb-4 [&>p]:leading-relaxed"
+              className="text-foreground leading-relaxed whitespace-pre-wrap [&>*]:mb-2 [&>h2]:mt-6 [&>h2]:mb-2 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:leading-tight [&>h3]:mt-4 [&>h3]:text-xl [&>h3]:font-bold"
               dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content || article.excerpt) }}
             />
           </div>
