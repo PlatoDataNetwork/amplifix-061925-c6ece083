@@ -20,6 +20,7 @@ import MicropolisShowcase from "./pages/MicropolisShowcase";
 import MicropolisPresentation from "./pages/MicropolisPresentation";
 import InternationalLandAllianceShowcase from "./pages/InternationalLandAllianceShowcase";
 import SynbioShowcase from "./pages/SynbioShowcase";
+import SynbioPresentation from "./pages/SynbioPresentation";
 import AbatisShowcase from "./pages/AbatisShowcase";
 import FacialDXShowcase from "./pages/FacialDXShowcase";
 import Showcase from "./pages/Showcase";
@@ -88,6 +89,7 @@ const App = () => (
               <Route path="/showcase/micropolis/presentation" element={<MicropolisPresentation />} />
               <Route path="/showcase/international-land-alliance" element={<InternationalLandAllianceShowcase />} />
               <Route path="/showcase/synbio" element={<SynbioShowcase />} />
+              <Route path="/showcase/synbio-presentation" element={<SynbioPresentation />} />
               <Route path="/showcase/abatis" element={<AbatisShowcase />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />

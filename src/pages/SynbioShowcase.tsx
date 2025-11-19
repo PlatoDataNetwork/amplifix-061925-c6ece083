@@ -41,6 +41,7 @@ interface SynbioData {
         primary: { text: string; url: string; external: boolean };
         secondary: { text: string; url: string; external: boolean };
         tertiary: { text: string; url: string; external: boolean };
+        quaternary?: { text: string; url: string; external: boolean };
       };
       stats: Array<{ label: string; value: string; icon: string; subvalue?: string }>;
     };
@@ -211,12 +212,28 @@ const SynbioShowcase = () => {
                       <ExternalLink className="ml-2 h-4 w-4" />
                     </Button>
                   </a>
-                  <a href={content.hero.buttons.tertiary.url}>
-                    <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors">
-                      {content.hero.buttons.tertiary.text}
-                      <ExternalLink className="ml-2 h-4 w-4" />
-                    </Button>
-                  </a>
+                  {content.hero.buttons.tertiary.external ? (
+                    <a href={content.hero.buttons.tertiary.url} target="_blank" rel="noopener noreferrer">
+                      <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors">
+                        {content.hero.buttons.tertiary.text}
+                        <ExternalLink className="ml-2 h-4 w-4" />
+                      </Button>
+                    </a>
+                  ) : (
+                    <LanguageAwareLink to={content.hero.buttons.tertiary.url}>
+                      <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors">
+                        {content.hero.buttons.tertiary.text}
+                      </Button>
+                    </LanguageAwareLink>
+                  )}
+                  {content.hero.buttons.quaternary && (
+                    <a href={content.hero.buttons.quaternary.url} target="_blank" rel="noopener noreferrer">
+                      <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors">
+                        {content.hero.buttons.quaternary.text}
+                        <ExternalLink className="ml-2 h-4 w-4" />
+                      </Button>
+                    </a>
+                  )}
                 </div>
               </div>
 
