@@ -187,12 +187,12 @@ const SynbioShowcase = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
                 <div className="inline-block mb-6">
-                  <div className="bg-primary/10 text-primary rounded-full px-4 py-2 border border-primary/20 text-sm font-medium">
+                  <div className="bg-highlight-blue/10 text-highlight-blue rounded-full px-4 py-2 border border-highlight-blue/20 text-sm font-medium">
                     {content.hero.badge}
                   </div>
                 </div>
                 <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
-                  <span className="text-primary">{content.hero.subtitle}</span><br />
+                  <span className="text-highlight-blue">{content.hero.subtitle}</span><br />
                   {content.hero.title}
                 </h1>
                 <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
@@ -200,7 +200,7 @@ const SynbioShowcase = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <a href={content.hero.buttons.primary.url} target="_blank" rel="noopener noreferrer">
-                    <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+                    <Button size="lg" className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors">
                       {content.hero.buttons.primary.text}
                       <ExternalLink className="ml-2 h-4 w-4" />
                     </Button>
@@ -225,9 +225,9 @@ const SynbioShowcase = () => {
                 {content.hero.stats.map((stat, index) => {
                   const Icon = iconMap[stat.icon];
                   return (
-                    <Card key={index} className="bg-card border-border hover:border-primary/50 transition-colors">
+                    <Card key={index} className="bg-card border-border hover:border-highlight-blue/50 transition-colors">
                       <CardContent className="p-6">
-                        {Icon && <Icon className="h-8 w-8 text-primary mb-3" />}
+                        {Icon && <Icon className="h-8 w-8 text-highlight-blue mb-3" />}
                          <p className="text-3xl font-bold text-foreground mb-1">{stat.value}</p>
                          {stat.subvalue && (
                            <p className="text-3xl font-bold text-foreground mb-1">{stat.subvalue}</p>
@@ -284,21 +284,21 @@ const SynbioShowcase = () => {
                     <CardContent className="p-8">
                       <div className="flex flex-wrap gap-2 mb-4">
                         {program.tags.map((tag, tagIndex) => (
-                          <span key={tagIndex} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                          <span key={tagIndex} className="bg-highlight-blue/10 text-highlight-blue px-3 py-1 rounded-full text-sm">
                             {tag}
                           </span>
                         ))}
                       </div>
                       <h3 className="text-3xl font-bold mb-2 text-foreground">{program.name}</h3>
-                      <h4 className="text-xl text-primary mb-4">{program.subtitle}</h4>
+                      <h4 className="text-xl text-highlight-blue mb-4">{program.subtitle}</h4>
                       <p className="text-muted-foreground text-lg mb-6 leading-relaxed">
                         {program.description}
                       </p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {program.key_features.map((feature, featureIndex) => (
                           <div key={featureIndex} className="flex items-start gap-3">
-                            <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                              <div className="h-2 w-2 rounded-full bg-primary"></div>
+                            <div className="h-6 w-6 rounded-full bg-highlight-blue/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                              <div className="h-2 w-2 rounded-full bg-highlight-blue"></div>
                             </div>
                             <p className="text-muted-foreground">{feature}</p>
                           </div>
@@ -327,9 +327,9 @@ const SynbioShowcase = () => {
                 {content.competitive_advantages.advantages.map((advantage, index) => {
                   const Icon = iconMap[advantage.icon];
                   return (
-                    <Card key={index} className="bg-card border-border hover:border-primary/50 transition-all">
+                    <Card key={index} className="bg-card border-border hover:border-highlight-blue/50 transition-all">
                       <CardContent className="p-6">
-                        {Icon && <Icon className="h-10 w-10 text-primary mb-4" />}
+                        {Icon && <Icon className="h-10 w-10 text-highlight-blue mb-4" />}
                         <h3 className="text-xl font-semibold mb-3 text-foreground">{advantage.title}</h3>
                         <p className="text-muted-foreground leading-relaxed">{advantage.description}</p>
                       </CardContent>
@@ -411,7 +411,7 @@ const SynbioShowcase = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
-                <span className="text-primary font-semibold text-lg">{content.nutraceuticals.subtitle}</span>
+                <span className="text-highlight-blue font-semibold text-lg">{content.nutraceuticals.subtitle}</span>
                 <h2 className="text-5xl font-bold mb-4 text-foreground mt-2">
                   {content.nutraceuticals.title}
                 </h2>
@@ -437,9 +437,9 @@ const SynbioShowcase = () => {
                   {content.nutraceuticals.ingredients.map((ingredient, index) => {
                     const Icon = iconMap[ingredient.icon];
                     return (
-                      <Card key={index} className="bg-card border-border hover:border-primary/50 transition-all">
+                      <Card key={index} className="bg-card border-border hover:border-highlight-blue/50 transition-all">
                         <CardContent className="p-6 text-center">
-                          {Icon && <Icon className="h-12 w-12 text-primary mx-auto mb-3" />}
+                          {Icon && <Icon className="h-12 w-12 text-highlight-blue mx-auto mb-3" />}
                           <p className="font-semibold text-foreground">{ingredient.name}</p>
                         </CardContent>
                       </Card>
@@ -478,8 +478,8 @@ const SynbioShowcase = () => {
                         <ul className="space-y-2">
                           {phase.items.map((item, itemIndex) => (
                             <li key={itemIndex} className="flex items-start gap-3">
-                              <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <div className="h-2 w-2 rounded-full bg-primary"></div>
+                              <div className="h-6 w-6 rounded-full bg-highlight-blue/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <div className="h-2 w-2 rounded-full bg-highlight-blue"></div>
                               </div>
                               <p className="text-muted-foreground">{item}</p>
                             </li>
@@ -509,9 +509,9 @@ const SynbioShowcase = () => {
                 {content.investment_highlights.highlights.map((highlight, index) => {
                   const Icon = iconMap[highlight.icon];
                   return (
-                    <Card key={index} className="bg-card border-border">
+                    <Card key={index} className="bg-card border-border hover:border-highlight-blue/50 transition-all">
                       <CardContent className="p-8">
-                        {Icon && <Icon className="h-12 w-12 text-primary mb-4" />}
+                        {Icon && <Icon className="h-12 w-12 text-highlight-blue mb-4" />}
                         <h3 className="text-2xl font-semibold mb-3 text-foreground">{highlight.title}</h3>
                         <p className="text-muted-foreground text-lg leading-relaxed">{highlight.description}</p>
                       </CardContent>
@@ -524,7 +524,7 @@ const SynbioShowcase = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="bg-primary/5 py-20">
+        <div className="bg-highlight-blue/5 py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-4xl font-bold mb-6 text-foreground">{content.cta.title}</h2>
@@ -533,7 +533,7 @@ const SynbioShowcase = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href={content.cta.buttons.primary.link} target="_blank" rel="noopener noreferrer">
-                  <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  <Button size="lg" className="bg-highlight-blue text-white hover:bg-highlight-blue/90">
                     {content.cta.buttons.primary.text}
                     <ExternalLink className="ml-2 h-4 w-4" />
                   </Button>
@@ -561,7 +561,7 @@ const SynbioShowcase = () => {
                   href={content.footer.official_link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+                  className="text-highlight-blue hover:underline"
                 >
                   {content.footer.official_link.text}
                 </a>
