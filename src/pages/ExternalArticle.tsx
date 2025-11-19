@@ -49,6 +49,18 @@ const formatArticleContent = (text?: string | null) => {
   // Make question headers bold (lines ending with ?)
   cleaned = cleaned.replace(/^\s*([A-Z][^?\n]+\?)\s*$/gm, "<h2>$1</h2>");
   
+  // Make title-case section headers bold (lines with multiple capital letters, likely headers)
+  cleaned = cleaned.replace(/^\s*([A-Z][A-Za-z\s]+(?:Prototypes|Features|Questions|Air|Dream)[A-Za-z\s]*)\s*$/gm, (match) => {
+    // Don't double-wrap if already wrapped
+    if (match.includes('<h2>') || match.includes('<strong>')) return match;
+    // Check if it has multiple capital letters (likely a title)
+    const capitalCount = (match.match(/[A-Z]/g) || []).length;
+    if (capitalCount >= 3) {
+      return `<h2>${match.trim()}</h2>`;
+    }
+    return match;
+  });
+  
   // Make numbered list headers bold ONLY (e.g., "1. Lightweight Design")
   cleaned = cleaned.replace(/^(\d+\.\s+[A-Z][A-Za-z\s]+)\s*$/gm, "<strong>$1</strong>");
 
