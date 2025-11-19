@@ -62,6 +62,10 @@ const formatArticleContent = (text?: string | null) => {
       if (/^<h[1-6]\b|^<ul\b|^<ol\b|^<li\b|^<p\b|^<hr\b/i.test(p)) {
         return p;
       }
+      // Make numbered list headers bold (e.g., "1. Header Text")
+      if (/^\d+\.\s+(.+)/.test(p)) {
+        return `<p><strong>${p}</strong></p>`;
+      }
       return `<p>${p}<\/p>`;
     })
     .join("\n");
@@ -330,9 +334,8 @@ if (!article) {
                 rel="noopener noreferrer"
                 className="text-blue-500 hover:text-blue-400 transition-colors"
               >
-                Plato Data Intelligence
+                Plato Data Intelligence<span className="text-blue-500">.</span>
               </a>
-              .
             </p>
           </div>
 
