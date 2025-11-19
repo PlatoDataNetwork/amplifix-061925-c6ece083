@@ -94,9 +94,9 @@ const formatArticleContent = (text?: string | null) => {
 
     if (isAnyHeading && i + 1 < paragraphs.length) {
       const body = paragraphs[i + 1];
-      // Add strong spacing to all numbered sections except the first one
+      // Add spacing to all numbered sections except the first one
       const pAttrs = (isNumberedHeading && !firstNumberedSection)
-        ? " style='margin-top: 4rem !important;'"
+        ? " style='margin-top: 2.5rem !important;'"
         : "";
       if (isNumberedHeading) firstNumberedSection = false;
       mergedParagraphs.push(`<p${pAttrs}>${current}<br/>${body}<\/p>`);
