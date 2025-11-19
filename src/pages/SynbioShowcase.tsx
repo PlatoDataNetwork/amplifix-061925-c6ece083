@@ -42,7 +42,7 @@ interface SynbioData {
         secondary: { text: string; url: string; external: boolean };
         tertiary: { text: string; url: string; external: boolean };
       };
-      stats: Array<{ label: string; value: string; icon: string }>;
+      stats: Array<{ label: string; value: string; icon: string; subvalue?: string }>;
     };
     company_overview: {
       title: string;
@@ -206,8 +206,11 @@ const SynbioShowcase = () => {
                     <Card key={index} className="bg-card border-border hover:border-primary/50 transition-colors">
                       <CardContent className="p-6">
                         {Icon && <Icon className="h-8 w-8 text-primary mb-3" />}
-                        <p className="text-3xl font-bold text-foreground mb-1">{stat.value}</p>
-                        <p className="text-sm text-muted-foreground">{stat.label}</p>
+                         <p className="text-3xl font-bold text-foreground mb-1">{stat.value}</p>
+                         {stat.subvalue && (
+                           <p className="text-3xl font-bold text-foreground mb-1">{stat.subvalue}</p>
+                         )}
+                         <p className="text-sm text-muted-foreground">{stat.label}</p>
                       </CardContent>
                     </Card>
                   );
