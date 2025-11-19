@@ -47,7 +47,7 @@ const ArticleFormatter = () => {
 
       setBackupProgress({ backed: 0, total: totalCount, status: 'processing' });
 
-      const chunkSize = 5000;
+      const chunkSize = 1000;
       const totalChunks = Math.ceil(totalCount / chunkSize);
       let totalBacked = 0;
       let chunkIndex = 0;
