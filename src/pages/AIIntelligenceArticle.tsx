@@ -1,20 +1,7 @@
-import MainHeader from "@/components/MainHeader";
-import Footer from "@/components/Footer";
-import { User, Calendar, ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { LanguageAwareLink } from "@/components/LanguageAwareLink";
-import { useNavigate } from "react-router-dom";
+import ArticleLayout from "@/components/ArticleLayout";
 import { Helmet } from "react-helmet-async";
-import { useJsonData } from "@/hooks/useJsonData";
 
 const AIIntelligenceArticle = () => {
-  const { data: blogData } = useJsonData<any>('blog.json');
-  const navigate = useNavigate();
-  
-  const handleTagClick = (tag: string) => {
-    navigate(`/intel?tag=${encodeURIComponent(tag)}`);
-  };
-
   return (
     <>
       <Helmet>
@@ -22,42 +9,17 @@ const AIIntelligenceArticle = () => {
         <meta name="description" content="Exploring how artificial intelligence is revolutionizing investor relations and corporate communications." />
       </Helmet>
       
-      <div className="min-h-screen bg-background">
-        <MainHeader />
-        
-        <main className="container mx-auto px-4 py-12 max-w-4xl">
-          <div className="mb-8">
-            <LanguageAwareLink to="/intel">
-              <Button variant="ghost" className="mb-4">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Intel
-              </Button>
-            </LanguageAwareLink>
-            
-            <div className="flex items-center gap-4 mb-6">
-              <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm">Technology</span>
-            </div>
-            
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              The Future of AI-Powered Corporate Intelligence
-            </h1>
-            
-            <div className="flex items-center gap-6 mb-8">
-              <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">AmplifiX</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Sept 1, 2025</span>
-              </div>
-            </div>
-          </div>
-          
-          <article className="prose prose-lg max-w-none dark:prose-invert">
-            <p className="text-xl text-muted-foreground mb-8">
-              Artificial intelligence (AI) is rapidly reshaping the landscape of corporate communications and investor relations. What was once a process defined by manual reporting, reactive crisis management, and static stakeholder engagement is evolving into a dynamic, data-driven ecosystem powered by next-generation AI intelligence.
-            </p>
+      <ArticleLayout
+        title="The Future of AI-Powered Corporate Intelligence"
+        description="Artificial intelligence (AI) is rapidly reshaping the landscape of corporate communications and investor relations. What was once a process defined by manual reporting, reactive crisis management, and static stakeholder engagement is evolving into a dynamic, data-driven ecosystem powered by next-generation AI intelligence."
+        category="Technology"
+        author="AmplifiX"
+        date="Sept 1, 2025"
+        readTime="6 min read"
+      >
+        <p>
+          At the forefront of this transformation is the ability of AI to analyze massive volumes of data in real time, providing corporate leaders with actionable insights that drive smarter decisions. For investor relations teams, this means going beyond quarterly reporting. AI can detect market sentiment shifts, track competitor activity, and even anticipate investor behavior, equipping companies with the intelligence needed to communicate proactively rather than reactively.
+        </p>
             
             <p className="mb-6">
               At the forefront of this transformation is the ability of AI to analyze massive volumes of data in real time, providing corporate leaders with actionable insights that drive smarter decisions. For investor relations teams, this means going beyond quarterly reporting. AI can detect market sentiment shifts, track competitor activity, and even anticipate investor behavior, equipping companies with the intelligence needed to communicate proactively rather than reactively.
@@ -82,38 +44,7 @@ const AIIntelligenceArticle = () => {
             <p className="mb-6">
               Ultimately, the future of AI-powered corporate intelligence is about more than technology—it's about transformation. By merging advanced analytics with communication strategy, companies can navigate markets with confidence, anticipate challenges, and build deeper connections with their stakeholders. In this new era, corporate intelligence powered by AI isn't just a competitive advantage—it's fast becoming a necessity.
             </p>
-          </article>
-          
-          {/* Popular Tags Section */}
-          {blogData?.blog?.popular_tags && (
-            <div className="mt-12 pt-8 border-t border-border">
-              <h3 className="text-lg font-semibold mb-4">{blogData.blog.popular_tags.title}</h3>
-              <div className="flex flex-wrap gap-2">
-                {blogData.blog.popular_tags.tags.map((tag: string, index: number) => (
-                  <span
-                    key={index}
-                    onClick={() => handleTagClick(tag)}
-                    className="px-3 py-1 bg-muted text-muted-foreground rounded-full text-sm hover:bg-muted/80 transition-colors cursor-pointer"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-          
-          <div className="mt-8 pt-8 border-t border-border">
-            <LanguageAwareLink to="/intel">
-              <Button variant="outline">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to All Articles
-              </Button>
-            </LanguageAwareLink>
-          </div>
-        </main>
-        
-        <Footer />
-      </div>
+      </ArticleLayout>
     </>
   );
 };
