@@ -245,26 +245,36 @@ if (!article) {
           )}
 
           {/* Article Content */}
-          <div className="prose prose-invert max-w-none mb-2">
+          <div className="prose prose-invert max-w-none mb-6">
             <div 
               className="text-foreground leading-relaxed whitespace-pre-wrap [&>*]:mb-2 [&>h2]:mt-4 [&>h2]:text-2xl [&>h2]:font-bold [&>h3]:mt-4 [&>h3]:text-xl [&>h3]:font-bold"
               dangerouslySetInnerHTML={{ __html: formatArticleContent(article.content || article.excerpt) }}
             />
           </div>
 
+          {/* AmplifiX Branding */}
+          <div className="mb-6 text-center">
+            <p className="text-sm text-muted-foreground">
+              AmplifiX is Powered by Plato Data Intelligence. Your Vertical. Your Edge
+            </p>
+          </div>
+
           {/* Tags */}
           {tags && tags.length > 0 && (
-            <div className="border-t border-border pt-4">
-              <h3 className="text-sm font-semibold mb-2">Tags</h3>
+            <div className="pt-4">
+              <h3 className="text-sm font-semibold mb-3">Tags</h3>
               <div className="flex flex-wrap gap-2">
-                {tags.map((tag: string) => (
-                  <span 
-                    key={tag}
-                    className="px-3 py-1 rounded-full bg-card border border-border text-sm text-muted-foreground"
-                  >
-                    #{tag}
-                  </span>
-                ))}
+                {tags.map((tag: string) => {
+                  const singleWord = tag.split(/[\s-]+/)[0];
+                  return (
+                    <span 
+                      key={tag}
+                      className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer"
+                    >
+                      #{singleWord}
+                    </span>
+                  );
+                })}
               </div>
             </div>
           )}
