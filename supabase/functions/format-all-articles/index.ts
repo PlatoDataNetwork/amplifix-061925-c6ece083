@@ -1,11 +1,11 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 import { corsHeaders } from '../_shared/cors.ts';
 
-// Article formatting function - Clean Kedalion-style formatting
+// Article formatting function with list support
 const formatArticleContent = (text?: string | null): string => {
   if (!text) return "";
-  
-  // Clean up links, URLs, and unwanted markers
+
+  // Sanitize text
   let cleaned = text
     .replace(/<a\b[^>]*>/gi, "")
     .replace(/<\/a>/gi, "")
@@ -14,26 +14,88 @@ const formatArticleContent = (text?: string | null): string => {
     .replace(/Source:?:?\s*/gi, "")
     .replace(/Link:?:?\s*/gi, "")
     .replace(/---/g, "")
-    .replace(/\*\*(.+?)\*\*/g, "$1") // Remove all markdown bold
-    // CRITICAL: Remove existing HTML tags to prevent double-wrapping
+    .replace(/\*\*(.+?)\*\*/g, "$1")
     .replace(/<\/?p>/gi, "")
     .replace(/<\/?div>/gi, "")
     .replace(/<\/?span>/gi, "")
+    .replace(/<\/?ul>/gi, "")
+    .replace(/<\/?ol>/gi, "")
+    .replace(/<\/?li>/gi, "")
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/\r\n/g, "\n")
-    .replace(/\n{3,}/g, "\n\n") // Normalize blank lines
-    .replace(/^[ \t]+/gm, "") // Remove indentation
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/^[ \t]+/gm, "")
     .trim();
 
-  // Split into paragraphs and wrap each in <p> tags
-  const paragraphs = cleaned
-    .split(/\n\n+/)
-    .map((p) => p.trim())
-    .filter(Boolean);
+  const lines = cleaned.split("\n");
+  const htmlParts: string[] = [];
+  let currentParagraphLines: string[] = [];
+  let inUnorderedList = false;
+  let inOrderedList = false;
 
-  return paragraphs
-    .map((p) => `<p>${p}</p>`)
-    .join("\n\n");
+  const flushParagraph = () => {
+    if (currentParagraphLines.length > 0) {
+      const paragraphText = currentParagraphLines.join(" ").trim();
+      if (paragraphText) {
+        htmlParts.push(`<p>${paragraphText}</p>`);
+      }
+      currentParagraphLines = [];
+    }
+  };
+
+  const closeLists = () => {
+    if (inUnorderedList) {
+      htmlParts.push("</ul>");
+      inUnorderedList = false;
+    }
+    if (inOrderedList) {
+      htmlParts.push("</ol>");
+      inOrderedList = false;
+    }
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+
+    if (!line) {
+      flushParagraph();
+      closeLists();
+      continue;
+    }
+
+    const bulletMatch = line.match(/^[-•]\s+(.*)/);
+    const orderedMatch = line.match(/^(\d+)\.\s+(.*)/);
+
+    if (bulletMatch) {
+      flushParagraph();
+      if (!inUnorderedList) {
+        closeLists();
+        htmlParts.push("<ul>");
+        inUnorderedList = true;
+      }
+      htmlParts.push(`<li>${bulletMatch[1].trim()}</li>`);
+      continue;
+    }
+
+    if (orderedMatch) {
+      flushParagraph();
+      if (!inOrderedList) {
+        closeLists();
+        htmlParts.push("<ol>");
+        inOrderedList = true;
+      }
+      htmlParts.push(`<li>${orderedMatch[2].trim()}</li>`);
+      continue;
+    }
+
+    closeLists();
+    currentParagraphLines.push(line);
+  }
+
+  flushParagraph();
+  closeLists();
+
+  return htmlParts.join("\n");
 };
 
 Deno.serve(async (req) => {
