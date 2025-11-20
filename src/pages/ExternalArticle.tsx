@@ -65,15 +65,31 @@ const ExternalArticle = () => {
         
         const { supabase } = await import("@/integrations/supabase/client");
         
+        // Check if ID is a UUID (contains hyphens) or a post_id (numeric)
+        const isUUID = id.includes('-');
+        
         // Load directly from database
-        const { data: dbArticle } = await supabase
-          .from('articles')
-          .select('*')
-          .eq('post_id', parseInt(id))
-          .maybeSingle();
+        let dbArticle;
+        if (isUUID) {
+          // Fetch by UUID
+          const { data } = await supabase
+            .from('articles')
+            .select('*')
+            .eq('id', id)
+            .maybeSingle();
+          dbArticle = data;
+        } else {
+          // Fetch by post_id
+          const { data } = await supabase
+            .from('articles')
+            .select('*')
+            .eq('post_id', parseInt(id))
+            .maybeSingle();
+          dbArticle = data;
+        }
 
         if (!dbArticle) {
-          console.warn("No matching article found in database for post_id", id);
+          console.warn(`No matching article found in database for ${isUUID ? 'id' : 'post_id'}:`, id);
           setIsLoading(false);
           return;
         }

@@ -398,13 +398,7 @@ const ImportAdmin = () => {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  onClick={() => {
-                                    if (article.external_url) {
-                                      window.open(article.external_url, '_blank');
-                                    } else {
-                                      navigate(`/intel/external/${article.post_id}`);
-                                    }
-                                  }}
+                                  onClick={() => navigate(`/intel/article/${article.id}`)}
                                 >
                                   View
                                 </Button>

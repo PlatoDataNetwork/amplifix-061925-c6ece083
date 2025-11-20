@@ -76,6 +76,7 @@ const App = () => (
               <Route path="/intel/advanced-analytics-article" element={<AdvancedAnalyticsArticle />} />
               <Route path="/intel/investor-engagement-article" element={<InvestorEngagementArticle />} />
               <Route path="/intel/external/:id" element={<ExternalArticle />} />
+              <Route path="/intel/article/:id" element={<ExternalArticle />} />
               <Route path="/intel/:vertical" element={<VerticalPage />} />
               <Route path="/support" element={<Support />} />
               <Route path="/solutions" element={<Solutions />} />
@@ -122,6 +123,7 @@ const App = () => (
               <Route path="/:lang/intel/advanced-analytics-article" element={<AdvancedAnalyticsArticle />} />
               <Route path="/:lang/intel/investor-engagement-article" element={<InvestorEngagementArticle />} />
               <Route path="/:lang/intel/external/:id" element={<ExternalArticle />} />
+              <Route path="/:lang/intel/article/:id" element={<ExternalArticle />} />
               <Route path="/:lang/intel/:vertical" element={<VerticalPage />} />
               <Route path="/:lang/support" element={<Support />} />
               <Route path="/:lang/solutions" element={<Solutions />} />
