@@ -134,6 +134,12 @@ Deno.serve(async (req) => {
 
     console.log(`Extracted ${tags.length} tags for article ${articleId}:`, tags);
 
+    // Delete existing article tags first
+    await supabaseClient
+      .from('article_tags')
+      .delete()
+      .eq('article_id', article.id);
+
     // Store tags in database
     for (const tagName of tags) {
       const tagSlug = tagName.toLowerCase().replace(/\s+/g, '-');
