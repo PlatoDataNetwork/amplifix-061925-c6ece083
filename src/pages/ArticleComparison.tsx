@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useArticleComparison } from "@/hooks/useArticleComparison";
 import { useRecentArticles } from "@/hooks/useRecentArticles";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, Search, Maximize2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -154,9 +155,35 @@ const ArticleComparison = () => {
             <Card>
               <CardHeader>
                 <CardTitle>{article.title}</CardTitle>
-                <div className="flex gap-2 mt-2">
-                  <Badge variant="secondary">{article.vertical_slug}</Badge>
-                  {article.author && <Badge variant="outline">{article.author}</Badge>}
+                <div className="flex flex-wrap items-center justify-between gap-2 mt-2">
+                  <div className="flex gap-2">
+                    <Badge variant="secondary">{article.vertical_slug}</Badge>
+                    {article.author && <Badge variant="outline">{article.author}</Badge>}
+                  </div>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        <Maximize2 className="mr-2 h-4 w-4" />
+                        Full Preview
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>{article.title}</DialogTitle>
+                      </DialogHeader>
+                      <div className="mt-4">
+                        <div className="flex gap-2 mb-4">
+                          <Badge variant="secondary">{article.vertical_slug}</Badge>
+                          {article.author && <Badge variant="outline">{article.author}</Badge>}
+                          <Badge variant="outline">{new Date(article.published_at).toLocaleDateString()}</Badge>
+                        </div>
+                        <div 
+                          className="prose prose-sm lg:prose-base max-w-none text-foreground"
+                          dangerouslySetInnerHTML={{ __html: article.content || '' }}
+                        />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </CardHeader>
             </Card>
