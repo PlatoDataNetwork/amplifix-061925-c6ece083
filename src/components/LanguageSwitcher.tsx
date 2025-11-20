@@ -12,28 +12,48 @@ import { useTranslation } from "react-i18next";
 import { getLanguageFromPath, buildLanguageUrl } from "@/utils/language";
 
 interface Language {
-  code: string;
+  code: string;      // app / URL / i18next code
   name: string;
   flag: string;
+  gCode?: string;    // GTranslate target code (may differ, e.g. zh-CN, iw)
 }
 
 const languages: Language[] = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'ar', name: 'Arabic', flag: '🇸🇦' },
-  { code: 'zh', name: 'Chinese', flag: '🇨🇳' },
-  { code: 'nl', name: 'Dutch', flag: '🇳🇱' },
-  { code: 'fr', name: 'French', flag: '🇫🇷' },
-  { code: 'de', name: 'German', flag: '🇩🇪' },
-  { code: 'hi', name: 'Hindi', flag: '🇮🇳' },
-  { code: 'it', name: 'Italian', flag: '🇮🇹' },
-  { code: 'ja', name: 'Japanese', flag: '🇯🇵' },
-  { code: 'ko', name: 'Korean', flag: '🇰🇷' },
-  { code: 'pa', name: 'Punjabi', flag: '🇮🇳' },
-  { code: 'pt', name: 'Portuguese', flag: '🇵🇹' },
-  { code: 'ru', name: 'Russian', flag: '🇷🇺' },
-  { code: 'es', name: 'Spanish', flag: '🇪🇸' },
-  { code: 'sv', name: 'Swedish', flag: '🇸🇪' },
-  { code: 'tr', name: 'Turkish', flag: '🇹🇷' },
+  { code: 'ar', name: 'Arabic', flag: '🇸🇦', gCode: 'ar' },
+  { code: 'bn', name: 'Bengali', flag: '🇧🇩', gCode: 'bn' },
+  { code: 'zh', name: 'Chinese (Simplified)', flag: '🇨🇳', gCode: 'zh-CN' },
+  { code: 'zt', name: 'Chinese (Traditional)', flag: '🇭🇰', gCode: 'zh-TW' },
+  { code: 'da', name: 'Danish', flag: '🇩🇰', gCode: 'da' },
+  { code: 'nl', name: 'Dutch', flag: '🇳🇱', gCode: 'nl' },
+  { code: 'en', name: 'English', flag: '🇺🇸', gCode: 'en' },
+  { code: 'et', name: 'Estonian', flag: '🇪🇪', gCode: 'et' },
+  { code: 'fi', name: 'Finnish', flag: '🇫🇮', gCode: 'fi' },
+  { code: 'fr', name: 'French', flag: '🇫🇷', gCode: 'fr' },
+  { code: 'de', name: 'German', flag: '🇩🇪', gCode: 'de' },
+  { code: 'el', name: 'Greek', flag: '🇬🇷', gCode: 'el' },
+  { code: 'he', name: 'Hebrew', flag: '🇮🇱', gCode: 'iw' },
+  { code: 'hi', name: 'Hindi', flag: '🇮🇳', gCode: 'hi' },
+  { code: 'hu', name: 'Hungarian', flag: '🇭🇺', gCode: 'hu' },
+  { code: 'id', name: 'Indonesian', flag: '🇮🇩', gCode: 'id' },
+  { code: 'it', name: 'Italian', flag: '🇮🇹', gCode: 'it' },
+  { code: 'ja', name: 'Japanese', flag: '🇯🇵', gCode: 'ja' },
+  { code: 'km', name: 'Khmer', flag: '🇰🇭', gCode: 'km' },
+  { code: 'ko', name: 'Korean', flag: '🇰🇷', gCode: 'ko' },
+  { code: 'no', name: 'Norwegian', flag: '🇳🇴', gCode: 'no' },
+  { code: 'fa', name: 'Persian', flag: '🇮🇷', gCode: 'fa' },
+  { code: 'pl', name: 'Polish', flag: '🇵🇱', gCode: 'pl' },
+  { code: 'pt', name: 'Portuguese', flag: '🇵🇹', gCode: 'pt' },
+  { code: 'pa', name: 'Punjabi', flag: '🇮🇳', gCode: 'pa' },
+  { code: 'ro', name: 'Romanian', flag: '🇷🇴', gCode: 'ro' },
+  { code: 'ru', name: 'Russian', flag: '🇷🇺', gCode: 'ru' },
+  { code: 'sl', name: 'Slovenian', flag: '🇸🇮', gCode: 'sl' },
+  { code: 'es', name: 'Spanish', flag: '🇪🇸', gCode: 'es' },
+  { code: 'sv', name: 'Swedish', flag: '🇸🇪', gCode: 'sv' },
+  { code: 'th', name: 'Thai', flag: '🇹🇭', gCode: 'th' },
+  { code: 'tr', name: 'Turkish', flag: '🇹🇷', gCode: 'tr' },
+  { code: 'uk', name: 'Ukrainian', flag: '🇺🇦', gCode: 'uk' },
+  { code: 'ur', name: 'Urdu', flag: '🇵🇰', gCode: 'ur' },
+  { code: 'vi', name: 'Vietnamese', flag: '🇻🇳', gCode: 'vi' },
 ];
 
 interface LanguageSwitcherProps {
@@ -53,6 +73,8 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
     
     try {
       const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
+      const targetCode = selectedLang.gCode || selectedLang.code;
+
       setCurrentLanguage(selectedLang);
       localStorage.setItem('selectedLanguage', langCode);
       
@@ -68,8 +90,8 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
       const triggerTranslation = (attempts = 0) => {
         const w = window as any;
         if (typeof w.doGTranslate === 'function') {
-          console.log('Triggering GTranslate with:', `en|${langCode}`);
-          w.doGTranslate(`en|${langCode}`);
+          console.log('Triggering GTranslate with:', `en|${targetCode}`);
+          w.doGTranslate(`en|${targetCode}`);
         } else if (attempts < 10) {
           console.log(`GTranslate not ready, retry ${attempts + 1}/10`);
           setTimeout(() => triggerTranslation(attempts + 1), 300);
@@ -105,9 +127,10 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
         if (pathLang !== 'en') {
           const applyTranslation = (attempts = 0) => {
             const w = window as any;
+            const targetCode = detectedLanguage.gCode || detectedLanguage.code;
             if (typeof w.doGTranslate === 'function') {
-              console.log('Auto-applying GTranslate for:', pathLang);
-              w.doGTranslate(`en|${pathLang}`);
+              console.log('Auto-applying GTranslate for:', targetCode);
+              w.doGTranslate(`en|${targetCode}`);
             } else if (attempts < 20) {
               setTimeout(() => applyTranslation(attempts + 1), 300);
             } else {
