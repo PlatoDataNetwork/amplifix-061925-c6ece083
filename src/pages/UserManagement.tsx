@@ -56,52 +56,20 @@ const UserManagement = () => {
     try {
       setLoading(true);
 
-      // Get all user roles
-      const { data: rolesData, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('user_id, role');
+      // Call edge function to get users with roles
+      const { data, error } = await supabase.functions.invoke('list-users');
 
-      if (rolesError) throw rolesError;
+      if (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+      }
 
-      // Build a map of user_id to roles
-      const userRolesMap: Record<string, string[]> = {};
-      rolesData?.forEach(({ user_id, role }) => {
-        if (!userRolesMap[user_id]) {
-          userRolesMap[user_id] = [];
-        }
-        userRolesMap[user_id].push(role);
-      });
-
-      // Get all users from auth (via edge function or admin API)
-      // Since we can't directly query auth.users, we'll use the users we have roles for
-      // and get their email from the metadata
-      const { data: { users: authUsers }, error: authError } = await supabase.auth.admin.listUsers();
-
-      if (authError) {
-        console.error('Error fetching users:', authError);
-        // Fallback: just show users we have roles for
-        const usersWithRoles = Object.entries(userRolesMap).map(([userId, roles]) => ({
-          id: userId,
-          email: 'Email not available',
-          created_at: new Date().toISOString(),
-          last_sign_in_at: null,
-          roles,
-        }));
-        setUsers(usersWithRoles);
-      } else {
-        // Combine auth users with their roles
-        const allUsers: UserWithRole[] = authUsers.map(user => ({
-          id: user.id,
-          email: user.email || 'No email',
-          created_at: user.created_at,
-          last_sign_in_at: user.last_sign_in_at || null,
-          roles: userRolesMap[user.id] || [],
-        }));
-        setUsers(allUsers);
+      if (data?.users) {
+        setUsers(data.users);
       }
     } catch (error) {
       console.error('Error loading users:', error);
-      toast.error('Failed to load users');
+      toast.error('Failed to load users. Make sure you have admin permissions.');
     } finally {
       setLoading(false);
     }
