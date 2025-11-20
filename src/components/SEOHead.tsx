@@ -83,6 +83,9 @@ const SEOHead = ({ title, description }: SEOHeadProps) => {
       <html lang={currentLang} dir={['ar', 'he', 'fa'].includes(currentLang) ? 'rtl' : 'ltr'} />
       <title>{finalTitle}</title>
       <meta name="description" content={finalDescription} />
+      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+      <meta name="language" content={currentLang} />
+      <meta httpEquiv="content-language" content={currentLang} />
       
       {/* Open Graph Meta Tags */}
       <meta property="og:title" content={finalTitle} />
@@ -90,6 +93,9 @@ const SEOHead = ({ title, description }: SEOHeadProps) => {
       <meta property="og:type" content="website" />
       <meta property="og:url" content={`${baseUrl}${location.pathname}`} />
       <meta property="og:image" content={`${baseUrl}/lovable-uploads/synbio-social-thumbnail.png`} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:site_name" content="AmplifiX" />
       <meta property="og:locale" content={currentLocale} />
       
       {/* OG Alternate Locales */}
@@ -109,8 +115,16 @@ const SEOHead = ({ title, description }: SEOHeadProps) => {
       <meta name="twitter:title" content={finalTitle} />
       <meta name="twitter:description" content={finalDescription} />
       <meta name="twitter:image" content={`${baseUrl}/lovable-uploads/synbio-social-thumbnail.png`} />
+      <meta name="twitter:site" content="@AmplifiX" />
+      <meta name="twitter:creator" content="@AmplifiX" />
       
-      {/* Canonical URL */}
+      {/* Additional SEO Meta Tags */}
+      <meta name="author" content="AmplifiX" />
+      <meta name="copyright" content="AmplifiX" />
+      <meta name="geo.region" content="US" />
+      <meta name="geo.placename" content="Global" />
+      
+      {/* Canonical URL - always in current language */}
       <link rel="canonical" href={`${baseUrl}${location.pathname}`} />
       
       {/* Hreflang Tags for all languages */}
@@ -126,12 +140,48 @@ const SEOHead = ({ title, description }: SEOHeadProps) => {
         );
       })}
       
-      {/* x-default hreflang */}
+      {/* x-default hreflang - points to English version */}
       <link
         rel="alternate"
         hrefLang="x-default"
         href={`${baseUrl}${pathWithoutLang}`}
       />
+      
+      {/* Language-specific structured data */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "AmplifiX",
+          "url": baseUrl,
+          "description": finalDescription,
+          "inLanguage": currentLang,
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": `${baseUrl}/intel?q={search_term_string}`
+            },
+            "query-input": "required name=search_term_string"
+          }
+        })}
+      </script>
+      
+      {/* Organization structured data */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "AmplifiX",
+          "url": baseUrl,
+          "logo": `${baseUrl}/lovable-uploads/synbio-social-thumbnail.png`,
+          "description": seoDescriptions.en,
+          "sameAs": [
+            "https://twitter.com/AmplifiX",
+            "https://linkedin.com/company/amplifix"
+          ]
+        })}
+      </script>
     </Helmet>
   );
 };
