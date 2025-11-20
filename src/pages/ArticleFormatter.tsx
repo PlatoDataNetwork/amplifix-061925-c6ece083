@@ -400,7 +400,7 @@ const ArticleFormatter = () => {
             <CardHeader>
               <CardTitle>Extract Article Tags</CardTitle>
               <CardDescription>
-                Extract 10 contextually relevant tags from an article's content
+                Extract 8 contextually relevant tags from an article's content
               </CardDescription>
             </CardHeader>
             <CardContent>

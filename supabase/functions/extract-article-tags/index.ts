@@ -69,7 +69,7 @@ function extractKeywords(text: string, title: string): string[] {
     .map(([phrase]) => phrase);
 
   // Combine and deduplicate
-  const tags = [...new Set([...topPhrases, ...topWords])].slice(0, 10);
+  const tags = [...new Set([...topPhrases, ...topWords])].slice(0, 8);
   
   return tags.map(tag => tag.charAt(0).toUpperCase() + tag.slice(1));
 }
