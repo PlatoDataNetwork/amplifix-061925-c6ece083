@@ -187,7 +187,22 @@ const ImportAdmin = () => {
 
       if (error) throw error;
 
-      setResults(prev => ({ ...prev, 'vertical-test': data }));
+      // Fetch the recently imported articles to display
+      const { data: recentArticles } = await supabase
+        .from('articles')
+        .select('id, title, post_id, external_url')
+        .eq('vertical_slug', selectedTestVertical)
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      setResults(prev => ({ 
+        ...prev, 
+        'vertical-test': {
+          ...data,
+          articles: recentArticles || []
+        }
+      }));
+      
       toast.success(`${selectedTestVertical} test import completed!`, {
         description: `Imported ${data.insertedArticles} articles`
       });
@@ -368,6 +383,37 @@ const ImportAdmin = () => {
                         <p className="text-xl font-bold text-red-500">{results['vertical-test'].erroredArticles}</p>
                       </div>
                     </div>
+                    
+                    {results['vertical-test'].articles && results['vertical-test'].articles.length > 0 && (
+                      <div className="mt-4">
+                        <h4 className="font-semibold mb-2">Recently Imported Articles:</h4>
+                        <div className="space-y-2">
+                          {results['vertical-test'].articles.map((article: any, index: number) => (
+                            <div key={article.id} className="p-3 bg-background rounded border border-border">
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium truncate">{index + 1}. {article.title}</p>
+                                  <p className="text-xs text-muted-foreground">Post ID: {article.post_id}</p>
+                                </div>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => {
+                                    if (article.external_url) {
+                                      window.open(article.external_url, '_blank');
+                                    } else {
+                                      navigate(`/intel/external/${article.post_id}`);
+                                    }
+                                  }}
+                                >
+                                  View
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
