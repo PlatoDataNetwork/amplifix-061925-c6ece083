@@ -12,8 +12,9 @@ export const sanitizeText = (text?: string | null): string => {
     .replace(/Source:?:?\s*/gi, "")
     .replace(/Link:?:?\s*/gi, "")
     .replace(/---/g, "")
-    .replace(/\*/g, "")
-    // Normalize newlines and remove extra blank space/indentation
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/<\/?(p|div|span|strong|em|ul|ol|li|h[1-6])[^>]*>/gi, "")
+    .replace(/<br\s*\/?>(?!\n)/gi, "\n")
     .replace(/\r\n/g, "\n")
     .replace(/\n{3,}/g, "\n\n")
     .replace(/^[ \t]+/gm, "")
