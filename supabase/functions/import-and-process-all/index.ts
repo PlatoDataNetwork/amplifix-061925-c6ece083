@@ -112,8 +112,15 @@ serve(async (req) => {
     let totalProcessed = 0;
     const verticalResults: Record<string, number> = {};
 
+    // Process imports in smaller batches to avoid timeouts
+    const BATCH_SIZE = 10;
+    
     // Import articles from all verticals
-    for (const vertical of VERTICALS) {
+    for (let i = 0; i < VERTICALS.length; i += BATCH_SIZE) {
+      const batch = VERTICALS.slice(i, i + BATCH_SIZE);
+      console.log(`Processing batch ${Math.floor(i / BATCH_SIZE) + 1} of ${Math.ceil(VERTICALS.length / BATCH_SIZE)}`);
+      
+      for (const vertical of batch) {
       console.log(`Importing from ${vertical}...`);
       
       try {
@@ -177,86 +184,111 @@ serve(async (req) => {
         console.error(`Error processing ${vertical}:`, error);
         verticalResults[vertical] = 0;
       }
+      }
     }
 
     console.log(`Total imported: ${totalImported} articles`);
 
-    // Now process all articles with AI formatting and tag extraction
-    if (totalImported > 0 && lovableApiKey) {
-      console.log('Starting AI processing...');
+    // Return immediately and process articles in background
+    const processArticlesInBackground = async () => {
+      if (totalImported > 0 && lovableApiKey) {
+        console.log('Starting background AI processing...');
 
-      // Fetch all articles that need processing
-      const { data: articles, error: fetchError } = await supabase
-        .from('articles')
-        .select('id, title, content, excerpt')
-        .order('created_at', { ascending: false });
+        // Fetch articles in batches
+        const PROCESS_BATCH_SIZE = 20;
+        let offset = 0;
+        let hasMore = true;
 
-      if (fetchError) {
-        console.error('Error fetching articles for processing:', fetchError);
-      } else if (articles && articles.length > 0) {
-        console.log(`Processing ${articles.length} articles with AI...`);
+        while (hasMore) {
+          const { data: articles, error: fetchError } = await supabase
+            .from('articles')
+            .select('id, title, content, excerpt')
+            .order('created_at', { ascending: false })
+            .range(offset, offset + PROCESS_BATCH_SIZE - 1);
 
-        for (const article of articles) {
-          try {
-            // Clean and format content
-            const cleanedContent = cleanText(article.content || article.excerpt || '');
-            
-            if (!cleanedContent) {
-              console.log(`Skipping article ${article.id} - no content`);
-              continue;
-            }
+          if (fetchError) {
+            console.error('Error fetching articles batch:', fetchError);
+            break;
+          }
 
-            // Format with AI
-            const formattedContent = await formatArticleWithAI(cleanedContent, lovableApiKey);
+          if (!articles || articles.length === 0) {
+            hasMore = false;
+            break;
+          }
 
-            // Update article content
-            const { error: updateError } = await supabase
-              .from('articles')
-              .update({ content: formattedContent })
-              .eq('id', article.id);
+          console.log(`Processing batch at offset ${offset}, size: ${articles.length}`);
 
-            if (updateError) {
-              console.error(`Error updating article ${article.id}:`, updateError);
-              continue;
-            }
-
-            // Extract and save tags
-            const tags = extractKeywords(cleanedContent, article.title);
-            
-            for (const tagName of tags) {
-              const slug = tagName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          for (const article of articles) {
+            try {
+              const cleanedContent = cleanText(article.content || article.excerpt || '');
               
-              // Get or create tag
-              let { data: tag } = await supabase
-                .from('tags')
-                .select('id')
-                .eq('slug', slug)
-                .single();
+              if (!cleanedContent) {
+                console.log(`Skipping article ${article.id} - no content`);
+                continue;
+              }
 
-              if (!tag) {
-                const { data: newTag } = await supabase
+              const formattedContent = await formatArticleWithAI(cleanedContent, lovableApiKey);
+
+              await supabase
+                .from('articles')
+                .update({ content: formattedContent })
+                .eq('id', article.id);
+
+              const tags = extractKeywords(cleanedContent, article.title);
+              
+              for (const tagName of tags) {
+                const slug = tagName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                
+                let { data: tag } = await supabase
                   .from('tags')
-                  .insert({ name: tagName, slug })
                   .select('id')
-                  .single();
-                tag = newTag;
+                  .eq('slug', slug)
+                  .maybeSingle();
+
+                if (!tag) {
+                  const { data: newTag } = await supabase
+                    .from('tags')
+                    .insert({ name: tagName, slug })
+                    .select('id')
+                    .maybeSingle();
+                  tag = newTag;
+                }
+
+                if (tag) {
+                  await supabase
+                    .from('article_tags')
+                    .upsert({ article_id: article.id, tag_id: tag.id }, {
+                      onConflict: 'article_id,tag_id'
+                    });
+                }
               }
 
-              if (tag) {
-                // Link article to tag
-                await supabase
-                  .from('article_tags')
-                  .upsert({ article_id: article.id, tag_id: tag.id });
+              totalProcessed++;
+              if (totalProcessed % 10 === 0) {
+                console.log(`Background processed: ${totalProcessed} articles`);
               }
+            } catch (error) {
+              console.error(`Error processing article ${article.id}:`, error);
             }
+          }
 
-            totalProcessed++;
-            console.log(`Processed article ${article.id} (${totalProcessed}/${articles.length})`);
-          } catch (error) {
-            console.error(`Error processing article ${article.id}:`, error);
+          offset += PROCESS_BATCH_SIZE;
+          
+          if (articles.length < PROCESS_BATCH_SIZE) {
+            hasMore = false;
           }
         }
+
+        console.log(`Background processing completed: ${totalProcessed} articles`);
       }
+    };
+
+    // Use waitUntil to process in background without blocking response
+    if (typeof EdgeRuntime !== 'undefined' && EdgeRuntime.waitUntil) {
+      EdgeRuntime.waitUntil(processArticlesInBackground());
+    } else {
+      // Fallback: start processing but don't await
+      processArticlesInBackground().catch(console.error);
     }
 
     return new Response(JSON.stringify({
