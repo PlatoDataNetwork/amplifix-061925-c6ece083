@@ -99,14 +99,28 @@ Deno.serve(async (req) => {
 
     const articlesData = await response.json();
     
-    // Handle both array and object responses
+    console.log('API Response structure:', JSON.stringify(Object.keys(articlesData)).substring(0, 200));
+    
+    // Handle various response formats
     let articles: AerospaceArticle[] = [];
     if (Array.isArray(articlesData)) {
+      // Direct array of articles
       articles = articlesData;
     } else if (articlesData.articles && Array.isArray(articlesData.articles)) {
+      // Object with 'articles' property
       articles = articlesData.articles;
+    } else if (typeof articlesData === 'object' && articlesData !== null) {
+      // Object where each property might be an article - try to extract articles
+      const possibleArticles = Object.values(articlesData);
+      if (possibleArticles.length > 0 && typeof possibleArticles[0] === 'object') {
+        articles = possibleArticles as AerospaceArticle[];
+      } else {
+        console.error('Unexpected response format. Sample:', JSON.stringify(articlesData).substring(0, 500));
+        throw new Error(`Unexpected API response format. Response has ${Object.keys(articlesData).length} keys`);
+      }
     } else {
-      throw new Error('Unexpected API response format');
+      console.error('Unexpected response format:', typeof articlesData);
+      throw new Error('Unexpected API response format: not an object or array');
     }
 
     console.log(`Fetched ${articles.length} articles from feed`);
