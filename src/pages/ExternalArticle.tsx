@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
@@ -46,6 +46,13 @@ const ExternalArticle = () => {
         break;
     }
   };
+
+  // Get vertical display name
+  const verticalDisplayName = useMemo(() => {
+    if (!article?.vertical_slug || !verticals) return '';
+    const vertical = verticals.find(v => v.slug === article.vertical_slug);
+    return vertical?.name || article.vertical_slug.toUpperCase().replace(/-/g, '/');
+  }, [article?.vertical_slug, verticals]);
 
   // Try to load from cache first
   useEffect(() => {
@@ -163,9 +170,11 @@ if (!article) {
           {/* Article Header */}
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-6">
-              <span className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer">
-                AR/VR
-              </span>
+              {verticalDisplayName && (
+                <span className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer">
+                  {verticalDisplayName}
+                </span>
+              )}
             </div>
             
             <h1 className="text-3xl md:text-5xl font-bold mb-6 pb-4 border-b border-border">
@@ -299,7 +308,7 @@ if (!article) {
             <div className="pt-4">
               <h3 className="text-sm font-semibold mb-3">Tags</h3>
               <div className="flex flex-wrap gap-2">
-                {formatArticleTags(tags, article.vertical_slug, 'AR-VR').map((tagData) => (
+                {formatArticleTags(tags, article.vertical_slug, verticalDisplayName).map((tagData) => (
                   <span 
                     key={tagData.key}
                     className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer"
