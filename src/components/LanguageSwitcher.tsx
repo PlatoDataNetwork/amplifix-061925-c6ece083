@@ -62,6 +62,25 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
       const newPath = buildLanguageUrl(langCode, location.pathname);
       console.log('Navigating to:', newPath);
       navigate(newPath);
+
+      // If GTranslate widget is present, re-run it so body content is translated
+      try {
+        const w = window as any;
+        if (typeof w.doGTranslate === 'function') {
+          setTimeout(() => {
+            try {
+              w.doGTranslate(`en|${langCode}`);
+            } catch (e) {
+              console.error('GTranslate language switch failed', e);
+            }
+          }, 200);
+        } else {
+          console.log('GTranslate function doGTranslate not found on window');
+        }
+      } catch (e) {
+        console.error('Error while triggering GTranslate', e);
+      }
+      
       setIsTranslating(false);
       
     } catch (error) {
