@@ -69,6 +69,20 @@ export default function TranslationManager() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const formatErrorMessage = (error: unknown): string => {
+    if (error instanceof Error) return error.message;
+    if (error && typeof error === 'object') {
+      const anyErr = error as any;
+      if (typeof anyErr.message === 'string') return anyErr.message;
+      try {
+        return JSON.stringify(anyErr);
+      } catch {
+        return String(anyErr);
+      }
+    }
+    return String(error);
+  };
+
   // Retry logic with exponential backoff
   const translateWithRetry = async (
     englishContent: any,
@@ -110,11 +124,14 @@ export default function TranslationManager() {
   const saveTranslation = async (content: any, language: string, namespace: string) => {
     const { error } = await supabase
       .from('translations')
-      .upsert({
-        language_code: language,
-        namespace: namespace.replace('.json', ''),
-        content: content
-      });
+      .upsert(
+        {
+          language_code: language,
+          namespace: namespace.replace('.json', ''),
+          content,
+        },
+        { onConflict: 'language_code,namespace' }
+      );
     
     if (error) {
       console.error(`Error saving ${language}/${namespace}:`, error);
@@ -163,7 +180,7 @@ export default function TranslationManager() {
 
         setProgress((stats.completed / stats.total) * 100);
       } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : String(error);
+        const errorMsg = formatErrorMessage(error);
         addLog(`✗ ${language}/common.json failed after retries: ${errorMsg}`);
         console.error(`Full error for ${language}/common.json:`, error);
         updateStats({ 
@@ -191,7 +208,7 @@ export default function TranslationManager() {
 
         setProgress((stats.completed / stats.total) * 100);
       } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : String(error);
+        const errorMsg = formatErrorMessage(error);
         addLog(`✗ ${language}/home.json failed after retries: ${errorMsg}`);
         console.error(`Full error for ${language}/home.json:`, error);
         updateStats({ 
@@ -271,7 +288,7 @@ export default function TranslationManager() {
 
           setProgress((stats.completed / stats.total) * 100);
         } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : String(error);
+          const errorMsg = formatErrorMessage(error);
           addLog(`✗ ${language}/common.json failed after retries: ${errorMsg}`);
           console.error(`Full error for ${language}/common.json:`, error);
           updateStats({ 
@@ -306,7 +323,7 @@ export default function TranslationManager() {
 
           setProgress((stats.completed / stats.total) * 100);
         } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : String(error);
+          const errorMsg = formatErrorMessage(error);
           addLog(`✗ ${language}/home.json failed after retries: ${errorMsg}`);
           console.error(`Full error for ${language}/home.json:`, error);
           updateStats({ 
