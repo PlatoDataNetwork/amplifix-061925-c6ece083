@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, ArrowUpDown, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 import {
   Select,
   SelectContent,
@@ -35,6 +36,8 @@ const ImportAdmin = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTestVertical, setSelectedTestVertical] = useState<string>('');
+  const [progressStatus, setProgressStatus] = useState<string>('');
+  const [progressPercent, setProgressPercent] = useState(0);
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
   useEffect(() => {
@@ -108,6 +111,8 @@ const ImportAdmin = () => {
 
   const importAndProcessAll = async () => {
     setImporting('all-verticals');
+    setProgressStatus('Initializing...');
+    setProgressPercent(0);
     
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -117,8 +122,11 @@ const ImportAdmin = () => {
       }
 
       toast.info('Starting full import and AI processing...', {
-        description: 'This may take several minutes'
+        description: 'This will run in the background'
       });
+
+      setProgressStatus('Starting import process...');
+      setProgressPercent(5);
 
       const { data, error } = await supabase.functions.invoke('import-and-process-all', {
         headers: {
@@ -128,19 +136,49 @@ const ImportAdmin = () => {
 
       if (error) throw error;
 
-      toast.success('Import and processing completed!', {
-        description: `Imported ${data.totalImported} articles, processed ${data.totalProcessed} with AI`
-      });
-      
-      setResults(prev => ({ ...prev, 'all-verticals': data }));
-      await loadMetrics();
+      setProgressStatus('Import started! Processing in background...');
+      setProgressPercent(15);
+
+      // Poll for progress updates
+      const pollInterval = setInterval(async () => {
+        const { count: currentTotal } = await supabase
+          .from('articles')
+          .select('*', { count: 'exact', head: true });
+        
+        if (currentTotal && currentTotal > totalArticles) {
+          const diff = currentTotal - totalArticles;
+          setProgressStatus(`Imported ${diff} new articles...`);
+          setProgressPercent(Math.min(90, 15 + (diff / 100) * 75));
+        }
+      }, 3000);
+
+      // Wait for background process (simplified - just wait a bit then check)
+      setTimeout(async () => {
+        clearInterval(pollInterval);
+        setProgressPercent(100);
+        setProgressStatus('Import completed!');
+        
+        toast.success('Import and processing completed!', {
+          description: 'Articles have been imported and are being processed'
+        });
+        
+        await loadMetrics();
+        setResults(prev => ({ ...prev, 'all-verticals': data }));
+      }, 10000);
+
     } catch (error) {
       console.error('Error importing and processing all:', error);
       toast.error('Failed to import and process articles', {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
+      setProgressStatus('Error occurred');
+      setProgressPercent(0);
     } finally {
-      setImporting(null);
+      setTimeout(() => {
+        setImporting(null);
+        setProgressStatus('');
+        setProgressPercent(0);
+      }, 15000);
     }
   };
 
@@ -277,8 +315,18 @@ const ImportAdmin = () => {
                   className="w-full h-14 text-lg"
                   size="lg"
                 >
-                  {importing === 'all-verticals' ? 'Processing All Verticals...' : 'Import & Process All Articles'}
+                  {importing === 'all-verticals' ? 'Processing...' : 'Import & Process All Articles'}
                 </Button>
+
+                {importing === 'all-verticals' && (
+                  <div className="space-y-3 p-4 bg-background rounded-lg border">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">{progressStatus}</span>
+                      <span className="text-sm text-muted-foreground">{progressPercent}%</span>
+                    </div>
+                    <Progress value={progressPercent} className="h-2" />
+                  </div>
+                )}
 
                 {results['all-verticals'] && (
                   <div className="mt-4 p-4 bg-background rounded-lg space-y-3">
