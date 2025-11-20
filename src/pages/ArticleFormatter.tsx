@@ -32,6 +32,8 @@ const ArticleFormatter = () => {
     errorDetails?: Array<{ id: string; post_id: number; error: string }>;
     message?: string;
   } | null>(null);
+  const [singleArticleId, setSingleArticleId] = useState<string>("");
+  const [isSingleProcessing, setIsSingleProcessing] = useState(false);
 
   const handleCreateBackup = async () => {
     const backupName = `pre-format-${Date.now()}`;
@@ -132,6 +134,48 @@ const ArticleFormatter = () => {
       }));
     } finally {
       setIsBackingUp(false);
+    }
+  };
+
+  const handleFormatSingleArticle = async () => {
+    if (!singleArticleId.trim()) {
+      toast.error("Please enter an article ID");
+      return;
+    }
+
+    setIsSingleProcessing(true);
+    try {
+      // First get the article to find its UUID
+      const { data: article, error: fetchError } = await supabase
+        .from('articles')
+        .select('id, post_id, title')
+        .eq('post_id', parseInt(singleArticleId))
+        .single();
+
+      if (fetchError || !article) {
+        toast.error(`Article with post_id ${singleArticleId} not found`);
+        return;
+      }
+
+      toast.info(`Reformatting article: ${article.title}`);
+
+      const { data, error } = await supabase.functions.invoke('reformat-single-article', {
+        body: { articleId: article.id }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast.success(`Successfully reformatted article ${singleArticleId}`);
+        setSingleArticleId("");
+      } else {
+        toast.error(data.error || 'Failed to reformat article');
+      }
+    } catch (error) {
+      console.error("Error reformatting article:", error);
+      toast.error("Failed to reformat article");
+    } finally {
+      setIsSingleProcessing(false);
     }
   };
 
@@ -272,6 +316,41 @@ const ArticleFormatter = () => {
           <div className="mb-6">
             <ArticleStatsCard />
           </div>
+
+          {/* Single Article Formatter */}
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Format Single Article</CardTitle>
+              <CardDescription>
+                Reformat a specific article with AI-powered paragraph and header detection
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Enter article post_id (e.g., 2650405)"
+                  value={singleArticleId}
+                  onChange={(e) => setSingleArticleId(e.target.value)}
+                  className="flex-1 px-3 py-2 bg-background border border-border rounded-md"
+                  disabled={isSingleProcessing}
+                />
+                <Button
+                  onClick={handleFormatSingleArticle}
+                  disabled={isSingleProcessing || !singleArticleId.trim()}
+                >
+                  {isSingleProcessing ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Formatting...
+                    </>
+                  ) : (
+                    "Format Article"
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Warning Card */}
           <Card className="mb-6 border-yellow-500">
