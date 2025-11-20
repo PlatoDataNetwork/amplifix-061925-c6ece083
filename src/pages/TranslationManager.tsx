@@ -32,6 +32,7 @@ export default function TranslationManager() {
   const [progress, setProgress] = useState(0);
   const [currentLang, setCurrentLang] = useState('');
   const [logs, setLogs] = useState<string[]>([]);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [stats, setStats] = useState<TranslationStats>({
     total: 0,
     completed: 0,
@@ -239,11 +240,11 @@ export default function TranslationManager() {
     }
   };
 
-  const translateAllLanguages = async () => {
+  const translateSelectedLanguages = async (languages: string[]) => {
     setIsTranslating(true);
     setProgress(0);
     setLogs([]);
-    const totalTasks = SUPPORTED_LANGUAGES.length * FILES_TO_TRANSLATE.length;
+    const totalTasks = languages.length * FILES_TO_TRANSLATE.length;
     setStats({
       total: totalTasks,
       completed: 0,
@@ -253,7 +254,7 @@ export default function TranslationManager() {
       startTime: Date.now(),
       estimatedTimeRemaining: null,
     });
-    addLog('Starting translation process...');
+    addLog(`Starting translation for ${languages.length} language(s): ${languages.join(', ').toUpperCase()}...`);
 
     try {
       // Load English source files
@@ -263,7 +264,7 @@ export default function TranslationManager() {
       const commonContent = await commonResponse.json();
       const homeContent = await homeResponse.json();
 
-      for (const language of SUPPORTED_LANGUAGES) {
+      for (const language of languages) {
         setCurrentLang(language);
         addLog(`Translating to ${language.toUpperCase()}...`);
 
@@ -340,7 +341,7 @@ export default function TranslationManager() {
 
       toast({
         title: "Translation Complete",
-        description: `Generated and saved translations for ${SUPPORTED_LANGUAGES.length} languages to database.`,
+        description: `Generated and saved translations for ${languages.length} language(s) to database.`,
       });
       addLog('✓ All translations completed and saved to database!');
 
@@ -393,28 +394,62 @@ export default function TranslationManager() {
             </div>
 
             <div className="space-y-3">
-              <Button
-                onClick={() => translateSingleLanguage('bn')}
-                disabled={isTranslating}
-                size="lg"
-                variant="outline"
-                className="w-full"
-              >
-                {isTranslating ? (
-                  <>
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  <strong>Quick Fix for Missing Translations:</strong> Run Ukrainian (uk), Romanian (ro), and Thai (th) to fix homepage body text translations.
+                </AlertDescription>
+              </Alert>
+
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  onClick={() => translateSelectedLanguages(['uk'])}
+                  disabled={isTranslating}
+                  size="sm"
+                  variant="outline"
+                >
+                  {isTranslating && currentLang === 'uk' ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Testing Bengali Translation...
-                  </>
-                ) : (
-                  <>
-                    <Languages className="mr-2 h-4 w-4" />
-                    Test Bengali Translation (bn)
-                  </>
-                )}
-              </Button>
+                  ) : null}
+                  Ukrainian (uk)
+                </Button>
+                <Button
+                  onClick={() => translateSelectedLanguages(['ro'])}
+                  disabled={isTranslating}
+                  size="sm"
+                  variant="outline"
+                >
+                  {isTranslating && currentLang === 'ro' ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  Romanian (ro)
+                </Button>
+                <Button
+                  onClick={() => translateSelectedLanguages(['th'])}
+                  disabled={isTranslating}
+                  size="sm"
+                  variant="outline"
+                >
+                  {isTranslating && currentLang === 'th' ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  Thai (th)
+                </Button>
+                <Button
+                  onClick={() => translateSelectedLanguages(['uk', 'ro', 'th'])}
+                  disabled={isTranslating}
+                  size="sm"
+                  variant="default"
+                >
+                  {isTranslating ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  All Three
+                </Button>
+              </div>
 
               <Button
-                onClick={translateAllLanguages}
+                onClick={() => translateSelectedLanguages(SUPPORTED_LANGUAGES)}
                 disabled={isTranslating}
                 size="lg"
                 className="w-full"
@@ -427,7 +462,7 @@ export default function TranslationManager() {
                 ) : (
                   <>
                     <Languages className="mr-2 h-4 w-4" />
-                    Generate & Save All Translations
+                    Generate All 34 Languages
                   </>
                 )}
               </Button>
