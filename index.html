@@ -30,6 +30,18 @@
       gtag('config', 'G-FQ4G09PD29');
     </script>
     
+    <!-- GTranslate.io Widget -->
+    <script>
+      window.gtranslateSettings = {
+        "default_language": "en",
+        "detect_browser_language": true,
+        "wrapper_selector": ".gtranslate_wrapper",
+        "float_switcher_open_direction": "bottom",
+        "alt_flags": {"en": "usa", "pt": "brazil"}
+      };
+    </script>
+    <script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>
+    
     <!-- Set dark theme as default before React loads to prevent flash -->
     <script>
       (function() {
@@ -41,6 +53,10 @@
 
   <body>
     <div id="root"></div>
+    
+    <!-- GTranslate.io widget container (hidden but functional) -->
+    <div class="gtranslate_wrapper" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;"></div>
+    
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
