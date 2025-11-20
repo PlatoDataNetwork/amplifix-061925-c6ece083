@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { getLanguageFromPath } from '@/utils/language';
+import { getLanguageFromPath, getGTranslateCode } from '@/utils/language';
 
 export function useLanguage() {
   const location = useLocation();
@@ -15,12 +15,6 @@ export function useLanguage() {
 
     // Trigger GTranslate for non-English languages
     if (langCode !== 'en') {
-      const getGTranslateCode = (lang: string) => {
-        if (lang === 'zh') return 'zh-CN';
-        if (lang === 'he') return 'iw';
-        return lang;
-      };
-
       const targetCode = getGTranslateCode(langCode);
 
       const applyTranslation = (attempts = 0) => {

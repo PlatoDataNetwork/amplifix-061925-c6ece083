@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { getCurrentLanguage } from "@/utils/language";
+import { getCurrentLanguage, getLanguageFromPath, getGTranslateCode } from "@/utils/language";
 
 interface BlogPost {
   id: number;
@@ -155,12 +155,6 @@ const Blog = () => {
       const lang = getCurrentLanguage();
       if (!lang || lang === 'en') return;
       if (!filteredBlogPosts.length) return;
-
-      const getGTranslateCode = (langCode: string) => {
-        if (langCode === 'zh') return 'zh-CN';
-        if (langCode === 'he') return 'iw';
-        return langCode;
-      };
 
       const targetCode = getGTranslateCode(lang);
       const w = window as any;

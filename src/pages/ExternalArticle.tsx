@@ -10,7 +10,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { toast } from "sonner";
 import { sanitizeText, formatArticleTags, formatExternalArticleContent, ARTICLE_CONTENT_CLASSES } from "@/utils/articleFormatting";
-import { getCurrentLanguage } from "@/utils/language";
+import { getCurrentLanguage, getGTranslateCode } from "@/utils/language";
 
 const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
@@ -142,12 +142,6 @@ const ExternalArticle = () => {
     try {
       const lang = getCurrentLanguage();
       if (!lang || lang === 'en') return;
-
-      const getGTranslateCode = (langCode: string) => {
-        if (langCode === 'zh') return 'zh-CN';
-        if (langCode === 'he') return 'iw';
-        return langCode;
-      };
 
       const targetCode = getGTranslateCode(lang);
       const w = window as any;

@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { useJsonData } from "@/hooks/useJsonData";
-import { getLanguageFromPath } from "@/utils/language";
+import { getLanguageFromPath, getGTranslateCode } from "@/utils/language";
 
 const Showcase = () => {
   const { data: showcaseData, isLoading } = useJsonData<any>('showcase.json');
@@ -15,12 +15,6 @@ const Showcase = () => {
   useEffect(() => {
     const pathLang = getLanguageFromPath();
     if (!pathLang || pathLang === "en" || !showcaseData) return;
-
-    const getGTranslateCode = (lang: string) => {
-      if (lang === "zh") return "zh-CN";
-      if (lang === "he") return "iw";
-      return lang;
-    };
 
     const targetCode = getGTranslateCode(pathLang);
 
