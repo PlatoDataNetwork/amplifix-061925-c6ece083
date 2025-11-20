@@ -10,27 +10,6 @@ import { getLanguageFromPath } from "@/utils/language";
 
 const Showcase = () => {
   const { data: showcaseData, isLoading } = useJsonData<any>('showcase.json');
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <MainHeader />
-        <div className="pt-24 container mx-auto py-20 px-4">
-          <div className="text-center">Loading...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!showcaseData) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <MainHeader />
-        <div className="pt-24 container mx-auto py-20 px-4">
-          <div className="text-center">Failed to load showcase data</div>
-        </div>
-      </div>
-    );
-  }
 
   // Ensure GTranslate applies after showcase content is loaded
   useEffect(() => {
@@ -59,6 +38,28 @@ const Showcase = () => {
 
     setTimeout(() => applyTranslation(), 400);
   }, [showcaseData]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <MainHeader />
+        <div className="pt-24 container mx-auto py-20 px-4">
+          <div className="text-center">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!showcaseData) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <MainHeader />
+        <div className="pt-24 container mx-auto py-20 px-4">
+          <div className="text-center">Failed to load showcase data</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
