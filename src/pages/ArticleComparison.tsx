@@ -9,15 +9,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useArticleComparison } from "@/hooks/useArticleComparison";
 import { useRecentArticles } from "@/hooks/useRecentArticles";
-import { ArrowLeft, Search, Maximize2 } from "lucide-react";
+import { ArrowLeft, Search, Maximize2, RefreshCw } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 
 const ArticleComparison = () => {
   const navigate = useNavigate();
   const [articleId, setArticleId] = useState("");
   const [searchId, setSearchId] = useState<string | null>(null);
+  const [isReformatting, setIsReformatting] = useState(false);
   const { article, backup, isLoading, error } = useArticleComparison(searchId);
   const { articles: recentArticles, isLoading: loadingArticles } = useRecentArticles(20);
 
@@ -30,6 +32,33 @@ const ArticleComparison = () => {
   const handleSelectArticle = (value: string) => {
     setArticleId(value);
     setSearchId(value);
+  };
+
+  const handleReformat = async () => {
+    if (!searchId) return;
+    
+    setIsReformatting(true);
+    try {
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { error } = await supabase.functions.invoke('reformat-single-article', {
+        body: { articleId: searchId }
+      });
+
+      if (error) throw error;
+
+      toast.success('Article reformatted successfully! Refreshing...');
+      
+      // Refresh the page after a brief delay
+      setTimeout(() => {
+        setSearchId(null);
+        setSearchId(searchId);
+      }, 1000);
+    } catch (error: any) {
+      console.error('Error reformatting article:', error);
+      toast.error('Failed to reformat article: ' + error.message);
+    } finally {
+      setIsReformatting(false);
+    }
   };
 
   const renderContent = (content: string | null, isFormatted: boolean) => {
@@ -160,30 +189,41 @@ const ArticleComparison = () => {
                     <Badge variant="secondary">{article.vertical_slug}</Badge>
                     {article.author && <Badge variant="outline">{article.author}</Badge>}
                   </div>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" size="sm">
-                        <Maximize2 className="mr-2 h-4 w-4" />
-                        Full Preview
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>{article.title}</DialogTitle>
-                      </DialogHeader>
-                      <div className="mt-4">
-                        <div className="flex gap-2 mb-4">
-                          <Badge variant="secondary">{article.vertical_slug}</Badge>
-                          {article.author && <Badge variant="outline">{article.author}</Badge>}
-                          <Badge variant="outline">{new Date(article.published_at).toLocaleDateString()}</Badge>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="default" 
+                      size="sm"
+                      onClick={handleReformat}
+                      disabled={isReformatting}
+                    >
+                      <RefreshCw className={`mr-2 h-4 w-4 ${isReformatting ? "animate-spin" : ""}`} />
+                      {isReformatting ? "Reformatting..." : "Reformat This Article"}
+                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm">
+                          <Maximize2 className="mr-2 h-4 w-4" />
+                          Full Preview
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle>{article.title}</DialogTitle>
+                        </DialogHeader>
+                        <div className="mt-4">
+                          <div className="flex gap-2 mb-4">
+                            <Badge variant="secondary">{article.vertical_slug}</Badge>
+                            {article.author && <Badge variant="outline">{article.author}</Badge>}
+                            <Badge variant="outline">{new Date(article.published_at).toLocaleDateString()}</Badge>
+                          </div>
+                          <div 
+                            className="prose prose-sm lg:prose-base max-w-none text-foreground"
+                            dangerouslySetInnerHTML={{ __html: article.content || '' }}
+                          />
                         </div>
-                        <div 
-                          className="prose prose-sm lg:prose-base max-w-none text-foreground"
-                          dangerouslySetInnerHTML={{ __html: article.content || '' }}
-                        />
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </div>
               </CardHeader>
             </Card>
