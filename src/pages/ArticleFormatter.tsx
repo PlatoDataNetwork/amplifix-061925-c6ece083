@@ -34,6 +34,8 @@ const ArticleFormatter = () => {
   } | null>(null);
   const [singleArticleId, setSingleArticleId] = useState<string>("");
   const [isSingleProcessing, setIsSingleProcessing] = useState(false);
+  const [tagArticleId, setTagArticleId] = useState<string>("");
+  const [isExtractingTags, setIsExtractingTags] = useState(false);
 
   const handleCreateBackup = async () => {
     const backupName = `pre-format-${Date.now()}`;
@@ -176,6 +178,47 @@ const ArticleFormatter = () => {
       toast.error("Failed to reformat article");
     } finally {
       setIsSingleProcessing(false);
+    }
+  };
+
+  const handleExtractTags = async () => {
+    if (!tagArticleId.trim()) {
+      toast.error("Please enter an article ID");
+      return;
+    }
+
+    setIsExtractingTags(true);
+    try {
+      const { data: article, error: fetchError } = await supabase
+        .from('articles')
+        .select('id, post_id, title')
+        .eq('post_id', parseInt(tagArticleId))
+        .single();
+
+      if (fetchError || !article) {
+        toast.error(`Article with post_id ${tagArticleId} not found`);
+        return;
+      }
+
+      toast.info(`Extracting tags for: ${article.title}`);
+
+      const { data, error } = await supabase.functions.invoke('extract-article-tags', {
+        body: { articleId: article.id }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast.success(`Successfully extracted ${data.tags?.length || 0} tags for article ${tagArticleId}`);
+        setTagArticleId("");
+      } else {
+        toast.error(data.error || 'Failed to extract tags');
+      }
+    } catch (error) {
+      console.error("Error extracting tags:", error);
+      toast.error("Failed to extract tags");
+    } finally {
+      setIsExtractingTags(false);
     }
   };
 
@@ -346,6 +389,41 @@ const ArticleFormatter = () => {
                     </>
                   ) : (
                     "Format Article"
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Extract Tags */}
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Extract Article Tags</CardTitle>
+              <CardDescription>
+                Extract 10 contextually relevant tags from an article's content
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Enter article post_id (e.g., 2650405)"
+                  value={tagArticleId}
+                  onChange={(e) => setTagArticleId(e.target.value)}
+                  className="flex-1 px-3 py-2 bg-background border border-border rounded-md"
+                  disabled={isExtractingTags}
+                />
+                <Button
+                  onClick={handleExtractTags}
+                  disabled={isExtractingTags || !tagArticleId.trim()}
+                >
+                  {isExtractingTags ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Extracting...
+                    </>
+                  ) : (
+                    "Extract Tags"
                   )}
                 </Button>
               </div>

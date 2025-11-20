@@ -303,10 +303,10 @@ if (!article) {
             </p>
           </div>
 
-          {/* Tags */}
+          {/* Related Topics */}
           {(tags.length > 0 || article.vertical_slug) && (
             <div className="pt-4">
-              <h3 className="text-sm font-semibold mb-3">Tags</h3>
+              <h3 className="text-sm font-semibold mb-3">Related Topics</h3>
               <div className="flex flex-wrap gap-2">
                 {formatArticleTags(tags, article.vertical_slug, verticalDisplayName).map((tagData) => (
                   <span 
