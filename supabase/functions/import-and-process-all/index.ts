@@ -134,21 +134,28 @@ serve(async (req) => {
         }
 
         // Transform and insert articles
-        const transformedArticles = articles.map(article => ({
-          post_id: article.id,
-          title: article.title?.rendered || 'Untitled',
-          excerpt: article.excerpt?.rendered?.replace(/<[^>]*>/g, '').trim() || null,
-          content: article.content?.rendered || null,
-          author: article.author_name || null,
+        const transformedArticles = articles.map(article => {
+          // Remove source links from content
+          const cleanedContent = article.content?.rendered
+            ?.replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/g, '')
+            ?.trim() || null;
+          
+          return {
+            post_id: article.id,
+            title: article.title?.rendered || 'Untitled',
+            excerpt: article.excerpt?.rendered?.replace(/<[^>]*>/g, '').trim() || null,
+            content: cleanedContent,
+            author: article.author_name || null,
           published_at: article.date || new Date().toISOString(),
           image_url: article.featured_image_url || null,
           external_url: article.link || null,
           vertical_slug: vertical,
-          metadata: {
-            categories: article.categories || [],
-            tags: article.tags || [],
-          }
-        }));
+            metadata: {
+              categories: article.categories || [],
+              tags: article.tags || [],
+            }
+          };
+        });
 
         const { error: insertError, count } = await supabase
           .from('articles')
