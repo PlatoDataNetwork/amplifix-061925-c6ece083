@@ -249,12 +249,20 @@ const ArticleFormatter = () => {
                 <ArrowLeft className="h-4 w-4" />
                 Back to Admin
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => navigate("/admin/articles/backups")}
-              >
-                Manage Backups
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/admin/articles/compare")}
+                >
+                  Compare Articles
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/admin/articles/backups")}
+                >
+                  Manage Backups
+                </Button>
+              </div>
             </div>
             <h1 className="text-3xl font-bold">Bulk Article Formatter</h1>
           </div>
