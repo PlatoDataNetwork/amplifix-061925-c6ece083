@@ -3,6 +3,15 @@
  * e.g., amplifix.net/ar, amplifix.net/fr
  */
 
+// Map app language codes to GTranslate codes
+export const getGTranslateCode = (langCode: string): string => {
+  const mapping: Record<string, string> = {
+    'zh': 'zh-CN',
+    'he': 'iw',
+  };
+  return mapping[langCode] || langCode;
+};
+
 // Get the language code from URL path (e.g., /ar/about -> 'ar')
 export const getLanguageFromPath = (): string | null => {
   const path = window.location.pathname;
