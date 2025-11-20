@@ -64,6 +64,8 @@ export default function TranslationManager() {
 
         // Translate common.json
         try {
+          addLog(`→ Translating ${language}/common.json...`);
+          
           const { data: commonData, error: commonError } = await supabase.functions.invoke('translate-locales', {
             body: {
               englishContent: commonContent,
@@ -72,24 +74,37 @@ export default function TranslationManager() {
             }
           });
 
-          if (commonError) throw commonError;
+          if (commonError) {
+            console.error(`Error for ${language}/common.json:`, commonError);
+            throw commonError;
+          }
+          
+          if (commonData?.error) {
+            throw new Error(commonData.error);
+          }
           
           if (commonData?.translatedContent) {
             await saveTranslation(commonData.translatedContent, language, 'common');
-            addLog(`✓ ${language}/common.json saved to database`);
+            addLog(`✓ ${language}/common.json saved (${commonData.duration || '?'}ms)`);
+          } else {
+            addLog(`✗ ${language}/common.json - no content returned`);
           }
 
           completedTasks++;
           setProgress((completedTasks / totalTasks) * 100);
         } catch (error) {
-          addLog(`✗ Error translating ${language}/common.json: ${error}`);
+          const errorMsg = error instanceof Error ? error.message : String(error);
+          addLog(`✗ ${language}/common.json failed: ${errorMsg}`);
+          console.error(`Full error for ${language}/common.json:`, error);
         }
 
         // Small delay to avoid rate limits
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
         // Translate home.json
         try {
+          addLog(`→ Translating ${language}/home.json...`);
+          
           const { data: homeData, error: homeError } = await supabase.functions.invoke('translate-locales', {
             body: {
               englishContent: homeContent,
@@ -98,21 +113,32 @@ export default function TranslationManager() {
             }
           });
 
-          if (homeError) throw homeError;
+          if (homeError) {
+            console.error(`Error for ${language}/home.json:`, homeError);
+            throw homeError;
+          }
+          
+          if (homeData?.error) {
+            throw new Error(homeData.error);
+          }
           
           if (homeData?.translatedContent) {
             await saveTranslation(homeData.translatedContent, language, 'home');
-            addLog(`✓ ${language}/home.json saved to database`);
+            addLog(`✓ ${language}/home.json saved (${homeData.duration || '?'}ms)`);
+          } else {
+            addLog(`✗ ${language}/home.json - no content returned`);
           }
 
           completedTasks++;
           setProgress((completedTasks / totalTasks) * 100);
         } catch (error) {
-          addLog(`✗ Error translating ${language}/home.json: ${error}`);
+          const errorMsg = error instanceof Error ? error.message : String(error);
+          addLog(`✗ ${language}/home.json failed: ${errorMsg}`);
+          console.error(`Full error for ${language}/home.json:`, error);
         }
 
-        // Delay between languages
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Delay between languages to avoid rate limits
+        await new Promise(resolve => setTimeout(resolve, 1500));
       }
 
       toast({
