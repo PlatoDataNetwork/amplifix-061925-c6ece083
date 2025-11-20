@@ -98,6 +98,44 @@ const ImportAdmin = () => {
     }
   };
 
+  const importAndProcessAll = async () => {
+    setImporting('all-verticals');
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      toast.info('Starting full import and AI processing...', {
+        description: 'This may take several minutes'
+      });
+
+      const { data, error } = await supabase.functions.invoke('import-and-process-all', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (error) throw error;
+
+      toast.success('Import and processing completed!', {
+        description: `Imported ${data.totalImported} articles, processed ${data.totalProcessed} with AI`
+      });
+      
+      setResults(prev => ({ ...prev, 'all-verticals': data }));
+      await loadMetrics();
+    } catch (error) {
+      console.error('Error importing and processing all:', error);
+      toast.error('Failed to import and process articles', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setImporting(null);
+    }
+  };
+
   const importVertical = async (vertical: string, verticalSlug: string) => {
     setImporting(vertical);
     
@@ -189,6 +227,58 @@ const ImportAdmin = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Import All & Process Section */}
+          <Card className="mb-8 border-primary/50 bg-gradient-to-br from-primary/5 to-primary/10">
+            <CardHeader>
+              <CardTitle className="text-2xl flex items-center gap-2">
+                🚀 Import All Verticals & Process with AI
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Import articles from all verticals and apply full AI processing (content formatting + 8 tag extraction) to every article
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Button
+                  onClick={importAndProcessAll}
+                  disabled={importing !== null}
+                  className="w-full h-14 text-lg"
+                  size="lg"
+                >
+                  {importing === 'all-verticals' ? 'Processing All Verticals...' : 'Import & Process All Articles'}
+                </Button>
+
+                {results['all-verticals'] && (
+                  <div className="mt-4 p-4 bg-background rounded-lg space-y-3">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Total Imported</p>
+                        <p className="text-2xl font-bold text-green-500">{results['all-verticals'].totalImported}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">AI Processed</p>
+                        <p className="text-2xl font-bold text-blue-500">{results['all-verticals'].totalProcessed}</p>
+                      </div>
+                    </div>
+                    
+                    {results['all-verticals'].verticalResults && (
+                      <div className="mt-4">
+                        <h4 className="font-semibold mb-2">Import Results by Vertical:</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+                          {Object.entries(results['all-verticals'].verticalResults).map(([vertical, count]: [string, any]) => (
+                            <div key={vertical} className="p-2 bg-muted rounded">
+                              <span className="font-medium">{vertical}:</span> {count}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Aerospace Test Import Section */}
           <Card className="mb-8 border-blue-500/50">

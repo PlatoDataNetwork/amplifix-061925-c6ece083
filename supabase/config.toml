@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.reformat-single-article]
 verify_jwt = true
+
+[functions.import-and-process-all]
+verify_jwt = true
