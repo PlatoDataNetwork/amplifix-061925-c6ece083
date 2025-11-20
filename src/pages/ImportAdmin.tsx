@@ -123,6 +123,31 @@ const ImportAdmin = () => {
     }
   };
 
+  const testImportAerospace = async (limit: number = 5) => {
+    setImporting('aerospace-test');
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('import-aerospace-test', {
+        body: { limit }
+      });
+
+      if (error) throw error;
+
+      setResults(prev => ({ ...prev, 'aerospace-test': data }));
+      toast.success(`Aerospace test import completed!`, {
+        description: `Imported ${data.imported} of ${data.testedArticles} articles`
+      });
+      await loadMetrics(); // Refresh metrics after import
+    } catch (error) {
+      console.error('Error testing Aerospace import:', error);
+      toast.error('Failed to test Aerospace import', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setImporting(null);
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -164,6 +189,105 @@ const ImportAdmin = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Aerospace Test Import Section */}
+          <Card className="mb-8 border-blue-500/50">
+            <CardHeader>
+              <CardTitle className="text-2xl flex items-center gap-2">
+                🚀 Aerospace Feed Test Import
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Test import from https://platodata.ai/aerospace/json/ to verify feed structure and formatting
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex gap-4">
+                  <Button
+                    onClick={() => testImportAerospace(5)}
+                    disabled={importing !== null}
+                    className="flex-1"
+                  >
+                    {importing === 'aerospace-test' ? 'Testing...' : 'Import 5 Test Articles'}
+                  </Button>
+                  <Button
+                    onClick={() => testImportAerospace(10)}
+                    disabled={importing !== null}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    {importing === 'aerospace-test' ? 'Testing...' : 'Import 10 Test Articles'}
+                  </Button>
+                </div>
+
+                {results['aerospace-test'] && (
+                  <div className="mt-4 p-4 bg-muted rounded-lg space-y-3">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Total in Feed</p>
+                        <p className="text-xl font-bold">{results['aerospace-test'].totalInFeed}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Tested</p>
+                        <p className="text-xl font-bold">{results['aerospace-test'].testedArticles}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Imported</p>
+                        <p className="text-xl font-bold text-green-500">{results['aerospace-test'].imported}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Skipped</p>
+                        <p className="text-xl font-bold text-yellow-500">{results['aerospace-test'].skipped}</p>
+                      </div>
+                    </div>
+                    
+                    {results['aerospace-test'].articles && results['aerospace-test'].articles.length > 0 && (
+                      <div className="mt-4">
+                        <h4 className="font-semibold mb-2">Test Results:</h4>
+                        <div className="space-y-2">
+                          {results['aerospace-test'].articles.map((article: any, idx: number) => (
+                            <div key={idx} className="p-3 bg-background rounded border">
+                              <div className="flex items-center justify-between">
+                                <div className="flex-1">
+                                  <p className="font-medium">{article.title}</p>
+                                  <p className="text-xs text-muted-foreground">Post ID: {article.post_id}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className={`text-xs px-2 py-1 rounded ${
+                                    article.status === 'imported' ? 'bg-green-500/20 text-green-500' :
+                                    article.status === 'skipped' ? 'bg-yellow-500/20 text-yellow-500' :
+                                    'bg-red-500/20 text-red-500'
+                                  }`}>
+                                    {article.status}
+                                  </span>
+                                  {article.url && (
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => window.open(article.url, '_blank')}
+                                    >
+                                      View
+                                    </Button>
+                                  )}
+                                </div>
+                              </div>
+                              {article.error && (
+                                <p className="text-xs text-red-500 mt-2">{article.error}</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    <p className="text-xs text-muted-foreground">
+                      Completed in {results['aerospace-test'].duration}ms
+                    </p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
           
           {/* All Verticals Table */}
           <Card className="mb-8">
