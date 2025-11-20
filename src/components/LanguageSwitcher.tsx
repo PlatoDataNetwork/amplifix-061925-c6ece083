@@ -28,6 +28,7 @@ const languages: Language[] = [
   { code: 'it', name: 'Italian', flag: '🇮🇹' },
   { code: 'ja', name: 'Japanese', flag: '🇯🇵' },
   { code: 'ko', name: 'Korean', flag: '🇰🇷' },
+  { code: 'pa', name: 'Punjabi', flag: '🇮🇳' },
   { code: 'pt', name: 'Portuguese', flag: '🇵🇹' },
   { code: 'ru', name: 'Russian', flag: '🇷🇺' },
   { code: 'es', name: 'Spanish', flag: '🇪🇸' },
