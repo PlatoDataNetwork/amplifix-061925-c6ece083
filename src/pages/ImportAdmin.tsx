@@ -10,6 +10,13 @@ import { Users, ArrowUpDown, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -27,6 +34,7 @@ const ImportAdmin = () => {
   const [sortBy, setSortBy] = useState<'name' | 'count'>('count');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTestVertical, setSelectedTestVertical] = useState<string>('');
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
   useEffect(() => {
@@ -161,24 +169,32 @@ const ImportAdmin = () => {
     }
   };
 
-  const testImportAerospace = async (limit: number = 5) => {
-    setImporting('aerospace-test');
+  const testImportVertical = async (limit: number = 5) => {
+    if (!selectedTestVertical) {
+      toast.error('Please select a vertical to test');
+      return;
+    }
+    
+    setImporting('vertical-test');
     
     try {
-      const { data, error } = await supabase.functions.invoke('import-aerospace-test', {
-        body: { limit }
+      const { data, error } = await supabase.functions.invoke('import-articles', {
+        body: { 
+          vertical: selectedTestVertical,
+          limit: limit
+        }
       });
 
       if (error) throw error;
 
-      setResults(prev => ({ ...prev, 'aerospace-test': data }));
-      toast.success(`Aerospace test import completed!`, {
-        description: `Imported ${data.imported} of ${data.testedArticles} articles`
+      setResults(prev => ({ ...prev, 'vertical-test': data }));
+      toast.success(`${selectedTestVertical} test import completed!`, {
+        description: `Imported ${data.insertedArticles} articles`
       });
-      await loadMetrics(); // Refresh metrics after import
+      await loadMetrics();
     } catch (error) {
-      console.error('Error testing Aerospace import:', error);
-      toast.error('Failed to test Aerospace import', {
+      console.error(`Error testing ${selectedTestVertical} import:`, error);
+      toast.error(`Failed to test ${selectedTestVertical} import`, {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
     } finally {
@@ -280,99 +296,78 @@ const ImportAdmin = () => {
             </CardContent>
           </Card>
 
-          {/* Aerospace Test Import Section */}
+          {/* Test Import Single Vertical Section */}
           <Card className="mb-8 border-blue-500/50">
             <CardHeader>
               <CardTitle className="text-2xl flex items-center gap-2">
-                🚀 Aerospace Feed Test Import
+                🧪 Test Import Single Vertical
               </CardTitle>
               <p className="text-sm text-muted-foreground">
-                Test import from https://platodata.ai/aerospace/json/ to verify feed structure and formatting
+                Select any vertical to test import a limited number of articles
               </p>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
+                <div className="flex gap-4 items-end">
+                  <div className="flex-1">
+                    <label className="text-sm font-medium mb-2 block">Select Vertical</label>
+                    <Select value={selectedTestVertical} onValueChange={setSelectedTestVertical}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choose a vertical to test..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {verticals.map((vertical) => (
+                          <SelectItem key={vertical.slug} value={vertical.slug}>
+                            {vertical.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
                 <div className="flex gap-4">
                   <Button
-                    onClick={() => testImportAerospace(5)}
-                    disabled={importing !== null}
+                    onClick={() => testImportVertical(5)}
+                    disabled={importing !== null || !selectedTestVertical}
                     className="flex-1"
                   >
-                    {importing === 'aerospace-test' ? 'Testing...' : 'Import 5 Test Articles'}
+                    {importing === 'vertical-test' ? 'Testing...' : 'Import 5 Test Articles'}
                   </Button>
                   <Button
-                    onClick={() => testImportAerospace(10)}
-                    disabled={importing !== null}
+                    onClick={() => testImportVertical(10)}
+                    disabled={importing !== null || !selectedTestVertical}
                     variant="outline"
                     className="flex-1"
                   >
-                    {importing === 'aerospace-test' ? 'Testing...' : 'Import 10 Test Articles'}
+                    {importing === 'vertical-test' ? 'Testing...' : 'Import 10 Test Articles'}
+                  </Button>
+                  <Button
+                    onClick={() => testImportVertical(25)}
+                    disabled={importing !== null || !selectedTestVertical}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    {importing === 'vertical-test' ? 'Testing...' : 'Import 25 Test Articles'}
                   </Button>
                 </div>
 
-                {results['aerospace-test'] && (
+                {results['vertical-test'] && (
                   <div className="mt-4 p-4 bg-muted rounded-lg space-y-3">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                      <div>
-                        <p className="text-muted-foreground">Total in Feed</p>
-                        <p className="text-xl font-bold">{results['aerospace-test'].totalInFeed}</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">Tested</p>
-                        <p className="text-xl font-bold">{results['aerospace-test'].testedArticles}</p>
-                      </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                       <div>
                         <p className="text-muted-foreground">Imported</p>
-                        <p className="text-xl font-bold text-green-500">{results['aerospace-test'].imported}</p>
+                        <p className="text-xl font-bold text-green-500">{results['vertical-test'].insertedArticles}</p>
                       </div>
                       <div>
                         <p className="text-muted-foreground">Skipped</p>
-                        <p className="text-xl font-bold text-yellow-500">{results['aerospace-test'].skipped}</p>
+                        <p className="text-xl font-bold text-yellow-500">{results['vertical-test'].skippedArticles}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Errors</p>
+                        <p className="text-xl font-bold text-red-500">{results['vertical-test'].erroredArticles}</p>
                       </div>
                     </div>
-                    
-                    {results['aerospace-test'].articles && results['aerospace-test'].articles.length > 0 && (
-                      <div className="mt-4">
-                        <h4 className="font-semibold mb-2">Test Results:</h4>
-                        <div className="space-y-2">
-                          {results['aerospace-test'].articles.map((article: any, idx: number) => (
-                            <div key={idx} className="p-3 bg-background rounded border">
-                              <div className="flex items-center justify-between">
-                                <div className="flex-1">
-                                  <p className="font-medium">{article.title}</p>
-                                  <p className="text-xs text-muted-foreground">Post ID: {article.post_id}</p>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <span className={`text-xs px-2 py-1 rounded ${
-                                    article.status === 'imported' ? 'bg-green-500/20 text-green-500' :
-                                    article.status === 'skipped' ? 'bg-yellow-500/20 text-yellow-500' :
-                                    'bg-red-500/20 text-red-500'
-                                  }`}>
-                                    {article.status}
-                                  </span>
-                                  {article.url && (
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      onClick={() => window.open(article.url, '_blank')}
-                                    >
-                                      View
-                                    </Button>
-                                  )}
-                                </div>
-                              </div>
-                              {article.error && (
-                                <p className="text-xs text-red-500 mt-2">{article.error}</p>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    
-                    <p className="text-xs text-muted-foreground">
-                      Completed in {results['aerospace-test'].duration}ms
-                    </p>
                   </div>
                 )}
               </div>
