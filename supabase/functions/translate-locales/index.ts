@@ -22,19 +22,32 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const startTime = Date.now();
+
   try {
     const { englishContent, targetLanguage, fileName } = await req.json();
     
+    console.log(`[${targetLanguage}/${fileName}] Request received`);
+    
     if (!englishContent || !targetLanguage || !fileName) {
+      console.error('Missing parameters:', { englishContent: !!englishContent, targetLanguage, fileName });
       return new Response(
         JSON.stringify({ error: 'Missing required parameters' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
+    if (!LOVABLE_API_KEY) {
+      console.error('LOVABLE_API_KEY not configured');
+      return new Response(
+        JSON.stringify({ error: 'Translation service not configured' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const languageName = languageNames[targetLanguage] || targetLanguage;
     
-    console.log(`Translating ${fileName} to ${languageName} (${targetLanguage})`);
+    console.log(`[${targetLanguage}/${fileName}] Starting translation to ${languageName}`);
 
     const systemPrompt = `You are a professional translator. Translate the following JSON content from English to ${languageName}.
 
@@ -52,6 +65,8 @@ Example:
 Input: {"title": "Hello {{name}}", "button": "Learn more →"}
 Output: {"title": "Bonjour {{name}}", "button": "En savoir plus →"}`;
 
+    console.log(`[${targetLanguage}/${fileName}] Calling AI gateway...`);
+    
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -64,20 +79,48 @@ Output: {"title": "Bonjour {{name}}", "button": "En savoir plus →"}`;
           { role: 'system', content: systemPrompt },
           { role: 'user', content: JSON.stringify(englishContent, null, 2) }
         ],
+        temperature: 0.3, // Lower temperature for more consistent translations
       }),
     });
 
+    console.log(`[${targetLanguage}/${fileName}] AI gateway responded with status: ${response.status}`);
+
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`AI Gateway error: ${response.status} - ${errorText}`);
+      console.error(`[${targetLanguage}/${fileName}] AI Gateway error: ${response.status} - ${errorText}`);
+      
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: 'Rate limit exceeded. Please wait and try again.' }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      if (response.status === 402) {
+        return new Response(
+          JSON.stringify({ error: 'Payment required. Please add credits to your Lovable AI workspace.' }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
       return new Response(
-        JSON.stringify({ error: `Translation API error: ${response.status}` }),
+        JSON.stringify({ error: `Translation API error: ${response.status}`, details: errorText }),
         { status: response.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
+    console.log(`[${targetLanguage}/${fileName}] Parsing AI response...`);
+    
     const data = await response.json();
-    const translatedText = data.choices[0].message.content;
+    const translatedText = data.choices?.[0]?.message?.content;
+    
+    if (!translatedText) {
+      console.error(`[${targetLanguage}/${fileName}] No content in AI response:`, data);
+      return new Response(
+        JSON.stringify({ error: 'No translation content received from AI' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
     
     // Clean up markdown code blocks if present
     let cleanedText = translatedText.trim();
@@ -97,25 +140,37 @@ Output: {"title": "Bonjour {{name}}", "button": "En savoir plus →"}`;
     try {
       translatedContent = JSON.parse(cleanedText);
     } catch (parseError) {
-      console.error(`JSON parse error for ${targetLanguage}:`, parseError);
-      console.error('Raw response:', cleanedText);
+      console.error(`[${targetLanguage}/${fileName}] JSON parse error:`, parseError);
+      console.error(`[${targetLanguage}/${fileName}] Raw response (first 500 chars):`, cleanedText.substring(0, 500));
       return new Response(
-        JSON.stringify({ error: 'Invalid JSON returned from translation', raw: cleanedText }),
+        JSON.stringify({ 
+          error: 'Invalid JSON returned from translation', 
+          details: parseError instanceof Error ? parseError.message : 'Parse error',
+          preview: cleanedText.substring(0, 200)
+        }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log(`Successfully translated ${fileName} to ${languageName}`);
+    const duration = Date.now() - startTime;
+    console.log(`[${targetLanguage}/${fileName}] ✓ Translation completed in ${duration}ms`);
     
     return new Response(
-      JSON.stringify({ translatedContent, language: targetLanguage }),
+      JSON.stringify({ translatedContent, language: targetLanguage, duration }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
-    console.error('Translation error:', error);
+    const duration = Date.now() - startTime;
+    console.error(`Translation error after ${duration}ms:`, error);
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
+      JSON.stringify({ 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        type: error instanceof Error ? error.constructor.name : typeof error,
+        duration
+      }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
