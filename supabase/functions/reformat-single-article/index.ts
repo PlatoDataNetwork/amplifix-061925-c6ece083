@@ -1,12 +1,11 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 import { corsHeaders } from '../_shared/cors.ts';
 
-// Article formatting function - Clean formatting without double-wrapping
-const formatArticleContent = (text?: string | null): string => {
+// Clean text by removing unwanted HTML and formatting
+const cleanText = (text?: string | null): string => {
   if (!text) return "";
   
-  // Clean up links, URLs, and unwanted markers
-  let cleaned = text
+  return text
     .replace(/<a\b[^>]*>/gi, "")
     .replace(/<\/a>/gi, "")
     .replace(/https?:\/\/\S+/gi, "")
@@ -15,23 +14,73 @@ const formatArticleContent = (text?: string | null): string => {
     .replace(/Link:?:?\s*/gi, "")
     .replace(/---/g, "")
     .replace(/\*\*(.+?)\*\*/g, "$1")
-    // CRITICAL: Remove existing HTML tags to prevent double-wrapping
     .replace(/<\/?p>/gi, "")
     .replace(/<\/?div>/gi, "")
     .replace(/<\/?span>/gi, "")
-    .replace(/<ul[^>]*>[\s\S]*?<\/ul>/gi, "") // Remove HTML lists
+    .replace(/<ul[^>]*>[\s\S]*?<\/ul>/gi, "")
     .replace(/<li[^>]*>[\s\S]*?<\/li>/gi, "")
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/\r\n/g, "\n")
     .replace(/\n{3,}/g, "\n\n")
     .replace(/^[ \t]+/gm, "")
     .trim();
+};
 
-  // Split into sentences and group them intelligently
-  // Look for period followed by space and capital letter, or other sentence endings
-  const sentences = cleaned.split(/(?<=[.!?])\s+(?=[A-Z])/);
-  
-  // Group sentences into paragraphs (every 3-4 sentences)
+// Use AI to detect semantic breaks and split into paragraphs
+const formatArticleWithAI = async (text: string): Promise<string> => {
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) {
+    console.error("LOVABLE_API_KEY not found, falling back to simple formatting");
+    return fallbackFormatting(text);
+  }
+
+  try {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          {
+            role: "system",
+            content: "You are an expert content formatter. Your task is to analyze text and split it into well-structured paragraphs based on semantic topic changes. Each paragraph should focus on a single idea or topic. Return ONLY the formatted text with paragraph breaks (double newlines) inserted at appropriate semantic boundaries. Do not add any extra commentary or explanations."
+          },
+          {
+            role: "user",
+            content: `Analyze this article text and insert paragraph breaks (double newlines) at natural semantic boundaries where topics shift. Keep the original text exactly as-is, only add paragraph breaks:\n\n${text}`
+          }
+        ],
+        temperature: 0.3,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error("AI API error:", response.status, await response.text());
+      return fallbackFormatting(text);
+    }
+
+    const data = await response.json();
+    const formattedText = data.choices?.[0]?.message?.content || text;
+    
+    // Wrap each paragraph in <p> tags
+    const paragraphs = formattedText
+      .split(/\n\n+/)
+      .map((p: string) => p.trim())
+      .filter(Boolean);
+
+    return paragraphs.map((p: string) => `<p>${p}</p>`).join("\n\n");
+  } catch (error) {
+    console.error("Error using AI for formatting:", error);
+    return fallbackFormatting(text);
+  }
+};
+
+// Fallback formatting if AI is unavailable
+const fallbackFormatting = (text: string): string => {
+  const sentences = text.split(/(?<=[.!?])\s+(?=[A-Z])/);
   const paragraphs: string[] = [];
   let currentParagraph: string[] = [];
   
@@ -41,14 +90,12 @@ const formatArticleContent = (text?: string | null): string => {
     
     currentParagraph.push(sentence);
     
-    // Create a new paragraph every 3-4 sentences
     if (currentParagraph.length >= 3 && (i === sentences.length - 1 || Math.random() > 0.5)) {
       paragraphs.push(currentParagraph.join(" "));
       currentParagraph = [];
     }
   }
   
-  // Add any remaining sentences
   if (currentParagraph.length > 0) {
     paragraphs.push(currentParagraph.join(" "));
   }
@@ -75,6 +122,8 @@ Deno.serve(async (req) => {
       throw new Error('Article ID is required');
     }
 
+    console.log('Fetching article:', articleId);
+
     // Fetch the article
     const { data: article, error: fetchError } = await supabase
       .from('articles')
@@ -86,8 +135,13 @@ Deno.serve(async (req) => {
       throw new Error('Article not found');
     }
 
-    // Format the content
-    const formattedContent = formatArticleContent(article.content);
+    console.log('Cleaning and formatting article with AI...');
+
+    // Clean and format the content with AI
+    const cleanedText = cleanText(article.content);
+    const formattedContent = await formatArticleWithAI(cleanedText);
+
+    console.log('Updating article in database...');
 
     // Update the article
     const { error: updateError } = await supabase
@@ -102,10 +156,12 @@ Deno.serve(async (req) => {
       throw updateError;
     }
 
+    console.log('Article reformatted successfully');
+
     return new Response(
       JSON.stringify({ 
         success: true,
-        message: 'Article reformatted successfully'
+        message: 'Article reformatted successfully with AI-powered semantic analysis'
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
