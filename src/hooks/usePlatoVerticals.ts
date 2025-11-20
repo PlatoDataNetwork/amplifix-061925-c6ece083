@@ -13,7 +13,6 @@ export function usePlatoVerticals() {
   useEffect(() => {
     // Verticals from PlatoData JSON API
     const platoVerticals: Vertical[] = [
-      { name: 'Aerospace', slug: 'aerospace', url: 'https://dashboard.platodata.io/json/aerospace.json' },
       { name: 'AI Intelligence', slug: 'artificial-intelligence', url: 'https://dashboard.platodata.io/json/artificial-intelligence.json' },
       { name: 'AR/VR', slug: 'ar-vr', url: 'https://dashboard.platodata.io/json/ar-vr.json' },
       { name: 'Autism', slug: 'autism', url: 'https://dashboard.platodata.io/json/autism.json' },
