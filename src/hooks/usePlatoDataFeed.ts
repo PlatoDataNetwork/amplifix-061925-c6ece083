@@ -94,8 +94,13 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
           // Ensure image is a string, not an object
           const imageUrl = typeof articleImage === 'string' ? articleImage : '';
 
-          // Create excerpt from content
-          const plainContent = article.content?.replace(/<[^>]*>/g, '') || '';
+          // Remove source links from content
+          const cleanedContent = article.content
+            ?.replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/g, '')
+            ?.trim() || '';
+
+          // Create excerpt from cleaned content
+          const plainContent = cleanedContent.replace(/<[^>]*>/g, '') || '';
           const excerpt = article.contentSnippet || plainContent.substring(0, 200) || '';
 
           return {
@@ -109,7 +114,7 @@ export function usePlatoDataFeed(verticalSlug: string | null, categoryName: stri
             image: '',  // No images for AI articles
             tags: tags,
             external_url: articleLink,
-            content: article.content
+            content: cleanedContent
           };
         });
 
