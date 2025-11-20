@@ -21,8 +21,7 @@ interface Language {
 const languages: Language[] = [
   { code: 'ar', name: 'Arabic', flag: '🇸🇦', gCode: 'ar' },
   { code: 'bn', name: 'Bengali', flag: '🇧🇩', gCode: 'bn' },
-  { code: 'zh', name: 'Chinese (Simplified)', flag: '🇨🇳', gCode: 'zh-CN' },
-  { code: 'zt', name: 'Chinese (Traditional)', flag: '🇭🇰', gCode: 'zh-TW' },
+  { code: 'zh', name: 'Chinese', flag: '🇨🇳', gCode: 'zh-CN' },
   { code: 'da', name: 'Danish', flag: '🇩🇰', gCode: 'da' },
   { code: 'nl', name: 'Dutch', flag: '🇳🇱', gCode: 'nl' },
   { code: 'en', name: 'English', flag: '🇺🇸', gCode: 'en' },
@@ -194,7 +193,7 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
           <ChevronDown className="h-3 w-3" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48 bg-background border-border">
+      <DropdownMenuContent align="end" className="w-48 max-h-[400px] overflow-y-auto bg-background border-border">
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
