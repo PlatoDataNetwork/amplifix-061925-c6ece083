@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { formatExternalArticleContent, ARTICLE_CONTENT_CLASSES } from "@/utils/articleFormatting";
 
 const ArticleComparison = () => {
   const navigate = useNavigate();
@@ -217,8 +218,12 @@ const ArticleComparison = () => {
                             <Badge variant="outline">{new Date(article.published_at).toLocaleDateString()}</Badge>
                           </div>
                           <div 
-                            className="prose prose-sm lg:prose-base max-w-none text-foreground"
-                            dangerouslySetInnerHTML={{ __html: article.content || '' }}
+                            className={ARTICLE_CONTENT_CLASSES}
+                            dangerouslySetInnerHTML={{ 
+                              __html: article.content && /<\/?[a-z][\s\S]*>/i.test(article.content)
+                                ? article.content
+                                : formatExternalArticleContent(article.content || '')
+                            }}
                           />
                         </div>
                       </DialogContent>

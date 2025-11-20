@@ -9,69 +9,7 @@ import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { toast } from "sonner";
-import { sanitizeText, formatArticleTags } from "@/utils/articleFormatting";
-
-const formatExternalArticleContent = (text?: string | null): string => {
-  if (!text) return "";
-
-  const cleaned = sanitizeText(text);
-  const lines = cleaned.split("\n");
-  const htmlParts: string[] = [];
-  let inUnorderedList = false;
-  let inOrderedList = false;
-
-  const closeLists = () => {
-    if (inUnorderedList) {
-      htmlParts.push("</ul>");
-      inUnorderedList = false;
-    }
-    if (inOrderedList) {
-      htmlParts.push("</ol>");
-      inOrderedList = false;
-    }
-  };
-
-  for (const rawLine of lines) {
-    const line = rawLine.trim();
-
-    if (!line) {
-      // Blank line: end any open lists but don't create empty paragraphs
-      closeLists();
-      continue;
-    }
-
-    const bulletMatch = line.match(/^[-•]\s+(.*)/);
-    const orderedMatch = line.match(/^(\d+)\.\s+(.*)/);
-
-    if (bulletMatch) {
-      if (!inUnorderedList) {
-        closeLists();
-        htmlParts.push("<ul>");
-        inUnorderedList = true;
-      }
-      htmlParts.push(`<li>${bulletMatch[1].trim()}</li>`);
-      continue;
-    }
-
-    if (orderedMatch) {
-      if (!inOrderedList) {
-        closeLists();
-        htmlParts.push("<ol>");
-        inOrderedList = true;
-      }
-      htmlParts.push(`<li>${orderedMatch[2].trim()}</li>`);
-      continue;
-    }
-
-    // Regular line: close any lists and start a new paragraph
-    closeLists();
-    htmlParts.push(`<p>${line}</p>`);
-  }
-
-  closeLists();
-
-  return htmlParts.join("\n");
-};
+import { sanitizeText, formatArticleTags, formatExternalArticleContent, ARTICLE_CONTENT_CLASSES } from "@/utils/articleFormatting";
 
 const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
@@ -331,7 +269,7 @@ if (!article) {
           {/* Article Content */}
           <div className="prose prose-invert max-w-none mb-2">
             <div 
-               className="text-foreground leading-relaxed whitespace-pre-wrap [&>p]:mb-0 [&>p]:leading-relaxed [&>h2]:mt-1 [&>h2]:mb-0 [&>h2]:text-4xl [&>h2]:font-bold [&>h2]:leading-tight [&>h3]:mt-1 [&>h3]:mb-0 [&>h3]:text-2xl [&>h3]:font-bold [&>strong]:mt-1 [&>strong]:mb-0 [&>strong]:block [&>ul]:my-1 [&>ul]:space-y-1 [&>ol]:my-1 [&>ol]:space-y-1"
+               className={ARTICLE_CONTENT_CLASSES}
                dangerouslySetInnerHTML={{
                  __html:
                    article.content && /<\/?[a-z][\s\S]*>/i.test(article.content)
