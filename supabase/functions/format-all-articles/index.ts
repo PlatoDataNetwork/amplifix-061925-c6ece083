@@ -84,6 +84,66 @@ const formatArticleWithAI = async (text: string): Promise<string> => {
   }
 };
 
+// Tag extraction logic (copied from extract-article-tags)
+function extractKeywords(text: string, title: string): string[] {
+  const stopWords = new Set([
+    'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i', 'it', 'for', 'not', 'on', 'with', 
+    'he', 'as', 'you', 'do', 'at', 'this', 'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her', 
+    'she', 'or', 'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their', 'what', 'so', 'up', 
+    'out', 'if', 'about', 'who', 'get', 'which', 'go', 'me', 'when', 'make', 'can', 'like', 'time',
+    'no', 'just', 'him', 'know', 'take', 'people', 'into', 'year', 'your', 'good', 'some', 'could',
+    'them', 'see', 'other', 'than', 'then', 'now', 'look', 'only', 'come', 'its', 'over', 'think',
+    'also', 'back', 'after', 'use', 'two', 'how', 'our', 'work', 'first', 'well', 'way', 'even',
+    'new', 'want', 'because', 'any', 'these', 'give', 'day', 'most', 'us', 'is', 'was', 'are', 'been'
+  ]);
+
+  const fullText = `${title} ${text}`.toLowerCase();
+  const words = fullText
+    .replace(/[^a-z0-9\s-]/g, ' ')
+    .split(/\s+/)
+    .filter(word => word.length > 3 && !stopWords.has(word));
+
+  const wordCount = new Map<string, number>();
+  words.forEach(word => {
+    wordCount.set(word, (wordCount.get(word) || 0) + 1);
+  });
+
+  const phrases: string[] = [];
+  for (let i = 0; i < words.length - 1; i++) {
+    const twoWord = `${words[i]} ${words[i + 1]}`;
+    if (!stopWords.has(words[i]) && !stopWords.has(words[i + 1])) {
+      phrases.push(twoWord);
+    }
+    
+    if (i < words.length - 2) {
+      const threeWord = `${words[i]} ${words[i + 1]} ${words[i + 2]}`;
+      if (!stopWords.has(words[i]) && !stopWords.has(words[i + 1]) && !stopWords.has(words[i + 2])) {
+        phrases.push(threeWord);
+      }
+    }
+  }
+
+  const phraseCount = new Map<string, number>();
+  phrases.forEach(phrase => {
+    phraseCount.set(phrase, (phraseCount.get(phrase) || 0) + 1);
+  });
+
+  const topWords = Array.from(wordCount.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 15)
+    .map(([word]) => word);
+
+  const topPhrases = Array.from(phraseCount.entries())
+    .filter(([, count]) => count >= 2)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([phrase]) => phrase);
+
+  const tags = [...new Set([...topPhrases, ...topWords])].slice(0, 8);
+  
+  return tags.map(tag => tag.charAt(0).toUpperCase() + tag.slice(1));
+}
+
 // Fallback formatting if AI is unavailable
 const fallbackFormatting = (text: string): string => {
   const sentences = text.split(/(?<=[.!?])\s+(?=[A-Z])/);
@@ -129,7 +189,7 @@ Deno.serve(async (req) => {
     // Fetch articles in this chunk (excluding those with null content)
     const { data: articles, error: fetchError } = await supabase
       .from('articles')
-      .select('id, content')
+      .select('id, title, content, excerpt')
       .not('content', 'is', null)
       .range(chunkIndex * chunkSize, (chunkIndex + 1) * chunkSize - 1);
 
@@ -164,6 +224,7 @@ Deno.serve(async (req) => {
           const cleanedText = cleanText(article.content);
           const formattedContent = await formatArticleWithAI(cleanedText);
 
+          // Update article content
           const { error: updateError } = await supabase
             .from('articles')
             .update({
@@ -176,8 +237,58 @@ Deno.serve(async (req) => {
             console.error(`Error updating article ${article.id}:`, updateError);
             errors.push(`${article.id}: ${updateError.message}`);
           } else {
-            processed++;
             console.log(`Successfully formatted article ${article.id}`);
+            
+            // Extract and store tags
+            try {
+              const tags = extractKeywords(article.content || article.excerpt || '', article.title);
+              console.log(`Extracted ${tags.length} tags for article ${article.id}`);
+              
+              // Delete existing tags first
+              await supabase
+                .from('article_tags')
+                .delete()
+                .eq('article_id', article.id);
+              
+              // Create or get tags and link to article
+              for (const tagName of tags) {
+                const tagSlug = tagName.toLowerCase().replace(/\s+/g, '-');
+                
+                const { data: existingTag } = await supabase
+                  .from('tags')
+                  .select('id')
+                  .eq('slug', tagSlug)
+                  .maybeSingle();
+
+                let tagId: string;
+                
+                if (existingTag) {
+                  tagId = existingTag.id;
+                } else {
+                  const { data: newTag, error: tagError } = await supabase
+                    .from('tags')
+                    .insert({ name: tagName, slug: tagSlug })
+                    .select('id')
+                    .single();
+                  
+                  if (tagError || !newTag) {
+                    console.error(`Failed to create tag ${tagName}:`, tagError);
+                    continue;
+                  }
+                  
+                  tagId = newTag.id;
+                }
+
+                await supabase
+                  .from('article_tags')
+                  .insert({ article_id: article.id, tag_id: tagId });
+              }
+              
+              processed++;
+            } catch (tagError) {
+              console.error(`Error extracting tags for article ${article.id}:`, tagError);
+              // Don't fail the whole process if tag extraction fails
+            }
           }
         } catch (err) {
           console.error(`Error processing article ${article.id}:`, err);
@@ -197,7 +308,7 @@ Deno.serve(async (req) => {
         processed,
         total: articles.length,
         errors: errors.length > 0 ? errors : undefined,
-        message: `Processed ${processed}/${articles.length} articles with AI-powered formatting`
+        message: `Processed ${processed}/${articles.length} articles with AI-powered formatting and tag extraction`
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
