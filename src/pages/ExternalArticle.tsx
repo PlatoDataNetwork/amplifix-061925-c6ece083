@@ -296,10 +296,18 @@ if (!article) {
             <div 
                className={ARTICLE_CONTENT_CLASSES}
                dangerouslySetInnerHTML={{
-                 __html:
-                   article.content && /<\/?[a-z][\s\S]*>/i.test(article.content)
-                     ? article.content
-                     : formatExternalArticleContent(article.content || article.excerpt || ""),
+                 __html: (() => {
+                   // Remove Plato source links before processing
+                   const contentWithoutSourceLinks = (article.content || article.excerpt || "")
+                     .replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/gi, '')
+                     .replace(/<div class="plato-post-bottom-links">[\s\S]*?<\/div>/gi, '')
+                     .replace(/Source Link:[\s\S]*?<\/a>/gi, '');
+                   
+                   // Check if content has HTML tags
+                   return /<\/?[a-z][\s\S]*>/i.test(contentWithoutSourceLinks)
+                     ? contentWithoutSourceLinks
+                     : formatExternalArticleContent(contentWithoutSourceLinks);
+                 })(),
                }}
              />
            </div>

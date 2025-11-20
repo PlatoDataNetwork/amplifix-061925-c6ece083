@@ -28,7 +28,15 @@ export const sanitizeText = (text?: string | null): string => {
 export const formatExternalArticleContent = (text?: string | null): string => {
   if (!text) return "";
 
-  const cleaned = sanitizeText(text);
+  // First, remove Plato source links and other metadata
+  let cleaned = text
+    .replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/gi, '')
+    .replace(/<div class="plato-post-bottom-links">[\s\S]*?<\/div>/gi, '')
+    .replace(/Source Link:[\s\S]*?<\/a>/gi, '')
+    .trim();
+  
+  // Then apply standard sanitization
+  cleaned = sanitizeText(cleaned);
   const lines = cleaned.split("\n");
   const htmlParts: string[] = [];
   let inUnorderedList = false;
