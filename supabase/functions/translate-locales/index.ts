@@ -85,6 +85,7 @@ Output: {"title": "Bonjour {{name}}", "button": "En savoir plus →"}`;
             { role: 'user', content: JSON.stringify(englishContent, null, 2) }
           ],
           temperature: 0.3, // Lower temperature for more consistent translations
+          max_tokens: 4096, // Ensure complete responses for large translations
         }),
         signal: controller.signal,
       });
@@ -135,6 +136,20 @@ Output: {"title": "Bonjour {{name}}", "button": "En savoir plus →"}`;
       }
       
       const translatedText = data.choices?.[0]?.message?.content;
+      const finishReason = data.choices?.[0]?.finish_reason;
+      
+      // Check if response was truncated
+      if (finishReason === 'length') {
+        console.error(`[${targetLanguage}/${fileName}] Response was truncated due to token limit`);
+        return new Response(
+          JSON.stringify({ 
+            error: 'Translation response was truncated',
+            details: 'The response exceeded token limits. Try translating smaller sections.',
+            retry: true
+          }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
       
       if (!translatedText) {
         console.error(`[${targetLanguage}/${fileName}] No content in AI response:`, data);
@@ -163,12 +178,21 @@ Output: {"title": "Bonjour {{name}}", "button": "En savoir plus →"}`;
         translatedContent = JSON.parse(cleanedText);
       } catch (parseError) {
         console.error(`[${targetLanguage}/${fileName}] JSON parse error:`, parseError);
-        console.error(`[${targetLanguage}/${fileName}] Raw response (first 500 chars):`, cleanedText.substring(0, 500));
+        console.error(`[${targetLanguage}/${fileName}] Raw response (first 1000 chars):`, cleanedText.substring(0, 1000));
+        console.error(`[${targetLanguage}/${fileName}] Response length:`, cleanedText.length);
+        console.error(`[${targetLanguage}/${fileName}] Finish reason:`, finishReason);
+        
+        // Check if response looks truncated (doesn't end with proper JSON closing)
+        const trimmed = cleanedText.trim();
+        const looksTruncated = !trimmed.endsWith('}') && !trimmed.endsWith(']');
+        
         return new Response(
           JSON.stringify({ 
             error: 'Invalid JSON returned from translation', 
             details: parseError instanceof Error ? parseError.message : 'Parse error',
-            preview: cleanedText.substring(0, 200)
+            preview: cleanedText.substring(0, 300),
+            truncated: looksTruncated,
+            retry: true
           }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
