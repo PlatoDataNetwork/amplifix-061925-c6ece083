@@ -17,19 +17,8 @@ const formatExternalArticleContent = (text?: string | null): string => {
   const cleaned = sanitizeText(text);
   const lines = cleaned.split("\n");
   const htmlParts: string[] = [];
-  let currentParagraphLines: string[] = [];
   let inUnorderedList = false;
   let inOrderedList = false;
-
-  const flushParagraph = () => {
-    if (currentParagraphLines.length > 0) {
-      const paragraphText = currentParagraphLines.join(" ").trim();
-      if (paragraphText) {
-        htmlParts.push(`<p>${paragraphText}</p>`);
-      }
-      currentParagraphLines = [];
-    }
-  };
 
   const closeLists = () => {
     if (inUnorderedList) {
@@ -46,7 +35,7 @@ const formatExternalArticleContent = (text?: string | null): string => {
     const line = rawLine.trim();
 
     if (!line) {
-      flushParagraph();
+      // Blank line: end any open lists but don't create empty paragraphs
       closeLists();
       continue;
     }
@@ -55,7 +44,6 @@ const formatExternalArticleContent = (text?: string | null): string => {
     const orderedMatch = line.match(/^(\d+)\.\s+(.*)/);
 
     if (bulletMatch) {
-      flushParagraph();
       if (!inUnorderedList) {
         closeLists();
         htmlParts.push("<ul>");
@@ -66,7 +54,6 @@ const formatExternalArticleContent = (text?: string | null): string => {
     }
 
     if (orderedMatch) {
-      flushParagraph();
       if (!inOrderedList) {
         closeLists();
         htmlParts.push("<ol>");
@@ -76,11 +63,11 @@ const formatExternalArticleContent = (text?: string | null): string => {
       continue;
     }
 
+    // Regular line: close any lists and start a new paragraph
     closeLists();
-    currentParagraphLines.push(line);
+    htmlParts.push(`<p>${line}</p>`);
   }
 
-  flushParagraph();
   closeLists();
 
   return htmlParts.join("\n");
