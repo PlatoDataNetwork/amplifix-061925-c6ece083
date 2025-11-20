@@ -27,13 +27,34 @@ const formatArticleContent = (text?: string | null): string => {
     .replace(/^[ \t]+/gm, "")
     .trim();
 
-  // Split into paragraphs and wrap each in <p> tags
-  const paragraphs = cleaned
-    .split(/\n\n+/)
-    .map((p) => p.trim())
-    .filter(Boolean);
+  // Split into sentences and group them intelligently
+  // Look for period followed by space and capital letter, or other sentence endings
+  const sentences = cleaned.split(/(?<=[.!?])\s+(?=[A-Z])/);
+  
+  // Group sentences into paragraphs (every 3-4 sentences)
+  const paragraphs: string[] = [];
+  let currentParagraph: string[] = [];
+  
+  for (let i = 0; i < sentences.length; i++) {
+    const sentence = sentences[i].trim();
+    if (!sentence) continue;
+    
+    currentParagraph.push(sentence);
+    
+    // Create a new paragraph every 3-4 sentences
+    if (currentParagraph.length >= 3 && (i === sentences.length - 1 || Math.random() > 0.5)) {
+      paragraphs.push(currentParagraph.join(" "));
+      currentParagraph = [];
+    }
+  }
+  
+  // Add any remaining sentences
+  if (currentParagraph.length > 0) {
+    paragraphs.push(currentParagraph.join(" "));
+  }
 
   return paragraphs
+    .filter(Boolean)
     .map((p) => `<p>${p}</p>`)
     .join("\n\n");
 };
