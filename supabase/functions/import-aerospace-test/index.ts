@@ -2,10 +2,12 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
 
 interface AerospaceArticle {
-  post_id: number;
+  id?: number;
+  post_id?: number;
   title: string;
-  content: string;
-  date: string;
+  content?: string;
+  excerpt?: string;
+  date?: string;
   slug: string;
   metadata?: {
     sourceLink?: string[];
@@ -106,6 +108,9 @@ Deno.serve(async (req) => {
     if (Array.isArray(articlesData)) {
       // Direct array of articles
       articles = articlesData;
+    } else if (articlesData.posts && Array.isArray(articlesData.posts)) {
+      // Aerospace format: { success, category, pagination, posts }
+      articles = articlesData.posts;
     } else if (articlesData.articles && Array.isArray(articlesData.articles)) {
       // Object with 'articles' property
       articles = articlesData.articles;
@@ -143,20 +148,35 @@ Deno.serve(async (req) => {
     // Process each article
     for (const article of testArticles) {
       try {
-        console.log(`Processing article: ${article.post_id} - ${article.title}`);
+        // Handle both 'id' (Aerospace format) and 'post_id' (standard format)
+        const postId = article.post_id || article.id;
+        
+        if (!postId) {
+          console.error('Article missing ID:', article);
+          results.errors++;
+          results.articles.push({
+            post_id: 'unknown',
+            title: article.title || 'Unknown',
+            status: 'error',
+            error: 'Missing article ID'
+          });
+          continue;
+        }
+
+        console.log(`Processing article: ${postId} - ${article.title}`);
 
         // Check if article already exists
         const { data: existingArticle } = await supabaseClient
           .from('articles')
           .select('id, post_id')
-          .eq('post_id', article.post_id)
+          .eq('post_id', postId)
           .maybeSingle();
 
         if (existingArticle) {
-          console.log(`Article ${article.post_id} already exists, skipping`);
+          console.log(`Article ${postId} already exists, skipping`);
           results.skipped++;
           results.articles.push({
-            post_id: article.post_id,
+            post_id: postId,
             title: article.title,
             status: 'skipped',
             reason: 'Already exists'
@@ -167,13 +187,15 @@ Deno.serve(async (req) => {
         // Prepare article data
         const imageUrl = article.metadata?.featuredImage?.[0] || null;
         const externalUrl = article.metadata?.sourceLink?.[0] || null;
+        const content = article.content || article.excerpt || '';
+        const excerpt = article.excerpt || content.substring(0, 300);
 
         const articleData = {
-          post_id: article.post_id,
+          post_id: postId,
           title: article.title,
-          content: article.content,
-          excerpt: article.content?.substring(0, 300) || '',
-          published_at: article.date,
+          content: content,
+          excerpt: excerpt,
+          published_at: article.date || new Date().toISOString(),
           vertical_slug: 'aerospace',
           author: 'PlatoData',
           read_time: '3 Min Read',
@@ -190,10 +212,10 @@ Deno.serve(async (req) => {
           .single();
 
         if (insertError) {
-          console.error(`Error inserting article ${article.post_id}:`, insertError);
+          console.error(`Error inserting article ${postId}:`, insertError);
           results.errors++;
           results.articles.push({
-            post_id: article.post_id,
+            post_id: postId,
             title: article.title,
             status: 'error',
             error: insertError.message
@@ -201,21 +223,22 @@ Deno.serve(async (req) => {
           continue;
         }
 
-        console.log(`Successfully inserted article ${article.post_id}`);
+        console.log(`Successfully inserted article ${postId}`);
         results.imported++;
         results.articles.push({
-          post_id: article.post_id,
+          post_id: postId,
           title: article.title,
           status: 'imported',
           id: insertedArticle.id,
-          url: `/intel/external/${article.post_id}`
+          url: `/intel/external/${postId}`
         });
 
       } catch (err) {
-        console.error(`Error processing article ${article.post_id}:`, err);
+        const postId = article.post_id || article.id || 'unknown';
+        console.error(`Error processing article ${postId}:`, err);
         results.errors++;
         results.articles.push({
-          post_id: article.post_id,
+          post_id: postId,
           title: article.title || 'Unknown',
           status: 'error',
           error: err.message
