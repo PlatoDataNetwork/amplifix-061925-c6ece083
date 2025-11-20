@@ -50,6 +50,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ArticleEditor from "./pages/ArticleEditor";
 import ArticleFormatter from "./pages/ArticleFormatter";
 import ArticleBackups from "./pages/ArticleBackups";
+import ArticleComparison from "./pages/ArticleComparison";
 import AdminRoute from "./components/AdminRoute";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -110,6 +111,7 @@ const App = () => (
           <Route path="/admin/articles/edit/:id" element={<AdminRoute><ArticleEditor /></AdminRoute>} />
           <Route path="/admin/articles/format" element={<AdminRoute><ArticleFormatter /></AdminRoute>} />
           <Route path="/admin/articles/backups" element={<AdminRoute><ArticleBackups /></AdminRoute>} />
+          <Route path="/admin/articles/compare" element={<AdminRoute><ArticleComparison /></AdminRoute>} />
 
               {/* Language-prefixed routes (e.g., /ar/, /fr/) */}
               <Route path="/:lang" element={<Index />} />
