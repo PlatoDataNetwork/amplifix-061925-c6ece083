@@ -5,21 +5,30 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useArticleComparison } from "@/hooks/useArticleComparison";
+import { useRecentArticles } from "@/hooks/useRecentArticles";
 import { ArrowLeft, Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 const ArticleComparison = () => {
   const navigate = useNavigate();
   const [articleId, setArticleId] = useState("");
   const [searchId, setSearchId] = useState<string | null>(null);
   const { article, backup, isLoading, error } = useArticleComparison(searchId);
+  const { articles: recentArticles, isLoading: loadingArticles } = useRecentArticles(20);
 
   const handleSearch = () => {
     if (articleId.trim()) {
       setSearchId(articleId.trim());
     }
+  };
+
+  const handleSelectArticle = (value: string) => {
+    setArticleId(value);
+    setSearchId(value);
   };
 
   const renderContent = (content: string | null, isFormatted: boolean) => {
@@ -57,20 +66,56 @@ const ArticleComparison = () => {
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Search Article</CardTitle>
-            <CardDescription>Enter an article ID to compare formatting</CardDescription>
+            <CardDescription>Select a recent article or enter an article ID to compare formatting</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="flex gap-2">
-              <Input
-                placeholder="Enter article ID (e.g., UUID)"
-                value={articleId}
-                onChange={(e) => setArticleId(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              />
-              <Button onClick={handleSearch}>
-                <Search className="mr-2 h-4 w-4" />
-                Search
-              </Button>
+          <CardContent className="space-y-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Select Recent Article</label>
+              <Select onValueChange={handleSelectArticle} value={articleId}>
+                <SelectTrigger className="w-full bg-background">
+                  <SelectValue placeholder="Choose from recent articles..." />
+                </SelectTrigger>
+                <SelectContent className="bg-popover z-50">
+                  {loadingArticles ? (
+                    <SelectItem value="loading" disabled>Loading articles...</SelectItem>
+                  ) : recentArticles.length > 0 ? (
+                    recentArticles.map((article) => (
+                      <SelectItem key={article.id} value={article.id}>
+                        <div className="flex flex-col py-1">
+                          <span className="font-medium">{article.title}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {article.vertical_slug} • {new Date(article.published_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="none" disabled>No articles found</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className="flex-1 border-t" />
+              <span className="text-sm text-muted-foreground">OR</span>
+              <div className="flex-1 border-t" />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 block">Enter Article ID</label>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Enter article UUID"
+                  value={articleId}
+                  onChange={(e) => setArticleId(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                />
+                <Button onClick={handleSearch}>
+                  <Search className="mr-2 h-4 w-4" />
+                  Search
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
