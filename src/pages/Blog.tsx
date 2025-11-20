@@ -11,12 +11,13 @@ import { useRSSFeed } from "@/hooks/useRSSFeed";
 import { usePlatoDataFeed } from "@/hooks/usePlatoDataFeed";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
+import { getCurrentLanguage } from "@/utils/language";
 
 interface BlogPost {
   id: number;
@@ -147,6 +148,31 @@ const Blog = () => {
     
     return filtered;
   }, [allBlogPosts, selectedTag, selectedCategory]);
+
+  // Re-run GTranslate once blog posts are ready so thumbnails/text can be translated
+  useEffect(() => {
+    try {
+      const lang = getCurrentLanguage();
+      if (!lang || lang === 'en') return;
+      if (!filteredBlogPosts.length) return;
+
+      const w = window as any;
+      if (typeof w.doGTranslate === 'function') {
+        console.log('Re-running GTranslate on Blog page for lang', lang);
+        setTimeout(() => {
+          try {
+            w.doGTranslate(`en|${lang}`);
+          } catch (e) {
+            console.error('GTranslate blog refresh failed', e);
+          }
+        }, 200);
+      } else {
+        console.log('GTranslate function doGTranslate not found on Blog page');
+      }
+    } catch (e) {
+      console.error('GTranslate blog refresh error', e);
+    }
+  }, [filteredBlogPosts.length]);
 
   // Show more logic
   const visiblePosts = useMemo(() => {
