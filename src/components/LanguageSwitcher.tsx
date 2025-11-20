@@ -64,24 +64,21 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
       console.log('Navigating to:', newPath);
       navigate(newPath);
 
-      // Trigger GTranslate.io translation
-      setTimeout(() => {
+      // Trigger GTranslate.io translation with retry logic
+      const triggerTranslation = (attempts = 0) => {
         const w = window as any;
         if (typeof w.doGTranslate === 'function') {
           console.log('Triggering GTranslate with:', `en|${langCode}`);
           w.doGTranslate(`en|${langCode}`);
+        } else if (attempts < 10) {
+          console.log(`GTranslate not ready, retry ${attempts + 1}/10`);
+          setTimeout(() => triggerTranslation(attempts + 1), 300);
         } else {
-          console.warn('GTranslate not loaded yet, will retry...');
-          // Retry after a short delay if GTranslate hasn't loaded
-          setTimeout(() => {
-            if (typeof w.doGTranslate === 'function') {
-              console.log('Retry: Triggering GTranslate with:', `en|${langCode}`);
-              w.doGTranslate(`en|${langCode}`);
-            }
-          }, 500);
+          console.error('GTranslate failed to load after 10 attempts');
         }
-      }, 100);
+      };
       
+      setTimeout(() => triggerTranslation(), 200);
       setIsTranslating(false);
       
     } catch (error) {
@@ -106,13 +103,19 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
         
         // Apply GTranslate on page load if language is not English
         if (pathLang !== 'en') {
-          setTimeout(() => {
+          const applyTranslation = (attempts = 0) => {
             const w = window as any;
             if (typeof w.doGTranslate === 'function') {
               console.log('Auto-applying GTranslate for:', pathLang);
               w.doGTranslate(`en|${pathLang}`);
+            } else if (attempts < 20) {
+              setTimeout(() => applyTranslation(attempts + 1), 300);
+            } else {
+              console.error('GTranslate failed to load on page load');
             }
-          }, 500);
+          };
+          
+          setTimeout(() => applyTranslation(), 500);
         }
       }
     } else {
