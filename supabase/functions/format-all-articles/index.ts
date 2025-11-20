@@ -1,12 +1,11 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 import { corsHeaders } from '../_shared/cors.ts';
 
-// Article formatting function with list support
-const formatArticleContent = (text?: string | null): string => {
+// Clean text by removing unwanted HTML and formatting
+const cleanText = (text?: string | null): string => {
   if (!text) return "";
-
-  // Sanitize text
-  let cleaned = text
+  
+  return text
     .replace(/<a\b[^>]*>/gi, "")
     .replace(/<\/a>/gi, "")
     .replace(/https?:\/\/\S+/gi, "")
@@ -18,88 +17,96 @@ const formatArticleContent = (text?: string | null): string => {
     .replace(/<\/?p>/gi, "")
     .replace(/<\/?div>/gi, "")
     .replace(/<\/?span>/gi, "")
-    .replace(/<\/?ul>/gi, "")
-    .replace(/<\/?ol>/gi, "")
-    .replace(/<\/?li>/gi, "")
+    .replace(/<ul[^>]*>[\s\S]*?<\/ul>/gi, "")
+    .replace(/<li[^>]*>[\s\S]*?<\/li>/gi, "")
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/\r\n/g, "\n")
     .replace(/\n{3,}/g, "\n\n")
     .replace(/^[ \t]+/gm, "")
     .trim();
+};
 
-  const lines = cleaned.split("\n");
-  const htmlParts: string[] = [];
-  let currentParagraphLines: string[] = [];
-  let inUnorderedList = false;
-  let inOrderedList = false;
-
-  const flushParagraph = () => {
-    if (currentParagraphLines.length > 0) {
-      const paragraphText = currentParagraphLines.join(" ").trim();
-      if (paragraphText) {
-        htmlParts.push(`<p>${paragraphText}</p>`);
-      }
-      currentParagraphLines = [];
-    }
-  };
-
-  const closeLists = () => {
-    if (inUnorderedList) {
-      htmlParts.push("</ul>");
-      inUnorderedList = false;
-    }
-    if (inOrderedList) {
-      htmlParts.push("</ol>");
-      inOrderedList = false;
-    }
-  };
-
-  for (const rawLine of lines) {
-    const line = rawLine.trim();
-
-    if (!line) {
-      flushParagraph();
-      closeLists();
-      continue;
-    }
-
-    const bulletMatch = line.match(/^[-•]\s+(.*)/);
-    const orderedMatch = line.match(/^(\d+)\.\s+(.*)/);
-
-    if (bulletMatch) {
-      flushParagraph();
-      if (!inUnorderedList) {
-        closeLists();
-        htmlParts.push("<ul>");
-        inUnorderedList = true;
-      }
-      htmlParts.push(`<li>${bulletMatch[1].trim()}</li>`);
-      continue;
-    }
-
-    if (orderedMatch) {
-      flushParagraph();
-      if (!inOrderedList) {
-        closeLists();
-        htmlParts.push("<ol>");
-        inOrderedList = true;
-      }
-      htmlParts.push(`<li>${orderedMatch[2].trim()}</li>`);
-      continue;
-    }
-
-    closeLists();
-    currentParagraphLines.push(line);
+// Use AI to detect semantic breaks and split into paragraphs
+const formatArticleWithAI = async (text: string): Promise<string> => {
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) {
+    console.error("LOVABLE_API_KEY not found, falling back to simple formatting");
+    return fallbackFormatting(text);
   }
 
-  flushParagraph();
-  closeLists();
+  try {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          {
+            role: "system",
+            content: "You are an expert content formatter. Your task is to analyze text and split it into well-structured paragraphs based on semantic topic changes. Each paragraph should focus on a single idea or topic. Return ONLY the formatted text with paragraph breaks (double newlines) inserted at appropriate semantic boundaries. Do not add any extra commentary or explanations."
+          },
+          {
+            role: "user",
+            content: `Analyze this article text and insert paragraph breaks (double newlines) at natural semantic boundaries where topics shift. Keep the original text exactly as-is, only add paragraph breaks:\n\n${text}`
+          }
+        ],
+        temperature: 0.3,
+      }),
+    });
 
-  return htmlParts.join("\n");
+    if (!response.ok) {
+      console.error("AI API error:", response.status, await response.text());
+      return fallbackFormatting(text);
+    }
+
+    const data = await response.json();
+    const formattedText = data.choices?.[0]?.message?.content || text;
+    
+    // Wrap each paragraph in <p> tags
+    const paragraphs = formattedText
+      .split(/\n\n+/)
+      .map((p: string) => p.trim())
+      .filter(Boolean);
+
+    return paragraphs.map((p: string) => `<p>${p}</p>`).join("\n\n");
+  } catch (error) {
+    console.error("Error using AI for formatting:", error);
+    return fallbackFormatting(text);
+  }
+};
+
+// Fallback formatting if AI is unavailable
+const fallbackFormatting = (text: string): string => {
+  const sentences = text.split(/(?<=[.!?])\s+(?=[A-Z])/);
+  const paragraphs: string[] = [];
+  let currentParagraph: string[] = [];
+  
+  for (let i = 0; i < sentences.length; i++) {
+    const sentence = sentences[i].trim();
+    if (!sentence) continue;
+    
+    currentParagraph.push(sentence);
+    
+    if (currentParagraph.length >= 3 && (i === sentences.length - 1 || Math.random() > 0.5)) {
+      paragraphs.push(currentParagraph.join(" "));
+      currentParagraph = [];
+    }
+  }
+  
+  if (currentParagraph.length > 0) {
+    paragraphs.push(currentParagraph.join(" "));
+  }
+
+  return paragraphs
+    .filter(Boolean)
+    .map((p) => `<p>${p}</p>`)
+    .join("\n\n");
 };
 
 Deno.serve(async (req) => {
-  // Handle CORS
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
@@ -109,67 +116,48 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { chunkIndex = 0, chunkSize = 1000 } = await req.json();
-    
+    const { chunkIndex = 0, chunkSize = 100 } = await req.json();
+
     console.log(`Processing chunk ${chunkIndex} with size ${chunkSize}`);
 
-    // First, get the total count if this is the first chunk
-    if (chunkIndex === 0) {
-      const { count: totalCount, error: countError } = await supabase
-        .from('articles')
-        .select('id', { count: 'exact', head: true })
-        .not('content', 'is', null);
-
-      if (countError) {
-        console.error('Error counting articles:', countError);
-        throw countError;
-      }
-
-      console.log(`Total articles to format: ${totalCount || 0}`);
-    }
-
-    // Calculate offset
-    const offset = chunkIndex * chunkSize;
-    
-    // Fetch articles for this chunk
+    // Fetch articles in this chunk (excluding those with null content)
     const { data: articles, error: fetchError } = await supabase
       .from('articles')
-      .select('id, post_id, content, title')
+      .select('id, content')
       .not('content', 'is', null)
-      .range(offset, offset + chunkSize - 1);
+      .range(chunkIndex * chunkSize, (chunkIndex + 1) * chunkSize - 1);
 
     if (fetchError) {
-      console.error('Error fetching articles:', fetchError);
       throw fetchError;
     }
 
     if (!articles || articles.length === 0) {
       return new Response(
         JSON.stringify({ 
-          success: true,
-          hasMore: false,
+          success: true, 
           processed: 0,
-          message: 'No more articles to format'
+          message: 'No more articles to process'
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log(`Formatting ${articles.length} articles`);
+    console.log(`Found ${articles.length} articles to process`);
 
-    // Process articles in smaller batches
-    const batchSize = 10;
+    // Process articles in smaller batches to avoid rate limits
+    const batchSize = 5;
     let processed = 0;
-    let errors = 0;
-    const errorDetails: Array<{ id: string; post_id: number; error: string }> = [];
+    const errors: string[] = [];
 
     for (let i = 0; i < articles.length; i += batchSize) {
       const batch = articles.slice(i, i + batchSize);
       
-      const updates = batch.map(async (article) => {
+      for (const article of batch) {
         try {
-          const formattedContent = formatArticleContent(article.content);
-          
+          console.log(`Formatting article ${article.id}...`);
+          const cleanedText = cleanText(article.content);
+          const formattedContent = await formatArticleWithAI(cleanedText);
+
           const { error: updateError } = await supabase
             .from('articles')
             .update({
@@ -179,53 +167,41 @@ Deno.serve(async (req) => {
             .eq('id', article.id);
 
           if (updateError) {
-            console.error(`Error updating article ${article.post_id}:`, updateError);
-            errors++;
-            errorDetails.push({
-              id: article.id,
-              post_id: article.post_id,
-              error: updateError.message
-            });
-            return false;
+            console.error(`Error updating article ${article.id}:`, updateError);
+            errors.push(`${article.id}: ${updateError.message}`);
+          } else {
+            processed++;
+            console.log(`Successfully formatted article ${article.id}`);
           }
-
-          processed++;
-          console.log(`✓ Formatted article ${article.post_id}: ${article.title}`);
-          return true;
         } catch (err) {
-          console.error(`Error processing article ${article.post_id}:`, err);
-          errors++;
-          errorDetails.push({
-            id: article.id,
-            post_id: article.post_id,
-            error: err instanceof Error ? err.message : 'Unknown error'
-          });
-          return false;
+          console.error(`Error processing article ${article.id}:`, err);
+          errors.push(`${article.id}: ${err.message}`);
         }
-      });
+      }
 
-      await Promise.all(updates);
+      // Small delay between batches to avoid rate limits
+      if (i + batchSize < articles.length) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
     }
 
-    console.log(`Chunk ${chunkIndex} complete. Processed: ${processed}, Errors: ${errors}`);
-
     return new Response(
-      JSON.stringify({
-        success: true,
-        hasMore: articles.length === chunkSize,
+      JSON.stringify({ 
+        success: true, 
         processed,
-        errors,
-        errorDetails: errors > 0 ? errorDetails : undefined
+        total: articles.length,
+        errors: errors.length > 0 ? errors : undefined,
+        message: `Processed ${processed}/${articles.length} articles with AI-powered formatting`
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
-    console.error('Fatal error in format-all-articles:', error);
+    console.error('Error:', error);
     return new Response(
-      JSON.stringify({
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+      JSON.stringify({ 
+        success: false, 
+        error: error.message 
       }),
       { 
         status: 500,
