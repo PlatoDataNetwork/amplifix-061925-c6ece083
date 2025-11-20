@@ -143,15 +143,29 @@ const ExternalArticle = () => {
       const lang = getCurrentLanguage();
       if (!lang || lang === 'en') return;
 
+      const getGTranslateCode = (langCode: string) => {
+        if (langCode === 'zh') return 'zh-CN';
+        if (langCode === 'he') return 'iw';
+        return langCode;
+      };
+
+      const targetCode = getGTranslateCode(lang);
       const w = window as any;
+      
       if (typeof w.doGTranslate === 'function') {
+        // Multiple translation passes to ensure all content is caught
         setTimeout(() => {
           try {
-            w.doGTranslate(`en|${lang}`);
+            w.doGTranslate(`en|${targetCode}`);
+            
+            // Second pass after DOM stabilizes
+            setTimeout(() => {
+              w.doGTranslate(`en|${targetCode}`);
+            }, 500);
           } catch (e) {
             console.error('GTranslate article refresh failed', e);
           }
-        }, 200);
+        }, 300);
       }
     } catch (e) {
       console.error('GTranslate article refresh error', e);
