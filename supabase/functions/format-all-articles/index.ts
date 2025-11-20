@@ -42,130 +42,113 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    console.log('Starting article formatting process...');
+    const { chunkIndex = 0, chunkSize = 1000 } = await req.json();
+    
+    console.log(`Processing chunk ${chunkIndex} with size ${chunkSize}`);
 
-    // First, get the total count
-    const { count: totalCount, error: countError } = await supabase
-      .from('articles')
-      .select('id', { count: 'exact', head: true })
-      .not('content', 'is', null);
+    // First, get the total count if this is the first chunk
+    if (chunkIndex === 0) {
+      const { count: totalCount, error: countError } = await supabase
+        .from('articles')
+        .select('id', { count: 'exact', head: true })
+        .not('content', 'is', null);
 
-    if (countError) {
-      console.error('Error counting articles:', countError);
-      throw countError;
+      if (countError) {
+        console.error('Error counting articles:', countError);
+        throw countError;
+      }
+
+      console.log(`Total articles to format: ${totalCount || 0}`);
     }
 
-    console.log(`Found ${totalCount || 0} articles to process`);
+    // Calculate offset
+    const offset = chunkIndex * chunkSize;
+    
+    // Fetch articles for this chunk
+    const { data: articles, error: fetchError } = await supabase
+      .from('articles')
+      .select('id, post_id, content, title')
+      .not('content', 'is', null)
+      .range(offset, offset + chunkSize - 1);
 
-    if (!totalCount || totalCount === 0) {
+    if (fetchError) {
+      console.error('Error fetching articles:', fetchError);
+      throw fetchError;
+    }
+
+    if (!articles || articles.length === 0) {
       return new Response(
         JSON.stringify({ 
-          success: true, 
-          message: 'No articles found to format',
-          processed: 0 
+          success: true,
+          hasMore: false,
+          processed: 0,
+          message: 'No more articles to format'
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Process articles in chunks (fetch 1000 at a time)
-    const fetchSize = 1000;
-    const processBatchSize = 10;
-    let totalProcessed = 0;
-    let totalErrors = 0;
+    console.log(`Formatting ${articles.length} articles`);
+
+    // Process articles in smaller batches
+    const batchSize = 10;
+    let processed = 0;
+    let errors = 0;
     const errorDetails: Array<{ id: string; post_id: number; error: string }> = [];
 
-    for (let offset = 0; offset < totalCount; offset += fetchSize) {
-      console.log(`Fetching articles ${offset} to ${offset + fetchSize} of ${totalCount}`);
+    for (let i = 0; i < articles.length; i += batchSize) {
+      const batch = articles.slice(i, i + batchSize);
       
-      // Fetch a chunk of articles
-      const { data: articles, error: fetchError } = await supabase
-        .from('articles')
-        .select('id, post_id, content, title')
-        .not('content', 'is', null)
-        .range(offset, offset + fetchSize - 1);
+      const updates = batch.map(async (article) => {
+        try {
+          const formattedContent = formatArticleContent(article.content);
+          
+          const { error: updateError } = await supabase
+            .from('articles')
+            .update({
+              content: formattedContent,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', article.id);
 
-      if (fetchError) {
-        console.error('Error fetching articles:', fetchError);
-        throw fetchError;
-      }
-
-      if (!articles || articles.length === 0) {
-        console.log('No more articles to process');
-        break;
-      }
-
-      console.log(`Processing ${articles.length} articles in this chunk`);
-
-      // Process this chunk in smaller batches
-      for (let i = 0; i < articles.length; i += processBatchSize) {
-        const batch = articles.slice(i, i + processBatchSize);
-        const overallBatch = Math.floor((offset + i) / processBatchSize) + 1;
-        const totalBatches = Math.ceil(totalCount / processBatchSize);
-        console.log(`Processing batch ${overallBatch} of ${totalBatches}`);
-
-        const updates = batch.map(async (article) => {
-          try {
-            const formattedContent = formatArticleContent(article.content);
-            
-            const { error: updateError } = await supabase
-              .from('articles')
-              .update({
-                content: formattedContent,
-                updated_at: new Date().toISOString(),
-              })
-              .eq('id', article.id);
-
-            if (updateError) {
-              console.error(`Error updating article ${article.post_id}:`, updateError);
-              totalErrors++;
-              errorDetails.push({
-                id: article.id,
-                post_id: article.post_id,
-                error: updateError.message
-              });
-              return false;
-            }
-
-            totalProcessed++;
-            console.log(`✓ Formatted article ${article.post_id}: ${article.title}`);
-            return true;
-          } catch (err) {
-            console.error(`Error processing article ${article.post_id}:`, err);
-            totalErrors++;
+          if (updateError) {
+            console.error(`Error updating article ${article.post_id}:`, updateError);
+            errors++;
             errorDetails.push({
               id: article.id,
               post_id: article.post_id,
-              error: err instanceof Error ? err.message : 'Unknown error'
+              error: updateError.message
             });
             return false;
           }
-        });
 
-        await Promise.all(updates);
-        
-        // Small delay between batches to avoid overwhelming the database
-        if (i + processBatchSize < articles.length) {
-          await new Promise(resolve => setTimeout(resolve, 100));
+          processed++;
+          console.log(`✓ Formatted article ${article.post_id}: ${article.title}`);
+          return true;
+        } catch (err) {
+          console.error(`Error processing article ${article.post_id}:`, err);
+          errors++;
+          errorDetails.push({
+            id: article.id,
+            post_id: article.post_id,
+            error: err instanceof Error ? err.message : 'Unknown error'
+          });
+          return false;
         }
-      }
-      
-      // Delay between chunks
-      if (offset + fetchSize < totalCount) {
-        await new Promise(resolve => setTimeout(resolve, 200));
-      }
+      });
+
+      await Promise.all(updates);
     }
 
-    console.log(`Formatting complete. Processed: ${totalProcessed}, Errors: ${totalErrors}`);
+    console.log(`Chunk ${chunkIndex} complete. Processed: ${processed}, Errors: ${errors}`);
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: `Article formatting complete`,
-        total: totalCount,
-        processed: totalProcessed,
-        errors: totalErrors,
-        errorDetails: totalErrors > 0 ? errorDetails : undefined
+        hasMore: articles.length === chunkSize,
+        processed,
+        errors,
+        errorDetails: errors > 0 ? errorDetails : undefined
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

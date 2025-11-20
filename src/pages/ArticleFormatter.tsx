@@ -152,22 +152,73 @@ const ArticleFormatter = () => {
     setResult(null);
 
     try {
-      toast.info("Starting article formatting process...");
+      toast.info("Starting chunked article formatting...");
+      
+      // First, get total count
+      const { count: totalCount } = await supabase
+        .from('articles')
+        .select('id', { count: 'exact', head: true })
+        .not('content', 'is', null);
 
-      const { data, error } = await supabase.functions.invoke('format-all-articles', {
-        body: {}
+      if (!totalCount) {
+        toast.error("No articles found to format");
+        setIsProcessing(false);
+        return;
+      }
+
+      console.log(`Total articles to format: ${totalCount}`);
+
+      const chunkSize = 1000;
+      let chunkIndex = 0;
+      let totalProcessed = 0;
+      let totalErrors = 0;
+      let allErrorDetails: any[] = [];
+      let hasMore = true;
+
+      while (hasMore) {
+        console.log(`Processing chunk ${chunkIndex + 1}...`);
+        
+        const { data, error } = await supabase.functions.invoke('format-all-articles', {
+          body: { chunkIndex, chunkSize }
+        });
+
+        if (error) {
+          console.error("Error formatting chunk:", error);
+          throw error;
+        }
+
+        totalProcessed += data.processed || 0;
+        totalErrors += data.errors || 0;
+        if (data.errorDetails) {
+          allErrorDetails = [...allErrorDetails, ...data.errorDetails];
+        }
+
+        hasMore = data.hasMore;
+        chunkIndex++;
+
+        // Update progress
+        const progress = Math.min(100, Math.round((totalProcessed / totalCount) * 100));
+        console.log(`Progress: ${totalProcessed} / ${totalCount} (${progress}%)`);
+        toast.info(`Formatted ${totalProcessed} of ${totalCount} articles...`, {
+          duration: 1000
+        });
+      }
+
+      console.log("Formatting complete:", { totalProcessed, totalErrors });
+
+      setResult({
+        success: true,
+        message: `Article formatting complete`,
+        total: totalCount,
+        processed: totalProcessed,
+        errors: totalErrors,
+        errorDetails: allErrorDetails.length > 0 ? allErrorDetails : undefined
       });
 
-      if (error) throw error;
-
-      setResult(data);
-
-      if (data.success) {
-        toast.success(
-          `Successfully formatted ${data.processed} of ${data.total} articles!`
-        );
+      if (totalErrors === 0) {
+        toast.success(`Successfully formatted ${totalProcessed} articles!`);
       } else {
-        toast.error("Formatting completed with errors");
+        toast.success(`Formatted ${totalProcessed} articles with ${totalErrors} errors`);
       }
     } catch (error) {
       console.error("Error formatting articles:", error);
