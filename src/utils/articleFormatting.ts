@@ -105,40 +105,38 @@ export const formatArticleTags = (
   verticalSlug?: string | null,
   verticalDisplayName?: string
 ) => {
-  const uniqueTags = new Set<string>();
-  const allTags = [...tags];
-  
-  // Add vertical as first tag if it exists
+  const maxTags = 8;
+  const normalizedTags = Array.isArray(tags) ? [...tags] : [];
+  const result: { key: string; label: string; isVertical: boolean }[] = [];
+
+  // Optionally add vertical as the first related topic
   if (verticalSlug && verticalDisplayName) {
-    allTags.unshift(verticalDisplayName);
+    result.push({
+      key: "vertical-tag",
+      label: `#${verticalDisplayName}`,
+      isVertical: true,
+    });
   }
-  
-  return allTags
-    .map((tag: string, index: number) => {
-      const singleWord = tag.split(/[\s-]+/)[0];
-      const lowerWord = singleWord.toLowerCase();
-      
-      // For the first tag (vertical), skip uniqueness check
-      if (index === 0 && verticalSlug) {
-        return {
-          key: "vertical-tag",
-          label: `#${verticalDisplayName}`,
-          isVertical: true
-        };
-      }
-      
-      // Skip if we've already seen this word
-      if (uniqueTags.has(lowerWord)) {
-        return null;
-      }
-      
-      uniqueTags.add(lowerWord);
-      
-      return {
-        key: tag,
-        label: `#${singleWord}`,
-        isVertical: false
-      };
-    })
-    .filter((item): item is NonNullable<typeof item> => item !== null);
+
+  const seen = new Set<string>();
+
+  for (const rawTag of normalizedTags) {
+    const tag = (rawTag || "").trim();
+    if (!tag) continue;
+
+    const lower = tag.toLowerCase();
+    if (seen.has(lower)) continue;
+    seen.add(lower);
+
+    result.push({
+      key: tag,
+      label: `#${tag}`,
+      isVertical: false,
+    });
+
+    if (result.length >= maxTags) break;
+  }
+
+  // Ensure we never exceed the visual tag limit
+  return result.slice(0, maxTags);
 };
