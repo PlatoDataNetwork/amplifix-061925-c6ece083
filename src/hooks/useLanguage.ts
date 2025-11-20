@@ -28,6 +28,21 @@ export function useLanguage() {
         if (typeof w.doGTranslate === 'function') {
           console.log(`useLanguage: applying GTranslate for ${targetCode}`);
           w.doGTranslate(`en|${targetCode}`);
+          
+          // Force re-translation of dynamic content after a short delay
+          setTimeout(() => {
+            const translateElements = document.querySelectorAll('.translate');
+            translateElements.forEach((el) => {
+              if (el instanceof HTMLElement && !el.classList.contains('translated-ltr')) {
+                el.classList.add('translate-refresh');
+              }
+            });
+            
+            // Trigger another translation pass for newly loaded content
+            if (typeof w.doGTranslate === 'function') {
+              w.doGTranslate(`en|${targetCode}`);
+            }
+          }, 1000);
         } else if (attempts < 20) {
           setTimeout(() => applyTranslation(attempts + 1), 300);
         } else {

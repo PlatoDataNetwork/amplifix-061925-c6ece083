@@ -156,16 +156,30 @@ const Blog = () => {
       if (!lang || lang === 'en') return;
       if (!filteredBlogPosts.length) return;
 
+      const getGTranslateCode = (langCode: string) => {
+        if (langCode === 'zh') return 'zh-CN';
+        if (langCode === 'he') return 'iw';
+        return langCode;
+      };
+
+      const targetCode = getGTranslateCode(lang);
       const w = window as any;
+      
       if (typeof w.doGTranslate === 'function') {
-        console.log('Re-running GTranslate on Blog page for lang', lang);
+        console.log('Re-running GTranslate on Blog page for lang', targetCode);
+        // Multiple translation passes to catch all dynamic content
         setTimeout(() => {
           try {
-            w.doGTranslate(`en|${lang}`);
+            w.doGTranslate(`en|${targetCode}`);
+            
+            // Second pass after DOM updates
+            setTimeout(() => {
+              w.doGTranslate(`en|${targetCode}`);
+            }, 500);
           } catch (e) {
             console.error('GTranslate blog refresh failed', e);
           }
-        }, 200);
+        }, 300);
       } else {
         console.log('GTranslate function doGTranslate not found on Blog page');
       }
