@@ -90,9 +90,11 @@ Deno.serve(async (req) => {
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJma2RjbXZ6dnhjc29lY29lZGRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc0MzU5NjcsImV4cCI6MjA3MzAxMTk2N30.Qaom06rLiekLwBWb15giAbkpEr_r0xzdyEsslcA86os';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const url = new URL(req.url);
-    const langCode = url.searchParams.get('lang');
-    const type = url.searchParams.get('type'); // 'index' or 'sitemap'
+    // Parse request body
+    const body = await req.json();
+    const { lang: langCode, type } = body;
+
+    console.log('Request params:', { langCode, type });
 
     // Generate sitemap index
     if (type === 'index') {
@@ -108,7 +110,8 @@ Deno.serve(async (req) => {
 
     // Generate language-specific sitemap
     if (!langCode || !supportedLanguages.find(l => l.code === langCode)) {
-      throw new Error('Invalid or missing language code');
+      console.error('Invalid or missing language code:', langCode);
+      throw new Error('Invalid or missing language code. Please provide a valid language code.');
     }
 
     const language = supportedLanguages.find(l => l.code === langCode)!;
@@ -190,7 +193,10 @@ Deno.serve(async (req) => {
 
   } catch (error) {
     console.error('Error generating sitemap:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ 
+      error: error.message || 'Unknown error occurred',
+      details: error.toString()
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
