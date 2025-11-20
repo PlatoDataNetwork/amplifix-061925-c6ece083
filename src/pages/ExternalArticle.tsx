@@ -4,13 +4,12 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, User, Clock, Share2, Twitter, Linkedin, Facebook, Mail, Link as LinkIcon, Edit, RefreshCw } from "lucide-react";
+import { ArrowLeft, Calendar, User, Clock, Share2, Twitter, Linkedin, Facebook, Mail, Link as LinkIcon, Edit } from "lucide-react";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { toast } from "sonner";
 import { sanitizeText, formatArticleTags, formatExternalArticleContent, ARTICLE_CONTENT_CLASSES } from "@/utils/articleFormatting";
-import { supabase } from "@/integrations/supabase/client";
 
 const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,32 +19,7 @@ const ExternalArticle = () => {
   const [article, setArticle] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [tags, setTags] = useState<string[]>([]);
-  const [isReformatting, setIsReformatting] = useState(false);
   useLanguage(); // Enable translation
-
-  const reformatArticle = async () => {
-    if (!article?.id) return;
-    
-    setIsReformatting(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('reformat-single-article', {
-        body: { articleId: article.id }
-      });
-
-      if (error) throw error;
-
-      toast.success('Article reformatted successfully! Refreshing...');
-      
-      // Reload the article to show the new formatting
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    } catch (error) {
-      console.error('Error reformatting article:', error);
-      toast.error('Failed to reformat article. Please try again.');
-      setIsReformatting(false);
-    }
-  };
 
   const shareArticle = (platform: string) => {
     const url = window.location.href;
@@ -282,25 +256,14 @@ if (!article) {
               {/* Back Button - Right Aligned */}
               <div className="flex items-center gap-2 ml-auto">
                 {isAdmin && article?.id && (
-                  <>
-                    <Button 
-                      onClick={reformatArticle}
-                      disabled={isReformatting}
-                      variant="outline"
-                      className="gap-2"
-                    >
-                      <RefreshCw className={`h-4 w-4 ${isReformatting ? 'animate-spin' : ''}`} />
-                      {isReformatting ? 'Reformatting...' : 'Reformat Article'}
-                    </Button>
-                    <Button 
-                      onClick={() => navigate(`/admin/articles/edit/${article.id}`)} 
-                      variant="outline"
-                      className="gap-2"
-                    >
-                      <Edit className="h-4 w-4" />
-                      Edit Article
-                    </Button>
-                  </>
+                  <Button 
+                    onClick={() => navigate(`/admin/articles/edit/${article.id}`)} 
+                    variant="outline"
+                    className="gap-2"
+                  >
+                    <Edit className="h-4 w-4" />
+                    Edit Article
+                  </Button>
                 )}
                 <Button 
                   onClick={() => navigate(`/intel/${article.vertical_slug || ''}`)} 
