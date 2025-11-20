@@ -307,11 +307,11 @@ async function formatArticleWithAI(text: string, apiKey: string): Promise<string
         messages: [
           {
             role: 'system',
-            content: 'You are an expert content formatter. Your task is to analyze text and identify section headers and paragraphs. Section headers are typically short phrases (3-10 words) that introduce new topics or sections. Mark section headers by prefixing them with [HEADER]. Insert paragraph breaks (double newlines) at semantic boundaries. Return ONLY the formatted text with [HEADER] markers and paragraph breaks. Do not add commentary.'
+            content: 'You are an expert content formatter. Identify section headers - these are short topic titles (3-15 words) that introduce new sections, often at the start of major content blocks. Common patterns: "The [Topic]", "[Topic]: [Subtitle]", "[Action/Concept] and [Action/Concept]". Mark ALL section headers by prefixing with [HEADER]. Insert paragraph breaks at semantic boundaries. Return ONLY formatted text with [HEADER] markers.'
           },
           {
             role: 'user',
-            content: `Analyze this article and identify section headers (short topic titles). Prefix section headers with [HEADER] and add paragraph breaks at topic boundaries. Keep original text:\n\n${text.slice(0, 4000)}`
+            content: `Identify ALL section headers in this article. Section headers are topic titles like "China Experiences Commercial Rocket Failure While Achieving Record-Breaking Annual Launch Count", "A Record-Breaking Year for Chinese Space Launches", "The Commercial Rocket Failure", "Balancing Success and Challenges". Prefix EVERY section header with [HEADER] and add paragraph breaks:\n\n${text.slice(0, 4000)}`
           }
         ],
       }),
