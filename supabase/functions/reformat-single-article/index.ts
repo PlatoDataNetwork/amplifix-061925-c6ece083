@@ -6,6 +6,11 @@ const cleanText = (text?: string | null): string => {
   if (!text) return "";
   
   return text
+    // Remove Plato source links first
+    .replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/gi, '')
+    .replace(/<div class="plato-post-bottom-links">[\s\S]*?<\/div>/gi, '')
+    .replace(/Source Link:[\s\S]*?<\/a>/gi, '')
+    // Remove other HTML and formatting
     .replace(/<a\b[^>]*>/gi, "")
     .replace(/<\/a>/gi, "")
     .replace(/https?:\/\/\S+/gi, "")
