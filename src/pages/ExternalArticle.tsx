@@ -9,7 +9,82 @@ import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { toast } from "sonner";
-import { sanitizeText, formatArticleContent, formatArticleTags } from "@/utils/articleFormatting";
+import { sanitizeText, formatArticleTags } from "@/utils/articleFormatting";
+
+const formatExternalArticleContent = (text?: string | null): string => {
+  if (!text) return "";
+
+  const cleaned = sanitizeText(text);
+  const lines = cleaned.split("\n");
+  const htmlParts: string[] = [];
+  let currentParagraphLines: string[] = [];
+  let inUnorderedList = false;
+  let inOrderedList = false;
+
+  const flushParagraph = () => {
+    if (currentParagraphLines.length > 0) {
+      const paragraphText = currentParagraphLines.join(" ").trim();
+      if (paragraphText) {
+        htmlParts.push(`<p>${paragraphText}</p>`);
+      }
+      currentParagraphLines = [];
+    }
+  };
+
+  const closeLists = () => {
+    if (inUnorderedList) {
+      htmlParts.push("</ul>");
+      inUnorderedList = false;
+    }
+    if (inOrderedList) {
+      htmlParts.push("</ol>");
+      inOrderedList = false;
+    }
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+
+    if (!line) {
+      flushParagraph();
+      closeLists();
+      continue;
+    }
+
+    const bulletMatch = line.match(/^[-•]\s+(.*)/);
+    const orderedMatch = line.match(/^(\d+)\.\s+(.*)/);
+
+    if (bulletMatch) {
+      flushParagraph();
+      if (!inUnorderedList) {
+        closeLists();
+        htmlParts.push("<ul>");
+        inUnorderedList = true;
+      }
+      htmlParts.push(`<li>${bulletMatch[1].trim()}</li>`);
+      continue;
+    }
+
+    if (orderedMatch) {
+      flushParagraph();
+      if (!inOrderedList) {
+        closeLists();
+        htmlParts.push("<ol>");
+        inOrderedList = true;
+      }
+      htmlParts.push(`<li>${orderedMatch[2].trim()}</li>`);
+      continue;
+    }
+
+    closeLists();
+    currentParagraphLines.push(line);
+  }
+
+  flushParagraph();
+  closeLists();
+
+  return htmlParts.join("\n");
+};
 
 const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
@@ -269,15 +344,15 @@ if (!article) {
           {/* Article Content */}
           <div className="prose prose-invert max-w-none mb-2">
             <div 
-              className="text-foreground leading-relaxed whitespace-pre-wrap [&>p]:mb-6 [&>p]:leading-relaxed [&>h2]:mt-8 [&>h2]:mb-4 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:leading-tight [&>h3]:mt-6 [&>h3]:mb-3 [&>h3]:text-xl [&>h3]:font-bold [&>strong]:mt-6 [&>strong]:mb-3 [&>strong]:block [&>ul]:my-4 [&>ul]:space-y-2 [&>ol]:my-4 [&>ol]:space-y-2"
-              dangerouslySetInnerHTML={{
-                __html:
-                  article.content && /<\/?[a-z][\s\S]*>/i.test(article.content)
-                    ? article.content
-                    : formatArticleContent(article.content || article.excerpt),
-              }}
-            />
-          </div>
+               className="text-foreground leading-relaxed whitespace-pre-wrap [&>p]:mb-6 [&>p]:leading-relaxed [&>h2]:mt-8 [&>h2]:mb-4 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:leading-tight [&>h3]:mt-6 [&>h3]:mb-3 [&>h3]:text-xl [&>h3]:font-bold [&>strong]:mt-6 [&>strong]:mb-3 [&>strong]:block [&>ul]:my-4 [&>ul]:space-y-2 [&>ol]:my-4 [&>ol]:space-y-2"
+               dangerouslySetInnerHTML={{
+                 __html:
+                   article.content && /<\/?[a-z][\s\S]*>/i.test(article.content)
+                     ? article.content
+                     : formatExternalArticleContent(article.content || article.excerpt),
+               }}
+             />
+           </div>
 
           {/* AmplifiX Branding */}
           <div className="mb-6 text-center pt-2">
