@@ -52,6 +52,7 @@ import ArticleFormatter from "./pages/ArticleFormatter";
 import ArticleBackups from "./pages/ArticleBackups";
 import ArticleComparison from "./pages/ArticleComparison";
 import TranslationManager from "./pages/TranslationManager";
+import TranslationTest from "./pages/TranslationTest";
 import AdminRoute from "./components/AdminRoute";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -118,6 +119,7 @@ const App = () => (
           <Route path="/admin/articles/comparison" element={<AdminRoute><ArticleComparison /></AdminRoute>} />
           <Route path="/admin/sitemaps" element={<AdminRoute><SitemapGenerator /></AdminRoute>} />
           <Route path="/admin/translations" element={<TranslationManager />} />
+          <Route path="/admin/translations/test" element={<TranslationTest />} />
           <Route path="/showcase/fynn-ai" element={<FynnAIShowcase />} />
 
               {/* Language-prefixed routes (e.g., /ar/, /fr/) */}

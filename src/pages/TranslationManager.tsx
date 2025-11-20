@@ -4,9 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { AlertCircle, CheckCircle2, Clock, Languages, Loader2, XCircle } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock, Eye, Languages, Loader2, XCircle } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useNavigate } from "react-router-dom";
 
 const SUPPORTED_LANGUAGES = [
   'ar', 'bn', 'zh', 'da', 'nl', 'et', 'fi', 'fr', 'de', 'el', 'he', 'hi', 'hu', 
@@ -41,6 +42,7 @@ export default function TranslationManager() {
     estimatedTimeRemaining: null,
   });
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Update estimated time remaining based on progress
   useEffect(() => {
@@ -428,6 +430,17 @@ export default function TranslationManager() {
                     Generate & Save All Translations
                   </>
                 )}
+              </Button>
+
+              <Button
+                onClick={() => navigate('/admin/translations/test')}
+                disabled={isTranslating}
+                size="lg"
+                variant="secondary"
+                className="w-full"
+              >
+                <Eye className="mr-2 h-4 w-4" />
+                View Translation Test Page
               </Button>
             </div>
 
