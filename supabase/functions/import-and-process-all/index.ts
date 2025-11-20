@@ -59,7 +59,7 @@ const VERTICALS = [
   'waste-management'
 ];
 
-const PLATO_DATA_API = 'https://data.platodata.network/api';
+
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -116,7 +116,7 @@ serve(async (req) => {
       console.log(`Importing from ${vertical}...`);
       
       try {
-        const response = await fetch(`${PLATO_DATA_API}/${vertical}?limit=100`);
+        const response = await fetch(`https://dashboard.platodata.io/json/${vertical}.json`);
         
         if (!response.ok) {
           console.error(`Failed to fetch ${vertical}: ${response.status}`);
