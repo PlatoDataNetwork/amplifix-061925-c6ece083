@@ -43,9 +43,16 @@ export function useArticleComparison(articleId: string | null) {
           .from("articles")
           .select("id, title, content, excerpt, author, vertical_slug, published_at")
           .eq("id", articleId)
-          .single();
+          .maybeSingle();
 
         if (articleError) throw articleError;
+
+        if (!articleData) {
+          setError("Article not found with the provided ID");
+          setArticle(null);
+          setBackup(null);
+          return;
+        }
 
         // Fetch most recent backup
         const { data: backupData, error: backupError } = await supabase
@@ -54,11 +61,9 @@ export function useArticleComparison(articleId: string | null) {
           .eq("article_id", articleId)
           .order("created_at", { ascending: false })
           .limit(1)
-          .single();
+          .maybeSingle();
 
-        if (backupError && backupError.code !== "PGRST116") {
-          throw backupError;
-        }
+        if (backupError) throw backupError;
 
         setArticle(articleData);
         setBackup(backupData || null);
