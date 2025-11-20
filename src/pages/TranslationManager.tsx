@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Download, Languages, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock, Languages, Loader2, XCircle } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const SUPPORTED_LANGUAGES = [
   'ar', 'bn', 'zh', 'da', 'nl', 'et', 'fi', 'fr', 'de', 'el', 'he', 'hi', 'hu', 
@@ -15,15 +16,95 @@ const SUPPORTED_LANGUAGES = [
 
 const FILES_TO_TRANSLATE = ['common.json', 'home.json'];
 
+interface TranslationStats {
+  total: number;
+  completed: number;
+  success: number;
+  failed: number;
+  retries: number;
+  startTime: number | null;
+  estimatedTimeRemaining: number | null;
+}
+
 export default function TranslationManager() {
   const [isTranslating, setIsTranslating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentLang, setCurrentLang] = useState('');
   const [logs, setLogs] = useState<string[]>([]);
+  const [stats, setStats] = useState<TranslationStats>({
+    total: 0,
+    completed: 0,
+    success: 0,
+    failed: 0,
+    retries: 0,
+    startTime: null,
+    estimatedTimeRemaining: null,
+  });
   const { toast } = useToast();
+
+  // Update estimated time remaining based on progress
+  useEffect(() => {
+    if (stats.startTime && stats.completed > 0 && stats.completed < stats.total) {
+      const elapsed = Date.now() - stats.startTime;
+      const avgTimePerTask = elapsed / stats.completed;
+      const remaining = stats.total - stats.completed;
+      const estimated = Math.round((avgTimePerTask * remaining) / 1000); // in seconds
+      
+      setStats(prev => ({ ...prev, estimatedTimeRemaining: estimated }));
+    }
+  }, [stats.completed, stats.total, stats.startTime]);
 
   const addLog = (message: string) => {
     setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
+  };
+
+  const updateStats = (updates: Partial<TranslationStats>) => {
+    setStats(prev => ({ ...prev, ...updates }));
+  };
+
+  const formatTime = (seconds: number | null): string => {
+    if (seconds === null) return '--:--';
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Retry logic with exponential backoff
+  const translateWithRetry = async (
+    englishContent: any,
+    language: string,
+    fileName: string,
+    maxRetries: number = 3
+  ): Promise<any> => {
+    let lastError: Error | null = null;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const { data, error } = await supabase.functions.invoke('translate-locales', {
+          body: {
+            englishContent,
+            targetLanguage: language,
+            fileName
+          }
+        });
+
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        
+        return data;
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+        
+        if (attempt < maxRetries) {
+          const backoffMs = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
+          addLog(`⟳ Retry ${attempt}/${maxRetries} for ${language}/${fileName} in ${backoffMs/1000}s...`);
+          updateStats({ retries: stats.retries + 1 });
+          await new Promise(resolve => setTimeout(resolve, backoffMs));
+        }
+      }
+    }
+    
+    throw lastError;
   };
 
   const saveTranslation = async (content: any, language: string, namespace: string) => {
@@ -45,6 +126,15 @@ export default function TranslationManager() {
     setIsTranslating(true);
     setProgress(0);
     setLogs([]);
+    setStats({
+      total: 2,
+      completed: 0,
+      success: 0,
+      failed: 0,
+      retries: 0,
+      startTime: Date.now(),
+      estimatedTimeRemaining: null,
+    });
     addLog(`Testing translation for ${language.toUpperCase()}...`);
 
     try {
@@ -55,41 +145,31 @@ export default function TranslationManager() {
       const homeContent = await homeResponse.json();
 
       setCurrentLang(language);
-      let completedTasks = 0;
-      const totalTasks = 2;
 
       // Translate common.json
       try {
         addLog(`→ Translating ${language}/common.json...`);
         
-        const { data: commonData, error: commonError } = await supabase.functions.invoke('translate-locales', {
-          body: {
-            englishContent: commonContent,
-            targetLanguage: language,
-            fileName: 'common.json'
-          }
-        });
-
-        if (commonError) {
-          console.error(`Error for ${language}/common.json:`, commonError);
-          throw commonError;
-        }
-        
-        if (commonData?.error) {
-          throw new Error(commonData.error);
-        }
+        const commonData = await translateWithRetry(commonContent, language, 'common.json');
         
         if (commonData?.translatedContent) {
           await saveTranslation(commonData.translatedContent, language, 'common');
           addLog(`✓ ${language}/common.json saved (${commonData.duration || '?'}ms)`);
+          updateStats({ 
+            completed: stats.completed + 1, 
+            success: stats.success + 1 
+          });
         }
 
-        completedTasks++;
-        setProgress((completedTasks / totalTasks) * 100);
+        setProgress((stats.completed / stats.total) * 100);
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : String(error);
-        addLog(`✗ ${language}/common.json failed: ${errorMsg}`);
+        addLog(`✗ ${language}/common.json failed after retries: ${errorMsg}`);
         console.error(`Full error for ${language}/common.json:`, error);
+        updateStats({ 
+          completed: stats.completed + 1, 
+          failed: stats.failed + 1 
+        });
       }
 
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -98,34 +178,26 @@ export default function TranslationManager() {
       try {
         addLog(`→ Translating ${language}/home.json...`);
         
-        const { data: homeData, error: homeError } = await supabase.functions.invoke('translate-locales', {
-          body: {
-            englishContent: homeContent,
-            targetLanguage: language,
-            fileName: 'home.json'
-          }
-        });
-
-        if (homeError) {
-          console.error(`Error for ${language}/home.json:`, homeError);
-          throw homeError;
-        }
-        
-        if (homeData?.error) {
-          throw new Error(homeData.error);
-        }
+        const homeData = await translateWithRetry(homeContent, language, 'home.json');
         
         if (homeData?.translatedContent) {
           await saveTranslation(homeData.translatedContent, language, 'home');
           addLog(`✓ ${language}/home.json saved (${homeData.duration || '?'}ms)`);
+          updateStats({ 
+            completed: stats.completed + 1, 
+            success: stats.success + 1 
+          });
         }
 
-        completedTasks++;
-        setProgress((completedTasks / totalTasks) * 100);
+        setProgress((stats.completed / stats.total) * 100);
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : String(error);
-        addLog(`✗ ${language}/home.json failed: ${errorMsg}`);
+        addLog(`✗ ${language}/home.json failed after retries: ${errorMsg}`);
         console.error(`Full error for ${language}/home.json:`, error);
+        updateStats({ 
+          completed: stats.completed + 1, 
+          failed: stats.failed + 1 
+        });
       }
 
       toast({
@@ -152,6 +224,16 @@ export default function TranslationManager() {
     setIsTranslating(true);
     setProgress(0);
     setLogs([]);
+    const totalTasks = SUPPORTED_LANGUAGES.length * FILES_TO_TRANSLATE.length;
+    setStats({
+      total: totalTasks,
+      completed: 0,
+      success: 0,
+      failed: 0,
+      retries: 0,
+      startTime: Date.now(),
+      estimatedTimeRemaining: null,
+    });
     addLog('Starting translation process...');
 
     try {
@@ -162,9 +244,6 @@ export default function TranslationManager() {
       const commonContent = await commonResponse.json();
       const homeContent = await homeResponse.json();
 
-      const totalTasks = SUPPORTED_LANGUAGES.length * FILES_TO_TRANSLATE.length;
-      let completedTasks = 0;
-
       for (const language of SUPPORTED_LANGUAGES) {
         setCurrentLang(language);
         addLog(`Translating to ${language.toUpperCase()}...`);
@@ -173,36 +252,32 @@ export default function TranslationManager() {
         try {
           addLog(`→ Translating ${language}/common.json...`);
           
-          const { data: commonData, error: commonError } = await supabase.functions.invoke('translate-locales', {
-            body: {
-              englishContent: commonContent,
-              targetLanguage: language,
-              fileName: 'common.json'
-            }
-          });
-
-          if (commonError) {
-            console.error(`Error for ${language}/common.json:`, commonError);
-            throw commonError;
-          }
-          
-          if (commonData?.error) {
-            throw new Error(commonData.error);
-          }
+          const commonData = await translateWithRetry(commonContent, language, 'common.json');
           
           if (commonData?.translatedContent) {
             await saveTranslation(commonData.translatedContent, language, 'common');
             addLog(`✓ ${language}/common.json saved (${commonData.duration || '?'}ms)`);
+            updateStats({ 
+              completed: stats.completed + 1, 
+              success: stats.success + 1 
+            });
           } else {
             addLog(`✗ ${language}/common.json - no content returned`);
+            updateStats({ 
+              completed: stats.completed + 1, 
+              failed: stats.failed + 1 
+            });
           }
 
-          completedTasks++;
-          setProgress((completedTasks / totalTasks) * 100);
+          setProgress((stats.completed / stats.total) * 100);
         } catch (error) {
           const errorMsg = error instanceof Error ? error.message : String(error);
-          addLog(`✗ ${language}/common.json failed: ${errorMsg}`);
+          addLog(`✗ ${language}/common.json failed after retries: ${errorMsg}`);
           console.error(`Full error for ${language}/common.json:`, error);
+          updateStats({ 
+            completed: stats.completed + 1, 
+            failed: stats.failed + 1 
+          });
         }
 
         // Small delay to avoid rate limits
@@ -212,36 +287,32 @@ export default function TranslationManager() {
         try {
           addLog(`→ Translating ${language}/home.json...`);
           
-          const { data: homeData, error: homeError } = await supabase.functions.invoke('translate-locales', {
-            body: {
-              englishContent: homeContent,
-              targetLanguage: language,
-              fileName: 'home.json'
-            }
-          });
-
-          if (homeError) {
-            console.error(`Error for ${language}/home.json:`, homeError);
-            throw homeError;
-          }
-          
-          if (homeData?.error) {
-            throw new Error(homeData.error);
-          }
+          const homeData = await translateWithRetry(homeContent, language, 'home.json');
           
           if (homeData?.translatedContent) {
             await saveTranslation(homeData.translatedContent, language, 'home');
             addLog(`✓ ${language}/home.json saved (${homeData.duration || '?'}ms)`);
+            updateStats({ 
+              completed: stats.completed + 1, 
+              success: stats.success + 1 
+            });
           } else {
             addLog(`✗ ${language}/home.json - no content returned`);
+            updateStats({ 
+              completed: stats.completed + 1, 
+              failed: stats.failed + 1 
+            });
           }
 
-          completedTasks++;
-          setProgress((completedTasks / totalTasks) * 100);
+          setProgress((stats.completed / stats.total) * 100);
         } catch (error) {
           const errorMsg = error instanceof Error ? error.message : String(error);
-          addLog(`✗ ${language}/home.json failed: ${errorMsg}`);
+          addLog(`✗ ${language}/home.json failed after retries: ${errorMsg}`);
           console.error(`Full error for ${language}/home.json:`, error);
+          updateStats({ 
+            completed: stats.completed + 1, 
+            failed: stats.failed + 1 
+          });
         }
 
         // Delay between languages to avoid rate limits
@@ -344,13 +415,79 @@ export default function TranslationManager() {
             </div>
 
             {isTranslating && (
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Progress</span>
-                  <span>{Math.round(progress)}%</span>
+              <>
+                {/* Stats Dashboard */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <Card className="border-border/50">
+                    <CardContent className="pt-4">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                        <div>
+                          <p className="text-2xl font-bold text-green-500">{stats.success}</p>
+                          <p className="text-xs text-muted-foreground">Success</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-border/50">
+                    <CardContent className="pt-4">
+                      <div className="flex items-center gap-2">
+                        <XCircle className="h-4 w-4 text-destructive" />
+                        <div>
+                          <p className="text-2xl font-bold text-destructive">{stats.failed}</p>
+                          <p className="text-xs text-muted-foreground">Failed</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-border/50">
+                    <CardContent className="pt-4">
+                      <div className="flex items-center gap-2">
+                        <AlertCircle className="h-4 w-4 text-yellow-500" />
+                        <div>
+                          <p className="text-2xl font-bold text-yellow-500">{stats.retries}</p>
+                          <p className="text-xs text-muted-foreground">Retries</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-border/50">
+                    <CardContent className="pt-4">
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-primary" />
+                        <div>
+                          <p className="text-2xl font-bold">{formatTime(stats.estimatedTimeRemaining)}</p>
+                          <p className="text-xs text-muted-foreground">Remaining</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
-                <Progress value={progress} className="w-full" />
-              </div>
+
+                {/* Progress Bar */}
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="font-medium">
+                      Progress: {stats.completed} / {stats.total} tasks
+                    </span>
+                    <span className="text-muted-foreground">{Math.round(progress)}%</span>
+                  </div>
+                  <Progress value={progress} className="w-full h-2" />
+                </div>
+
+                {/* Current Language */}
+                {currentLang && (
+                  <Alert>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <AlertDescription>
+                      Currently translating: <strong className="uppercase">{currentLang}</strong>
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </>
             )}
 
             {logs.length > 0 && (
