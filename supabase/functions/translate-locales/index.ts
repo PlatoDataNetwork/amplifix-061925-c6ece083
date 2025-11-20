@@ -185,17 +185,80 @@ Output: {"title": "Bonjour {{name}}", "button": "En savoir plus →"}`;
         // Check if response looks truncated (doesn't end with proper JSON closing)
         const trimmed = cleanedText.trim();
         const looksTruncated = !trimmed.endsWith('}') && !trimmed.endsWith(']');
-        
-        return new Response(
-          JSON.stringify({ 
-            error: 'Invalid JSON returned from translation', 
-            details: parseError instanceof Error ? parseError.message : 'Parse error',
-            preview: cleanedText.substring(0, 300),
-            truncated: looksTruncated,
-            retry: true
-          }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+
+        // If it doesn't look truncated, try a JSON repair pass via Lovable AI
+        if (!looksTruncated) {
+          console.log(`[${targetLanguage}/${fileName}] Attempting JSON repair via Lovable AI...`);
+          try {
+            const repairResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                model: 'google/gemini-2.5-flash',
+                messages: [
+                  {
+                    role: 'system',
+                    content: `You are a strict JSON repair assistant. Your job is to fix ONLY JSON syntax issues (missing commas, brackets, quotes) in the user's message while preserving all keys and all text EXACTLY as-is.\n\nRules:\n- Do NOT change any translated text content.\n- Do NOT translate or rephrase anything.\n- Only fix JSON syntax so it becomes valid JSON.\n- Return ONLY valid JSON, no explanations or markdown.`,
+                  },
+                  {
+                    role: 'user',
+                    content: cleanedText,
+                  },
+                ],
+                temperature: 0,
+                max_tokens: 4096,
+              }),
+            });
+
+            if (repairResponse.ok) {
+              const repairText = await repairResponse.text();
+              let repairData: any;
+              try {
+                repairData = JSON.parse(repairText);
+              } catch (repairParseError) {
+                console.error(`[${targetLanguage}/${fileName}] Failed to parse JSON repair response:`, repairParseError);
+              }
+
+              const repairedRaw = repairData?.choices?.[0]?.message?.content?.trim();
+              if (repairedRaw) {
+                let repairedText = repairedRaw;
+                if (repairedText.startsWith('```json')) repairedText = repairedText.slice(7);
+                if (repairedText.startsWith('```')) repairedText = repairedText.slice(3);
+                if (repairedText.endsWith('```')) repairedText = repairedText.slice(0, -3);
+                repairedText = repairedText.trim();
+
+                try {
+                  translatedContent = JSON.parse(repairedText);
+                  console.log(`[${targetLanguage}/${fileName}] ✓ JSON repair succeeded`);
+                } catch (finalParseError) {
+                  console.error(`[${targetLanguage}/${fileName}] JSON repair parse failed:`, finalParseError);
+                }
+              }
+            } else {
+              const repairErrorText = await repairResponse.text();
+              console.error(`[${targetLanguage}/${fileName}] JSON repair API error: ${repairResponse.status} - ${repairErrorText}`);
+            }
+          } catch (repairError) {
+            console.error(`[${targetLanguage}/${fileName}] JSON repair request failed:`, repairError);
+          }
+        }
+
+        // If we still don't have valid JSON, return an error
+        if (!translatedContent) {
+          return new Response(
+            JSON.stringify({ 
+              error: 'Invalid JSON returned from translation', 
+              details: parseError instanceof Error ? parseError.message : 'Parse error',
+              preview: cleanedText.substring(0, 300),
+              truncated: looksTruncated,
+              retry: true
+            }),
+            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
       }
 
       const duration = Date.now() - startTime;
