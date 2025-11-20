@@ -307,11 +307,11 @@ async function formatArticleWithAI(text: string, apiKey: string): Promise<string
         messages: [
           {
             role: 'system',
-            content: 'You are a content formatter. Add semantic HTML structure with headers and paragraphs. Prefix main sections with [HEADER] tag.'
+            content: 'You are an expert content formatter. Your task is to analyze text and identify section headers and paragraphs. Section headers are typically short phrases (3-10 words) that introduce new topics or sections. Mark section headers by prefixing them with [HEADER]. Insert paragraph breaks (double newlines) at semantic boundaries. Return ONLY the formatted text with [HEADER] markers and paragraph breaks. Do not add commentary.'
           },
           {
             role: 'user',
-            content: `Format this article with proper HTML structure:\n\n${text.slice(0, 4000)}`
+            content: `Analyze this article and identify section headers (short topic titles). Prefix section headers with [HEADER] and add paragraph breaks at topic boundaries. Keep original text:\n\n${text.slice(0, 4000)}`
           }
         ],
       }),
@@ -323,7 +323,21 @@ async function formatArticleWithAI(text: string, apiKey: string): Promise<string
     }
 
     const data = await response.json();
-    return data.choices?.[0]?.message?.content || fallbackFormatting(text);
+    const formattedText = data.choices?.[0]?.message?.content || text;
+    
+    // Process blocks and wrap in appropriate tags
+    const blocks = formattedText
+      .split(/\n\n+/)
+      .map((block: string) => block.trim())
+      .filter(Boolean);
+
+    return blocks.map((block: string) => {
+      if (block.startsWith('[HEADER]')) {
+        const headerText = block.replace('[HEADER]', '').trim();
+        return `<h3>${headerText}</h3>`;
+      }
+      return `<p>${block}</p>`;
+    }).join("\n\n");
   } catch (error) {
     console.error('Error formatting with AI:', error);
     return fallbackFormatting(text);

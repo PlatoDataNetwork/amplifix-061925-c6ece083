@@ -102,7 +102,7 @@ export const formatExternalArticleContent = (text?: string | null): string => {
  * - Adequate margins on headers for separation
  * - Tight list spacing (my-1, space-y-1)
  */
-export const ARTICLE_CONTENT_CLASSES = "text-foreground leading-relaxed [&>p]:mb-4 [&>p]:leading-relaxed [&>h2]:mt-8 [&>h2]:mb-6 [&>h2]:text-4xl [&>h2]:font-bold [&>h2]:leading-tight [&>h3]:mt-6 [&>h3]:mb-4 [&>h3]:text-2xl [&>h3]:font-bold [&>strong]:mt-2 [&>strong]:mb-0 [&>strong]:block [&>ul]:my-1 [&>ul]:space-y-1 [&>ol]:my-1 [&>ol]:space-y-1";
+export const ARTICLE_CONTENT_CLASSES = "text-foreground leading-relaxed [&>p]:mb-4 [&>p]:leading-relaxed [&>h2]:mt-8 [&>h2]:mb-6 [&>h2]:text-4xl [&>h2]:font-bold [&>h2]:leading-tight [&>h3]:mt-6 [&>h3]:mb-4 [&>h3]:text-3xl [&>h3]:font-bold [&>h3]:leading-tight [&>strong]:mt-2 [&>strong]:mb-0 [&>strong]:block [&>ul]:my-1 [&>ul]:space-y-1 [&>ol]:my-1 [&>ol]:space-y-1";
 
 /**
  * Processes tags to show only first word and removes duplicates

@@ -79,7 +79,7 @@ const formatArticleWithAI = async (text: string): Promise<string> => {
     return blocks.map((block: string) => {
       if (block.startsWith('[HEADER]')) {
         const headerText = block.replace('[HEADER]', '').trim();
-        return `<h2>${headerText}</h2>`;
+        return `<h3>${headerText}</h3>`;
       }
       return `<p>${block}</p>`;
     }).join("\n\n");
