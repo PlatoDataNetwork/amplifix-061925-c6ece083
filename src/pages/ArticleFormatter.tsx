@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Loader2, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import ArticleStatsCard from "@/components/ArticleStatsCard";
 
 const ArticleFormatter = () => {
   const navigate = useNavigate();
@@ -265,6 +266,11 @@ const ArticleFormatter = () => {
               </div>
             </div>
             <h1 className="text-3xl font-bold">Bulk Article Formatter</h1>
+          </div>
+
+          {/* Statistics Dashboard */}
+          <div className="mb-6">
+            <ArticleStatsCard />
           </div>
 
           {/* Warning Card */}
