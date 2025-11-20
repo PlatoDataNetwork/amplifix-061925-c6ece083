@@ -15,6 +15,11 @@ const formatArticleContent = (text?: string | null): string => {
     .replace(/Link:?:?\s*/gi, "")
     .replace(/---/g, "")
     .replace(/\*\*(.+?)\*\*/g, "$1") // Remove all markdown bold
+    // CRITICAL: Remove existing HTML tags to prevent double-wrapping
+    .replace(/<\/?p>/gi, "")
+    .replace(/<\/?div>/gi, "")
+    .replace(/<\/?span>/gi, "")
+    .replace(/<br\s*\/?>/gi, "\n")
     .replace(/\r\n/g, "\n")
     .replace(/\n{3,}/g, "\n\n") // Normalize blank lines
     .replace(/^[ \t]+/gm, "") // Remove indentation
