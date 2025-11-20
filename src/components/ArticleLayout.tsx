@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { useJsonData } from "@/hooks/useJsonData";
 import { useNavigate } from "react-router-dom";
+import { formatExternalArticleContent, ARTICLE_CONTENT_CLASSES } from "@/utils/articleFormatting";
 
 interface ArticleLayoutProps {
   title: string;
@@ -111,15 +112,7 @@ const ArticleLayout = ({
         <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-4" />
         
         {/* Article Content */}
-        <article className="prose prose-base md:prose-lg max-w-none dark:prose-invert
-          prose-headings:font-bold prose-headings:tracking-tight
-          prose-h2:text-xl md:prose-h2:text-2xl prose-h2:mt-4 prose-h2:mb-1
-          prose-h3:text-lg md:prose-h3:text-xl prose-h3:mt-3 prose-h3:mb-1
-          prose-p:mb-1 prose-p:leading-relaxed
-          prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-          prose-strong:text-foreground prose-strong:font-bold
-          prose-ul:my-1 prose-ol:my-1
-          prose-li:my-0">
+        <article className={`prose prose-base md:prose-lg max-w-none dark:prose-invert ${ARTICLE_CONTENT_CLASSES.replace('text-foreground leading-relaxed whitespace-pre-wrap', '')}`}>
           {children}
         </article>
         
