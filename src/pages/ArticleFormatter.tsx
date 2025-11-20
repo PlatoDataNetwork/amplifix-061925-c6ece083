@@ -251,12 +251,12 @@ const ArticleFormatter = () => {
                 Back to Admin
               </Button>
               <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => navigate("/admin/articles/compare")}
-                >
-                  Compare Articles
-                </Button>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/admin/articles/comparison")}
+              >
+                Compare Articles
+              </Button>
                 <Button
                   variant="outline"
                   onClick={() => navigate("/admin/articles/backups")}

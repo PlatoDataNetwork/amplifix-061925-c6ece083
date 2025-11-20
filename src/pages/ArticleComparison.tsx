@@ -85,7 +85,7 @@ const ArticleComparison = () => {
             className="mb-4"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Formatter
+            Back to Article Formatter
           </Button>
           
           <h1 className="text-3xl font-bold mb-2">Article Comparison Tool</h1>
