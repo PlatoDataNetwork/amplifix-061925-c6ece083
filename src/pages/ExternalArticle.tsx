@@ -331,7 +331,7 @@ if (!article) {
           {/* Article Content */}
           <div className="prose prose-invert max-w-none mb-2">
             <div 
-               className="text-foreground leading-relaxed whitespace-pre-wrap [&>p]:mb-1 [&>p]:leading-relaxed [&>h2]:mt-4 [&>h2]:mb-2 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:leading-tight [&>h3]:mt-3 [&>h3]:mb-2 [&>h3]:text-xl [&>h3]:font-bold [&>strong]:mt-3 [&>strong]:mb-2 [&>strong]:block [&>ul]:my-2 [&>ul]:space-y-2 [&>ol]:my-2 [&>ol]:space-y-2"
+               className="text-foreground leading-relaxed whitespace-pre-wrap [&>p]:mb-1 [&>p]:leading-relaxed [&>h2]:mt-2 [&>h2]:mb-1 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:leading-tight [&>h3]:mt-2 [&>h3]:mb-1 [&>h3]:text-xl [&>h3]:font-bold [&>strong]:mt-2 [&>strong]:mb-1 [&>strong]:block [&>ul]:my-1 [&>ul]:space-y-1 [&>ol]:my-1 [&>ol]:space-y-1"
                dangerouslySetInnerHTML={{
                  __html:
                    article.content && /<\/?[a-z][\s\S]*>/i.test(article.content)
