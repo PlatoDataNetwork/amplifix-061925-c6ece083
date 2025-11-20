@@ -5,13 +5,14 @@ import SEOHead from "@/components/SEOHead";
 import BlogPostCard from "@/components/BlogPostCard";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import { useParams, useNavigate } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { usePlatoDataFeed } from "@/hooks/usePlatoDataFeed";
 import { useRSSFeed } from "@/hooks/useRSSFeed";
 import { useArticlesFromDB } from "@/hooks/useArticlesFromDB";
 import { ArrowLeft } from "lucide-react";
+import { getCurrentLanguage } from "@/utils/language";
 
 const VerticalPage = () => {
   const { vertical } = useParams<{ vertical: string }>();
@@ -51,6 +52,29 @@ const VerticalPage = () => {
   
   const isLoading = dbLoading || platoLoading;
   const error = dbError || platoError;
+
+  // Re-run GTranslate once posts are loaded so thumbnails/text can be translated
+  useEffect(() => {
+    if (isLoading || !allPosts.length) return;
+
+    try {
+      const lang = getCurrentLanguage();
+      if (!lang || lang === 'en') return;
+
+      const w = window as any;
+      if (typeof w.doGTranslate === 'function') {
+        setTimeout(() => {
+          try {
+            w.doGTranslate(`en|${lang}`);
+          } catch (e) {
+            console.error('GTranslate vertical refresh failed', e);
+          }
+        }, 200);
+      }
+    } catch (e) {
+      console.error('GTranslate vertical refresh error', e);
+    }
+  }, [isLoading, allPosts.length]);
   
   const visiblePosts = useMemo(() => {
     return allPosts.slice(0, visibleCount);

@@ -10,6 +10,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { toast } from "sonner";
 import { sanitizeText, formatArticleTags, formatExternalArticleContent, ARTICLE_CONTENT_CLASSES } from "@/utils/articleFormatting";
+import { getCurrentLanguage } from "@/utils/language";
 
 const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
@@ -133,6 +134,29 @@ const ExternalArticle = () => {
     
     loadArticle();
   }, [id]);
+
+  // Re-run GTranslate once article content is loaded so body text can be translated
+  useEffect(() => {
+    if (isLoading || !article) return;
+
+    try {
+      const lang = getCurrentLanguage();
+      if (!lang || lang === 'en') return;
+
+      const w = window as any;
+      if (typeof w.doGTranslate === 'function') {
+        setTimeout(() => {
+          try {
+            w.doGTranslate(`en|${lang}`);
+          } catch (e) {
+            console.error('GTranslate article refresh failed', e);
+          }
+        }, 200);
+      }
+    } catch (e) {
+      console.error('GTranslate article refresh error', e);
+    }
+  }, [isLoading, article?.id]);
 
   if (isLoading) {
     return (
