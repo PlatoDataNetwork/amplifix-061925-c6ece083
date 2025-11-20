@@ -13,13 +13,14 @@ export function usePlatoVerticals() {
   useEffect(() => {
     // Verticals from PlatoData JSON API
     const platoVerticals: Vertical[] = [
-      { name: 'AI Intelligence', slug: 'artificial-intelligence', url: 'https://dashboard.platodata.io/json/artificial-intelligence.json' },
+      { name: 'Aerospace', slug: 'aerospace', url: 'https://dashboard.platodata.io/json/aerospace.json' },
+      { name: 'AI', slug: 'artificial-intelligence', url: 'https://dashboard.platodata.io/json/artificial-intelligence.json' },
       { name: 'AR/VR', slug: 'ar-vr', url: 'https://dashboard.platodata.io/json/ar-vr.json' },
       { name: 'Autism', slug: 'autism', url: 'https://dashboard.platodata.io/json/autism.json' },
       { name: 'Automotive', slug: 'automotive', url: 'https://dashboard.platodata.io/json/automotive.json' },
       { name: 'Aviation', slug: 'aviation', url: 'https://dashboard.platodata.io/json/aviation.json' },
       { name: 'Big Data', slug: 'big-data', url: 'https://dashboard.platodata.io/json/big-data.json' },
-      { name: 'Biotechnology', slug: 'biotech', url: 'https://dashboard.platodata.io/json/biotech.json' },
+      { name: 'Biotech', slug: 'biotech', url: 'https://dashboard.platodata.io/json/biotech.json' },
       { name: 'Cannabis', slug: 'cannabis', url: 'https://dashboard.platodata.io/json/cannabis.json' },
       { name: 'Carbon', slug: 'carbon', url: 'https://dashboard.platodata.io/json/carbon.json' },
       { name: 'Cleantech', slug: 'cleantech', url: 'https://dashboard.platodata.io/json/cleantech.json' },

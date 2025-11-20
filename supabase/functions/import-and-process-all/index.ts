@@ -8,6 +8,7 @@ const corsHeaders = {
 
 // Complete list of all verticals from PlatoData
 const VERTICALS = [
+  'aerospace',
   'artificial-intelligence',
   'ar-vr',
   'autism',
@@ -45,6 +46,7 @@ const VERTICALS = [
   'private-equity',
   'psychedelics',
   'quantum',
+  'real-estate',
   'saas',
   'semiconductor',
   'seo',
