@@ -41,6 +41,113 @@ export default function TranslationManager() {
     }
   };
 
+  const translateSingleLanguage = async (language: string) => {
+    setIsTranslating(true);
+    setProgress(0);
+    setLogs([]);
+    addLog(`Testing translation for ${language.toUpperCase()}...`);
+
+    try {
+      const commonResponse = await fetch('/locales/en/common.json');
+      const homeResponse = await fetch('/locales/en/home.json');
+      
+      const commonContent = await commonResponse.json();
+      const homeContent = await homeResponse.json();
+
+      setCurrentLang(language);
+      let completedTasks = 0;
+      const totalTasks = 2;
+
+      // Translate common.json
+      try {
+        addLog(`→ Translating ${language}/common.json...`);
+        
+        const { data: commonData, error: commonError } = await supabase.functions.invoke('translate-locales', {
+          body: {
+            englishContent: commonContent,
+            targetLanguage: language,
+            fileName: 'common.json'
+          }
+        });
+
+        if (commonError) {
+          console.error(`Error for ${language}/common.json:`, commonError);
+          throw commonError;
+        }
+        
+        if (commonData?.error) {
+          throw new Error(commonData.error);
+        }
+        
+        if (commonData?.translatedContent) {
+          await saveTranslation(commonData.translatedContent, language, 'common');
+          addLog(`✓ ${language}/common.json saved (${commonData.duration || '?'}ms)`);
+        }
+
+        completedTasks++;
+        setProgress((completedTasks / totalTasks) * 100);
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        addLog(`✗ ${language}/common.json failed: ${errorMsg}`);
+        console.error(`Full error for ${language}/common.json:`, error);
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Translate home.json
+      try {
+        addLog(`→ Translating ${language}/home.json...`);
+        
+        const { data: homeData, error: homeError } = await supabase.functions.invoke('translate-locales', {
+          body: {
+            englishContent: homeContent,
+            targetLanguage: language,
+            fileName: 'home.json'
+          }
+        });
+
+        if (homeError) {
+          console.error(`Error for ${language}/home.json:`, homeError);
+          throw homeError;
+        }
+        
+        if (homeData?.error) {
+          throw new Error(homeData.error);
+        }
+        
+        if (homeData?.translatedContent) {
+          await saveTranslation(homeData.translatedContent, language, 'home');
+          addLog(`✓ ${language}/home.json saved (${homeData.duration || '?'}ms)`);
+        }
+
+        completedTasks++;
+        setProgress((completedTasks / totalTasks) * 100);
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        addLog(`✗ ${language}/home.json failed: ${errorMsg}`);
+        console.error(`Full error for ${language}/home.json:`, error);
+      }
+
+      toast({
+        title: "Test Translation Complete",
+        description: `Completed test translation for ${language.toUpperCase()}. Check logs for details.`,
+      });
+      addLog(`✓ Test translation for ${language.toUpperCase()} completed!`);
+
+    } catch (error) {
+      console.error('Translation error:', error);
+      toast({
+        title: "Translation Error",
+        description: error instanceof Error ? error.message : "Failed to generate translation",
+        variant: "destructive",
+      });
+      addLog(`✗ Fatal error: ${error}`);
+    } finally {
+      setIsTranslating(false);
+      setCurrentLang('');
+    }
+  };
+
   const translateAllLanguages = async () => {
     setIsTranslating(true);
     setProgress(0);
@@ -195,24 +302,46 @@ export default function TranslationManager() {
               </div>
             </div>
 
-            <Button
-              onClick={translateAllLanguages}
-              disabled={isTranslating}
-              size="lg"
-              className="w-full"
-            >
-              {isTranslating ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Translating {currentLang.toUpperCase()}...
-                </>
-              ) : (
-                <>
-                  <Languages className="mr-2 h-4 w-4" />
-                  Generate & Save All Translations
-                </>
-              )}
-            </Button>
+            <div className="space-y-3">
+              <Button
+                onClick={() => translateSingleLanguage('bn')}
+                disabled={isTranslating}
+                size="lg"
+                variant="outline"
+                className="w-full"
+              >
+                {isTranslating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Testing Bengali Translation...
+                  </>
+                ) : (
+                  <>
+                    <Languages className="mr-2 h-4 w-4" />
+                    Test Bengali Translation (bn)
+                  </>
+                )}
+              </Button>
+
+              <Button
+                onClick={translateAllLanguages}
+                disabled={isTranslating}
+                size="lg"
+                className="w-full"
+              >
+                {isTranslating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Translating {currentLang.toUpperCase()}...
+                  </>
+                ) : (
+                  <>
+                    <Languages className="mr-2 h-4 w-4" />
+                    Generate & Save All Translations
+                  </>
+                )}
+              </Button>
+            </div>
 
             {isTranslating && (
               <div className="space-y-2">
