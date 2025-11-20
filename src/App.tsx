@@ -54,6 +54,8 @@ import ArticleComparison from "./pages/ArticleComparison";
 import AdminRoute from "./components/AdminRoute";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import SitemapGenerator from "./pages/SitemapGenerator";
+import FynnAIShowcase from "./pages/FynnAIShowcase";
 
 const queryClient = new QueryClient();
 
@@ -113,6 +115,8 @@ const App = () => (
           <Route path="/admin/articles/format" element={<AdminRoute><ArticleFormatter /></AdminRoute>} />
           <Route path="/admin/articles/backups" element={<AdminRoute><ArticleBackups /></AdminRoute>} />
           <Route path="/admin/articles/comparison" element={<AdminRoute><ArticleComparison /></AdminRoute>} />
+          <Route path="/admin/sitemaps" element={<AdminRoute><SitemapGenerator /></AdminRoute>} />
+          <Route path="/showcase/fynn-ai" element={<FynnAIShowcase />} />
 
               {/* Language-prefixed routes (e.g., /ar/, /fr/) */}
               <Route path="/:lang" element={<Index />} />
@@ -137,6 +141,7 @@ const App = () => (
               <Route path="/:lang/showcase/micropolis" element={<MicropolisShowcase />} />
               <Route path="/:lang/showcase/micropolis/presentation" element={<MicropolisPresentation />} />
               <Route path="/:lang/showcase/international-land-alliance" element={<InternationalLandAllianceShowcase />} />
+              <Route path="/:lang/showcase/fynn-ai" element={<FynnAIShowcase />} />
               <Route path="/:lang/showcase/abatis" element={<AbatisShowcase />} />
               <Route path="/:lang/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/:lang/solutions/private-companies" element={<PrivateCompanies />} />
