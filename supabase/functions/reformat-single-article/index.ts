@@ -26,7 +26,7 @@ const cleanText = (text?: string | null): string => {
     .trim();
 };
 
-// Use AI to detect semantic breaks and split into paragraphs
+// Use AI to detect semantic breaks and split into paragraphs with headers
 const formatArticleWithAI = async (text: string): Promise<string> => {
   const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
   if (!LOVABLE_API_KEY) {
@@ -46,11 +46,11 @@ const formatArticleWithAI = async (text: string): Promise<string> => {
         messages: [
           {
             role: "system",
-            content: "You are an expert content formatter. Your task is to analyze text and split it into well-structured paragraphs based on semantic topic changes. Each paragraph should focus on a single idea or topic. Return ONLY the formatted text with paragraph breaks (double newlines) inserted at appropriate semantic boundaries. Do not add any extra commentary or explanations."
+            content: "You are an expert content formatter. Your task is to analyze text and identify section headers and paragraphs. Section headers are typically short phrases (3-10 words) that introduce new topics or sections. Mark section headers by prefixing them with '[HEADER]'. Insert paragraph breaks (double newlines) at semantic boundaries. Return ONLY the formatted text with [HEADER] markers and paragraph breaks. Do not add commentary."
           },
           {
             role: "user",
-            content: `Analyze this article text and insert paragraph breaks (double newlines) at natural semantic boundaries where topics shift. Keep the original text exactly as-is, only add paragraph breaks:\n\n${text}`
+            content: `Analyze this article and identify section headers (short topic titles like "Applications Across Industries" or "2023: A Breakthrough Year"). Prefix section headers with [HEADER] and add paragraph breaks at topic boundaries. Keep original text:\n\n${text}`
           }
         ],
         temperature: 0.3,
@@ -65,13 +65,19 @@ const formatArticleWithAI = async (text: string): Promise<string> => {
     const data = await response.json();
     const formattedText = data.choices?.[0]?.message?.content || text;
     
-    // Wrap each paragraph in <p> tags
-    const paragraphs = formattedText
+    // Process blocks and wrap in appropriate tags
+    const blocks = formattedText
       .split(/\n\n+/)
-      .map((p: string) => p.trim())
+      .map((block: string) => block.trim())
       .filter(Boolean);
 
-    return paragraphs.map((p: string) => `<p>${p}</p>`).join("\n\n");
+    return blocks.map((block: string) => {
+      if (block.startsWith('[HEADER]')) {
+        const headerText = block.replace('[HEADER]', '').trim();
+        return `<h2>${headerText}</h2>`;
+      }
+      return `<p>${block}</p>`;
+    }).join("\n\n");
   } catch (error) {
     console.error("Error using AI for formatting:", error);
     return fallbackFormatting(text);
