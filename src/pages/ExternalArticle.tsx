@@ -193,7 +193,7 @@ if (!article) {
               )}
             </div>
             
-            <h1 className="text-3xl md:text-5xl font-bold mb-6 pb-4 border-b border-border">
+            <h1 className="text-3xl md:text-5xl font-bold mb-6 pb-4 border-b border-border translate">
               {sanitizeText(article.title)}
             </h1>
 
@@ -201,13 +201,13 @@ if (!article) {
               <div className="flex flex-wrap items-center gap-4">
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4" />
-                  <span>{article.author}</span>
+                  <span className="translate">{article.author}</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 notranslate">
                   <Calendar className="h-4 w-4" />
                   <span>{article.date}</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 notranslate">
                   <Clock className="h-4 w-4" />
                   <span>3 Min Read</span>
                 </div>
@@ -292,9 +292,9 @@ if (!article) {
           )}
 
           {/* Article Content */}
-          <div className="prose prose-invert max-w-none mb-2">
+          <div className="prose prose-invert max-w-none mb-2 translate">
             <div 
-               className={ARTICLE_CONTENT_CLASSES}
+               className={`${ARTICLE_CONTENT_CLASSES} translate`}
                dangerouslySetInnerHTML={{
                  __html: (() => {
                    // Remove Plato source links before processing
@@ -330,12 +330,12 @@ if (!article) {
           {/* Related Topics */}
           {(tags.length > 0 || article.vertical_slug) && (
             <div className="pt-4">
-              <h3 className="text-sm font-semibold mb-3">Related Topics</h3>
+              <h3 className="text-sm font-semibold mb-3 translate">Related Topics</h3>
               <div className="flex flex-wrap gap-2">
                 {formatArticleTags(tags, article.vertical_slug, verticalDisplayName).map((tagData) => (
                   <span 
                     key={tagData.key}
-                    className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer"
+                    className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer translate"
                   >
                     {tagData.label}
                   </span>

@@ -68,17 +68,17 @@ const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: B
     <article className="bg-card rounded-xl border border-border overflow-hidden hover:border-blue-500/30 transition-colors">
       <div className="p-6">
         <div className="flex items-center gap-2 mb-3">
-          <span className="bg-blue-500/20 text-blue-500 px-2 py-1 rounded text-sm">{post.category}</span>
-          <span className="text-muted-foreground text-sm">{post.readTime}</span>
+          <span className="bg-blue-500/20 text-blue-500 px-2 py-1 rounded text-sm translate">{post.category}</span>
+          <span className="text-muted-foreground text-sm notranslate">{post.readTime}</span>
         </div>
-        <h3 className="text-xl font-bold mb-3 line-clamp-2">{sanitizeText(post.title)}</h3>
-        <p className="text-muted-foreground mb-4 line-clamp-3">{sanitizeText(post.excerpt)}</p>
+        <h3 className="text-xl font-bold mb-3 line-clamp-2 translate">{sanitizeText(post.title)}</h3>
+        <p className="text-muted-foreground mb-4 line-clamp-3 translate">{sanitizeText(post.excerpt)}</p>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <User className="h-4 w-4 text-muted-foreground" />
-            <span className="text-muted-foreground text-sm">{post.author}</span>
+            <span className="text-muted-foreground text-sm translate">{post.author}</span>
           </div>
-          <span className="text-muted-foreground text-sm">{post.date}</span>
+          <span className="text-muted-foreground text-sm notranslate">{post.date}</span>
         </div>
         {articleLink ? (
           articleLink.startsWith('http') ? (
