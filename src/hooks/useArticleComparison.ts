@@ -38,12 +38,25 @@ export function useArticleComparison(articleId: string | null) {
       setError(null);
 
       try {
-        // Fetch current article
-        const { data: articleData, error: articleError } = await supabase
+        const id = articleId.trim();
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+        const isNumericId = /^\d+$/.test(id);
+
+        if (!isUUID && !isNumericId) {
+          setError("Please enter a valid article UUID or numeric external ID");
+          setArticle(null);
+          setBackup(null);
+          return;
+        }
+
+        // Fetch current article by UUID (id) or external numeric ID (post_id)
+        const baseQuery = supabase
           .from("articles")
-          .select("id, title, content, excerpt, author, vertical_slug, published_at")
-          .eq("id", articleId)
-          .maybeSingle();
+          .select("id, title, content, excerpt, author, vertical_slug, published_at");
+
+        const { data: articleData, error: articleError } = isUUID
+          ? await baseQuery.eq("id", id).maybeSingle()
+          : await baseQuery.eq("post_id", Number(id)).maybeSingle();
 
         if (articleError) throw articleError;
 
@@ -54,11 +67,11 @@ export function useArticleComparison(articleId: string | null) {
           return;
         }
 
-        // Fetch most recent backup
+        // Fetch most recent backup for this article UUID
         const { data: backupData, error: backupError } = await supabase
           .from("article_backups")
           .select("id, article_id, backup_name, title, content, created_at")
-          .eq("article_id", articleId)
+          .eq("article_id", articleData.id)
           .order("created_at", { ascending: false })
           .limit(1)
           .maybeSingle();

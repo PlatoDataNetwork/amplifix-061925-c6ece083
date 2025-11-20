@@ -36,13 +36,16 @@ const ArticleComparison = () => {
   };
 
   const handleReformat = async () => {
-    if (!searchId) return;
+    if (!article || !article.id) {
+      toast.error("Load an article before reformatting.");
+      return;
+    }
     
     setIsReformatting(true);
     try {
       const { supabase } = await import("@/integrations/supabase/client");
       const { error } = await supabase.functions.invoke('reformat-single-article', {
-        body: { articleId: searchId }
+        body: { articleId: article.id }
       });
 
       if (error) throw error;
