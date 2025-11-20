@@ -1,13 +1,13 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import HttpBackend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import SupabaseBackend from './supabaseBackend';
 
 const supportedLanguages = ['en', 'ar', 'bn', 'zh', 'da', 'nl', 'et', 'fi', 'fr', 'de', 'el', 'he', 'hi', 'hu', 'id', 'it', 'ja', 'km', 'ko', 'no', 'fa', 'pl', 'pt', 'pa', 'ro', 'ru', 'sl', 'es', 'sv', 'th', 'tr', 'uk', 'ur', 'vi'];
 const rtlLanguages = ['ar', 'he', 'fa'];
 
 i18n
-  .use(HttpBackend)
+  .use(SupabaseBackend)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
@@ -15,10 +15,6 @@ i18n
     supportedLngs: supportedLanguages,
     ns: ['common', 'home'],
     defaultNS: 'common',
-    
-    backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
-    },
     
     detection: {
       order: ['path', 'localStorage', 'navigator'],

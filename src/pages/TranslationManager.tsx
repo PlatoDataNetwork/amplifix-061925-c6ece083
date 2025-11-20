@@ -26,16 +26,19 @@ export default function TranslationManager() {
     setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
   };
 
-  const downloadTranslation = (content: any, language: string, fileName: string) => {
-    const blob = new Blob([JSON.stringify(content, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${language}-${fileName}`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+  const saveTranslation = async (content: any, language: string, namespace: string) => {
+    const { error } = await supabase
+      .from('translations')
+      .upsert({
+        language_code: language,
+        namespace: namespace.replace('.json', ''),
+        content: content
+      });
+    
+    if (error) {
+      console.error(`Error saving ${language}/${namespace}:`, error);
+      throw error;
+    }
   };
 
   const translateAllLanguages = async () => {
@@ -72,8 +75,8 @@ export default function TranslationManager() {
           if (commonError) throw commonError;
           
           if (commonData?.translatedContent) {
-            downloadTranslation(commonData.translatedContent, language, 'common.json');
-            addLog(`✓ ${language}/common.json completed`);
+            await saveTranslation(commonData.translatedContent, language, 'common');
+            addLog(`✓ ${language}/common.json saved to database`);
           }
 
           completedTasks++;
@@ -98,8 +101,8 @@ export default function TranslationManager() {
           if (homeError) throw homeError;
           
           if (homeData?.translatedContent) {
-            downloadTranslation(homeData.translatedContent, language, 'home.json');
-            addLog(`✓ ${language}/home.json completed`);
+            await saveTranslation(homeData.translatedContent, language, 'home');
+            addLog(`✓ ${language}/home.json saved to database`);
           }
 
           completedTasks++;
@@ -114,9 +117,9 @@ export default function TranslationManager() {
 
       toast({
         title: "Translation Complete",
-        description: `Generated translations for ${SUPPORTED_LANGUAGES.length} languages. Check downloads folder.`,
+        description: `Generated and saved translations for ${SUPPORTED_LANGUAGES.length} languages to database.`,
       });
-      addLog('✓ All translations completed!');
+      addLog('✓ All translations completed and saved to database!');
 
     } catch (error) {
       console.error('Translation error:', error);
@@ -152,7 +155,7 @@ export default function TranslationManager() {
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
                 This will translate common.json and home.json for all languages using Lovable AI.
-                Translations will be downloaded as individual files that you can then upload to /public/locales/[lang]/.
+                Translations will be automatically saved to the database and served dynamically.
               </p>
               
               <div className="flex items-center gap-2 text-sm">
@@ -179,8 +182,8 @@ export default function TranslationManager() {
                 </>
               ) : (
                 <>
-                  <Download className="mr-2 h-4 w-4" />
-                  Generate All Translations
+                  <Languages className="mr-2 h-4 w-4" />
+                  Generate & Save All Translations
                 </>
               )}
             </Button>
