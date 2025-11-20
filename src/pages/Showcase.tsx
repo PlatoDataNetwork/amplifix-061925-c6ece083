@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home, Search, ScanFace } from "lucide-react";
@@ -5,6 +6,7 @@ import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { useJsonData } from "@/hooks/useJsonData";
+import { getLanguageFromPath } from "@/utils/language";
 
 const Showcase = () => {
   const { data: showcaseData, isLoading } = useJsonData<any>('showcase.json');
@@ -29,6 +31,35 @@ const Showcase = () => {
       </div>
     );
   }
+
+  // Ensure GTranslate applies after showcase content is loaded
+  useEffect(() => {
+    const pathLang = getLanguageFromPath();
+    if (!pathLang || pathLang === "en" || !showcaseData) return;
+
+    const getGTranslateCode = (lang: string) => {
+      if (lang === "zh") return "zh-CN";
+      if (lang === "he") return "iw";
+      return lang;
+    };
+
+    const targetCode = getGTranslateCode(pathLang);
+
+    const applyTranslation = (attempts = 0) => {
+      const w = window as any;
+      if (typeof w.doGTranslate === "function") {
+        console.log("Showcase: applying GTranslate for", targetCode);
+        w.doGTranslate(`en|${targetCode}`);
+      } else if (attempts < 20) {
+        setTimeout(() => applyTranslation(attempts + 1), 300);
+      } else {
+        console.error("Showcase: GTranslate not ready after retries");
+      }
+    };
+
+    setTimeout(() => applyTranslation(), 400);
+  }, [showcaseData]);
+
   return (
     <>
       <Helmet>
