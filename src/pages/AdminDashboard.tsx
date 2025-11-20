@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainHeader from '@/components/MainHeader';
 import Footer from '@/components/Footer';
-import { Database, Users, FileText, Shield, Activity, Clock, LogOut } from 'lucide-react';
+import { Database, Users, FileText, Shield, Activity, Clock, LogOut, Archive, GitCompare, Map } from 'lucide-react';
 
 interface SystemStats {
   totalUsers: number;
@@ -83,7 +83,7 @@ const AdminDashboard = () => {
     },
     {
       title: 'Article Import',
-      description: 'Import and manage articles',
+      description: 'Import and process all articles',
       icon: Database,
       action: () => navigate('/admin/import'),
       color: 'from-purple-500 to-pink-500'
@@ -101,6 +101,27 @@ const AdminDashboard = () => {
       icon: Activity,
       action: () => navigate('/admin/articles/format'),
       color: 'from-orange-500 to-red-500'
+    },
+    {
+      title: 'Article Backups',
+      description: 'Manage article backups and restore',
+      icon: Archive,
+      action: () => navigate('/admin/articles/backups'),
+      color: 'from-yellow-500 to-amber-500'
+    },
+    {
+      title: 'Article Comparison',
+      description: 'Compare article versions',
+      icon: GitCompare,
+      action: () => navigate('/admin/articles/comparison'),
+      color: 'from-pink-500 to-rose-500'
+    },
+    {
+      title: 'Sitemap Generator',
+      description: 'Generate language-specific sitemaps',
+      icon: Map,
+      action: () => navigate('/admin/sitemaps'),
+      color: 'from-indigo-500 to-purple-500'
     }
   ];
 
@@ -210,33 +231,37 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Quick Actions */}
+        {/* Quick Actions */}
+        <div className="mb-8">
           <Card>
             <CardHeader>
               <CardTitle>Quick Actions</CardTitle>
               <CardDescription>Common administrative tasks</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {quickActions.map((action) => (
-                <Button
-                  key={action.title}
-                  onClick={action.action}
-                  variant="outline"
-                  className="w-full justify-start h-auto p-4 hover:bg-accent"
-                >
-                  <div className={`p-2 rounded-lg bg-gradient-to-br ${action.color} mr-4`}>
-                    <action.icon className="h-5 w-5 text-white" />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-semibold">{action.title}</div>
-                    <div className="text-sm text-muted-foreground">{action.description}</div>
-                  </div>
-                </Button>
-              ))}
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {quickActions.map((action) => (
+                  <Button
+                    key={action.title}
+                    onClick={action.action}
+                    variant="outline"
+                    className="w-full justify-start h-auto p-4 hover:bg-accent"
+                  >
+                    <div className={`p-2 rounded-lg bg-gradient-to-br ${action.color} mr-4`}>
+                      <action.icon className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold">{action.title}</div>
+                      <div className="text-sm text-muted-foreground">{action.description}</div>
+                    </div>
+                  </Button>
+                ))}
+              </div>
             </CardContent>
           </Card>
+        </div>
 
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
           {/* Recent Activity */}
           <Card>
             <CardHeader>
