@@ -41,6 +41,18 @@
   color: #888;
 }
 
+/* Hide unwanted elements in article content */
+.plato-post-bottom-links,
 ul.plato-post-bottom-links {
-  display: none;
+  display: none !important;
+}
+
+/* Hide images and aside elements within article content */
+article img,
+.prose img,
+[class*="article"] img,
+article aside,
+.prose aside,
+[class*="article"] aside {
+  display: none !important;
 }
