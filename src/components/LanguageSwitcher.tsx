@@ -63,23 +63,23 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
       console.log('Navigating to:', newPath);
       navigate(newPath);
 
-      // If GTranslate widget is present, re-run it so body content is translated
-      try {
+      // Trigger GTranslate.io translation
+      setTimeout(() => {
         const w = window as any;
         if (typeof w.doGTranslate === 'function') {
-          setTimeout(() => {
-            try {
-              w.doGTranslate(`en|${langCode}`);
-            } catch (e) {
-              console.error('GTranslate language switch failed', e);
-            }
-          }, 200);
+          console.log('Triggering GTranslate with:', `en|${langCode}`);
+          w.doGTranslate(`en|${langCode}`);
         } else {
-          console.log('GTranslate function doGTranslate not found on window');
+          console.warn('GTranslate not loaded yet, will retry...');
+          // Retry after a short delay if GTranslate hasn't loaded
+          setTimeout(() => {
+            if (typeof w.doGTranslate === 'function') {
+              console.log('Retry: Triggering GTranslate with:', `en|${langCode}`);
+              w.doGTranslate(`en|${langCode}`);
+            }
+          }, 500);
         }
-      } catch (e) {
-        console.error('Error while triggering GTranslate', e);
-      }
+      }, 100);
       
       setIsTranslating(false);
       
@@ -102,11 +102,22 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
         if (i18n.language !== pathLang) {
           i18n.changeLanguage(pathLang);
         }
+        
+        // Apply GTranslate on page load if language is not English
+        if (pathLang !== 'en') {
+          setTimeout(() => {
+            const w = window as any;
+            if (typeof w.doGTranslate === 'function') {
+              console.log('Auto-applying GTranslate for:', pathLang);
+              w.doGTranslate(`en|${pathLang}`);
+            }
+          }, 500);
+        }
       }
     } else {
       // Check saved preference as fallback
       const savedLang = localStorage.getItem('selectedLanguage');
-      if (savedLang) {
+      if (savedLang && savedLang !== 'en') {
         const savedLanguage = languages.find(lang => lang.code === savedLang);
         if (savedLanguage) {
           setCurrentLanguage(savedLanguage);
