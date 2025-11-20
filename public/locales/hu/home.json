@@ -1,0 +1,181 @@
+{
+  "hero": {
+    "badge": "AI-Powered IR & Corporate Communications",
+    "title": "Amplifi Your Communications",
+    "description": "AmplifiX leverages cutting-edge AI to transform how public and private companies manage investor relations and corporate communications."
+  },
+  "about": {
+    "title": "About AmplifiX",
+    "description": "We're revolutionizing corporate communications through AI-driven insights, automated content generation, and intelligent stakeholder engagement platforms.",
+    "aiPowered": {
+      "title": "AI-Powered Intelligence",
+      "description": "Advanced machine learning algorithms analyze market sentiment and optimize communications."
+    },
+    "marketLeadership": {
+      "title": "Market Leadership",
+      "description": "Trusted by Fortune 500 companies and emerging growth businesses worldwide."
+    },
+    "strategicFocus": {
+      "title": "Strategic Focus",
+      "description": "Tailored solutions for both public and private companies at every stage of growth."
+    }
+  },
+  "features": {
+    "title": "Powerful AI Features",
+    "description": "Transform your corporate communications with our comprehensive suite of AI-powered tools.",
+    "smartAnalytics": {
+      "title": "Smart Analytics Dashboard",
+      "description": "Real-time insights into market sentiment, media coverage, and investor engagement with AI-powered predictive analytics."
+    },
+    "aiContent": {
+      "title": "AI Content Generation",
+      "description": "Generate compelling press releases, investor updates, and corporate communications tailored to your brand voice and audience."
+    },
+    "stakeholder": {
+      "title": "Stakeholder Management",
+      "description": "Intelligent CRM for investors, analysts, media contacts, and other key stakeholders with automated engagement tracking."
+    },
+    "strategicInsights": {
+      "title": "Strategic Insights",
+      "description": "AI-driven recommendations for timing, messaging, and channel optimization to maximize impact and reach."
+    }
+  },
+  "solutions": {
+    "title": "Solutions for Every Stage",
+    "description": "Whether you're preparing for an IPO or managing ongoing investor relations, AmplifiX adapts to your company's unique needs.
+    "publicCompanies": {
+      "title": "Public Companies",
+      "earnings": {
+        "title": "Earnings Communications",
+        "description": "Automated earnings call transcripts and investor materials"
+      },
+      "regulatory": {
+        "title": "Regulatory Compliance",
+        "description": "SEC filing assistance and compliance monitoring"
+      },
+      "analyst": {
+        "title": "Analyst Relations",
+        "description": "AI-powered analyst sentiment tracking and engagement"
+      }
+    },
+    "privateCompanies": {
+      "title": "Private Companies",
+      "fundraising": {
+        "title": "Fundraising Support",
+        "description": "Pitch deck optimization and investor outreach automation"
+      },
+      "brandBuilding": {
+        "title": "Brand Building",
+        "description": "Strategic PR campaigns and thought leadership content"
+      },
+      "ipoPrep": {
+        "title": "IPO Preparation",
+        "description": "Comprehensive readiness assessment and roadmap"
+      }
+    }
+  },
+  "stats": [
+    {
+      "value": "35+",
+      "label": "Languages Supported"
+    },
+    {
+      "value": "250+",
+      "label": "Campaigns Processed"
+    },
+    {
+      "value": "2000+",
+      "label": "Media Publications"
+    },
+    {
+      "value": "99.9%",
+      "label": "Uptime Guaranteed"
+    }
+  ],
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "description": "Get answers to common questions about AmplifiX and how we can help transform your corporate communications.",
+    "items": [
+      {
+        "question": "What is AmplifiX and how does it work?",
+        "answer": "AmplifiX is an AI-powered platform that revolutionizes corporate communications for public and private companies. We use advanced machine learning algorithms to analyze market sentiment, generate compelling content, and optimize communication strategies across investor relations, public relations, and corporate messaging channels."
+      },
+      {
+        "question": "What services does AmplifiX offer?",
+        "answer": "AmplifiX offers a comprehensive suite of services including AI-powered content generation for press releases and investor updates, real-time market sentiment analysis, stakeholder relationship management, automated media monitoring, crisis communication support, regulatory compliance assistance, and strategic communication planning tailored to your company's unique needs."
+      },
+      {
+        "question": "How does AmplifiX support public companies in capital markets?",
+        "answer": "For public companies, AmplifiX provides specialized support including earnings communication automation, SEC filing assistance, analyst relations management, investor call preparation, market sentiment tracking, compliance monitoring, and strategic guidance for maintaining transparent and effective communication with shareholders and regulatory bodies."
+      },
+      {
+        "question": "What makes AmplifiX different from traditional IR/PR firms?",
+        "answer": "Unlike traditional firms, AmplifiX combines human expertise with cutting-edge AI technology to provide 24/7 monitoring, real-time insights, predictive analytics, and automated content generation. Our platform scales with your needs, offers transparent pricing, and delivers measurable results through data-driven strategies that traditional firms simply cannot match."
+      },
+      {
+        "question": "How does AmplifiX help with investor relations management?",
+        "answer": "AmplifiX streamlines investor relations through intelligent CRM systems, automated investor communications, sentiment analysis of investor feedback, earnings call preparation and follow-up, investor meeting scheduling and tracking, performance metrics reporting, and strategic recommendations for improving investor engagement and satisfaction."
+      },
+      {
+        "question": "Can AmplifiX help with crisis communication and reputation management?",
+        "answer": "Absolutely. AmplifiX provides real-time crisis monitoring, rapid response communication templates, stakeholder notification systems, media sentiment tracking during crises, strategic messaging guidance, and post-crisis analysis and reporting. Our AI algorithms can detect potential issues early, allowing for proactive rather than reactive communication strategies."
+      },
+      {
+        "question": "What pricing plans does AmplifiX offer?",
+        "answer": "AmplifiX offers three main pricing tiers: Startup ($499/month) for emerging companies with basic AI content generation and analytics; Growth ($1,499/month) for scaling businesses with advanced features and stakeholder CRM; and Enterprise (custom pricing) for large organizations requiring custom AI models, white-label options, and dedicated support. All plans include a free trial period."
+      },
+      {
+        "question": "How quickly can my company get started with AmplifiX?",
+        "answer": "Most companies can be onboarded within 1-2 weeks. Our process includes an initial consultation, platform setup and customization, data integration, team training, and strategy development. We provide dedicated onboarding specialists and comprehensive support materials to ensure a smooth transition to AI-powered communications management."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Get In Touch",
+    "description": "Ready to amplify your corporate communications? Let's discuss how AmplifiX can transform your IR and PR strategy.",
+    "form": {
+      "title": "Send us a message",
+      "fields": {
+        "company_name": {
+          "label": "Company Name",
+          "placeholder": "Your company"
+        },
+        "email": {
+          "label": "Contact Email",
+          "placeholder": "your@company.com"
+        },
+        "company_type": {
+          "label": "Company Type",
+          "options": ["Public Company", "Private Company", "Pre-IPO Company"]
+        },
+        "message": {
+          "label": "Message",
+          "placeholder": "Tell us about your needs..."
+        }
+      },
+      "submit_button": "Send Message"
+    },
+    "contact_info": [
+      {
+        "title": "Sales Inquiries",
+        "description": "Discuss your IR/PR needs with our experts",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Customer Success",
+        "description": "Get help with your existing account",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Partnership Opportunities",
+        "description": "Explore strategic partnerships",
+        "contact": "support@amplifix.net"
+      },
+      {
+        "title": "Office Hours",
+        "description": "Monday - Friday: 8:00 AM - 6:00 PM (EST)",
+        "additional": "Emergency support available 24/7"
+      }
+    ]
+  }
+}

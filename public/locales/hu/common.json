@@ -1,0 +1,38 @@
+{
+  "nav": {
+    "about": "About",
+    "solutions": "Solutions",
+    "showcase": "Showcase",
+    "intel": "Intel",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "login": "Login"
+  },
+  "buttons": {
+    "bookDemo": "Book A Demo",
+    "learnMore": "Learn more →",
+    "amplifyBrand": "Amplifi Your Brand →",
+    "contactUs": "Contact Us",
+    "sendMessage": "Send Message"
+  },
+  "footer": {
+    "platform": "Platform",
+    "solutions": "Solutions",
+    "company": "Company",
+    "home": "Home",
+    "publicCompanies": "Public Companies",
+    "privateCompanies": "Private Companies",
+    "ipoPreparation": "IPO Preparation",
+    "privacyPolicy": "Privacy Policy",
+    "compliance": "Compliance",
+    "termsOfService": "Terms of Service",
+    "dataProcessing": "Data Processing",
+    "copyright": "© {{year}} AmplifiX. All rights reserved.",
+    "statusOnline": "AI Systems Online"
+  },
+  "ui": {
+    "loading": "Loading...",
+    "error": "Failed to load content. Please try again later.",
+    "tryAgain": "Try Again"
+  }
+}
