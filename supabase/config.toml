@@ -2,3 +2,6 @@ project_id = "rfkdcmvzvxcsoecoeddi"
 
 [functions.send-contact-email]
 verify_jwt = false
+
+[functions.reformat-single-article]
+verify_jwt = true
