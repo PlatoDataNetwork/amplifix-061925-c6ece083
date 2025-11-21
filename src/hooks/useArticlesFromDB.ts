@@ -37,7 +37,7 @@ export function useArticlesFromDB(verticalSlug: string | null) {
           .select('*')
           .eq('vertical_slug', verticalSlug)
           .order('published_at', { ascending: false })
-          .limit(50);
+          .limit(2000);
 
         if (fetchError) {
           throw fetchError;
