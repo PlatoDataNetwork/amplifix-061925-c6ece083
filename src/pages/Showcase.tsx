@@ -70,10 +70,18 @@ const Showcase = () => {
     fetchShowcases();
   }, []);
 
-  // Prefer database data once loaded, otherwise use JSON fallback
-  const showcases = !loading && dbShowcases.length > 0 
-    ? dbShowcases 
-    : showcaseData?.showcase.showcases || [];
+  // Merge database data with JSON data, adding any JSON items not in database
+  const showcases = (() => {
+    const jsonShowcases = showcaseData?.showcase.showcases || [];
+    
+    if (!loading && dbShowcases.length > 0) {
+      const dbCompanyNames = new Set(dbShowcases.map(s => s.company_name));
+      const jsonOnlyShowcases = jsonShowcases.filter(s => !dbCompanyNames.has(s.company_name));
+      return [...dbShowcases, ...jsonOnlyShowcases];
+    }
+    
+    return jsonShowcases;
+  })();
 
   console.log("Rendering with showcases:", showcases.length, "items");
 
