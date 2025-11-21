@@ -6,7 +6,6 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { AlertCircle, CheckCircle2, Clock, Eye, Languages, Loader2, XCircle } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useNavigate } from "react-router-dom";
 
 const SUPPORTED_LANGUAGES = [
@@ -338,78 +337,7 @@ export default function TranslationManager() {
           </CardHeader>
           
           <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                This will translate all UI and data files for supported languages using Lovable AI.
-                Translations will be automatically saved to the database and served dynamically.
-              </p>
-              
-              <div className="flex items-center gap-2 text-sm">
-                <span className="font-medium">Languages:</span>
-                <span className="text-muted-foreground">{SUPPORTED_LANGUAGES.length} languages</span>
-              </div>
-              
-              <div className="flex items-center gap-2 text-sm">
-                <span className="font-medium">Files per language:</span>
-                <span className="text-muted-foreground">{FILES_TO_TRANSLATE.length} files (UI + Data)</span>
-              </div>
-            </div>
-
             <div className="space-y-3">
-              <Alert>
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  <strong>Quick Fix for Missing Translations:</strong> Run Ukrainian (uk), Romanian (ro), and Thai (th) to fix homepage body text translations.
-                </AlertDescription>
-              </Alert>
-
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  onClick={() => translateSelectedLanguages(['uk'])}
-                  disabled={isTranslating}
-                  size="sm"
-                  variant="outline"
-                >
-                  {isTranslating && currentLang === 'uk' ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
-                  Ukrainian (uk)
-                </Button>
-                <Button
-                  onClick={() => translateSelectedLanguages(['ro'])}
-                  disabled={isTranslating}
-                  size="sm"
-                  variant="outline"
-                >
-                  {isTranslating && currentLang === 'ro' ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
-                  Romanian (ro)
-                </Button>
-                <Button
-                  onClick={() => translateSelectedLanguages(['th'])}
-                  disabled={isTranslating}
-                  size="sm"
-                  variant="outline"
-                >
-                  {isTranslating && currentLang === 'th' ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
-                  Thai (th)
-                </Button>
-                <Button
-                  onClick={() => translateSelectedLanguages(['uk', 'ro', 'th'])}
-                  disabled={isTranslating}
-                  size="sm"
-                  variant="default"
-                >
-                  {isTranslating ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
-                  All Three
-                </Button>
-              </div>
-
               <Button
                 onClick={() => translateSelectedLanguages(SUPPORTED_LANGUAGES)}
                 disabled={isTranslating}
@@ -507,12 +435,12 @@ export default function TranslationManager() {
 
                 {/* Current Language */}
                 {currentLang && (
-                  <Alert>
+                  <div className="flex items-center gap-2 p-3 bg-muted rounded-lg border border-border">
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    <AlertDescription>
+                    <span className="text-sm">
                       Currently translating: <strong className="uppercase">{currentLang}</strong>
-                    </AlertDescription>
-                  </Alert>
+                    </span>
+                  </div>
                 )}
               </>
             )}
