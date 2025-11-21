@@ -116,6 +116,18 @@
         "stock_url": "https://www.nasdaq.com/market-activity/stocks/devs",
         "thumbnail": "/lovable-uploads/devvstream-thumbnail.png",
         "type": "stock"
+      },
+      {
+        "company_name": "CUT",
+        "ticker": "Carbon Utility Token",
+        "description": "Blockchain-based carbon offset solution that has tokenized over 500,000 tonnes of carbon offsets. Purchase and retire certified carbon credits with transparent climate impact.",
+        "tags": ["Blockchain", "Carbon Offsets", "Cryptocurrency"],
+        "button_text": "View Showcase",
+        "link": "/showcase/cut-eco",
+        "website": "https://cut.eco/",
+        "stock_url": "https://app.cut.eco/",
+        "thumbnail": "/lovable-uploads/cut-eco-thumbnail.png",
+        "type": "token"
       }
     ],
     "why_choose": {
