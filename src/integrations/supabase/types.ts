@@ -152,6 +152,66 @@ export type Database = {
         }
         Relationships: []
       }
+      showcase_companies: {
+        Row: {
+          button_text: string
+          company_name: string
+          created_at: string | null
+          description: string
+          disabled: boolean
+          display_order: number
+          id: string
+          link: string
+          search_url: string | null
+          stock_url: string | null
+          subtitle: string | null
+          tags: string[] | null
+          thumbnail: string | null
+          ticker: string | null
+          type: string
+          updated_at: string | null
+          website: string | null
+        }
+        Insert: {
+          button_text?: string
+          company_name: string
+          created_at?: string | null
+          description: string
+          disabled?: boolean
+          display_order?: number
+          id?: string
+          link: string
+          search_url?: string | null
+          stock_url?: string | null
+          subtitle?: string | null
+          tags?: string[] | null
+          thumbnail?: string | null
+          ticker?: string | null
+          type?: string
+          updated_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          button_text?: string
+          company_name?: string
+          created_at?: string | null
+          description?: string
+          disabled?: boolean
+          display_order?: number
+          id?: string
+          link?: string
+          search_url?: string | null
+          stock_url?: string | null
+          subtitle?: string | null
+          tags?: string[] | null
+          thumbnail?: string | null
+          ticker?: string | null
+          type?: string
+          updated_at?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       tags: {
         Row: {
           created_at: string | null

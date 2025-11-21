@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home, Search, ScanFace } from "lucide-react";
@@ -42,22 +43,32 @@ interface ShowcaseData {
 
 const Showcase = () => {
   const { data: showcaseData } = useJsonData<ShowcaseData>('/data/showcase.json');
+  const [dbShowcases, setDbShowcases] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   useLanguage();
 
-  const showcases = showcaseData?.showcase.showcases || [
-    {
-      company_name: 'SILO Pharma Inc.',
-      ticker: 'NASDAQ: SILO',
-      description: 'Leading pharmaceutical company developing novel therapeutics',
-      button_text: 'View SILO Showcase',
-      link: '/showcase/silo-pharma',
-      stock_url: 'https://finance.yahoo.com/quote/SILO/',
-      website: 'https://silopharma.com/',
-      search_url: null,
-      type: 'stock',
-      disabled: false
-    }
-  ];
+  useEffect(() => {
+    const fetchShowcases = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("showcase_companies")
+          .select("*")
+          .eq("disabled", false)
+          .order("display_order", { ascending: true });
+
+        if (error) throw error;
+        setDbShowcases(data || []);
+      } catch (error) {
+        console.error("Error fetching showcases:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchShowcases();
+  }, []);
+
+  const showcases = dbShowcases.length > 0 ? dbShowcases : showcaseData?.showcase.showcases || [];
 
   const whyChooseFeatures = Object.values(showcaseData?.showcase.why_choose.features || {});
 
