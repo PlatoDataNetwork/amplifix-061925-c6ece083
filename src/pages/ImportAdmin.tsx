@@ -75,22 +75,20 @@ const ImportAdmin = () => {
           console.log('🔴 Real-time: New article inserted!', payload);
           setLastUpdateTime(new Date());
           
-          // Increment session counter if import is active
-          if (importing === 'all-verticals') {
-            setSessionArticlesImported(prev => {
-              const newCount = prev + 1;
-              
-              // Calculate articles per second
-              if (importStartTime) {
-                const elapsedSeconds = (Date.now() - importStartTime.getTime()) / 1000;
-                if (elapsedSeconds > 0) {
-                  setArticlesPerSecond(Math.round(newCount / elapsedSeconds));
-                }
+          // Always increment session counter for any article insert
+          setSessionArticlesImported(prev => {
+            const newCount = prev + 1;
+            
+            // Calculate articles per second
+            if (importStartTime) {
+              const elapsedSeconds = (Date.now() - importStartTime.getTime()) / 1000;
+              if (elapsedSeconds > 0) {
+                setArticlesPerSecond(Math.round(newCount / elapsedSeconds));
               }
-              
-              return newCount;
-            });
-          }
+            }
+            
+            return newCount;
+          });
           
           // Refresh metrics when articles are inserted
           loadMetrics();
@@ -112,7 +110,7 @@ const ImportAdmin = () => {
       supabase.removeChannel(channel);
       setRealtimeConnected(false);
     };
-  }, [importing, importStartTime]);
+  }, [importStartTime]);
   
   const loadMetrics = async () => {
     try {
@@ -186,9 +184,13 @@ const ImportAdmin = () => {
     setLiveImportResults([]);
     setRunningTotal(0);
     setCurrentVertical('');
-    setSessionArticlesImported(0);
-    setImportStartTime(new Date());
-    setArticlesPerSecond(0);
+    
+    // Only reset stats if this is a fresh start (no import time set)
+    if (!importStartTime) {
+      setSessionArticlesImported(0);
+      setImportStartTime(new Date());
+      setArticlesPerSecond(0);
+    }
     
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -314,9 +316,15 @@ const ImportAdmin = () => {
         setProgressStatus('');
         setProgressPercent(0);
         setCurrentVertical('');
-        setImportStartTime(null);
-      }, 10000); // Keep stats visible for 10 seconds after completion
+        // Don't reset session stats - keep them running
+      }, 5000);
     }
+  };
+
+  const resetSessionStats = () => {
+    setSessionArticlesImported(0);
+    setImportStartTime(new Date());
+    setArticlesPerSecond(0);
   };
 
   const importVertical = async (vertical: string, verticalSlug: string) => {
@@ -448,6 +456,53 @@ const ImportAdmin = () => {
             </Card>
           </div>
 
+          {/* Real-time Stats Banner - Always Visible */}
+          <Card className="mb-8 border-green-500/30 bg-gradient-to-br from-green-500/5 to-blue-500/5">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  📊 Live Import Statistics
+                  {realtimeConnected && (
+                    <span className="text-xs font-normal text-green-500 flex items-center gap-1">
+                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                      Real-time Active
+                    </span>
+                  )}
+                </CardTitle>
+                <Button
+                  onClick={resetSessionStats}
+                  variant="outline"
+                  size="sm"
+                  className="text-xs"
+                >
+                  Reset Stats
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center p-4 bg-background rounded-lg border">
+                  <p className="text-xs text-muted-foreground mb-2 flex items-center justify-center gap-1">
+                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    Articles This Session
+                  </p>
+                  <p className="text-4xl font-bold text-green-500">{sessionArticlesImported.toLocaleString()}</p>
+                </div>
+                <div className="text-center p-4 bg-background rounded-lg border">
+                  <p className="text-xs text-muted-foreground mb-2">Import Rate</p>
+                  <p className="text-4xl font-bold text-blue-500">{articlesPerSecond}</p>
+                  <p className="text-xs text-muted-foreground mt-1">articles/sec</p>
+                </div>
+                <div className="text-center p-4 bg-background rounded-lg border">
+                  <p className="text-xs text-muted-foreground mb-2">Session Duration</p>
+                  <p className="text-4xl font-bold text-purple-500">
+                    {importStartTime ? Math.floor((Date.now() - importStartTime.getTime()) / 1000) : 0}s
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Import All & Process Section */}
           <Card className="mb-8 border-primary/50 bg-gradient-to-br from-primary/5 to-primary/10">
             <CardHeader>
@@ -471,28 +526,6 @@ const ImportAdmin = () => {
 
                 {importing === 'all-verticals' && (
                   <div className="space-y-4">
-                    {/* Real-time Import Stats */}
-                    <div className="grid grid-cols-3 gap-4 p-6 bg-gradient-to-br from-green-500/10 to-blue-500/10 rounded-lg border-2 border-green-500/20">
-                      <div className="text-center">
-                        <p className="text-xs text-muted-foreground mb-2 flex items-center justify-center gap-1">
-                          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                          Articles This Session
-                        </p>
-                        <p className="text-4xl font-bold text-green-500">{sessionArticlesImported.toLocaleString()}</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-xs text-muted-foreground mb-2">Import Rate</p>
-                        <p className="text-4xl font-bold text-blue-500">{articlesPerSecond}</p>
-                        <p className="text-xs text-muted-foreground">articles/sec</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-xs text-muted-foreground mb-2">Elapsed Time</p>
-                        <p className="text-4xl font-bold text-purple-500">
-                          {importStartTime ? Math.floor((Date.now() - importStartTime.getTime()) / 1000) : 0}s
-                        </p>
-                      </div>
-                    </div>
-
                     {/* Overall Progress */}
                     <div className="space-y-3 p-4 bg-background rounded-lg border">
                       <div className="flex items-center justify-between">
@@ -502,16 +535,10 @@ const ImportAdmin = () => {
                       <Progress value={progressPercent} className="h-2" />
                     </div>
 
-                    {/* Live Stats */}
-                    <div className="grid grid-cols-2 gap-4 p-4 bg-background rounded-lg border">
-                      <div>
-                        <p className="text-xs text-muted-foreground mb-1">Currently Importing</p>
-                        <p className="text-lg font-bold text-blue-500">{currentVertical || 'Initializing...'}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground mb-1">Total in Database</p>
-                        <p className="text-lg font-bold text-green-500">{totalArticles.toLocaleString()}</p>
-                      </div>
+                    {/* Currently Importing */}
+                    <div className="p-4 bg-background rounded-lg border">
+                      <p className="text-xs text-muted-foreground mb-1">Currently Importing</p>
+                      <p className="text-lg font-bold text-blue-500">{currentVertical || 'Initializing...'}</p>
                     </div>
 
                     {/* Live Import Feed */}
