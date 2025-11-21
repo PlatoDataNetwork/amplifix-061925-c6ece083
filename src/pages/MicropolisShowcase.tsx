@@ -6,9 +6,11 @@ import { Helmet } from "react-helmet-async";
 import { ExternalLink, TrendingUp, Shield, Cpu, Zap, Target, Globe, Play, X, FileText } from "lucide-react";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { useState } from "react";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 const MicropolisShowcase = () => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  useGTranslateRefresh(true);
 
   return (
     <>

@@ -4,8 +4,10 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
 import { ExternalLink, Shield, Lock, Zap, Globe, Check, FileText, ShoppingCart, TrendingUp, Users, Target, AlertCircle, Award, CheckCircle, Cpu } from "lucide-react";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 const AbatisShowcase = () => {
+  useGTranslateRefresh(true);
   return (
     <>
       <Helmet>

@@ -4,8 +4,10 @@ import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building,
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 const FynnAIShowcase = () => {
+  useGTranslateRefresh(true);
   return (
     <>
       <Helmet>

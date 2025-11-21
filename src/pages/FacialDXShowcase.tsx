@@ -4,8 +4,10 @@ import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building,
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import thumbnailImage from "/lovable-uploads/facialdx-thumbnail.png";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 const FacialDXShowcase = () => {
+  useGTranslateRefresh(true);
   return (
     <>
       <Helmet>

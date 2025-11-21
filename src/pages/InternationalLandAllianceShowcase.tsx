@@ -3,8 +3,10 @@ import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, MapPin, Home, Waves, Mountain, Sun, TreePine } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 const InternationalLandAllianceShowcase = () => {
+  useGTranslateRefresh(true);
   return (
     <>
       <Helmet>
