@@ -17,7 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { getCurrentLanguage, getLanguageFromPath, getGTranslateCode } from "@/utils/language";
+import { getCurrentLanguage, getGTranslateCode } from "@/utils/language";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 interface BlogPost {
   id: number;
@@ -149,38 +150,8 @@ const Blog = () => {
     return filtered;
   }, [allBlogPosts, selectedTag, selectedCategory]);
 
-  // Re-run GTranslate once blog posts are ready so thumbnails/text can be translated
-  useEffect(() => {
-    try {
-      const lang = getCurrentLanguage();
-      if (!lang || lang === 'en') return;
-      if (!filteredBlogPosts.length) return;
-
-      const targetCode = getGTranslateCode(lang);
-      const w = window as any;
-      
-      if (typeof w.doGTranslate === 'function') {
-        console.log('Re-running GTranslate on Blog page for lang', targetCode);
-        // Multiple translation passes to catch all dynamic content
-        setTimeout(() => {
-          try {
-            w.doGTranslate(`en|${targetCode}`);
-            
-            // Second pass after DOM updates
-            setTimeout(() => {
-              w.doGTranslate(`en|${targetCode}`);
-            }, 500);
-          } catch (e) {
-            console.error('GTranslate blog refresh failed', e);
-          }
-        }, 300);
-      } else {
-        console.log('GTranslate function doGTranslate not found on Blog page');
-      }
-    } catch (e) {
-      console.error('GTranslate blog refresh error', e);
-    }
-  }, [filteredBlogPosts.length]);
+  // Use centralized GTranslate refresh hook
+  useGTranslateRefresh(filteredBlogPosts.length > 0, [filteredBlogPosts.length]);
 
   // Show more logic
   const visiblePosts = useMemo(() => {

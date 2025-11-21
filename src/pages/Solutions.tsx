@@ -7,6 +7,7 @@ import SEOHead from "@/components/SEOHead";
 import { useJsonData } from "@/hooks/useJsonData";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 interface SolutionItem {
   title: string;
@@ -40,6 +41,7 @@ const Solutions = () => {
   const { data, isLoading, error } = useJsonData<SolutionsData>('solutions.json');
   const { t } = useTranslation('common');
   useLanguage();
+  useGTranslateRefresh(!isLoading && !!data, [data]);
 
   if (isLoading) {
     return (

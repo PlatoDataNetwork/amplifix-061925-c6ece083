@@ -9,10 +9,12 @@ import { useJsonData } from "@/hooks/useJsonData";
 import { AboutData } from "@/types/about";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 const About = () => {
   const { data, isLoading, error } = useJsonData<AboutData>('about.json');
   useLanguage(); // Auto-translates page
+  useGTranslateRefresh(!isLoading && !!data, [data]);
 
   if (isLoading) {
   return (

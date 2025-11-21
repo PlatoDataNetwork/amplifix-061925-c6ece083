@@ -6,32 +6,14 @@ import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { useJsonData } from "@/hooks/useJsonData";
-import { getLanguageFromPath, getGTranslateCode } from "@/utils/language";
+import { getCurrentLanguage, getGTranslateCode } from "@/utils/language";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 const Showcase = () => {
   const { data: showcaseData, isLoading } = useJsonData<any>('showcase.json');
-
-  // Ensure GTranslate applies after showcase content is loaded
-  useEffect(() => {
-    const pathLang = getLanguageFromPath();
-    if (!pathLang || pathLang === "en" || !showcaseData) return;
-
-    const targetCode = getGTranslateCode(pathLang);
-
-    const applyTranslation = (attempts = 0) => {
-      const w = window as any;
-      if (typeof w.doGTranslate === "function") {
-        console.log("Showcase: applying GTranslate for", targetCode);
-        w.doGTranslate(`en|${targetCode}`);
-      } else if (attempts < 20) {
-        setTimeout(() => applyTranslation(attempts + 1), 300);
-      } else {
-        console.error("Showcase: GTranslate not ready after retries");
-      }
-    };
-
-    setTimeout(() => applyTranslation(), 400);
-  }, [showcaseData]);
+  
+  // Use the centralized GTranslate refresh hook
+  useGTranslateRefresh(!isLoading && !!showcaseData, [showcaseData]);
 
   if (isLoading) {
     return (
