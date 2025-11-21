@@ -79,6 +79,73 @@ const ShowcaseAdmin = () => {
     }
   };
 
+  const importFromJSON = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/data/showcase.json');
+      const data = await response.json();
+      
+      const showcases = data.showcase.showcases;
+      
+      // Get existing companies to determine next display_order
+      const { data: existing } = await supabase
+        .from("showcase_companies")
+        .select("display_order")
+        .order("display_order", { ascending: false })
+        .limit(1);
+      
+      let nextOrder = (existing && existing.length > 0) ? existing[0].display_order + 1 : 1;
+      
+      // Import only companies that don't exist yet
+      for (const showcase of showcases) {
+        const { data: existingCompany } = await supabase
+          .from("showcase_companies")
+          .select("id")
+          .eq("company_name", showcase.company_name)
+          .single();
+        
+        if (!existingCompany) {
+          const { error } = await supabase
+            .from("showcase_companies")
+            .insert({
+              company_name: showcase.company_name,
+              ticker: showcase.ticker || null,
+              description: showcase.description,
+              tags: showcase.tags || [],
+              button_text: showcase.button_text || "View Showcase",
+              link: showcase.link,
+              website: showcase.website || null,
+              stock_url: showcase.stock_url || null,
+              search_url: showcase.search_url || null,
+              thumbnail: showcase.thumbnail || null,
+              type: showcase.type || "stock",
+              disabled: showcase.disabled || false,
+              display_order: nextOrder++
+            });
+          
+          if (error) {
+            console.error(`Error importing ${showcase.company_name}:`, error);
+          }
+        }
+      }
+      
+      toast({
+        title: "Import completed",
+        description: "Companies have been imported from JSON",
+      });
+      
+      await fetchCompanies();
+    } catch (error: any) {
+      toast({
+        title: "Import failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchCompanies();
   }, []);
@@ -243,10 +310,16 @@ const ShowcaseAdmin = () => {
               <h1 className="text-3xl font-bold">Showcase Management</h1>
             </div>
             {!showForm && (
-              <Button onClick={() => setShowForm(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Add Company
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={importFromJSON} variant="outline" disabled={loading}>
+                  <Upload className="h-4 w-4 mr-2" />
+                  Import from JSON
+                </Button>
+                <Button onClick={() => setShowForm(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Company
+                </Button>
+              </div>
             )}
           </div>
 
