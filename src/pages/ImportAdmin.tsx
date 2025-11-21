@@ -38,6 +38,14 @@ const ImportAdmin = () => {
   const [selectedTestVertical, setSelectedTestVertical] = useState<string>('');
   const [progressStatus, setProgressStatus] = useState<string>('');
   const [progressPercent, setProgressPercent] = useState(0);
+  const [liveImportResults, setLiveImportResults] = useState<Array<{
+    vertical: string;
+    count: number;
+    status: 'importing' | 'success' | 'error';
+    timestamp: Date;
+  }>>([]);
+  const [currentVertical, setCurrentVertical] = useState<string>('');
+  const [runningTotal, setRunningTotal] = useState(0);
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
   useEffect(() => {
@@ -113,6 +121,9 @@ const ImportAdmin = () => {
     setImporting('all-verticals');
     setProgressStatus('Initializing...');
     setProgressPercent(0);
+    setLiveImportResults([]);
+    setRunningTotal(0);
+    setCurrentVertical('');
     
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -143,8 +154,18 @@ const ImportAdmin = () => {
 
       for (const verticalSlug of allVerticals) {
         try {
+          // Mark vertical as currently importing
+          setCurrentVertical(verticalSlug);
           setProgressStatus(`Importing ${verticalSlug}... (${completed + 1}/${allVerticals.length})`);
           setProgressPercent(Math.floor((completed / allVerticals.length) * 100));
+          
+          // Add to live results as "importing"
+          setLiveImportResults(prev => [...prev, {
+            vertical: verticalSlug,
+            count: 0,
+            status: 'importing',
+            timestamp: new Date()
+          }]);
 
           const { data, error } = await supabase.functions.invoke('import-articles', {
             body: { vertical: verticalSlug },
@@ -155,20 +176,46 @@ const ImportAdmin = () => {
 
           if (error) {
             console.error(`Error importing ${verticalSlug}:`, error);
+            // Update to error status
+            setLiveImportResults(prev => prev.map(item => 
+              item.vertical === verticalSlug 
+                ? { ...item, status: 'error' as const, timestamp: new Date() }
+                : item
+            ));
             toast.error(`Failed to import ${verticalSlug}`);
           } else if (data) {
-            totalImported += data.insertedArticles || 0;
-            console.log(`Imported ${data.insertedArticles} articles from ${verticalSlug}`);
+            const importedCount = data.insertedArticles || 0;
+            totalImported += importedCount;
+            
+            // Update running total in real-time
+            setRunningTotal(totalImported);
+            
+            // Update to success with count
+            setLiveImportResults(prev => prev.map(item => 
+              item.vertical === verticalSlug 
+                ? { ...item, count: importedCount, status: 'success' as const, timestamp: new Date() }
+                : item
+            ));
+            
+            console.log(`Imported ${importedCount} articles from ${verticalSlug}`);
           }
 
           completed++;
         } catch (error) {
           console.error(`Exception importing ${verticalSlug}:`, error);
+          // Update to error status
+          setLiveImportResults(prev => prev.map(item => 
+            item.vertical === verticalSlug 
+              ? { ...item, status: 'error' as const, timestamp: new Date() }
+              : item
+          ));
         }
 
         // Small delay between imports to avoid overwhelming the system
         await new Promise(resolve => setTimeout(resolve, 500));
       }
+      
+      setCurrentVertical('');
 
       setProgressPercent(100);
       setProgressStatus(`Completed! Imported ${totalImported} total articles`);
@@ -201,6 +248,7 @@ const ImportAdmin = () => {
         setImporting(null);
         setProgressStatus('');
         setProgressPercent(0);
+        setCurrentVertical('');
       }, 5000);
     }
   };
@@ -379,12 +427,78 @@ const ImportAdmin = () => {
                 </Button>
 
                 {importing === 'all-verticals' && (
-                  <div className="space-y-3 p-4 bg-background rounded-lg border">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">{progressStatus}</span>
-                      <span className="text-sm text-muted-foreground">{progressPercent}%</span>
+                  <div className="space-y-4">
+                    {/* Overall Progress */}
+                    <div className="space-y-3 p-4 bg-background rounded-lg border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{progressStatus}</span>
+                        <span className="text-sm text-muted-foreground">{progressPercent}%</span>
+                      </div>
+                      <Progress value={progressPercent} className="h-2" />
                     </div>
-                    <Progress value={progressPercent} className="h-2" />
+
+                    {/* Live Stats */}
+                    <div className="grid grid-cols-2 gap-4 p-4 bg-background rounded-lg border">
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Currently Importing</p>
+                        <p className="text-lg font-bold text-blue-500">{currentVertical || 'Initializing...'}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Total Articles Imported</p>
+                        <p className="text-lg font-bold text-green-500">{runningTotal.toLocaleString()}</p>
+                      </div>
+                    </div>
+
+                    {/* Live Import Feed */}
+                    {liveImportResults.length > 0 && (
+                      <div className="p-4 bg-background rounded-lg border">
+                        <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                          <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                          Live Import Feed
+                        </h4>
+                        <div className="space-y-2 max-h-80 overflow-y-auto">
+                          {[...liveImportResults].reverse().map((result, idx) => (
+                            <div 
+                              key={`${result.vertical}-${idx}`}
+                              className={`flex items-center justify-between p-3 rounded-lg transition-all ${
+                                result.status === 'importing' 
+                                  ? 'bg-blue-500/10 border border-blue-500/20' 
+                                  : result.status === 'success'
+                                  ? 'bg-green-500/10 border border-green-500/20'
+                                  : 'bg-red-500/10 border border-red-500/20'
+                              }`}
+                            >
+                              <div className="flex items-center gap-3 flex-1">
+                                <div className={`w-2 h-2 rounded-full ${
+                                  result.status === 'importing'
+                                    ? 'bg-blue-500 animate-pulse'
+                                    : result.status === 'success'
+                                    ? 'bg-green-500'
+                                    : 'bg-red-500'
+                                }`} />
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium">{result.vertical}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {result.timestamp.toLocaleTimeString()}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                {result.status === 'importing' ? (
+                                  <span className="text-sm text-blue-500 animate-pulse">Importing...</span>
+                                ) : result.status === 'success' ? (
+                                  <span className="text-sm font-bold text-green-500">
+                                    +{result.count.toLocaleString()}
+                                  </span>
+                                ) : (
+                                  <span className="text-sm text-red-500">Error</span>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
