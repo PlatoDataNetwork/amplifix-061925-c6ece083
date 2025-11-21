@@ -57,6 +57,8 @@ const Showcase = () => {
           .order("display_order", { ascending: true });
 
         if (error) throw error;
+        
+        console.log("Fetched showcases from DB:", data);
         setDbShowcases(data || []);
       } catch (error) {
         console.error("Error fetching showcases:", error);
@@ -68,7 +70,12 @@ const Showcase = () => {
     fetchShowcases();
   }, []);
 
-  const showcases = dbShowcases.length > 0 ? dbShowcases : showcaseData?.showcase.showcases || [];
+  // Prefer database data once loaded, otherwise use JSON fallback
+  const showcases = !loading && dbShowcases.length > 0 
+    ? dbShowcases 
+    : showcaseData?.showcase.showcases || [];
+
+  console.log("Rendering with showcases:", showcases.length, "items");
 
   const whyChooseFeatures = Object.values(showcaseData?.showcase.why_choose.features || {});
 
