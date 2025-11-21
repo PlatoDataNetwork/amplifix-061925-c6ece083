@@ -173,6 +173,16 @@ const ImportAdmin = () => {
       setProgressPercent(100);
       setProgressStatus(`Completed! Imported ${totalImported} total articles`);
       
+      // Store results for display
+      setResults(prev => ({
+        ...prev,
+        'all-verticals': {
+          totalImported,
+          totalProcessed: totalImported,
+          completedVerticals: completed
+        }
+      }));
+      
       toast.success('All verticals imported!', {
         description: `Successfully imported ${totalImported} articles from ${completed} verticals`
       });
