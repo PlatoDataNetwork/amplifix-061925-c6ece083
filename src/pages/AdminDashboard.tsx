@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainHeader from '@/components/MainHeader';
 import Footer from '@/components/Footer';
-import { Database, Users, FileText, Shield, Activity, Clock, LogOut, Archive, GitCompare, Map } from 'lucide-react';
+import { Database, Users, FileText, Shield, Activity, Clock, LogOut, Archive, GitCompare, Map, Languages } from 'lucide-react';
 
 interface SystemStats {
   totalUsers: number;
@@ -122,6 +122,13 @@ const AdminDashboard = () => {
       icon: Map,
       action: () => navigate('/admin/sitemaps'),
       color: 'from-indigo-500 to-purple-500'
+    },
+    {
+      title: 'Translation Manager',
+      description: 'Generate AI translations for all languages',
+      icon: Languages,
+      action: () => navigate('/admin/translations'),
+      color: 'from-teal-500 to-cyan-500'
     }
   ];
 
