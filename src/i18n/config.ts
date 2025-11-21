@@ -13,7 +13,7 @@ i18n
   .init({
     fallbackLng: 'en',
     supportedLngs: supportedLanguages,
-    ns: ['common', 'home'],
+    ns: ['common', 'home', 'about', 'solutions', 'faq', 'contact', 'blog', 'showcase'],
     defaultNS: 'common',
     
     detection: {

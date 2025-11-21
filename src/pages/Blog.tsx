@@ -17,8 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { getCurrentLanguage, getGTranslateCode } from "@/utils/language";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useTranslation } from "react-i18next";
 
 interface BlogPost {
   id: number;
@@ -58,7 +58,7 @@ interface BlogData {
 }
 
 const Blog = () => {
-  const { data: blogData } = useJsonData<BlogData>('blog-intel.json');
+  const { t } = useTranslation(['blog', 'common']);
   const { verticals } = usePlatoVerticals();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -206,18 +206,10 @@ const Blog = () => {
         {/* Hero Section */}
         <div className="text-center mb-12 md:mb-16">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8">
-            {blogData?.blog.hero.title ? (
-              blogData.blog.hero.title.includes('Intel') ? (
-                <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intelligence</span></>
-              ) : (
-                blogData.blog.hero.title
-              )
-            ) : (
-              <>AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intelligence</span></>
-            )}
+            AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intelligence</span>
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4 mb-8">
-            {blogData?.blog.hero.description || 'Stay updated with the latest in AI intelligence, corporate communications insights, and product updates from the AmplifiX team.'}
+            {t('blog:hero.description')}
           </p>
           
           {/* Search Bar */}
@@ -226,7 +218,7 @@ const Blog = () => {
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search across all articles and intelligence..."
+                placeholder={t('blog:search.placeholder')}
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);

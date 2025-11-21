@@ -5,37 +5,118 @@ import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building,
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
-import { useJsonData } from "@/hooks/useJsonData";
-import { getCurrentLanguage, getGTranslateCode } from "@/utils/language";
-import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
+import { useTranslation } from "react-i18next";
 
 const Showcase = () => {
-  const { data: showcaseData, isLoading } = useJsonData<any>('showcase.json');
-  
-  // Use the centralized GTranslate refresh hook
-  useGTranslateRefresh(!isLoading && !!showcaseData, [showcaseData]);
+  const { t } = useTranslation(['showcase', 'common']);
+  useLanguage();
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <MainHeader />
-        <div className="pt-24 container mx-auto py-20 px-4">
-          <div className="text-center">Loading...</div>
-        </div>
-      </div>
-    );
-  }
+  const showcases = [
+    {
+      company_name: t('showcase:companies.silo.name'),
+      ticker: t('showcase:companies.silo.ticker'),
+      description: t('showcase:companies.silo.description'),
+      button_text: t('showcase:companies.silo.button_text'),
+      link: '/showcase/silo-pharma',
+      stock_url: 'https://finance.yahoo.com/quote/SILO/',
+      website: 'https://silopharma.com/',
+      search_url: null,
+      type: 'stock',
+      disabled: false
+    },
+    {
+      company_name: t('showcase:companies.ila.name'),
+      subtitle: t('showcase:companies.ila.subtitle'),
+      description: t('showcase:companies.ila.description'),
+      button_text: t('showcase:companies.ila.button_text'),
+      link: '/showcase/international-land-alliance',
+      stock_url: 'https://www.otcmarkets.com/stock/ILAL/overview',
+      website: 'https://ila.company/',
+      search_url: null,
+      type: 'stock',
+      disabled: false
+    },
+    {
+      company_name: t('showcase:companies.karbonx.name'),
+      subtitle: t('showcase:companies.karbonx.subtitle'),
+      description: t('showcase:companies.karbonx.description'),
+      button_text: t('showcase:companies.karbonx.button_text'),
+      link: '/showcase/karbon-x',
+      stock_url: 'https://www.tradingview.com/symbols/OTC-KARX/',
+      website: 'https://www.karbon-x.com/',
+      search_url: null,
+      type: 'stock',
+      disabled: false
+    },
+    {
+      company_name: t('showcase:companies.micropolis.name'),
+      ticker: t('showcase:companies.micropolis.ticker'),
+      description: t('showcase:companies.micropolis.description'),
+      button_text: t('showcase:companies.micropolis.button_text'),
+      link: '/showcase/micropolis',
+      stock_url: 'https://finance.yahoo.com/quote/MCRP/',
+      website: 'https://www.micropolis.ai/',
+      search_url: null,
+      type: 'stock',
+      disabled: false
+    },
+    {
+      company_name: t('showcase:companies.synbio.name'),
+      subtitle: t('showcase:companies.synbio.subtitle'),
+      description: t('showcase:companies.synbio.description'),
+      button_text: t('showcase:companies.synbio.button_text'),
+      link: '/showcase/synbio',
+      stock_url: null,
+      website: 'https://synbioint.com/',
+      search_url: null,
+      type: 'private',
+      disabled: false
+    },
+    {
+      company_name: t('showcase:companies.fynn.name'),
+      subtitle: t('showcase:companies.fynn.subtitle'),
+      description: t('showcase:companies.fynn.description'),
+      button_text: t('showcase:companies.fynn.button_text'),
+      link: '/showcase/fynn-ai',
+      stock_url: 'https://www.tradingview.com/symbols/OTC-FYNN/',
+      website: 'https://fyntechnical.com/',
+      search_url: null,
+      type: 'stock',
+      disabled: false
+    },
+    {
+      company_name: t('showcase:companies.naoris.name'),
+      subtitle: t('showcase:companies.naoris.subtitle'),
+      description: t('showcase:companies.naoris.description'),
+      button_text: t('showcase:companies.naoris.button_text'),
+      link: 'https://naorisprotocol.com/',
+      stock_url: null,
+      website: 'https://naorisprotocol.com/',
+      search_url: null,
+      type: 'token',
+      disabled: true
+    },
+    {
+      company_name: t('showcase:companies.abatis.name'),
+      subtitle: t('showcase:companies.abatis.subtitle'),
+      description: t('showcase:companies.abatis.description'),
+      button_text: t('showcase:companies.abatis.button_text'),
+      link: '/showcase/abatis',
+      stock_url: null,
+      website: 'https://abatisabtu.com/',
+      search_url: null,
+      type: 'token',
+      disabled: false
+    },
+  ];
 
-  if (!showcaseData) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <MainHeader />
-        <div className="pt-24 container mx-auto py-20 px-4">
-          <div className="text-center">Failed to load showcase data</div>
-        </div>
-      </div>
-    );
-  }
+  const whyChooseFeatures = [
+    { title: t('showcase:why_choose.features.growth.title'), description: t('showcase:why_choose.features.growth.description') },
+    { title: t('showcase:why_choose.features.innovation.title'), description: t('showcase:why_choose.features.innovation.description') },
+    { title: t('showcase:why_choose.features.team.title'), description: t('showcase:why_choose.features.team.description') },
+    { title: t('showcase:why_choose.features.results.title'), description: t('showcase:why_choose.features.results.description') },
+  ];
 
   return (
     <>
@@ -62,16 +143,16 @@ const Showcase = () => {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12 md:mb-16">
               <h1 className="text-5xl font-bold mb-6">
-                <span className="text-highlight-blue">{showcaseData.showcase.hero.title}</span><br />
-                {showcaseData.showcase.hero.subtitle}
+                <span className="text-highlight-blue">{t('showcase:hero.title')}</span><br />
+                {t('showcase:hero.subtitle')}
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 leading-relaxed max-w-4xl mx-auto px-2">
-                {showcaseData.showcase.hero.description}
+                {t('showcase:hero.description')}
               </p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              {showcaseData.showcase.showcases.map((showcase: any, index: number) => (
+              {showcases.map((showcase, index) => (
                 <div key={index} className={`relative bg-gradient-to-br ${
                   showcase.disabled 
                     ? 'from-card to-muted/50 border-dashed border-border opacity-60' 
@@ -152,8 +233,8 @@ const Showcase = () => {
                       >
                         <Button variant="outline" className="w-full min-h-[44px]">
                           <BarChart3 className="h-4 w-4 mr-2" />
-                          <span className="hidden sm:inline">{showcase.type === 'token' ? (showcaseData.showcase.cta.stock_button_labels?.live_token_price || 'Live Token Price') : (showcaseData.showcase.cta.stock_button_labels?.live_stock_price || 'Live Stock Price')}</span>
-                          <span className="sm:hidden">{showcase.type === 'token' ? (showcaseData.showcase.cta.stock_button_labels?.token_short || 'Token') : (showcaseData.showcase.cta.stock_button_labels?.stock_short || 'Stock')}</span>
+                          <span className="hidden sm:inline">{showcase.type === 'token' ? (t('showcase:cta.stock_button_labels.live_token_price') || 'Live Token Price') : (t('showcase:cta.stock_button_labels.live_stock_price') || 'Live Stock Price')}</span>
+                          <span className="sm:hidden">{showcase.type === 'token' ? (t('showcase:cta.stock_button_labels.token_short') || 'Token') : (t('showcase:cta.stock_button_labels.stock_short') || 'Stock')}</span>
                         </Button>
                       </a>
                     )}
@@ -168,7 +249,7 @@ const Showcase = () => {
                       >
                         <Button variant="outline" className="w-full min-h-[44px]">
                           <Globe className="h-4 w-4 mr-2" />
-                          {showcaseData.showcase.cta.stock_button_labels?.website || 'Web'}
+                          {t('showcase:cta.stock_button_labels.website') || 'Web'}
                         </Button>
                       </a>
                     )}
@@ -182,7 +263,7 @@ const Showcase = () => {
                     >
                       <Button variant="outline" className="w-full min-h-[44px]">
                         <Search className="h-4 w-4 mr-2" />
-                        {showcaseData.showcase.cta.stock_button_labels?.amplifix_search || 'AmplifiX'}
+                        {t('showcase:cta.stock_button_labels.amplifix_search') || 'AmplifiX'}
                       </Button>
                     </a>
                   </div>
@@ -237,19 +318,19 @@ const Showcase = () => {
         <section className="container mx-auto py-16 px-4 bg-muted/30">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-6">{showcaseData.showcase.why_choose.title}</h2>
+              <h2 className="text-4xl font-bold mb-6">{t('showcase:why_choose.title')}</h2>
               <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
-                {showcaseData.showcase.why_choose.description}
+                {t('showcase:why_choose.description')}
               </p>
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {showcaseData.showcase.why_choose.features.map((feature: any, index: number) => (
+              {whyChooseFeatures.map((feature: any, index: number) => (
                 <div key={index} className="bg-card p-6 rounded-xl border border-border text-center">
-                  {feature.title === 'Growth Focus' && <TrendingUp className="h-12 w-12 text-highlight-blue mx-auto mb-4" />}
-                  {feature.title === 'AI Innovation' && <Lightbulb className="h-12 w-12 text-green-500 mx-auto mb-4" />}
-                  {feature.title === 'Expert Team' && <Users className="h-12 w-12 text-purple-500 mx-auto mb-4" />}
-                  {feature.title === 'Proven Results' && <Award className="h-12 w-12 text-blue-500 mx-auto mb-4" />}
+                  {feature.title === t('showcase:why_choose.features.growth.title') && <TrendingUp className="h-12 w-12 text-highlight-blue mx-auto mb-4" />}
+                  {feature.title === t('showcase:why_choose.features.innovation.title') && <Lightbulb className="h-12 w-12 text-green-500 mx-auto mb-4" />}
+                  {feature.title === t('showcase:why_choose.features.team.title') && <Users className="h-12 w-12 text-purple-500 mx-auto mb-4" />}
+                  {feature.title === t('showcase:why_choose.features.results.title') && <Award className="h-12 w-12 text-blue-500 mx-auto mb-4" />}
                   <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
                   <p className="text-muted-foreground text-sm">
                     {feature.description}
@@ -263,19 +344,19 @@ const Showcase = () => {
         {/* Call to Action */}
         <section className="container mx-auto py-16 px-4 bg-card">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-6">{showcaseData.showcase.cta.title}</h2>
+            <h2 className="text-4xl font-bold mb-6">{t('showcase:cta.title')}</h2>
             <p className="text-xl text-muted-foreground mb-8">
-              {showcaseData.showcase.cta.description}
+              {t('showcase:cta.description')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <LanguageAwareLink to={showcaseData.showcase.cta.buttons.primary.link}>
+              <LanguageAwareLink to={t('showcase:cta.buttons.primary.link')}>
                 <Button size="lg" className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors">
-                  {showcaseData.showcase.cta.buttons.primary.text}
+                  {t('showcase:cta.buttons.primary.text')}
                 </Button>
               </LanguageAwareLink>
-              <LanguageAwareLink to={showcaseData.showcase.cta.buttons.secondary.link}>
+              <LanguageAwareLink to={t('showcase:cta.buttons.secondary.link')}>
                 <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors">
-                  {showcaseData.showcase.cta.buttons.secondary.text}
+                  {t('showcase:cta.buttons.secondary.text')}
                 </Button>
               </LanguageAwareLink>
             </div>

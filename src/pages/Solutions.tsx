@@ -4,31 +4,8 @@ import { Building, Users, Rocket, TrendingUp, LucideIcon } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
-import { useJsonData } from "@/hooks/useJsonData";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
-import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
-
-interface SolutionItem {
-  title: string;
-  description: string;
-  link_text: string;
-  link: string;
-  icon: string;
-}
-
-interface SolutionsData {
-  solutions: {
-    hero_title: string;
-    hero_title_highlight: string;
-    hero_description: string;
-    hero_cta_primary_text: string;
-    hero_cta_primary_link: string;
-    hero_cta_secondary_text: string;
-    hero_cta_secondary_link: string;
-    solutions_list: SolutionItem[];
-  };
-}
 
 const iconMap: Record<string, LucideIcon> = {
   Building,
@@ -38,34 +15,39 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 const Solutions = () => {
-  const { data, isLoading, error } = useJsonData<SolutionsData>('solutions.json');
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['solutions', 'common']);
   useLanguage();
-  useGTranslateRefresh(!isLoading && !!data, [data]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <MainHeader />
-        <div className="pt-24 container mx-auto py-20 px-4 text-center">
-          <p className="text-muted-foreground">{t('ui.loading')}</p>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (error || !data) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <MainHeader />
-        <div className="pt-24 container mx-auto py-20 px-4 text-center">
-          <p className="text-destructive">{t('ui.error')}</p>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
+  
+  const solutionsList = [
+    {
+      title: t('solutions:item1.title'),
+      description: t('solutions:item1.description'),
+      link_text: t('solutions:item1.link_text'),
+      link: t('solutions:item1.link'),
+      icon: 'Building',
+    },
+    {
+      title: t('solutions:item2.title'),
+      description: t('solutions:item2.description'),
+      link_text: t('solutions:item2.link_text'),
+      link: t('solutions:item2.link'),
+      icon: 'Users',
+    },
+    {
+      title: t('solutions:item3.title'),
+      description: t('solutions:item3.description'),
+      link_text: t('solutions:item3.link_text'),
+      link: t('solutions:item3.link'),
+      icon: 'TrendingUp',
+    },
+    {
+      title: t('solutions:item4.title'),
+      description: t('solutions:item4.description'),
+      link_text: t('solutions:item4.link_text'),
+      link: t('solutions:item4.link'),
+      icon: 'Rocket',
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -76,22 +58,22 @@ const Solutions = () => {
       <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
-            {data.solutions.hero_title} <span className="text-highlight-blue">{data.solutions.hero_title_highlight}</span>
+            {t('solutions:hero.title')} <span className="text-highlight-blue">{t('solutions:hero.title_highlight')}</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            {data.solutions.hero_description}
+            {t('solutions:hero.description')}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-            <LanguageAwareLink to={data.solutions.hero_cta_primary_link} className="w-full sm:w-auto">
+            <LanguageAwareLink to={t('solutions:hero.cta_primary_link')} className="w-full sm:w-auto">
               <Button 
                 size="lg" 
                 className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {data.solutions.hero_cta_primary_text}
+                {t('solutions:hero.cta_primary_text')}
               </Button>
             </LanguageAwareLink>
             <a 
-              href={data.solutions.hero_cta_secondary_link}
+              href={t('solutions:hero.cta_secondary_link')}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto"
@@ -101,7 +83,7 @@ const Solutions = () => {
                 variant="outline" 
                 className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {data.solutions.hero_cta_secondary_text}
+                {t('solutions:hero.cta_secondary_text')}
               </Button>
             </a>
           </div>
@@ -111,7 +93,7 @@ const Solutions = () => {
       {/* Solutions Grid */}
       <section className="container mx-auto py-16 px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {data.solutions.solutions_list.map((solution, index) => {
+          {solutionsList.map((solution, index) => {
             const IconComponent = iconMap[solution.icon];
             return (
               <LanguageAwareLink key={index} to={solution.link} className="group">
