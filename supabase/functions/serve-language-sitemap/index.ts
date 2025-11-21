@@ -38,6 +38,13 @@ const staticRoutes = [
   { path: '/compliance', priority: '0.3', changefreq: 'yearly' },
 ];
 
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 function generateSitemapXML(urls: Array<{ loc: string; lastmod: string; changefreq: string; priority: string; alternates?: Array<{ lang: string; url: string }> }>) {
   const urlEntries = urls.map(url => {
     let alternateLinks = '';
@@ -121,7 +128,7 @@ Deno.serve(async (req) => {
     // Fetch all articles (up to BATCH_SIZE for this language sitemap)
     const { data: articles, error: articlesError } = await supabase
       .from('articles')
-      .select('id, post_id, vertical_slug, updated_at, published_at')
+      .select('id, post_id, title, vertical_slug, updated_at, published_at')
       .order('published_at', { ascending: false })
       .limit(BATCH_SIZE);
 
@@ -133,17 +140,18 @@ Deno.serve(async (req) => {
     // Add article URLs
     articles?.forEach(article => {
       const articleId = article.post_id || article.id;
+      const slug = generateSlug(article.title);
       const lastmod = article.updated_at 
         ? new Date(article.updated_at).toISOString().split('T')[0]
         : new Date(article.published_at).toISOString().split('T')[0];
       
       const alternates = [
-        { lang: 'en', url: `${BASE_URL}/intel/external/${articleId}` },
-        { lang: langParam, url: `${langBaseUrl}/intel/external/${articleId}` }
+        { lang: 'en', url: `${BASE_URL}/intel/external/${slug}/${articleId}` },
+        { lang: langParam, url: `${langBaseUrl}/intel/external/${slug}/${articleId}` }
       ];
       
       urls.push({
-        loc: `${langBaseUrl}/intel/external/${articleId}`,
+        loc: `${langBaseUrl}/intel/external/${slug}/${articleId}`,
         lastmod,
         changefreq: 'monthly',
         priority: '0.7',
