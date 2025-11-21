@@ -133,11 +133,16 @@ serve(async (req) => {
         }
 
         const responseData = await response.json();
+        console.log(`${vertical} response type:`, Array.isArray(responseData) ? 'array' : 'object');
+        console.log(`${vertical} response keys:`, Object.keys(responseData || {}).slice(0, 5));
         
         // Handle both array and object responses - API returns { articles: [...] }
         const articles = Array.isArray(responseData) 
           ? responseData 
           : responseData.articles || [];
+        
+        console.log(`${vertical} articles type:`, Array.isArray(articles) ? 'array' : typeof articles);
+        console.log(`${vertical} articles length:`, Array.isArray(articles) ? articles.length : 0);
         
         if (!Array.isArray(articles) || articles.length === 0) {
           console.log(`No articles found for ${vertical}`);
