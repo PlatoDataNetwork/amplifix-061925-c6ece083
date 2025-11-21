@@ -32,6 +32,13 @@ const staticRoutes = [
   { path: '/compliance', priority: '0.3', changefreq: 'yearly' },
 ];
 
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 function generateSitemapXML(urls: Array<{ loc: string; lastmod: string; changefreq: string; priority: string }>) {
   const urlEntries = urls.map(url => `  <url>
     <loc>${url.loc}</loc>
@@ -96,7 +103,7 @@ Deno.serve(async (req) => {
 
     const { data: articles, error: articlesError } = await supabase
       .from('articles')
-      .select('id, post_id, vertical_slug, updated_at, published_at')
+      .select('id, post_id, title, vertical_slug, updated_at, published_at')
       .order('published_at', { ascending: false })
       .range(from, to);
 
@@ -108,12 +115,13 @@ Deno.serve(async (req) => {
     // Add article URLs
     articles?.forEach(article => {
       const articleId = article.post_id || article.id;
+      const slug = generateSlug(article.title);
       const lastmod = article.updated_at 
         ? new Date(article.updated_at).toISOString().split('T')[0]
         : new Date(article.published_at).toISOString().split('T')[0];
       
       batchUrls.push({
-        loc: `${BASE_URL}/intel/external/${articleId}`,
+        loc: `${BASE_URL}/intel/external/${slug}/${articleId}`,
         lastmod,
         changefreq: 'monthly',
         priority: '0.7',
