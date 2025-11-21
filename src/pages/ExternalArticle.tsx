@@ -1,4 +1,4 @@
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
@@ -226,9 +226,12 @@ if (!article) {
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-6">
               {verticalDisplayName && (
-                <span className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors cursor-pointer">
+                <Link
+                  to={`${langPrefix}/intel/${article.vertical_slug}`}
+                  className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors"
+                >
                   {verticalDisplayName}
-                </span>
+                </Link>
               )}
             </div>
             

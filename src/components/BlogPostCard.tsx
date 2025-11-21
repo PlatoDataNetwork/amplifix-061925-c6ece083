@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { User, ArrowRight, Shield, Zap, Globe } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface BlogPost {
   id: number;
@@ -47,6 +47,12 @@ const cacheArticle = (post: BlogPost) => {
 };
 
 const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: BlogPostCardProps) => {
+  const location = useLocation();
+  const pathParts = location.pathname.split("/").filter(Boolean);
+  const languagePrefix = pathParts[0];
+  const isLanguagePath = languagePrefix && languagePrefix.length === 2 && languagePrefix !== "intel";
+  const langPrefix = isLanguagePath ? `/${languagePrefix}` : "";
+
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case "Security": return <Shield className="h-16 w-16 text-blue-500" />;
@@ -68,7 +74,12 @@ const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: B
     <article className="bg-card rounded-xl border border-border overflow-hidden hover:border-blue-500/30 transition-colors">
       <div className="p-6">
         <div className="flex items-center gap-2 mb-3">
-          <span className="bg-blue-500/20 text-blue-500 px-2 py-1 rounded text-sm translate">{post.category}</span>
+          <Link 
+            to={`${langPrefix}/intel/${post.category.toLowerCase().replace(/\//g, '-')}`}
+            className="bg-blue-500/20 text-blue-500 px-2 py-1 rounded text-sm translate hover:bg-blue-500 hover:text-white transition-colors"
+          >
+            {post.category}
+          </Link>
           <span className="text-muted-foreground text-sm notranslate">{post.readTime}</span>
         </div>
         <h3 className="text-xl font-bold mb-3 line-clamp-2 translate">{sanitizeText(post.title)}</h3>
