@@ -58,6 +58,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import SitemapGenerator from "./pages/SitemapGenerator";
 import FynnAIShowcase from "./pages/FynnAIShowcase";
+import ShowcaseAdmin from "./pages/ShowcaseAdmin";
 
 const queryClient = new QueryClient();
 
@@ -120,6 +121,7 @@ const App = () => (
           <Route path="/admin/sitemaps" element={<AdminRoute><SitemapGenerator /></AdminRoute>} />
           <Route path="/admin/translations" element={<TranslationManager />} />
           <Route path="/admin/translations/test" element={<TranslationTest />} />
+          <Route path="/admin/showcase" element={<AdminRoute><ShowcaseAdmin /></AdminRoute>} />
           <Route path="/showcase/fynn-ai" element={<FynnAIShowcase />} />
 
               {/* Language-prefixed routes (e.g., /ar/, /fr/) */}

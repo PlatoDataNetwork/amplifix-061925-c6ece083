@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainHeader from '@/components/MainHeader';
 import Footer from '@/components/Footer';
-import { Database, Users, FileText, Shield, Activity, Clock, LogOut, Archive, GitCompare, Map, Languages } from 'lucide-react';
+import { Database, Users, FileText, Shield, Activity, Clock, LogOut, Archive, GitCompare, Map, Languages, Briefcase } from 'lucide-react';
 
 interface SystemStats {
   totalUsers: number;
@@ -129,6 +129,13 @@ const AdminDashboard = () => {
       icon: Languages,
       action: () => navigate('/admin/translations'),
       color: 'from-teal-500 to-cyan-500'
+    },
+    {
+      title: 'Showcase Manager',
+      description: 'Manage company showcases and thumbnails',
+      icon: Briefcase,
+      action: () => navigate('/admin/showcase'),
+      color: 'from-sky-500 to-blue-500'
     }
   ];
 
