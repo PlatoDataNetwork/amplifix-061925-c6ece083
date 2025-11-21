@@ -236,41 +236,53 @@ export default function TranslationTest() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                  <Button asChild variant="outline" className="justify-start">
-                    <Link to={`/${selectedLanguage}`}>
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      Home Page
-                    </Link>
+                  <Button 
+                    variant="outline" 
+                    className="justify-start"
+                    onClick={() => window.open(selectedLanguage === 'en' ? '/' : `/${selectedLanguage}`, '_blank')}
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Home Page
                   </Button>
-                  <Button asChild variant="outline" className="justify-start">
-                    <Link to={`/${selectedLanguage}/about`}>
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      About Page
-                    </Link>
+                  <Button 
+                    variant="outline" 
+                    className="justify-start"
+                    onClick={() => window.open(selectedLanguage === 'en' ? '/about' : `/${selectedLanguage}/about`, '_blank')}
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    About Page
                   </Button>
-                  <Button asChild variant="outline" className="justify-start">
-                    <Link to={`/${selectedLanguage}/solutions`}>
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      Solutions Page
-                    </Link>
+                  <Button 
+                    variant="outline" 
+                    className="justify-start"
+                    onClick={() => window.open(selectedLanguage === 'en' ? '/solutions' : `/${selectedLanguage}/solutions`, '_blank')}
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Solutions Page
                   </Button>
-                  <Button asChild variant="outline" className="justify-start">
-                    <Link to={`/${selectedLanguage}/showcase`}>
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      Showcase Page
-                    </Link>
+                  <Button 
+                    variant="outline" 
+                    className="justify-start"
+                    onClick={() => window.open(selectedLanguage === 'en' ? '/showcase' : `/${selectedLanguage}/showcase`, '_blank')}
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Showcase Page
                   </Button>
-                  <Button asChild variant="outline" className="justify-start">
-                    <Link to={`/${selectedLanguage}/faq`}>
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      FAQ Page
-                    </Link>
+                  <Button 
+                    variant="outline" 
+                    className="justify-start"
+                    onClick={() => window.open(selectedLanguage === 'en' ? '/faq' : `/${selectedLanguage}/faq`, '_blank')}
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    FAQ Page
                   </Button>
-                  <Button asChild variant="outline" className="justify-start">
-                    <Link to={`/${selectedLanguage}/contact`}>
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      Contact Page
-                    </Link>
+                  <Button 
+                    variant="outline" 
+                    className="justify-start"
+                    onClick={() => window.open(selectedLanguage === 'en' ? '/contact' : `/${selectedLanguage}/contact`, '_blank')}
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Contact Page
                   </Button>
                 </div>
               </CardContent>
