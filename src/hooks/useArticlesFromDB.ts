@@ -15,10 +15,12 @@ interface TransformedBlogPost {
   content?: string;
 }
 
-export function useArticlesFromDB(verticalSlug: string | null) {
+export function useArticlesFromDB(verticalSlug: string | null, limit: number = 24) {
   const [posts, setPosts] = useState<TransformedBlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(false);
+  const [currentLimit, setCurrentLimit] = useState(limit);
 
   useEffect(() => {
     if (!verticalSlug) {
@@ -32,34 +34,20 @@ export function useArticlesFromDB(verticalSlug: string | null) {
       setError(null);
 
       try {
-        // Fetch all articles without limit (Supabase default max is 1000, but we can chain queries)
-        let allData: any[] = [];
-        let from = 0;
-        const batchSize = 1000;
-        let hasMore = true;
+        // Fetch limited articles for better performance
+        const { data, error: fetchError, count } = await supabase
+          .from('articles')
+          .select('*', { count: 'exact' })
+          .eq('vertical_slug', verticalSlug)
+          .order('published_at', { ascending: false })
+          .limit(currentLimit);
 
-        while (hasMore) {
-          const { data, error: fetchError } = await supabase
-            .from('articles')
-            .select('*')
-            .eq('vertical_slug', verticalSlug)
-            .order('published_at', { ascending: false })
-            .range(from, from + batchSize - 1);
-
-          if (fetchError) {
-            throw fetchError;
-          }
-
-          if (data && data.length > 0) {
-            allData = [...allData, ...data];
-            from += batchSize;
-            hasMore = data.length === batchSize;
-          } else {
-            hasMore = false;
-          }
+        if (fetchError) {
+          throw fetchError;
         }
 
-        const data = allData;
+        // Check if there are more articles beyond the current limit
+        setHasMore((count || 0) > currentLimit);
 
         const transformedPosts: TransformedBlogPost[] = (data || []).map((article: any) => {
           const pubDate = new Date(article.published_at);
@@ -142,7 +130,11 @@ export function useArticlesFromDB(verticalSlug: string | null) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [verticalSlug]);
+  }, [verticalSlug, currentLimit]);
 
-  return { posts, isLoading, error };
+  const loadMore = () => {
+    setCurrentLimit(prev => prev + limit);
+  };
+
+  return { posts, isLoading, error, hasMore, loadMore };
 }
