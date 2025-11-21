@@ -32,16 +32,34 @@ export function useArticlesFromDB(verticalSlug: string | null) {
       setError(null);
 
       try {
-        const { data, error: fetchError } = await supabase
-          .from('articles')
-          .select('*')
-          .eq('vertical_slug', verticalSlug)
-          .order('published_at', { ascending: false })
-          .limit(2000);
+        // Fetch all articles without limit (Supabase default max is 1000, but we can chain queries)
+        let allData: any[] = [];
+        let from = 0;
+        const batchSize = 1000;
+        let hasMore = true;
 
-        if (fetchError) {
-          throw fetchError;
+        while (hasMore) {
+          const { data, error: fetchError } = await supabase
+            .from('articles')
+            .select('*')
+            .eq('vertical_slug', verticalSlug)
+            .order('published_at', { ascending: false })
+            .range(from, from + batchSize - 1);
+
+          if (fetchError) {
+            throw fetchError;
+          }
+
+          if (data && data.length > 0) {
+            allData = [...allData, ...data];
+            from += batchSize;
+            hasMore = data.length === batchSize;
+          } else {
+            hasMore = false;
+          }
         }
+
+        const data = allData;
 
         const transformedPosts: TransformedBlogPost[] = (data || []).map((article: any) => {
           const pubDate = new Date(article.published_at);
