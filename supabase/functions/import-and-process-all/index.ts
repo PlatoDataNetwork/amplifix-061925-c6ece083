@@ -132,7 +132,12 @@ serve(async (req) => {
           continue;
         }
 
-        const articles = await response.json();
+        const responseData = await response.json();
+        
+        // Handle both array and object responses - API returns { articles: [...] }
+        const articles = Array.isArray(responseData) 
+          ? responseData 
+          : responseData.articles || [];
         
         if (!Array.isArray(articles) || articles.length === 0) {
           console.log(`No articles found for ${vertical}`);
@@ -142,24 +147,36 @@ serve(async (req) => {
 
         // Transform and insert articles
         const transformedArticles = articles.map(article => {
-          // Remove source links from content
-          const cleanedContent = article.content?.rendered
+          // Remove source links from content  
+          const cleanedContent = (article.content?.rendered || article.content)
             ?.replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/g, '')
             ?.trim() || null;
           
+          // Extract metadata
+          const metadata = article.metadata || {};
+          const imageUrl = article.featured_image_url || 
+                          article.image || 
+                          metadata.featuredImage?.[0] || 
+                          null;
+          const externalUrl = article.link || 
+                             metadata.sourceLink?.[0] || 
+                             null;
+          
           return {
-            post_id: article.id,
-            title: article.title?.rendered || 'Untitled',
-            excerpt: article.excerpt?.rendered?.replace(/<[^>]*>/g, '').trim() || null,
+            post_id: article.post_id || article.id,
+            title: article.title?.rendered || article.title || 'Untitled',
+            excerpt: (article.excerpt?.rendered || article.contentSnippet || '')
+              .replace(/<[^>]*>/g, '')
+              .trim() || null,
             content: cleanedContent,
-            author: article.author_name || null,
-          published_at: article.date || new Date().toISOString(),
-          image_url: article.featured_image_url || null,
-          external_url: article.link || null,
-          vertical_slug: vertical,
+            author: article.author_name || article.author || 'PlatoData',
+            published_at: article.date || article.pubDate || new Date().toISOString(),
+            image_url: imageUrl,
+            external_url: externalUrl,
+            vertical_slug: vertical,
             metadata: {
-              categories: article.categories || [],
-              tags: article.tags || [],
+              categories: article.categories || metadata.categories || [],
+              tags: article.tags || metadata.tags || [],
             }
           };
         });
