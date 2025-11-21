@@ -36,48 +36,26 @@ const VerticalPage = () => {
     return verticals.find(v => v.slug === slug || v.name.toLowerCase() === slug);
   }, [vertical, verticals]);
   
-  // Load from database for AI, Blockchain, Aerospace, AR/VR, Carbon, Solar, and Startups
+  // Load from database for all verticals (primary source), fallback to external API if empty
   const { posts: dbPosts, isLoading: dbLoading, error: dbError } = useArticlesFromDB(
-    (verticalInfo?.name === 'ACN' || 
-     verticalInfo?.name === 'AI' || 
-     verticalInfo?.name === 'Blockchain' || 
-     verticalInfo?.slug === 'aerospace' ||
-     verticalInfo?.slug === 'ar-vr' ||
-     verticalInfo?.slug === 'carbon' ||
-     verticalInfo?.slug === 'solar' ||
-     verticalInfo?.slug === 'startups') 
-      ? verticalInfo.slug 
-      : null
+    verticalInfo?.slug || null
   );
   
   const { posts: platoDataPosts, isLoading: platoLoading, error: platoError } = usePlatoDataFeed(
-    (!verticalInfo || 
-     verticalInfo.name === 'ACN' || 
-     verticalInfo.name === 'AI' || 
-     verticalInfo.name === 'Blockchain' || 
-     verticalInfo.slug === 'aerospace' ||
-     verticalInfo.slug === 'ar-vr' ||
-     verticalInfo.slug === 'carbon' ||
-     verticalInfo.slug === 'solar' ||
-     verticalInfo.slug === 'startups')
+    // Only use external API as fallback if no DB articles found
+    (!verticalInfo || (dbPosts.length > 0 && !dbLoading))
       ? null 
       : verticalInfo.slug,
     verticalInfo?.name || ''
   );
   
+  // Prioritize database articles, fallback to external API
   const allPosts = useMemo(() => {
-    if (verticalInfo?.name === 'ACN' || 
-        verticalInfo?.name === 'AI' || 
-        verticalInfo?.name === 'Blockchain' || 
-        verticalInfo?.slug === 'aerospace' ||
-        verticalInfo?.slug === 'ar-vr' ||
-        verticalInfo?.slug === 'carbon' ||
-        verticalInfo?.slug === 'solar' ||
-        verticalInfo?.slug === 'startups') {
+    if (dbPosts.length > 0) {
       return dbPosts;
     }
     return platoDataPosts;
-  }, [verticalInfo, dbPosts, platoDataPosts]);
+  }, [dbPosts, platoDataPosts]);
   
   const isLoading = dbLoading || platoLoading;
   const error = dbError || platoError;
