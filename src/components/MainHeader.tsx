@@ -5,9 +5,6 @@ import ThemeToggle from "@/components/ThemeToggle";
 import MobileMenu from "@/components/MobileMenu";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useState, useEffect } from "react";
-import { useJsonData } from "@/hooks/useJsonData";
-import { CommonData } from "@/types/common";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { LogOut, User, Shield, Users as UsersIcon, Database } from "lucide-react";
@@ -24,7 +21,6 @@ const MainHeader = () => {
   const navigate = useNavigate();
   const [isSticky, setIsSticky] = useState(false);
   const location = useLocation();
-  const { data: commonData, isLoading, error } = useJsonData<CommonData>('common.json');
   const { user, signOut } = useAuth();
 
   const handleSignOut = async () => {
@@ -57,95 +53,82 @@ const MainHeader = () => {
           <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center">
             <img 
               src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
-              alt={`${commonData?.common.branding_name || 'AmplifiX'} Logo`}
+              alt="AmplifiX Logo"
               className="w-8 h-8 md:w-10 md:h-10"
             />
           </div>
           <LanguageAwareLink to="/" className="text-xl md:text-2xl font-bold text-foreground">
-            {isLoading ? (
-              <Skeleton className="h-6 w-24" />
-            ) : (
-              commonData?.common.branding_name || 'AmplifiX'
-            )}
+            AmplifiX
           </LanguageAwareLink>
         </div>
         
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-6">
-          {isLoading ? (
-            <>
-              {Array.from({ length: 6 }).map((_, i) => (
-                <Skeleton key={i} className="h-4 w-16" />
-              ))}
-            </>
-          ) : (
-            <>
-              <LanguageAwareLink to="/about" className="text-foreground hover:text-highlight-blue transition-colors">
-                {t('nav.about')}
-              </LanguageAwareLink>
-              <LanguageAwareLink to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">
-                {t('nav.solutions')}
-              </LanguageAwareLink>
-              <LanguageAwareLink to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">
-                {t('nav.showcase')}
-              </LanguageAwareLink>
-              <LanguageAwareLink to="/intel" className="text-foreground hover:text-highlight-blue transition-colors">
-                {t('nav.intel')}
-              </LanguageAwareLink>
-              <LanguageAwareLink to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">
-                {t('nav.faq')}
-              </LanguageAwareLink>
-              <LanguageAwareLink to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">
-                {t('nav.contact')}
-              </LanguageAwareLink>
-              
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity flex items-center gap-2">
-                    <Shield className="h-4 w-4" />
-                    ADMIN
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuItem onClick={() => navigate('/admin')}>
-                    <Shield className="h-4 w-4 mr-2" />
-                    Dashboard
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/admin/import')}>
-                    <Database className="h-4 w-4 mr-2" />
-                    Article Import
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/admin/users')}>
-                    <UsersIcon className="h-4 w-4 mr-2" />
-                    User Management
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+          <LanguageAwareLink to="/about" className="text-foreground hover:text-highlight-blue transition-colors">
+            {t('nav.about')}
+          </LanguageAwareLink>
+          <LanguageAwareLink to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">
+            {t('nav.solutions')}
+          </LanguageAwareLink>
+          <LanguageAwareLink to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">
+            {t('nav.showcase')}
+          </LanguageAwareLink>
+          <LanguageAwareLink to="/intel" className="text-foreground hover:text-highlight-blue transition-colors">
+            {t('nav.intel')}
+          </LanguageAwareLink>
+          <LanguageAwareLink to="/faq" className="text-foreground hover:text-highlight-blue transition-colors">
+            {t('nav.faq')}
+          </LanguageAwareLink>
+          <LanguageAwareLink to="/contact" className="text-foreground hover:text-highlight-blue transition-colors">
+            {t('nav.contact')}
+          </LanguageAwareLink>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                ADMIN
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem onClick={() => navigate('/admin')}>
+                <Shield className="h-4 w-4 mr-2" />
+                Dashboard
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate('/admin/import')}>
+                <Database className="h-4 w-4 mr-2" />
+                Article Import
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/admin/users')}>
+                <UsersIcon className="h-4 w-4 mr-2" />
+                User Management
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-              {user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full">
-                      <User className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={handleSignOut}>
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <Button asChild variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity">
-                  <LanguageAwareLink to="/login">
-                    {t('nav.login')}
-                  </LanguageAwareLink>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon" className="rounded-full">
+                  <User className="h-4 w-4" />
                 </Button>
-              )}
-            </>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity">
+              <LanguageAwareLink to="/login">
+                {t('nav.login')}
+              </LanguageAwareLink>
+            </Button>
           )}
+
           <ThemeToggle />
           <LanguageSwitcher />
         </div>
