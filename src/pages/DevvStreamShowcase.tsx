@@ -70,6 +70,12 @@ const DevvStreamShowcase = () => {
                   
                   <div className="flex flex-wrap gap-3 pt-4">
                     <Button asChild size="default" className="gap-2 bg-green-500 text-white hover:bg-green-600">
+                      <a href="/documents/devvstream-presentation.pdf" target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="w-4 h-4" />
+                        Investor Presentation
+                      </a>
+                    </Button>
+                    <Button asChild size="default" className="gap-2 bg-green-500 text-white hover:bg-green-600">
                       <a href="https://www.nasdaq.com/market-activity/stocks/devs" target="_blank" rel="noopener noreferrer">
                         <TrendingUp className="w-4 h-4" />
                         Live Stock Price
@@ -80,12 +86,6 @@ const DevvStreamShowcase = () => {
                         <ExternalLink className="w-4 h-4" />
                         Visit Website
                       </a>
-                    </Button>
-                    <Button asChild size="default" className="gap-2 bg-green-500 text-white hover:bg-green-600">
-                      <LanguageAwareLink to="/contact">
-                        <Users className="w-4 h-4" />
-                        Contact Us
-                      </LanguageAwareLink>
                     </Button>
                     <Button 
                       size="default" 
