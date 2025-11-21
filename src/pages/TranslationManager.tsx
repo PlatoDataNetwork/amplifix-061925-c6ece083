@@ -4,14 +4,47 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { AlertCircle, CheckCircle2, Clock, Eye, Languages, Loader2, XCircle } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock, Eye, Languages, Loader2, XCircle, Check, ChevronsUpDown } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
 import { useNavigate } from "react-router-dom";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import { Badge } from "@/components/ui/badge";
 
 const SUPPORTED_LANGUAGES = [
-  'ar', 'bn', 'zh', 'da', 'nl', 'et', 'fi', 'fr', 'de', 'el', 'he', 'hi', 'hu', 
-  'id', 'it', 'ja', 'km', 'ko', 'no', 'fa', 'pl', 'pt', 'pa', 'ro', 'ru', 'sl', 
-  'es', 'sv', 'th', 'tr', 'uk', 'ur', 'vi'
+  { code: 'ar', name: 'Arabic' },
+  { code: 'bn', name: 'Bengali' },
+  { code: 'zh', name: 'Chinese' },
+  { code: 'da', name: 'Danish' },
+  { code: 'nl', name: 'Dutch' },
+  { code: 'et', name: 'Estonian' },
+  { code: 'fi', name: 'Finnish' },
+  { code: 'fr', name: 'French' },
+  { code: 'de', name: 'German' },
+  { code: 'el', name: 'Greek' },
+  { code: 'he', name: 'Hebrew' },
+  { code: 'hi', name: 'Hindi' },
+  { code: 'hu', name: 'Hungarian' },
+  { code: 'id', name: 'Indonesian' },
+  { code: 'it', name: 'Italian' },
+  { code: 'ja', name: 'Japanese' },
+  { code: 'km', name: 'Khmer' },
+  { code: 'ko', name: 'Korean' },
+  { code: 'no', name: 'Norwegian' },
+  { code: 'fa', name: 'Persian' },
+  { code: 'pl', name: 'Polish' },
+  { code: 'pt', name: 'Portuguese' },
+  { code: 'pa', name: 'Punjabi' },
+  { code: 'ro', name: 'Romanian' },
+  { code: 'ru', name: 'Russian' },
+  { code: 'sl', name: 'Slovenian' },
+  { code: 'es', name: 'Spanish' },
+  { code: 'sv', name: 'Swedish' },
+  { code: 'th', name: 'Thai' },
+  { code: 'tr', name: 'Turkish' },
+  { code: 'uk', name: 'Ukrainian' },
+  { code: 'ur', name: 'Urdu' },
+  { code: 'vi', name: 'Vietnamese' }
 ];
 
 // Only translate data files, not i18next files (common/home handled separately)
@@ -40,6 +73,7 @@ export default function TranslationManager() {
   const [currentLang, setCurrentLang] = useState('');
   const [logs, setLogs] = useState<string[]>([]);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [open, setOpen] = useState(false);
   const [stats, setStats] = useState<TranslationStats>({
     total: 0,
     completed: 0,
@@ -338,9 +372,69 @@ export default function TranslationManager() {
           
           <CardContent className="space-y-6">
             <div className="space-y-3">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Select Languages</label>
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={open}
+                      className="w-full justify-between"
+                      disabled={isTranslating}
+                    >
+                      {selectedLanguages.length === 0
+                        ? "Select languages..."
+                        : `${selectedLanguages.length} language${selectedLanguages.length > 1 ? 's' : ''} selected`}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0" align="start">
+                    <Command>
+                      <CommandInput placeholder="Search languages..." />
+                      <CommandEmpty>No language found.</CommandEmpty>
+                      <CommandGroup className="max-h-64 overflow-auto">
+                        {SUPPORTED_LANGUAGES.map((lang) => (
+                          <CommandItem
+                            key={lang.code}
+                            onSelect={() => {
+                              setSelectedLanguages((prev) =>
+                                prev.includes(lang.code)
+                                  ? prev.filter((code) => code !== lang.code)
+                                  : [...prev, lang.code]
+                              );
+                            }}
+                          >
+                            <Check
+                              className={`mr-2 h-4 w-4 ${
+                                selectedLanguages.includes(lang.code) ? "opacity-100" : "opacity-0"
+                              }`}
+                            />
+                            {lang.name} ({lang.code})
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                
+                {selectedLanguages.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {selectedLanguages.map((code) => {
+                      const lang = SUPPORTED_LANGUAGES.find((l) => l.code === code);
+                      return (
+                        <Badge key={code} variant="secondary" className="text-xs">
+                          {lang?.name} ({code})
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
               <Button
-                onClick={() => translateSelectedLanguages(SUPPORTED_LANGUAGES)}
-                disabled={isTranslating}
+                onClick={() => translateSelectedLanguages(selectedLanguages)}
+                disabled={isTranslating || selectedLanguages.length === 0}
                 size="lg"
                 className="w-full"
               >
@@ -352,7 +446,27 @@ export default function TranslationManager() {
                 ) : (
                   <>
                     <Languages className="mr-2 h-4 w-4" />
-                    Generate All 34 Languages
+                    Translate Selected ({selectedLanguages.length})
+                  </>
+                )}
+              </Button>
+
+              <Button
+                onClick={() => translateSelectedLanguages(SUPPORTED_LANGUAGES.map(l => l.code))}
+                disabled={isTranslating}
+                size="lg"
+                variant="secondary"
+                className="w-full"
+              >
+                {isTranslating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Translating {currentLang.toUpperCase()}...
+                  </>
+                ) : (
+                  <>
+                    <Languages className="mr-2 h-4 w-4" />
+                    Generate All {SUPPORTED_LANGUAGES.length} Languages
                   </>
                 )}
               </Button>
