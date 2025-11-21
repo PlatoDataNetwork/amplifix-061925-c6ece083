@@ -104,6 +104,18 @@
         "thumbnail": "/lovable-uploads/facialdx-thumbnail.png",
         "type": "private",
         "disabled": false
+      },
+      {
+        "company_name": "DevvStream Corp",
+        "ticker": "NASDAQ: DEVS",
+        "description": "Technology-based company specializing in the development and monetization of environmental assets, particularly carbon markets and green technology projects.",
+        "tags": ["Environmental Technology", "Carbon Markets", "Green Technology"],
+        "button_text": "View Showcase",
+        "link": "/showcase/devvstream",
+        "website": "https://www.devvstream.com/",
+        "stock_url": "https://www.nasdaq.com/market-activity/stocks/devs",
+        "thumbnail": "/lovable-uploads/facialdx-thumbnail.png",
+        "type": "stock"
       }
     ],
     "why_choose": {
