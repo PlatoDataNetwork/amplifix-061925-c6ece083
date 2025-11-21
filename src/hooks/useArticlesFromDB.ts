@@ -95,6 +95,53 @@ export function useArticlesFromDB(verticalSlug: string | null) {
     };
 
     fetchArticles();
+
+    // Set up real-time subscription for new articles
+    const channel = supabase
+      .channel(`articles-${verticalSlug}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'articles',
+          filter: `vertical_slug=eq.${verticalSlug}`
+        },
+        (payload) => {
+          console.log('New article inserted:', payload.new);
+          
+          // Transform the new article
+          const article = payload.new as any;
+          const pubDate = new Date(article.published_at);
+          const formattedDate = pubDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+
+          const newPost: TransformedBlogPost = {
+            id: article.post_id || article.id,
+            title: article.title,
+            excerpt: article.excerpt || '',
+            author: article.author || 'PlatoData',
+            date: formattedDate,
+            read_time: article.read_time || '5 min read',
+            category: article.category || verticalSlug,
+            image: article.image_url || '',
+            tags: [],
+            external_url: article.external_url,
+            content: article.content
+          };
+
+          // Add new article to the beginning of the list
+          setPosts(prev => [newPost, ...prev]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [verticalSlug]);
 
   return { posts, isLoading, error };

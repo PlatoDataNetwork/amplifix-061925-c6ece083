@@ -50,6 +50,28 @@ const ImportAdmin = () => {
   
   useEffect(() => {
     loadMetrics();
+
+    // Set up real-time subscription for article changes
+    const channel = supabase
+      .channel('article-imports')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'articles'
+        },
+        (payload) => {
+          console.log('New article inserted, refreshing metrics');
+          // Refresh metrics when articles are inserted
+          loadMetrics();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
   
   const loadMetrics = async () => {
