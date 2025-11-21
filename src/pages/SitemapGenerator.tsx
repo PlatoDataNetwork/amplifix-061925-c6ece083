@@ -3,98 +3,61 @@ import { Button } from "@/components/ui/button";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
-import { Download, FileText, Globe } from "lucide-react";
+import { Download, FileText, Globe, CheckCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-
-const languages = [
-  { code: 'en', name: 'English', domain: 'amplifix.net' },
-  { code: 'es', name: 'Spanish', domain: 'es.amplifix.net' },
-  { code: 'fr', name: 'French', domain: 'fr.amplifix.net' },
-  { code: 'de', name: 'German', domain: 'de.amplifix.net' },
-  { code: 'it', name: 'Italian', domain: 'it.amplifix.net' },
-  { code: 'pt', name: 'Portuguese', domain: 'pt.amplifix.net' },
-  { code: 'zh', name: 'Chinese', domain: 'zh.amplifix.net' },
-  { code: 'ja', name: 'Japanese', domain: 'ja.amplifix.net' },
-  { code: 'ko', name: 'Korean', domain: 'ko.amplifix.net' },
-  { code: 'ar', name: 'Arabic', domain: 'ar.amplifix.net' },
-  { code: 'ru', name: 'Russian', domain: 'ru.amplifix.net' },
-  { code: 'hi', name: 'Hindi', domain: 'hi.amplifix.net' },
-  { code: 'nl', name: 'Dutch', domain: 'nl.amplifix.net' },
-  { code: 'sv', name: 'Swedish', domain: 'sv.amplifix.net' },
-  { code: 'tr', name: 'Turkish', domain: 'tr.amplifix.net' },
-];
+import { Progress } from "@/components/ui/progress";
 
 const SitemapGenerator = () => {
   const [generating, setGenerating] = useState(false);
-
-  const generateSitemap = async (langCode: string) => {
-    try {
-      setGenerating(true);
-      const { data, error } = await supabase.functions.invoke('generate-sitemaps', {
-        body: { lang: langCode },
-      });
-
-      if (error) throw error;
-
-      // Create blob and download
-      const blob = new Blob([data], { type: 'application/xml' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `sitemap-${langCode}.xml`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
-      toast.success(`Sitemap for ${langCode.toUpperCase()} generated successfully`);
-    } catch (error) {
-      console.error('Error generating sitemap:', error);
-      toast.error('Failed to generate sitemap');
-    } finally {
-      setGenerating(false);
-    }
-  };
-
-  const generateSitemapIndex = async () => {
-    try {
-      setGenerating(true);
-      const { data, error } = await supabase.functions.invoke('generate-sitemaps', {
-        body: { type: 'index' },
-      });
-
-      if (error) throw error;
-
-      const blob = new Blob([data], { type: 'application/xml' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'sitemap-index.xml';
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
-      toast.success('Sitemap index generated successfully');
-    } catch (error) {
-      console.error('Error generating sitemap index:', error);
-      toast.error('Failed to generate sitemap index');
-    } finally {
-      setGenerating(false);
-    }
-  };
+  const [progress, setProgress] = useState(0);
+  const [currentBatch, setCurrentBatch] = useState(0);
+  const [totalBatches, setTotalBatches] = useState(0);
+  const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
+  const [sitemapIndexUrl, setSitemapIndexUrl] = useState('');
 
   const generateAllSitemaps = async () => {
-    setGenerating(true);
-    for (const lang of languages) {
-      await generateSitemap(lang.code);
-      // Small delay between requests
-      await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      setGenerating(true);
+      setProgress(0);
+      setGeneratedFiles([]);
+      setSitemapIndexUrl('');
+      
+      toast.info('Starting sitemap generation in batches of 1000 articles...');
+
+      const { data, error } = await supabase.functions.invoke('generate-batched-sitemaps');
+
+      if (error) throw error;
+
+      setGeneratedFiles(data.files || []);
+      setSitemapIndexUrl(data.sitemapIndexUrl || '');
+      setTotalBatches(data.batchCount || 0);
+      setProgress(100);
+
+      toast.success(`Generated ${data.batchCount} sitemap files with ${data.totalArticles} articles!`);
+    } catch (error) {
+      console.error('Error generating sitemaps:', error);
+      toast.error('Failed to generate sitemaps');
+    } finally {
+      setGenerating(false);
     }
-    await generateSitemapIndex();
-    setGenerating(false);
-    toast.success('All sitemaps generated successfully!');
+  };
+
+  const downloadAllFiles = () => {
+    generatedFiles.forEach((file, index) => {
+      setTimeout(() => {
+        const blob = new Blob([file.content], { type: 'application/xml' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }, index * 200);
+    });
+    toast.success(`Downloading ${generatedFiles.length} files...`);
   };
 
   return (
@@ -110,91 +73,121 @@ const SitemapGenerator = () => {
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-4">Sitemap Generator</h1>
             <p className="text-muted-foreground text-lg">
-              Generate dynamic sitemaps for each language version of your site, including all articles from the database.
+              Generate dynamic sitemaps in English with all articles from the database, batched in files of 1000 URLs for optimal SEO performance.
             </p>
           </div>
 
           {/* Generate All Button */}
           <div className="mb-8 p-6 bg-card border border-border rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
-                  <Globe className="h-5 w-5 text-blue-500" />
-                  Generate All Sitemaps
-                </h2>
-                <p className="text-muted-foreground">
-                  Generate sitemaps for all {languages.length} supported languages plus the sitemap index
-                </p>
-              </div>
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
+                <Globe className="h-5 w-5 text-blue-500" />
+                Generate English Sitemaps (Batched)
+              </h2>
+              <p className="text-muted-foreground mb-4">
+                Generate sitemaps in batches of 1000 articles for optimal performance
+              </p>
               <Button 
                 onClick={generateAllSitemaps}
                 disabled={generating}
                 size="lg"
+                className="w-full md:w-auto"
               >
-                <Download className="mr-2 h-4 w-4" />
-                Generate All
+                {generating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Download className="mr-2 h-4 w-4" />
+                    Generate All Sitemaps
+                  </>
+                )}
               </Button>
             </div>
-          </div>
 
-          {/* Sitemap Index */}
-          <div className="mb-8 p-6 bg-card border border-border rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-blue-500" />
-                  Sitemap Index
-                </h2>
-                <p className="text-muted-foreground">
-                  Master sitemap that references all language-specific sitemaps
+            {generating && (
+              <div className="mt-4">
+                <Progress value={progress} className="mb-2" />
+                <p className="text-sm text-muted-foreground">
+                  Processing articles in batches of 1000...
                 </p>
               </div>
-              <Button 
-                onClick={generateSitemapIndex}
-                disabled={generating}
-                variant="outline"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Generate Index
-              </Button>
-            </div>
+            )}
+
+            {sitemapIndexUrl && (
+              <div className="mt-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-green-500 mb-2">Sitemaps Generated Successfully!</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Generated {totalBatches} sitemap files. Submit this URL to Google Search Console:
+                    </p>
+                    <div className="p-3 bg-background border border-border rounded font-mono text-sm mb-3">
+                      {sitemapIndexUrl}
+                    </div>
+                    <Button 
+                      onClick={downloadAllFiles}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Download All {generatedFiles.length} Files
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Individual Language Sitemaps */}
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Language-Specific Sitemaps</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {languages.map(lang => (
-                <div 
-                  key={lang.code}
-                  className="p-4 bg-card border border-border rounded-lg flex items-center justify-between hover:border-blue-500/30 transition-colors"
-                >
-                  <div>
-                    <h3 className="font-semibold">{lang.name}</h3>
-                    <p className="text-sm text-muted-foreground">{lang.domain}</p>
-                  </div>
-                  <Button 
-                    onClick={() => generateSitemap(lang.code)}
-                    disabled={generating}
-                    variant="ghost"
-                    size="sm"
+          {/* Generated Files List */}
+          {generatedFiles.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-2xl font-semibold mb-4">Generated Files</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {generatedFiles.map((file, index) => (
+                  <div 
+                    key={index}
+                    className="p-4 bg-card border border-border rounded-lg flex items-center justify-between hover:border-blue-500/30 transition-colors"
                   >
-                    <Download className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
+                    <div>
+                      <h3 className="font-semibold">{file.filename}</h3>
+                      <p className="text-sm text-muted-foreground">{file.urlCount} URLs</p>
+                    </div>
+                    <Button 
+                      onClick={() => {
+                        const blob = new Blob([file.content], { type: 'application/xml' });
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = file.filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                      }}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Instructions */}
           <div className="mt-8 p-6 bg-muted/30 border border-border rounded-lg">
             <h3 className="font-semibold mb-2">How to use generated sitemaps:</h3>
             <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-              <li>Click "Generate All" to create all sitemaps at once</li>
-              <li>Upload the generated XML files to your <code>/public</code> directory</li>
-              <li>Submit sitemap-index.xml to Google Search Console</li>
-              <li>Sitemaps are automatically updated with latest articles from database</li>
-              <li>Regenerate sitemaps whenever you add new content</li>
+              <li>Click "Generate All Sitemaps" to create batched sitemaps (1000 articles each)</li>
+              <li>Download all generated XML files using the download buttons</li>
+              <li>Upload the XML files to your server&apos;s root directory</li>
+              <li>Submit <code>http://amplifix.net/sitemap_index.xml</code> to Google Search Console</li>
+              <li>Regenerate sitemaps whenever you add significant new content</li>
             </ol>
           </div>
         </div>

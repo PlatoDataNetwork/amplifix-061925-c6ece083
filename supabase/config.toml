@@ -11,3 +11,6 @@ verify_jwt = true
 
 [functions.translate-locales]
 verify_jwt = false
+
+[functions.generate-batched-sitemaps]
+verify_jwt = false
