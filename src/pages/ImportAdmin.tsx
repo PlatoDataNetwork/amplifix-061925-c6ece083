@@ -53,6 +53,13 @@ const ImportAdmin = () => {
   const [articlesPerSecond, setArticlesPerSecond] = useState(0);
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
+  // Initialize timer on mount
+  useEffect(() => {
+    if (!importStartTime) {
+      setImportStartTime(new Date());
+    }
+  }, []);
+  
   useEffect(() => {
     loadMetrics();
 
@@ -73,21 +80,27 @@ const ImportAdmin = () => {
         },
         (payload) => {
           console.log('🔴 Real-time: New article inserted!', payload);
-          setLastUpdateTime(new Date());
+          const now = new Date();
+          setLastUpdateTime(now);
           
           // Always increment session counter for any article insert
           setSessionArticlesImported(prev => {
             const newCount = prev + 1;
-            
-            // Calculate articles per second
-            if (importStartTime) {
-              const elapsedSeconds = (Date.now() - importStartTime.getTime()) / 1000;
+            console.log('📈 Session articles updated:', newCount);
+            return newCount;
+          });
+          
+          // Calculate articles per second
+          setImportStartTime(prevStartTime => {
+            if (prevStartTime) {
+              const elapsedSeconds = (now.getTime() - prevStartTime.getTime()) / 1000;
               if (elapsedSeconds > 0) {
-                setArticlesPerSecond(Math.round(newCount / elapsedSeconds));
+                const rate = Math.round((sessionArticlesImported + 1) / elapsedSeconds);
+                console.log('⚡ Import rate:', rate, 'articles/sec');
+                setArticlesPerSecond(rate);
               }
             }
-            
-            return newCount;
+            return prevStartTime;
           });
           
           // Refresh metrics when articles are inserted
@@ -110,7 +123,7 @@ const ImportAdmin = () => {
       supabase.removeChannel(channel);
       setRealtimeConnected(false);
     };
-  }, [importStartTime]);
+  }, [sessionArticlesImported]);
   
   const loadMetrics = async () => {
     try {
