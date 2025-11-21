@@ -87,6 +87,14 @@ const DevvStreamShowcase = () => {
                         Contact Us
                       </LanguageAwareLink>
                     </Button>
+                    <Button 
+                      size="default" 
+                      className="gap-2 bg-green-500 text-white hover:bg-green-600"
+                      onClick={() => document.getElementById('research-section')?.scrollIntoView({ behavior: 'smooth' })}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      Research
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -309,8 +317,301 @@ const DevvStreamShowcase = () => {
             </div>
           </section>
 
+          {/* Research Presentation Section */}
+          <section id="research-section" className="py-12 md:py-20 px-4 bg-gradient-to-br from-muted/30 to-background">
+            <div className="container mx-auto max-w-6xl">
+              <div className="text-center mb-12">
+                <div className="inline-block px-4 py-2 bg-transparent border border-green-500/30 rounded-full mb-4">
+                  <span className="text-green-500 font-semibold text-sm">AmplifiX Research</span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+                  Investment Research & Analysis
+                </h2>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                  Independent research report on DevvStream Corp.
+                </p>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mt-2">
+                  Positioned at the nexus of carbon markets and green technology innovation.
+                </p>
+                <p className="text-sm text-muted-foreground/70 mt-2">Date: January 15, 2025</p>
+              </div>
+
+              {/* Executive Summary */}
+              <div className="mb-12 p-6 md:p-8 bg-transparent border border-green-500/30 rounded-2xl">
+                <h3 className="text-2xl font-bold mb-4 text-green-500">Executive Summary</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  DevvStream Corp (NASDAQ: DEVS) is a technology-based company specializing in the development and monetization of environmental assets, with particular focus on carbon markets and green technology projects. The company works with governments and corporations globally to create verified carbon credits through sustainable technology initiatives. DevvStream's platform enables tracking, verification, and monetization of environmental assets at scale, positioning the company to capitalize on the rapidly expanding global carbon markets driven by net-zero commitments.
+                </p>
+              </div>
+
+              {/* Investment Thesis */}
+              <div className="mb-12">
+                <h3 className="text-2xl md:text-3xl font-bold mb-8 text-center">Investment Thesis</h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/30 rounded-2xl">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                          <TrendingUp className="w-5 h-5 text-green-500" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-lg mb-2">Expanding Carbon Markets</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Global voluntary carbon markets projected to reach $50B+ by 2030 as governments and corporations commit to aggressive net-zero targets, creating significant demand for verified credits.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/30 rounded-2xl">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                          <Zap className="w-5 h-5 text-green-500" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-lg mb-2">Technology-Driven Platform</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Proprietary technology platform for tracking, verification, and monetization of environmental assets provides efficiency advantages and scalability compared to traditional methods.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/30 rounded-2xl">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                          <Users className="w-5 h-5 text-green-500" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-lg mb-2">Strategic Partnerships</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Established relationships with government entities and large corporations provide project pipeline and validation for DevvStream's technology platform and approach.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/30 rounded-2xl">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                          <Target className="w-5 h-5 text-green-500" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-lg mb-2">First-Mover Advantages</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Early positioning in high-growth carbon markets and environmental asset development creates potential for substantial market share capture as industry matures.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Recent Developments */}
+              <div className="mb-12 p-6 md:p-8 bg-transparent border border-green-500/30 rounded-2xl">
+                <h3 className="text-2xl md:text-3xl font-bold mb-6">Recent Developments (2024-2025)</h3>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 pb-4 border-b border-border/50">
+                    <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Corporate Partnerships Expansion</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Secured agreements with multiple corporations to develop and monetize environmental assets through verified carbon credit projects.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 pb-4 border-b border-border/50">
+                    <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Technology Platform Enhancement</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Continued development of proprietary platform for environmental asset tracking and verification, improving efficiency and scalability.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Government Project Pipeline</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Building pipeline of government-backed green technology projects focused on carbon credit generation and environmental sustainability.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Financial Scenarios */}
+              <div className="mb-12">
+                <h3 className="text-2xl md:text-3xl font-bold mb-8 text-center">Revenue Scenarios (2025E-2028E)</h3>
+                <p className="text-center text-sm text-muted-foreground mb-8">Scenario-based projections - all figures are assumptions, not company guidance</p>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-green-500/30 rounded-2xl">
+                    <CardContent className="pt-6">
+                      <div className="text-center mb-4">
+                        <div className="inline-block px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full mb-2">
+                          <span className="text-red-500 font-semibold text-sm">Bear Case</span>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2025E</span>
+                          <span className="font-semibold">$3-5M</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2026E</span>
+                          <span className="font-semibold">$8-12M</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2027E</span>
+                          <span className="font-semibold">$15-20M</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">2028E</span>
+                          <span className="font-semibold">$25-35M</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-border/50">
+                        <p className="text-xs text-muted-foreground">Slower project conversion & market headwinds</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/30 rounded-2xl">
+                    <CardContent className="pt-6">
+                      <div className="text-center mb-4">
+                        <div className="inline-block px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-full mb-2">
+                          <span className="text-green-500 font-semibold text-sm">Base Case</span>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2025E</span>
+                          <span className="font-semibold">$6-10M</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2026E</span>
+                          <span className="font-semibold">$15-25M</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2027E</span>
+                          <span className="font-semibold">$35-50M</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">2028E</span>
+                          <span className="font-semibold">$70-100M</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-border/50">
+                        <p className="text-xs text-muted-foreground">Steady project pipeline & partnership execution</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-transparent border border-green-500/30 rounded-2xl">
+                    <CardContent className="pt-6">
+                      <div className="text-center mb-4">
+                        <div className="inline-block px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full mb-2">
+                          <span className="text-emerald-500 font-semibold text-sm">Bull Case</span>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2025E</span>
+                          <span className="font-semibold">$12-18M</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2026E</span>
+                          <span className="font-semibold">$30-45M</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                          <span className="text-sm text-muted-foreground">2027E</span>
+                          <span className="font-semibold">$70-100M</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">2028E</span>
+                          <span className="font-semibold">$150-200M</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-border/50">
+                        <p className="text-xs text-muted-foreground">Accelerated carbon market growth & major partnerships</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Key Metrics */}
+              <div className="mb-12 p-6 md:p-8 bg-transparent border border-green-500/30 rounded-2xl">
+                <h3 className="text-2xl font-bold mb-6 text-center">Key Investment Metrics</h3>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="text-center p-4">
+                    <div className="text-3xl font-bold text-green-500 mb-2">$50B+</div>
+                    <p className="text-sm text-muted-foreground">Projected voluntary carbon market size by 2030</p>
+                  </div>
+                  <div className="text-center p-4">
+                    <div className="text-3xl font-bold text-green-500 mb-2">~30%</div>
+                    <p className="text-sm text-muted-foreground">Expected CAGR for carbon markets through 2030</p>
+                  </div>
+                  <div className="text-center p-4">
+                    <div className="text-3xl font-bold text-green-500 mb-2">Tech-Enabled</div>
+                    <p className="text-sm text-muted-foreground">Proprietary platform for asset monetization</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Risk Factors */}
+              <div className="mb-12 p-6 md:p-8 bg-transparent border border-green-500/30 rounded-2xl">
+                <h3 className="text-2xl font-bold mb-4 text-green-500">Key Risk Factors</h3>
+                <div className="space-y-3 text-muted-foreground">
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-500 mt-1">•</span>
+                    <p className="text-sm">
+                      <strong>Market volatility:</strong> Carbon credit prices subject to regulatory changes and market dynamics
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-500 mt-1">•</span>
+                    <p className="text-sm">
+                      <strong>Project execution:</strong> Success depends on converting partnerships into revenue-generating projects
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-500 mt-1">•</span>
+                    <p className="text-sm">
+                      <strong>Competition:</strong> Growing interest in carbon markets attracting established players and new entrants
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-500 mt-1">•</span>
+                    <p className="text-sm">
+                      <strong>Regulatory environment:</strong> Changes in carbon market regulations could impact business model
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Disclaimer */}
+              <div className="text-center text-xs text-muted-foreground/70 border-t border-border/50 pt-6">
+                <p className="mb-2">
+                  <strong>Important Disclaimer:</strong> This research is provided for informational purposes only and does not constitute investment advice, a recommendation, or an offer to buy or sell any securities.
+                </p>
+                <p>
+                  All projections and scenarios presented are assumptions based on publicly available information and independent analysis. Actual results may differ materially. Past performance is not indicative of future results. Investors should conduct their own due diligence and consult with financial advisors before making investment decisions.
+                </p>
+              </div>
+            </div>
+          </section>
+
           {/* Call to Action */}
-          <section className="py-12 md:py-20 px-4 bg-gradient-to-br from-muted/30 to-background">
+          <section className="py-12 md:py-20 px-4 bg-gradient-to-br from-background to-muted/20">
             <div className="container mx-auto max-w-4xl text-center">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 md:mb-6">
                 Interested in Learning More?
