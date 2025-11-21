@@ -7,25 +7,23 @@ import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
+import { useJsonData } from "@/hooks/useJsonData";
+
+interface AboutData {
+  about: {
+    hero: { title: string; description: string; cta_primary: string; cta_secondary: string };
+    mission: { cards: Array<{ title: string; description: string }> };
+    features: { title: string; items: Array<{ title: string; description: string }> };
+  };
+}
 
 const About = () => {
-  const { t } = useTranslation(['about', 'common']);
-  useLanguage(); // Auto-translates page
+  const { data: aboutData } = useJsonData<AboutData>('/data/about.json');
+  useLanguage();
 
   const missionIcons = [Target, Users, Award];
-  
-  const missionCards = [
-    { title: t('about:mission.card1.title'), description: t('about:mission.card1.description') },
-    { title: t('about:mission.card2.title'), description: t('about:mission.card2.description') },
-    { title: t('about:mission.card3.title'), description: t('about:mission.card3.description') },
-  ];
-  
-  const featureItems = [
-    { title: t('about:features.item1.title'), description: t('about:features.item1.description') },
-    { title: t('about:features.item2.title'), description: t('about:features.item2.description') },
-    { title: t('about:features.item3.title'), description: t('about:features.item3.description') },
-    { title: t('about:features.item4.title'), description: t('about:features.item4.description') },
-  ];
+  const missionCards = aboutData?.about.mission.cards || [];
+  const featureItems = aboutData?.about.features.items || [];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -35,10 +33,10 @@ const About = () => {
       <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
-            {t('about:hero.title')}
+            {aboutData?.about.hero.title || 'About AmplifiX'}
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            {t('about:hero.description')}
+            {aboutData?.about.hero.description || 'AI-Powered Corporate Communications Platform'}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <LanguageAwareLink to="/contact" className="w-full sm:w-auto">
@@ -46,7 +44,7 @@ const About = () => {
                 size="lg" 
                 className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {t('about:hero.cta_primary')}
+                {aboutData?.about.hero.cta_primary || 'Get Started'}
               </Button>
             </LanguageAwareLink>
             <a 
@@ -60,7 +58,7 @@ const About = () => {
                 variant="outline" 
                 className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {t('about:hero.cta_secondary')}
+                {aboutData?.about.hero.cta_secondary || 'Book a Demo'}
               </Button>
             </a>
           </div>
@@ -90,7 +88,7 @@ const About = () => {
       {/* Features Section */}
       <section className="container mx-auto py-12 md:py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">{t('about:features.title')}</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">{aboutData?.about.features.title || 'Our Platform Features'}</h2>
           
           <div className="space-y-6">
             {featureItems.map((item, index) => (

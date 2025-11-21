@@ -6,15 +6,28 @@ import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
+import { useJsonData } from "@/hooks/useJsonData";
+
+interface FAQData {
+  faq: {
+    hero: {
+      title: string;
+      title_highlight: string;
+      description: string;
+      cta_primary_text: string;
+      cta_primary_link: string;
+      cta_secondary_text: string;
+      cta_secondary_link: string;
+    };
+    faqs: Array<{ question: string; answer: string }>;
+  };
+}
 
 const FAQ = () => {
-  const { t } = useTranslation(['faq', 'common']);
+  const { data: faqData } = useJsonData<FAQData>('/data/faq.json');
   useLanguage();
   
-  const faqs = Array.from({ length: 10 }, (_, i) => ({
-    question: t(`faq:faq${i + 1}.question`),
-    answer: t(`faq:faq${i + 1}.answer`),
-  }));
+  const faqs = faqData?.faq.faqs || [];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -24,22 +37,22 @@ const FAQ = () => {
       <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
-            {t('faq:hero.title')} <span className="text-highlight-blue">{t('faq:hero.title_highlight')}</span>
+            {faqData?.faq.hero.title || 'Frequently Asked'} <span className="text-highlight-blue">{faqData?.faq.hero.title_highlight || 'Questions'}</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            {t('faq:hero.description')}
+            {faqData?.faq.hero.description || 'Find answers to common questions about AmplifiX'}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-            <LanguageAwareLink to={t('faq:hero.cta_primary_link')} className="w-full sm:w-auto">
+            <LanguageAwareLink to={faqData?.faq.hero.cta_primary_link || '/contact'} className="w-full sm:w-auto">
               <Button 
                 size="lg" 
                 className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {t('faq:hero.cta_primary_text')}
+                {faqData?.faq.hero.cta_primary_text || 'Contact Us'}
               </Button>
             </LanguageAwareLink>
             <a 
-              href={t('faq:hero.cta_secondary_link')}
+              href={faqData?.faq.hero.cta_secondary_link || 'https://calendly.com/amplifix/amplifix-discovery'}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto"
@@ -49,7 +62,7 @@ const FAQ = () => {
                 variant="outline" 
                 className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {t('faq:hero.cta_secondary_text')}
+                {faqData?.faq.hero.cta_secondary_text || 'Book a Demo'}
               </Button>
             </a>
           </div>

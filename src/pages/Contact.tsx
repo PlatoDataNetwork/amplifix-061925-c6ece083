@@ -11,9 +11,26 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
+import { useJsonData } from "@/hooks/useJsonData";
+
+interface ContactData {
+  contact: {
+    hero: {
+      title: string;
+      title_highlight: string;
+      description: string;
+      cta_primary_text: string;
+      cta_secondary_text: string;
+      cta_secondary_link: string;
+    };
+    form: Record<string, string>;
+    info: Record<string, string>;
+    consultation: Record<string, string>;
+  };
+}
 
 const Contact = () => {
-  const { t } = useTranslation(['contact', 'common']);
+  const { data: contactData } = useJsonData<ContactData>('/data/contact.json');
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -46,8 +63,8 @@ const Contact = () => {
 
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.message) {
       toast({
-        title: t('contact:form.toast_missing_title'),
-        description: t('contact:form.toast_missing_description'),
+        title: "Missing fields",
+        description: "Please fill in all required fields.",
         variant: "destructive",
       });
       return;
@@ -63,8 +80,8 @@ const Contact = () => {
       if (error) throw error;
 
       toast({
-        title: t('contact:form.toast_success_title'),
-        description: t('contact:form.toast_success_description'),
+        title: "Message sent!",
+        description: "We'll get back to you shortly.",
       });
 
       setFormData({
@@ -79,8 +96,8 @@ const Contact = () => {
     } catch (error: any) {
       console.error('Error sending email:', error);
       toast({
-        title: t('contact:form.toast_error_title'),
-        description: t('contact:form.toast_error_description'),
+        title: "Error",
+        description: "Failed to send message. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -96,10 +113,10 @@ const Contact = () => {
       <div className="pt-24 container mx-auto py-12 md:py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
-            {t('contact:hero.title')} <span className="text-highlight-blue">{t('contact:hero.title_highlight')}</span>
+            {contactData?.contact.hero.title || 'Get in'} <span className="text-highlight-blue">{contactData?.contact.hero.title_highlight || 'Touch'}</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8 px-4">
-            {t('contact:hero.description')}
+            {contactData?.contact.hero.description || 'Contact us to learn more about AmplifiX'}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <Button 
@@ -112,10 +129,10 @@ const Contact = () => {
               }}
               className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
             >
-              {t('contact:hero.cta_primary_text')}
+              {contactData?.contact.hero.cta_primary_text || 'Send Message'}
             </Button>
             <a 
-              href={t('contact:hero.cta_secondary_link')}
+              href={contactData?.contact.hero.cta_secondary_link || 'https://calendly.com/amplifix/amplifix-discovery'}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto"
@@ -125,7 +142,7 @@ const Contact = () => {
                 variant="outline" 
                 className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {t('contact:hero.cta_secondary_text')}
+                {contactData?.contact.hero.cta_secondary_text || 'Book a Demo'}
               </Button>
             </a>
           </div>
@@ -138,32 +155,32 @@ const Contact = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div className="bg-card p-8 rounded-xl border border-border">
-              <h2 className="text-2xl font-bold mb-6">{t('contact:form.title')}</h2>
+              <h2 className="text-2xl font-bold mb-6">{contactData?.contact.form.title || 'Send us a message'}</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="firstName" className="block text-sm font-medium mb-2">
-                      {t('contact:form.first_name_label')}
+                      First Name
                     </label>
                     <Input 
                       id="firstName" 
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      placeholder={t('contact:form.first_name_placeholder')}
+                      placeholder="John"
                       required
                     />
                   </div>
                   <div>
                     <label htmlFor="lastName" className="block text-sm font-medium mb-2">
-                      {t('contact:form.last_name_label')}
+                      Last Name
                     </label>
                     <Input 
                       id="lastName" 
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleInputChange}
-                      placeholder={t('contact:form.last_name_placeholder')}
+                      placeholder="Doe"
                       required
                     />
                   </div>
@@ -171,7 +188,7 @@ const Contact = () => {
 
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium mb-2">
-                    {t('contact:form.email_label')}
+                    Email
                   </label>
                   <Input 
                     id="email" 
@@ -179,53 +196,53 @@ const Contact = () => {
                     type="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    placeholder={t('contact:form.email_placeholder')}
+                    placeholder="john@company.com"
                     required
                   />
                 </div>
 
                 <div>
                   <label htmlFor="company" className="block text-sm font-medium mb-2">
-                    {t('contact:form.company_label')}
+                    Company
                   </label>
                   <Input 
                     id="company" 
                     name="company"
                     value={formData.company}
                     onChange={handleInputChange}
-                    placeholder={t('contact:form.company_placeholder')}
+                    placeholder="Your company"
                   />
                 </div>
 
                 <div>
                   <label htmlFor="companyType" className="block text-sm font-medium mb-2">
-                    {t('contact:form.company_type_label')}
+                    Company Type
                   </label>
                   <Select 
                     value={formData.companyType} 
                     onValueChange={(value) => handleSelectChange('companyType', value)}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder={t('contact:form.company_type_placeholder')} />
+                      <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="public">{t('contact:form.company_type_public')}</SelectItem>
-                      <SelectItem value="private">{t('contact:form.company_type_private')}</SelectItem>
-                      <SelectItem value="pre-ipo">{t('contact:form.company_type_preipo')}</SelectItem>
+                      <SelectItem value="public">Public Company</SelectItem>
+                      <SelectItem value="private">Private Company</SelectItem>
+                      <SelectItem value="pre-ipo">Pre-IPO</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium mb-2">
-                    {t('contact:form.message_label')}
+                    Message
                   </label>
                   <Textarea 
                     id="message" 
                     name="message"
                     value={formData.message}
                     onChange={handleInputChange}
-                    placeholder={t('contact:form.message_placeholder')}
+                    placeholder="Tell us about your needs..."
                     className="min-h-[150px]"
                     required
                   />
@@ -237,7 +254,7 @@ const Contact = () => {
                   className="w-full bg-highlight-blue text-white hover:bg-highlight-blue/90"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? t('contact:form.submit_button_loading') : t('contact:form.submit_button')}
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </Button>
               </form>
             </div>
@@ -245,18 +262,18 @@ const Contact = () => {
             {/* Contact Information */}
             <div className="space-y-8">
               <div className="bg-card p-8 rounded-xl border border-border">
-                <h3 className="text-2xl font-bold mb-6">{t('contact:info.title')}</h3>
+                <h3 className="text-2xl font-bold mb-6">Contact Info</h3>
                 <p className="text-muted-foreground mb-6">
-                  {t('contact:info.description')}
+                  Get in touch with our team
                 </p>
                 
                 <div className="space-y-4">
                   <div className="flex items-start gap-4">
                     <Mail className="h-5 w-5 text-highlight-blue mt-1" />
                     <div>
-                      <p className="font-medium">{t('contact:info.email_label')}</p>
-                      <a href={`mailto:${t('contact:info.email_value')}`} className="text-muted-foreground hover:text-highlight-blue">
-                        {t('contact:info.email_value')}
+                      <p className="font-medium">Email</p>
+                      <a href="mailto:support@amplifix.net" className="text-muted-foreground hover:text-highlight-blue">
+                        support@amplifix.net
                       </a>
                     </div>
                   </div>
@@ -264,25 +281,25 @@ const Contact = () => {
                   <div className="flex items-start gap-4">
                     <MapPin className="h-5 w-5 text-highlight-blue mt-1" />
                     <div>
-                      <p className="font-medium">{t('contact:info.office_label')}</p>
-                      <p className="text-muted-foreground">{t('contact:info.office_value')}</p>
+                      <p className="font-medium">Office</p>
+                      <p className="text-muted-foreground">United States</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="bg-card p-8 rounded-xl border border-border">
-                <h3 className="text-2xl font-bold mb-4">{t('contact:consultation.title')}</h3>
+                <h3 className="text-2xl font-bold mb-4">Schedule a Consultation</h3>
                 <p className="text-muted-foreground mb-6">
-                  {t('contact:consultation.description')}
+                  Book a free consultation with our team
                 </p>
                 <a 
-                  href={t('contact:consultation.calendly_link')}
+                  href="https://calendly.com/amplifix/amplifix-discovery"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <Button size="lg" variant="outline" className="w-full">
-                    {t('contact:consultation.button_text')}
+                    Book Now
                   </Button>
                 </a>
               </div>
