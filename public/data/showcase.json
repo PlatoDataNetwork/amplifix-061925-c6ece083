@@ -15,7 +15,9 @@
         "button_text": "Visit Showcase",
         "link": "/showcase/silo-pharma",
         "website": "https://silopharma.com/",
-        "stock_url": "https://www.tradingview.com/symbols/NASDAQ-SILO/"
+        "stock_url": "https://www.tradingview.com/symbols/NASDAQ-SILO/",
+        "thumbnail": "/lovable-uploads/4fc4b91a-cd33-4009-ad3a-df4b3d33d179.png",
+        "type": "stock"
       },
       {
         "company_name": "Int'l Land Alliance",
@@ -25,7 +27,9 @@
         "button_text": "View Showcase",
         "link": "/showcase/international-land-alliance",
         "website": "https://www.internationallandalliance.com/",
-        "stock_url": "https://www.tradingview.com/symbols/OTC-ILAL/"
+        "stock_url": "https://www.tradingview.com/symbols/OTC-ILAL/",
+        "thumbnail": "/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png",
+        "type": "stock"
       },
       {
         "company_name": "Karbon-X",
@@ -35,7 +39,9 @@
         "button_text": "View Showcase",
         "link": "/showcase/karbon-x",
         "website": "https://www.karbon-x.com/",
-        "stock_url": "https://www.tradingview.com/symbols/OTC-KARX/"
+        "stock_url": "https://www.tradingview.com/symbols/OTC-KARX/",
+        "thumbnail": "/lovable-uploads/karbonx-icon.png",
+        "type": "stock"
       },
       {
         "company_name": "Micropolis",
@@ -60,6 +66,7 @@
         "website": "https://www.synbiointl.com/",
         "stock_url": "https://www.tradingview.com/symbols/OTC-SYIN/",
         "search_url": "https://www.bing.com/copilotsearch?q=Synbio%20International%20SYIN",
+        "thumbnail": "/lovable-uploads/synbio-social-thumbnail.png",
         "type": "stock"
       },
       {
@@ -71,6 +78,7 @@
         "link": "https://naorisprotocol.com",
         "website": "https://www.naorisprotocol.com/",
         "stock_url": "https://coinmarketcap.com/currencies/naoris-protocol/",
+        "thumbnail": "/lovable-uploads/naoris-icon.png",
         "type": "token"
       },
       {
@@ -82,6 +90,7 @@
         "link": "https://abatisabtu.com",
         "website": "https://abatisabtu.com",
         "stock_url": "https://abatisabtu.com",
+        "thumbnail": "/lovable-uploads/abtu-coin.png",
         "type": "token"
       },
       {
