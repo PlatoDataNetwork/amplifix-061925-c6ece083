@@ -30,23 +30,33 @@ export function useJsonData<T>(filename: string): JsonDataHook<T> {
               .select('content')
               .eq('language_code', currentLang)
               .eq('namespace', namespace)
-              .single();
+              .maybeSingle();
             
             if (!dbError && translationData?.content) {
-              console.log(`[useJsonData] Loaded ${namespace} from Supabase for ${currentLang}`);
-              setData(translationData.content as T);
-              setIsLoading(false);
-              return;
+              // Validate that the content has data before using it
+              const content = translationData.content as any;
+              if (content && Object.keys(content).length > 0) {
+                console.log(`[useJsonData] Loaded ${namespace} from Supabase for ${currentLang}`);
+                setData(content as T);
+                setIsLoading(false);
+                return;
+              } else {
+                console.warn(`[useJsonData] Translation for ${namespace}/${currentLang} is empty, falling back`);
+              }
             } else {
-              console.log(`[useJsonData] No translation found for ${namespace}/${currentLang}, falling back to English with GTranslate`);
+              console.log(`[useJsonData] No translation found for ${namespace}/${currentLang}, falling back to English`);
             }
           } catch (dbError) {
-            console.log(`[useJsonData] Supabase lookup failed for ${namespace}/${currentLang}, using fallback`);
+            console.warn(`[useJsonData] Supabase lookup failed for ${namespace}/${currentLang}:`, dbError);
           }
         }
         
         // Fallback to loading English version from static files
-        const response = await fetch(`/data/${filename}`);
+        // Try /data/ first, then /locales/en/ for i18n files
+        let response = await fetch(`/data/${filename}`);
+        if (!response.ok && (filename === 'common.json' || filename === 'home.json')) {
+          response = await fetch(`/locales/en/${filename}`);
+        }
         
         if (!response.ok) {
           throw new Error(`Failed to load ${filename}: ${response.status}`);

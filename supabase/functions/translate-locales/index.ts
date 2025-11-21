@@ -79,13 +79,13 @@ Output: {"title": "Bonjour {{name}}", "button": "En savoir plus →"}`;
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.5-flash',
+          model: 'google/gemini-2.5-pro', // Use Pro for better JSON formatting
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: JSON.stringify(englishContent, null, 2) }
           ],
-          temperature: 0.3, // Lower temperature for more consistent translations
-          max_tokens: 4096, // Ensure complete responses for large translations
+          temperature: 0.1, // Very low temperature for precise JSON output
+          max_tokens: 8192, // Larger token limit for complete responses
         }),
         signal: controller.signal,
       });
@@ -197,7 +197,7 @@ Output: {"title": "Bonjour {{name}}", "button": "En savoir plus →"}`;
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                model: 'google/gemini-2.5-flash',
+                model: 'google/gemini-2.5-pro', // Use Pro for repair too
                 messages: [
                   {
                     role: 'system',
@@ -209,7 +209,7 @@ Output: {"title": "Bonjour {{name}}", "button": "En savoir plus →"}`;
                   },
                 ],
                 temperature: 0,
-                max_tokens: 4096,
+                max_tokens: 8192,
               }),
             });
 
