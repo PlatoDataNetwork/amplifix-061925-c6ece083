@@ -36,22 +36,22 @@ const VerticalPage = () => {
     return verticals.find(v => v.slug === slug || v.name.toLowerCase() === slug);
   }, [vertical, verticals]);
   
-  // Load from database for AI and Blockchain, external API for others
+  // Load from database for AI, Blockchain, and Aerospace, external API for others
   const { posts: dbPosts, isLoading: dbLoading, error: dbError } = useArticlesFromDB(
-    (verticalInfo?.name === 'ACN' || verticalInfo?.name === 'AI' || verticalInfo?.name === 'Blockchain') 
+    (verticalInfo?.name === 'ACN' || verticalInfo?.name === 'AI' || verticalInfo?.name === 'Blockchain' || verticalInfo?.slug === 'aerospace') 
       ? verticalInfo.slug 
       : null
   );
   
   const { posts: platoDataPosts, isLoading: platoLoading, error: platoError } = usePlatoDataFeed(
-    (!verticalInfo || verticalInfo.name === 'ACN' || verticalInfo.name === 'AI' || verticalInfo.name === 'Blockchain')
+    (!verticalInfo || verticalInfo.name === 'ACN' || verticalInfo.name === 'AI' || verticalInfo.name === 'Blockchain' || verticalInfo.slug === 'aerospace')
       ? null 
       : verticalInfo.slug,
     verticalInfo?.name || ''
   );
   
   const allPosts = useMemo(() => {
-    if (verticalInfo?.name === 'ACN' || verticalInfo?.name === 'AI' || verticalInfo?.name === 'Blockchain') {
+    if (verticalInfo?.name === 'ACN' || verticalInfo?.name === 'AI' || verticalInfo?.name === 'Blockchain' || verticalInfo?.slug === 'aerospace') {
       return dbPosts;
     }
     return platoDataPosts;
