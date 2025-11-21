@@ -390,20 +390,30 @@ export default function TranslationManager() {
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[400px] p-0" align="start">
-                    <div className="p-4 border-b">
+                  <PopoverContent 
+                    className="w-[var(--radix-popover-trigger-width)] max-w-[400px] p-0 z-[100]" 
+                    align="start"
+                    sideOffset={5}
+                  >
+                    <div className="p-4 border-b bg-background">
                       <div className="flex gap-2">
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setSelectedLanguages(SUPPORTED_LANGUAGES.map(l => l.code))}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedLanguages(SUPPORTED_LANGUAGES.map(l => l.code));
+                          }}
                         >
                           Select All
                         </Button>
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setSelectedLanguages([])}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedLanguages([]);
+                          }}
                         >
                           Clear All
                         </Button>
@@ -415,7 +425,8 @@ export default function TranslationManager() {
                           <div
                             key={lang.code}
                             className="flex items-center space-x-2 hover:bg-muted/50 p-2 rounded-md cursor-pointer"
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setSelectedLanguages((prev) =>
                                 prev.includes(lang.code)
                                   ? prev.filter((code) => code !== lang.code)
@@ -425,11 +436,11 @@ export default function TranslationManager() {
                           >
                             <Checkbox
                               checked={selectedLanguages.includes(lang.code)}
-                              onCheckedChange={() => {
+                              onCheckedChange={(checked) => {
                                 setSelectedLanguages((prev) =>
-                                  prev.includes(lang.code)
-                                    ? prev.filter((code) => code !== lang.code)
-                                    : [...prev, lang.code]
+                                  checked
+                                    ? [...prev, lang.code]
+                                    : prev.filter((code) => code !== lang.code)
                                 );
                               }}
                             />
