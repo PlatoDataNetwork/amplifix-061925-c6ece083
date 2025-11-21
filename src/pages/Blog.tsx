@@ -58,7 +58,7 @@ interface BlogData {
 }
 
 const Blog = () => {
-  const { t } = useTranslation(['blog', 'common']);
+  const { data: blogData } = useJsonData<BlogData>('/data/blog-intel.json');
   const { verticals } = usePlatoVerticals();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -209,7 +209,7 @@ const Blog = () => {
             AmplifiX <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Intelligence</span>
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4 mb-8">
-            {t('blog:hero.description')}
+            Insights on AI, corporate communications, investor relations, and business intelligence.
           </p>
           
           {/* Search Bar */}
@@ -218,7 +218,7 @@ const Blog = () => {
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder={t('blog:search.placeholder')}
+                placeholder="Search articles..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);

@@ -6,6 +6,28 @@ import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
+import { useJsonData } from "@/hooks/useJsonData";
+
+interface SolutionsData {
+  solutions: {
+    hero: {
+      title: string;
+      title_highlight: string;
+      description: string;
+      cta_primary_text: string;
+      cta_primary_link: string;
+      cta_secondary_text: string;
+      cta_secondary_link: string;
+    };
+    solutions_list: Array<{
+      title: string;
+      description: string;
+      link_text: string;
+      link: string;
+      icon: string;
+    }>;
+  };
+}
 
 const iconMap: Record<string, LucideIcon> = {
   Building,
@@ -15,39 +37,10 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 const Solutions = () => {
-  const { t } = useTranslation(['solutions', 'common']);
+  const { data: solutionsData } = useJsonData<SolutionsData>('/data/solutions.json');
   useLanguage();
   
-  const solutionsList = [
-    {
-      title: t('solutions:item1.title'),
-      description: t('solutions:item1.description'),
-      link_text: t('solutions:item1.link_text'),
-      link: t('solutions:item1.link'),
-      icon: 'Building',
-    },
-    {
-      title: t('solutions:item2.title'),
-      description: t('solutions:item2.description'),
-      link_text: t('solutions:item2.link_text'),
-      link: t('solutions:item2.link'),
-      icon: 'Users',
-    },
-    {
-      title: t('solutions:item3.title'),
-      description: t('solutions:item3.description'),
-      link_text: t('solutions:item3.link_text'),
-      link: t('solutions:item3.link'),
-      icon: 'TrendingUp',
-    },
-    {
-      title: t('solutions:item4.title'),
-      description: t('solutions:item4.description'),
-      link_text: t('solutions:item4.link_text'),
-      link: t('solutions:item4.link'),
-      icon: 'Rocket',
-    },
-  ];
+  const solutionsList = solutionsData?.solutions.solutions_list || [];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -58,22 +51,22 @@ const Solutions = () => {
       <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
-            {t('solutions:hero.title')} <span className="text-highlight-blue">{t('solutions:hero.title_highlight')}</span>
+            {solutionsData?.solutions.hero.title || 'Solutions for'} <span className="text-highlight-blue">{solutionsData?.solutions.hero.title_highlight || 'Every Stage'}</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            {t('solutions:hero.description')}
+            {solutionsData?.solutions.hero.description || 'Comprehensive corporate communications solutions'}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-            <LanguageAwareLink to={t('solutions:hero.cta_primary_link')} className="w-full sm:w-auto">
+            <LanguageAwareLink to={solutionsData?.solutions.hero.cta_primary_link || '/contact'} className="w-full sm:w-auto">
               <Button 
                 size="lg" 
                 className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {t('solutions:hero.cta_primary_text')}
+                {solutionsData?.solutions.hero.cta_primary_text || 'Get Started'}
               </Button>
             </LanguageAwareLink>
             <a 
-              href={t('solutions:hero.cta_secondary_link')}
+              href={solutionsData?.solutions.hero.cta_secondary_link || 'https://calendly.com/amplifix/amplifix-discovery'}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto"
@@ -83,7 +76,7 @@ const Solutions = () => {
                 variant="outline" 
                 className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {t('solutions:hero.cta_secondary_text')}
+                {solutionsData?.solutions.hero.cta_secondary_text || 'Book a Demo'}
               </Button>
             </a>
           </div>
