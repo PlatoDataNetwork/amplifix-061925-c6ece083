@@ -42,7 +42,7 @@ interface ShowcaseData {
 }
 
 const Showcase = () => {
-  const { data: showcaseData } = useJsonData<ShowcaseData>('/data/showcase.json');
+  const { data: showcaseData } = useJsonData<ShowcaseData>('showcase.json');
   const [dbShowcases, setDbShowcases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   useLanguage();
