@@ -94,6 +94,23 @@ const ImportAdmin = () => {
         (payload) => {
           console.log("🔴 Real-time: New article inserted!", payload);
           setLastUpdateTime(new Date());
+          
+          // Increment session counter for every article insert
+          setSessionArticlesImported(prev => {
+            const newCount = prev + 1;
+            console.log("📈 Session counter updated:", newCount);
+            return newCount;
+          });
+          
+          // Auto-start timer if not already started
+          setImportStartTime(prev => {
+            if (!prev) {
+              console.log("⏱️ Starting session timer");
+              return new Date();
+            }
+            return prev;
+          });
+          
           // Refresh metrics when articles are inserted
           loadMetrics();
         }
