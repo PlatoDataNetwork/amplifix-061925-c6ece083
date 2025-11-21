@@ -150,6 +150,75 @@ const ShowcaseAdmin = () => {
     fetchCompanies();
   }, []);
 
+  useEffect(() => {
+    const autoImportMissing = async () => {
+      try {
+        const response = await fetch('/data/showcase.json');
+        const data = await response.json();
+        const showcases = data.showcase.showcases;
+        
+        // Check which companies are missing
+        const missingCompanies = [];
+        for (const showcase of showcases) {
+          const { data: existing } = await supabase
+            .from("showcase_companies")
+            .select("id")
+            .eq("company_name", showcase.company_name)
+            .single();
+          
+          if (!existing) {
+            missingCompanies.push(showcase);
+          }
+        }
+        
+        // Auto-import missing companies
+        if (missingCompanies.length > 0) {
+          const { data: lastCompany } = await supabase
+            .from("showcase_companies")
+            .select("display_order")
+            .order("display_order", { ascending: false })
+            .limit(1);
+          
+          let nextOrder = (lastCompany && lastCompany.length > 0) ? lastCompany[0].display_order + 1 : 1;
+          
+          for (const showcase of missingCompanies) {
+            await supabase
+              .from("showcase_companies")
+              .insert({
+                company_name: showcase.company_name,
+                ticker: showcase.ticker || null,
+                description: showcase.description,
+                tags: showcase.tags || [],
+                button_text: showcase.button_text || "View Showcase",
+                link: showcase.link,
+                website: showcase.website || null,
+                stock_url: showcase.stock_url || null,
+                search_url: showcase.search_url || null,
+                thumbnail: showcase.thumbnail || null,
+                type: showcase.type || "stock",
+                disabled: showcase.disabled || false,
+                display_order: nextOrder++
+              });
+          }
+          
+          toast({
+            title: "Auto-imported companies",
+            description: `Added ${missingCompanies.length} new companies from JSON`,
+          });
+          
+          // Refresh the list
+          fetchCompanies();
+        }
+      } catch (error: any) {
+        console.error("Auto-import error:", error);
+      }
+    };
+    
+    if (companies.length > 0) {
+      autoImportMissing();
+    }
+  }, [companies.length]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
