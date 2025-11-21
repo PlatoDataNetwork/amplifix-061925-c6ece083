@@ -268,7 +268,7 @@ const Index = () => {
                     </div>
                   </div>
                 ))
-              ) : homeData ? (
+              ) : homeData?.home?.solutions?.public_companies?.items ? (
                 homeData.home.solutions.public_companies.items.map((item, index) => (
                   <div key={index} className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
@@ -309,7 +309,7 @@ const Index = () => {
                     </div>
                   </div>
                 ))
-              ) : homeData ? (
+              ) : homeData?.home?.solutions?.private_companies?.items ? (
                 homeData.home.solutions.private_companies.items.map((item, index) => (
                   <div key={index} className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
@@ -321,27 +321,15 @@ const Index = () => {
                 ))
               ) : (
                 <>
-                  <div className="flex items-start">
+                  {privateCompanyItems.map((item, index) => (
+                  <div key={index} className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
                     <div>
-                      <h4 className="font-semibold">Fundraising Support</h4>
-                      <p className="text-muted-foreground">Pitch deck optimization and investor outreach automation</p>
+                      <h4 className="font-semibold">{item.title}</h4>
+                      <p className="text-muted-foreground">{item.description}</p>
                     </div>
                   </div>
-                  <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
-                    <div>
-                      <h4 className="font-semibold">Brand Building</h4>
-                      <p className="text-muted-foreground">Strategic PR campaigns and thought leadership content</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-highlight-blue mr-3 mt-1" />
-                    <div>
-                      <h4 className="font-semibold">IPO Preparation</h4>
-                      <p className="text-muted-foreground">Comprehensive readiness assessment and roadmap</p>
-                    </div>
-                  </div>
+                  ))}
                 </>
               )}
             </div>
