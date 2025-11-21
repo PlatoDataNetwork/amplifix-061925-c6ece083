@@ -10,7 +10,7 @@ import { useJsonData } from "@/hooks/useJsonData";
 import { useRSSFeed } from "@/hooks/useRSSFeed";
 import { usePlatoDataFeed } from "@/hooks/usePlatoDataFeed";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { useMemo, useState, useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Input } from "@/components/ui/input";
@@ -62,7 +62,15 @@ const Blog = () => {
   const { verticals } = usePlatoVerticals();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   useLanguage(); // Auto-translates page
+  
+  // Get language prefix from current path
+  const languagePrefix = location.pathname.startsWith('/') 
+    ? location.pathname.split('/')[1] 
+    : '';
+  const isLanguagePath = languagePrefix && languagePrefix.length === 2 && languagePrefix !== 'intel';
+  const langPrefix = isLanguagePath ? `/${languagePrefix}` : '';
   
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -179,12 +187,12 @@ const Blog = () => {
 
   const handleCategoryClick = (category: string) => {
     if (category === 'All') {
-      navigate('/intel');
+      navigate(`${langPrefix}/intel`);
     } else {
       // Find the vertical to get its slug
       const vertical = verticals.find(v => v.name === category);
       if (vertical) {
-        navigate(`/intel/${vertical.slug}`);
+        navigate(`${langPrefix}/intel/${vertical.slug}`);
       }
     }
   };
@@ -271,7 +279,7 @@ const Blog = () => {
                     <div
                       key={result.id}
                       className="border-b border-border pb-6 last:border-0 cursor-pointer hover:bg-muted/50 p-4 rounded-lg transition-colors"
-                      onClick={() => navigate(`/intel/external/${result.id}`)}
+                      onClick={() => navigate(`${langPrefix}/intel/external/${result.id}`)}
                     >
                       <h3 className="text-lg font-semibold text-primary mb-2 hover:underline">
                         {result.title}
