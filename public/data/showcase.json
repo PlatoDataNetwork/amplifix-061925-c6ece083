@@ -128,6 +128,17 @@
         "stock_url": "https://app.cut.eco/",
         "thumbnail": "/lovable-uploads/cut-eco-thumbnail.png",
         "type": "token"
+      },
+      {
+        "company_name": "FAIM",
+        "ticker": "Private",
+        "description": "Celebrity fan engagement platform disrupting collectible card and autograph markets. Digital collectibles, AI avatars, and blockchain-verified interactions connecting fans to fame.",
+        "tags": ["Celebrity Engagement", "Digital Collectibles", "Blockchain"],
+        "button_text": "View Showcase",
+        "link": "/showcase/faim",
+        "website": "https://www.faim.world/",
+        "thumbnail": "/lovable-uploads/faim-thumbnail.png",
+        "type": "private"
       }
     ],
     "why_choose": {

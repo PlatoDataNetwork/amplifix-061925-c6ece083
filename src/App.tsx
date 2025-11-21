@@ -20,6 +20,7 @@ import MicropolisShowcase from "./pages/MicropolisShowcase";
 import MicropolisPresentation from "./pages/MicropolisPresentation";
 import DevvStreamShowcase from "./pages/DevvStreamShowcase";
 import CutEcoShowcase from "./pages/CutEcoShowcase";
+import FAIMShowcase from "./pages/FAIMShowcase";
 import InternationalLandAllianceShowcase from "./pages/InternationalLandAllianceShowcase";
 import SynbioShowcase from "./pages/SynbioShowcase";
 import SynbioPresentation from "./pages/SynbioPresentation";
@@ -100,6 +101,7 @@ const App = () => (
               <Route path="/showcase/micropolis/presentation" element={<MicropolisPresentation />} />
               <Route path="/showcase/devvstream" element={<DevvStreamShowcase />} />
               <Route path="/showcase/cut-eco" element={<CutEcoShowcase />} />
+              <Route path="/showcase/faim" element={<FAIMShowcase />} />
               <Route path="/showcase/international-land-alliance" element={<InternationalLandAllianceShowcase />} />
               <Route path="/showcase/synbio" element={<SynbioShowcase />} />
               <Route path="/showcase/synbio-presentation" element={<SynbioPresentation />} />
@@ -154,6 +156,7 @@ const App = () => (
               <Route path="/:lang/showcase/micropolis/presentation" element={<MicropolisPresentation />} />
               <Route path="/:lang/showcase/devvstream" element={<DevvStreamShowcase />} />
               <Route path="/:lang/showcase/cut-eco" element={<CutEcoShowcase />} />
+              <Route path="/:lang/showcase/faim" element={<FAIMShowcase />} />
               <Route path="/:lang/showcase/international-land-alliance" element={<InternationalLandAllianceShowcase />} />
               <Route path="/:lang/showcase/fynn-ai" element={<FynnAIShowcase />} />
               <Route path="/:lang/showcase/abatis" element={<AbatisShowcase />} />
