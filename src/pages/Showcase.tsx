@@ -24,6 +24,8 @@ interface ShowcaseData {
       search_url?: string | null;
       type: string;
       disabled: boolean;
+      thumbnail?: string;
+      tags?: string[];
     }>;
     why_choose: {
       title: string;
@@ -118,26 +120,23 @@ const Showcase = () => {
                              : index % 4 === 2
                                ? 'bg-gradient-to-br from-green-500/10 to-green-500/30 border-green-500/50'
                                : 'bg-gradient-to-br from-orange-500/10 to-orange-500/30 border-orange-500/50'
-                     } flex items-center justify-center flex-shrink-0 shadow-sm border`}>
-                      {showcase.company_name === 'SILO Pharma Inc.' && <Pill className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />}
-                      {showcase.company_name === 'Int\'l Land Alliance' && <Home className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-purple-500'}`} />}
-                      {showcase.company_name === 'Karbon-X' && (
+                     } flex items-center justify-center flex-shrink-0 shadow-sm border overflow-hidden`}>
+                      {showcase.thumbnail ? (
+                        <img src={showcase.thumbnail} alt={showcase.company_name} className="w-full h-full object-cover" />
+                      ) : showcase.company_name === 'SILO Pharma Inc.' ? (
+                        <Pill className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />
+                      ) : showcase.company_name === 'Int\'l Land Alliance' ? (
+                        <Home className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-purple-500'}`} />
+                      ) : showcase.company_name === 'Karbon-X' ? (
                         <span className="text-green-500 text-2xl font-bold">K</span>
-                      )}
-                     {showcase.company_name === 'Micropolis' && (
-                        <img src="/lovable-uploads/micropolis-icon.png" alt="Micropolis" className="w-full h-full object-cover rounded-full" />
-                      )}
-                      {showcase.company_name === 'Synbio Int\'l' && <ScanFace className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />}
-                      {showcase.company_name === 'FYNN AI' && (
-                        <div className="w-8 h-8 rounded-sm bg-background p-1 border border-border/50">
-                          <img src="/lovable-uploads/81a540f7-53d1-4835-a86f-983e8a85e38c.png" alt="FYNN AI logo" className="h-full w-full object-contain" />
-                        </div>
-                      )}
-                      {showcase.company_name === 'Naoris Protocol' && (
-                        <img src="/lovable-uploads/naoris-icon.png" alt="Naoris Protocol" className="w-8 h-8 object-contain" />
-                      )}
-                      {showcase.company_name === 'Abatis' && (
+                      ) : showcase.company_name === 'Synbio Int\'l' ? (
+                        <ScanFace className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />
+                      ) : showcase.company_name === 'Naoris Protocol' ? (
+                        <span className="text-orange-500 text-2xl font-bold">N</span>
+                      ) : showcase.company_name === 'Abatis' ? (
                         <span className="text-green-500 text-2xl font-bold">A</span>
+                      ) : (
+                        <Building className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
