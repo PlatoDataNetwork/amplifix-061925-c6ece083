@@ -140,19 +140,15 @@ const Showcase = () => {
                                : 'bg-gradient-to-br from-orange-500/10 to-orange-500/30 border-orange-500/50'
                      } flex items-center justify-center flex-shrink-0 shadow-sm border overflow-hidden`}>
                       {showcase.thumbnail ? (
-                        <img src={showcase.thumbnail} alt={showcase.company_name} className="w-full h-full object-cover" />
-                      ) : showcase.company_name === 'SILO Pharma Inc.' ? (
-                        <Pill className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />
-                      ) : showcase.company_name === 'Int\'l Land Alliance' ? (
-                        <Home className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-purple-500'}`} />
-                      ) : showcase.company_name === 'Karbon-X' ? (
-                        <span className="text-green-500 text-2xl font-bold">K</span>
-                      ) : showcase.company_name === 'Synbio Int\'l' ? (
-                        <ScanFace className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />
-                      ) : showcase.company_name === 'Naoris Protocol' ? (
-                        <span className="text-orange-500 text-2xl font-bold">N</span>
-                      ) : showcase.company_name === 'Abatis' ? (
-                        <span className="text-green-500 text-2xl font-bold">A</span>
+                        <img 
+                          src={showcase.thumbnail} 
+                          alt={showcase.company_name} 
+                          className="w-full h-full object-contain p-1"
+                          onError={(e) => {
+                            console.error(`Failed to load thumbnail for ${showcase.company_name}:`, showcase.thumbnail);
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
                       ) : (
                         <Building className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : 'text-highlight-blue'}`} />
                       )}
