@@ -54,7 +54,7 @@ const SitemapGenerator = () => {
       <div className="pt-24 container mx-auto py-8 md:py-12 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">Sitemap Generator</h1>
+            <h1 className="text-4xl font-bold mb-4">Sitemaps</h1>
             <p className="text-muted-foreground text-lg">
               Generate dynamic sitemaps in English with all articles from the database, batched in files of 1000 URLs for optimal SEO performance.
             </p>
