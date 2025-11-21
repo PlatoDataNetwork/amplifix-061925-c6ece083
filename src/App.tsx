@@ -80,6 +80,7 @@ const App = () => (
               <Route path="/intel/ai-intelligence-article" element={<AIIntelligenceArticle />} />
               <Route path="/intel/advanced-analytics-article" element={<AdvancedAnalyticsArticle />} />
               <Route path="/intel/investor-engagement-article" element={<InvestorEngagementArticle />} />
+              <Route path="/intel/external/:slug/:id" element={<ExternalArticle />} />
               <Route path="/intel/external/:id" element={<ExternalArticle />} />
               <Route path="/intel/article/:id" element={<ExternalArticle />} />
               <Route path="/intel/:vertical" element={<VerticalPage />} />
@@ -132,6 +133,7 @@ const App = () => (
               <Route path="/:lang/intel/ai-intelligence-article" element={<AIIntelligenceArticle />} />
               <Route path="/:lang/intel/advanced-analytics-article" element={<AdvancedAnalyticsArticle />} />
               <Route path="/:lang/intel/investor-engagement-article" element={<InvestorEngagementArticle />} />
+              <Route path="/:lang/intel/external/:slug/:id" element={<ExternalArticle />} />
               <Route path="/:lang/intel/external/:id" element={<ExternalArticle />} />
               <Route path="/:lang/intel/article/:id" element={<ExternalArticle />} />
               <Route path="/:lang/intel/:vertical" element={<VerticalPage />} />
