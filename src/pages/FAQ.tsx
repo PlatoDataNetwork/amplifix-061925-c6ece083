@@ -4,67 +4,17 @@ import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useJsonData } from "@/hooks/useJsonData";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
-import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
-
-interface FAQItem {
-  question: string;
-  answer: string;
-}
-
-interface FAQData {
-  faq: {
-    hero_title: string;
-    hero_title_highlight: string;
-    hero_description: string;
-    hero_cta_primary_text: string;
-    hero_cta_primary_link: string;
-    hero_cta_secondary_text: string;
-    hero_cta_secondary_link: string;
-    faqs: FAQItem[];
-  };
-}
 
 const FAQ = () => {
-  const { data, isLoading, error } = useJsonData<FAQData>('faq.json');
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['faq', 'common']);
   useLanguage();
-  useGTranslateRefresh(!isLoading && !!data, [data]);
-
-  if (isLoading) {
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <SEOHead title="FAQ - Frequently Asked Questions | AmplifiX" />
-      <MainHeader />
-        <div className="pt-24 container mx-auto py-20 px-4">
-          <div className="text-center max-w-4xl mx-auto">
-            <Skeleton className="h-12 w-3/4 mx-auto mb-4" />
-            <Skeleton className="h-6 w-full max-w-2xl mx-auto mb-8" />
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-              <Skeleton className="h-12 w-48" />
-              <Skeleton className="h-12 w-48" />
-            </div>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (error || !data) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <MainHeader />
-        <div className="pt-24 container mx-auto py-20 px-4 text-center">
-          <p className="text-destructive">{t('ui.error')}</p>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
+  
+  const faqs = Array.from({ length: 10 }, (_, i) => ({
+    question: t(`faq:faq${i + 1}.question`),
+    answer: t(`faq:faq${i + 1}.answer`),
+  }));
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -74,22 +24,22 @@ const FAQ = () => {
       <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
-            {data.faq.hero_title} <span className="text-highlight-blue">{data.faq.hero_title_highlight}</span>
+            {t('faq:hero.title')} <span className="text-highlight-blue">{t('faq:hero.title_highlight')}</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            {data.faq.hero_description}
+            {t('faq:hero.description')}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-            <LanguageAwareLink to={data.faq.hero_cta_primary_link} className="w-full sm:w-auto">
+            <LanguageAwareLink to={t('faq:hero.cta_primary_link')} className="w-full sm:w-auto">
               <Button 
                 size="lg" 
                 className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {data.faq.hero_cta_primary_text}
+                {t('faq:hero.cta_primary_text')}
               </Button>
             </LanguageAwareLink>
             <a 
-              href={data.faq.hero_cta_secondary_link}
+              href={t('faq:hero.cta_secondary_link')}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto"
@@ -99,7 +49,7 @@ const FAQ = () => {
                 variant="outline" 
                 className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {data.faq.hero_cta_secondary_text}
+                {t('faq:hero.cta_secondary_text')}
               </Button>
             </a>
           </div>
@@ -110,7 +60,7 @@ const FAQ = () => {
       <section className="container mx-auto py-16 px-4">
         <div className="max-w-4xl mx-auto">
           <Accordion type="single" collapsible className="w-full space-y-4">
-            {data.faq.faqs.map((faq, index) => (
+            {faqs.map((faq, index) => (
               <AccordionItem 
                 key={`faq-${index}`} 
                 value={`item-${index}`} 
