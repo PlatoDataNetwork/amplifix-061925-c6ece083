@@ -15,9 +15,8 @@ const SUPPORTED_LANGUAGES = [
   'es', 'sv', 'th', 'tr', 'uk', 'ur', 'vi'
 ];
 
+// Only translate data files, not i18next files (common/home handled separately)
 const FILES_TO_TRANSLATE = [
-  'common.json', 
-  'home.json',
   'blog-intel.json',
   'solutions.json',
   'about.json',
