@@ -9,6 +9,10 @@
       "destination": "https://rfkdcmvzvxcsoecoeddi.supabase.co/functions/v1/serve-sitemap?batch=:batch"
     },
     {
+      "source": "/sitemap-:lang(es|fr|de|zh|ja|ko|pt|it|nl|ru|ar|hi|tr|sv).xml",
+      "destination": "https://rfkdcmvzvxcsoecoeddi.supabase.co/functions/v1/serve-language-sitemap?lang=:lang"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

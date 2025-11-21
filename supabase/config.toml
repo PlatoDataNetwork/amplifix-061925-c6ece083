@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.serve-sitemap]
 verify_jwt = false
+
+[functions.serve-language-sitemap]
+verify_jwt = false
