@@ -143,6 +143,11 @@ const VerticalPage = () => {
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4">
             Stay updated with the latest {verticalInfo.name} news, insights, and intelligence.
           </p>
+          {!isLoading && allPosts.length > 0 && (
+            <p className="text-lg text-muted-foreground mt-4">
+              {allPosts.length.toLocaleString()} articles available
+            </p>
+          )}
         </div>
 
         {/* Loading State */}
