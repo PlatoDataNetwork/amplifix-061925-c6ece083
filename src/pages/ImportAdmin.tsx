@@ -46,14 +46,21 @@ const ImportAdmin = () => {
   }>>([]);
   const [currentVertical, setCurrentVertical] = useState<string>('');
   const [runningTotal, setRunningTotal] = useState(0);
+  const [realtimeConnected, setRealtimeConnected] = useState(false);
+  const [lastUpdateTime, setLastUpdateTime] = useState<Date | null>(null);
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
   useEffect(() => {
     loadMetrics();
 
     // Set up real-time subscription for article changes
+    console.log('Setting up real-time subscription for articles...');
     const channel = supabase
-      .channel('article-imports')
+      .channel('article-imports', {
+        config: {
+          broadcast: { self: true }
+        }
+      })
       .on(
         'postgres_changes',
         {
@@ -62,15 +69,27 @@ const ImportAdmin = () => {
           table: 'articles'
         },
         (payload) => {
-          console.log('New article inserted, refreshing metrics');
+          console.log('🔴 Real-time: New article inserted!', payload);
+          setLastUpdateTime(new Date());
           // Refresh metrics when articles are inserted
           loadMetrics();
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('Real-time subscription status:', status);
+        if (status === 'SUBSCRIBED') {
+          setRealtimeConnected(true);
+          console.log('✅ Real-time updates active for articles');
+        } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
+          setRealtimeConnected(false);
+          console.log('❌ Real-time subscription error:', status);
+        }
+      });
 
     return () => {
+      console.log('Cleaning up real-time subscription');
       supabase.removeChannel(channel);
+      setRealtimeConnected(false);
     };
   }, []);
   
@@ -370,11 +389,26 @@ const ImportAdmin = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Total Articles</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center justify-between">
+                  <span>Total Articles</span>
+                  {realtimeConnected && (
+                    <span className="flex items-center gap-1 text-xs text-green-500">
+                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                      Live
+                    </span>
+                  )}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{totalArticles.toLocaleString()}</div>
-                <p className="text-xs text-muted-foreground mt-1">Across all verticals</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Across all verticals
+                  {lastUpdateTime && (
+                    <span className="ml-2 text-green-500">
+                      • Updated {lastUpdateTime.toLocaleTimeString()}
+                    </span>
+                  )}
+                </p>
               </CardContent>
             </Card>
             
