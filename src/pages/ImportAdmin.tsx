@@ -326,44 +326,6 @@ const ImportAdmin = () => {
     }
   };
 
-  const importFullAerospace = async () => {
-    setImporting('aerospace-full');
-    
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error('Authentication required');
-        return;
-      }
-
-      toast.info('Starting full Aerospace import...', {
-        description: 'This may take a few minutes'
-      });
-
-      const { data, error } = await supabase.functions.invoke('import-aerospace-full', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
-        }
-      });
-
-      if (error) throw error;
-
-      setResults(prev => ({ ...prev, 'aerospace-full': data }));
-      toast.success('Aerospace import completed!', {
-        description: `Imported ${data.imported} articles (${data.skipped} skipped, ${data.errors} errors)`
-      });
-      await loadMetrics();
-    } catch (error) {
-      console.error('Error importing Aerospace:', error);
-      toast.error('Failed to import Aerospace articles', {
-        description: error instanceof Error ? error.message : 'Unknown error'
-      });
-    } finally {
-      setImporting(null);
-    }
-  };
-
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <MainHeader />
@@ -527,52 +489,6 @@ const ImportAdmin = () => {
                         </div>
                       </div>
                     )}
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Full Aerospace Import Section */}
-          <Card className="mb-8 border-orange-500/50 bg-gradient-to-br from-orange-500/5 to-orange-500/10">
-            <CardHeader>
-              <CardTitle className="text-2xl flex items-center gap-2">
-                🚀 Import All Aerospace Articles
-              </CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Import all articles from the Aerospace vertical at once
-              </p>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <Button
-                  onClick={importFullAerospace}
-                  disabled={importing !== null}
-                  className="w-full h-12"
-                  size="lg"
-                >
-                  {importing === 'aerospace-full' ? 'Importing Aerospace Articles...' : 'Import All Aerospace Articles'}
-                </Button>
-
-                {results['aerospace-full'] && (
-                  <div className="mt-4 p-4 bg-background rounded-lg space-y-3">
-                    <div className="grid grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <p className="text-muted-foreground">Imported</p>
-                        <p className="text-2xl font-bold text-green-500">{results['aerospace-full'].imported}</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">Skipped</p>
-                        <p className="text-2xl font-bold text-yellow-500">{results['aerospace-full'].skipped}</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">Errors</p>
-                        <p className="text-2xl font-bold text-red-500">{results['aerospace-full'].errors}</p>
-                      </div>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Completed in {(results['aerospace-full'].duration / 1000).toFixed(2)}s
-                    </p>
                   </div>
                 )}
               </div>
