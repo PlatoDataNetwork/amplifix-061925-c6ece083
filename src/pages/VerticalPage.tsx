@@ -27,8 +27,7 @@ const VerticalPage = () => {
   const isLanguagePath = languagePrefix && languagePrefix.length === 2 && languagePrefix !== "intel";
   const langPrefix = isLanguagePath ? `/${languagePrefix}` : "";
   
-  const [visibleCount, setVisibleCount] = useState(12);
-  const POSTS_INCREMENT = 12;
+  const INITIAL_LOAD = 24;
   
   // Find the vertical info
   const verticalInfo = useMemo(() => {
@@ -37,8 +36,9 @@ const VerticalPage = () => {
   }, [vertical, verticals]);
   
   // Load from database for all verticals (primary source), fallback to external API if empty
-  const { posts: dbPosts, isLoading: dbLoading, error: dbError } = useArticlesFromDB(
-    verticalInfo?.slug || null
+  const { posts: dbPosts, isLoading: dbLoading, error: dbError, hasMore: dbHasMore, loadMore: dbLoadMore } = useArticlesFromDB(
+    verticalInfo?.slug || null,
+    INITIAL_LOAD
   );
   
   const { posts: platoDataPosts, isLoading: platoLoading, error: platoError } = usePlatoDataFeed(
@@ -59,6 +59,9 @@ const VerticalPage = () => {
   
   const isLoading = dbLoading || platoLoading;
   const error = dbError || platoError;
+  
+  // Use database hasMore if we have DB posts, otherwise check platoData length
+  const hasMorePosts = dbPosts.length > 0 ? dbHasMore : allPosts.length > 0;
 
   // Re-run GTranslate once posts are loaded so thumbnails/text can be translated
   useEffect(() => {
@@ -83,14 +86,11 @@ const VerticalPage = () => {
     }
   }, [isLoading, allPosts.length]);
   
-  const visiblePosts = useMemo(() => {
-    return allPosts.slice(0, visibleCount);
-  }, [allPosts, visibleCount]);
-  
-  const hasMorePosts = visibleCount < allPosts.length;
-  
   const handleShowMore = () => {
-    setVisibleCount(prev => prev + POSTS_INCREMENT);
+    // If using DB posts with pagination, load more from DB
+    if (dbPosts.length > 0 && dbLoadMore) {
+      dbLoadMore();
+    }
   };
   
   if (!verticalInfo) {
@@ -174,7 +174,7 @@ const VerticalPage = () => {
         {!isLoading && allPosts.length > 0 && (
           <section className="mb-12 md:mb-16">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {visiblePosts.map((post) => (
+              {allPosts.map((post) => (
                 <BlogPostCard 
                   key={post.id} 
                   post={{
@@ -191,15 +191,16 @@ const VerticalPage = () => {
             {hasMorePosts && (
               <div className="mt-12 flex flex-col items-center gap-4">
                 <p className="text-muted-foreground text-sm">
-                  Showing {visibleCount} of {allPosts.length} articles
+                  Showing {allPosts.length} articles
                 </p>
                 <Button 
                   onClick={handleShowMore}
                   variant="outline"
                   size="lg"
                   className="min-w-[200px]"
+                  disabled={dbLoading}
                 >
-                  Show More Articles
+                  {dbLoading ? 'Loading...' : 'Show More Articles'}
                 </Button>
               </div>
             )}
