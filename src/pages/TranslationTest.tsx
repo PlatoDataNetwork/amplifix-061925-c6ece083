@@ -3,8 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import { Languages, RefreshCw } from "lucide-react";
+import { Languages, RefreshCw, ExternalLink } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
+import { Link } from "react-router-dom";
 
 const SUPPORTED_LANGUAGES = [
   { code: 'en', name: 'English' },
@@ -79,7 +80,7 @@ export default function TranslationTest() {
                 <SelectTrigger className="w-full">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-[400px] overflow-y-auto">
                   {SUPPORTED_LANGUAGES.map((lang) => (
                     <SelectItem key={lang.code} value={lang.code}>
                       {lang.name}
@@ -209,6 +210,54 @@ export default function TranslationTest() {
                       <p className="text-sm">{t('home:faq.description')}</p>
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Test on Actual Pages */}
+            <Card className="border-border/50">
+              <CardHeader>
+                <CardTitle className="text-lg">Test on Actual Pages</CardTitle>
+                <CardDescription>View translations on real site pages</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link to={`/${selectedLanguage}`}>
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Home Page
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link to={`/${selectedLanguage}/about`}>
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      About Page
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link to={`/${selectedLanguage}/solutions`}>
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Solutions Page
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link to={`/${selectedLanguage}/showcase`}>
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Showcase Page
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link to={`/${selectedLanguage}/faq`}>
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      FAQ Page
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link to={`/${selectedLanguage}/contact`}>
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Contact Page
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
