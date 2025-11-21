@@ -68,11 +68,11 @@ const DevvStreamShowcase = () => {
                     </div>
                   </div>
                   
-                  <div className="flex flex-wrap gap-3 pt-4">
+                  <div className="flex gap-3 pt-4">
                     <Button asChild size="default" className="gap-2 bg-green-500 text-white hover:bg-green-600">
                       <a href="/documents/devvstream-presentation.pdf" target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-4 h-4" />
-                        Investor Presentation
+                        Presentation
                       </a>
                     </Button>
                     <Button asChild size="default" className="gap-2 bg-green-500 text-white hover:bg-green-600">
@@ -86,14 +86,6 @@ const DevvStreamShowcase = () => {
                         <ExternalLink className="w-4 h-4" />
                         Visit Website
                       </a>
-                    </Button>
-                    <Button 
-                      size="default" 
-                      className="gap-2 bg-green-500 text-white hover:bg-green-600"
-                      onClick={() => document.getElementById('research-section')?.scrollIntoView({ behavior: 'smooth' })}
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      Research
                     </Button>
                   </div>
                 </div>
