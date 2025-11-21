@@ -36,22 +36,44 @@ const VerticalPage = () => {
     return verticals.find(v => v.slug === slug || v.name.toLowerCase() === slug);
   }, [vertical, verticals]);
   
-  // Load from database for AI, Blockchain, and Aerospace, external API for others
+  // Load from database for AI, Blockchain, Aerospace, AR/VR, Carbon, Solar, and Startups
   const { posts: dbPosts, isLoading: dbLoading, error: dbError } = useArticlesFromDB(
-    (verticalInfo?.name === 'ACN' || verticalInfo?.name === 'AI' || verticalInfo?.name === 'Blockchain' || verticalInfo?.slug === 'aerospace') 
+    (verticalInfo?.name === 'ACN' || 
+     verticalInfo?.name === 'AI' || 
+     verticalInfo?.name === 'Blockchain' || 
+     verticalInfo?.slug === 'aerospace' ||
+     verticalInfo?.slug === 'ar-vr' ||
+     verticalInfo?.slug === 'carbon' ||
+     verticalInfo?.slug === 'solar' ||
+     verticalInfo?.slug === 'startups') 
       ? verticalInfo.slug 
       : null
   );
   
   const { posts: platoDataPosts, isLoading: platoLoading, error: platoError } = usePlatoDataFeed(
-    (!verticalInfo || verticalInfo.name === 'ACN' || verticalInfo.name === 'AI' || verticalInfo.name === 'Blockchain' || verticalInfo.slug === 'aerospace')
+    (!verticalInfo || 
+     verticalInfo.name === 'ACN' || 
+     verticalInfo.name === 'AI' || 
+     verticalInfo.name === 'Blockchain' || 
+     verticalInfo.slug === 'aerospace' ||
+     verticalInfo.slug === 'ar-vr' ||
+     verticalInfo.slug === 'carbon' ||
+     verticalInfo.slug === 'solar' ||
+     verticalInfo.slug === 'startups')
       ? null 
       : verticalInfo.slug,
     verticalInfo?.name || ''
   );
   
   const allPosts = useMemo(() => {
-    if (verticalInfo?.name === 'ACN' || verticalInfo?.name === 'AI' || verticalInfo?.name === 'Blockchain' || verticalInfo?.slug === 'aerospace') {
+    if (verticalInfo?.name === 'ACN' || 
+        verticalInfo?.name === 'AI' || 
+        verticalInfo?.name === 'Blockchain' || 
+        verticalInfo?.slug === 'aerospace' ||
+        verticalInfo?.slug === 'ar-vr' ||
+        verticalInfo?.slug === 'carbon' ||
+        verticalInfo?.slug === 'solar' ||
+        verticalInfo?.slug === 'startups') {
       return dbPosts;
     }
     return platoDataPosts;
