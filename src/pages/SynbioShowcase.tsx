@@ -22,6 +22,7 @@ import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { useJsonData } from "@/hooks/useJsonData";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 interface SynbioData {
   synbio: {
@@ -138,6 +139,7 @@ const iconMap: Record<string, any> = {
 
 const SynbioShowcase = () => {
   const { data, isLoading, error } = useJsonData<SynbioData>('synbio-showcase.json');
+  useGTranslateRefresh(!isLoading && !!data, [data]);
 
   if (isLoading) {
     return (
