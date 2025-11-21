@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/sitemap_index.xml",
+      "destination": "https://rfkdcmvzvxcsoecoeddi.supabase.co/functions/v1/serve-sitemap-index"
+    },
+    {
+      "source": "/sitemap-:batch.xml",
+      "destination": "https://rfkdcmvzvxcsoecoeddi.supabase.co/functions/v1/serve-sitemap?batch=:batch"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
