@@ -332,7 +332,7 @@ serve(async (req) => {
   }
 });
 
-function cleanText(text?: string | null): string => {
+function cleanText(text?: string | null): string {
   if (!text) return '';
   return text
     // Remove Plato source links first
