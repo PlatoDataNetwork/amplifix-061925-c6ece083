@@ -15,7 +15,16 @@ const SUPPORTED_LANGUAGES = [
   'es', 'sv', 'th', 'tr', 'uk', 'ur', 'vi'
 ];
 
-const FILES_TO_TRANSLATE = ['common.json', 'home.json'];
+const FILES_TO_TRANSLATE = [
+  'common.json', 
+  'home.json',
+  'blog-intel.json',
+  'solutions.json',
+  'about.json',
+  'faq.json',
+  'contact.json',
+  'showcase.json'
+];
 
 interface TranslationStats {
   total: number;
@@ -147,7 +156,7 @@ export default function TranslationManager() {
     setProgress(0);
     setLogs([]);
     setStats({
-      total: 2,
+      total: FILES_TO_TRANSLATE.length,
       completed: 0,
       success: 0,
       failed: 0,
@@ -158,66 +167,47 @@ export default function TranslationManager() {
     addLog(`Testing translation for ${language.toUpperCase()}...`);
 
     try {
-      const commonResponse = await fetch('/locales/en/common.json');
-      const homeResponse = await fetch('/locales/en/home.json');
-      
-      const commonContent = await commonResponse.json();
-      const homeContent = await homeResponse.json();
+      // Load all source files
+      const fileContents: Record<string, any> = {};
+      for (const file of FILES_TO_TRANSLATE) {
+        const isLocaleFile = file === 'common.json' || file === 'home.json';
+        const path = isLocaleFile ? `/locales/en/${file}` : `/data/${file}`;
+        const response = await fetch(path);
+        fileContents[file] = await response.json();
+      }
 
       setCurrentLang(language);
 
-      // Translate common.json
-      try {
-        addLog(`→ Translating ${language}/common.json...`);
-        
-        const commonData = await translateWithRetry(commonContent, language, 'common.json');
-        
-        if (commonData?.translatedContent) {
-          await saveTranslation(commonData.translatedContent, language, 'common');
-          addLog(`✓ ${language}/common.json saved (${commonData.duration || '?'}ms)`);
+      // Translate all files
+      for (const fileName of FILES_TO_TRANSLATE) {
+        try {
+          addLog(`→ Translating ${language}/${fileName}...`);
+          
+          const data = await translateWithRetry(fileContents[fileName], language, fileName);
+          
+          if (data?.translatedContent) {
+            const namespace = fileName.replace('.json', '');
+            await saveTranslation(data.translatedContent, language, namespace);
+            addLog(`✓ ${language}/${fileName} saved (${data.duration || '?'}ms)`);
+            updateStats({ 
+              completed: stats.completed + 1, 
+              success: stats.success + 1 
+            });
+          }
+
+          setProgress((stats.completed / stats.total) * 100);
+        } catch (error) {
+          const errorMsg = formatErrorMessage(error);
+          addLog(`✗ ${language}/${fileName} failed after retries: ${errorMsg}`);
+          console.error(`Full error for ${language}/${fileName}:`, error);
           updateStats({ 
             completed: stats.completed + 1, 
-            success: stats.success + 1 
+            failed: stats.failed + 1 
           });
         }
 
-        setProgress((stats.completed / stats.total) * 100);
-      } catch (error) {
-        const errorMsg = formatErrorMessage(error);
-        addLog(`✗ ${language}/common.json failed after retries: ${errorMsg}`);
-        console.error(`Full error for ${language}/common.json:`, error);
-        updateStats({ 
-          completed: stats.completed + 1, 
-          failed: stats.failed + 1 
-        });
-      }
-
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Translate home.json
-      try {
-        addLog(`→ Translating ${language}/home.json...`);
-        
-        const homeData = await translateWithRetry(homeContent, language, 'home.json');
-        
-        if (homeData?.translatedContent) {
-          await saveTranslation(homeData.translatedContent, language, 'home');
-          addLog(`✓ ${language}/home.json saved (${homeData.duration || '?'}ms)`);
-          updateStats({ 
-            completed: stats.completed + 1, 
-            success: stats.success + 1 
-          });
-        }
-
-        setProgress((stats.completed / stats.total) * 100);
-      } catch (error) {
-        const errorMsg = formatErrorMessage(error);
-        addLog(`✗ ${language}/home.json failed after retries: ${errorMsg}`);
-        console.error(`Full error for ${language}/home.json:`, error);
-        updateStats({ 
-          completed: stats.completed + 1, 
-          failed: stats.failed + 1 
-        });
+        // Delay between files
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
 
       toast({
@@ -257,82 +247,55 @@ export default function TranslationManager() {
     addLog(`Starting translation for ${languages.length} language(s): ${languages.join(', ').toUpperCase()}...`);
 
     try {
-      // Load English source files
-      const commonResponse = await fetch('/locales/en/common.json');
-      const homeResponse = await fetch('/locales/en/home.json');
-      
-      const commonContent = await commonResponse.json();
-      const homeContent = await homeResponse.json();
+      // Load all source files
+      const fileContents: Record<string, any> = {};
+      for (const file of FILES_TO_TRANSLATE) {
+        const isLocaleFile = file === 'common.json' || file === 'home.json';
+        const path = isLocaleFile ? `/locales/en/${file}` : `/data/${file}`;
+        const response = await fetch(path);
+        fileContents[file] = await response.json();
+      }
 
       for (const language of languages) {
         setCurrentLang(language);
         addLog(`Translating to ${language.toUpperCase()}...`);
 
-        // Translate common.json
-        try {
-          addLog(`→ Translating ${language}/common.json...`);
-          
-          const commonData = await translateWithRetry(commonContent, language, 'common.json');
-          
-          if (commonData?.translatedContent) {
-            await saveTranslation(commonData.translatedContent, language, 'common');
-            addLog(`✓ ${language}/common.json saved (${commonData.duration || '?'}ms)`);
-            updateStats({ 
-              completed: stats.completed + 1, 
-              success: stats.success + 1 
-            });
-          } else {
-            addLog(`✗ ${language}/common.json - no content returned`);
-            updateStats({ 
-              completed: stats.completed + 1, 
-              failed: stats.failed + 1 
-            });
-          }
+        // Translate all files
+        for (const fileName of FILES_TO_TRANSLATE) {
+          try {
+            addLog(`→ Translating ${language}/${fileName}...`);
+            
+            const data = await translateWithRetry(fileContents[fileName], language, fileName);
+            
+            if (data?.translatedContent) {
+              const namespace = fileName.replace('.json', '');
+              await saveTranslation(data.translatedContent, language, namespace);
+              addLog(`✓ ${language}/${fileName} saved (${data.duration || '?'}ms)`);
+              updateStats({ 
+                completed: stats.completed + 1, 
+                success: stats.success + 1 
+              });
+            } else {
+              addLog(`✗ ${language}/${fileName} - no content returned`);
+              updateStats({ 
+                completed: stats.completed + 1, 
+                failed: stats.failed + 1 
+              });
+            }
 
-          setProgress((stats.completed / stats.total) * 100);
-        } catch (error) {
-          const errorMsg = formatErrorMessage(error);
-          addLog(`✗ ${language}/common.json failed after retries: ${errorMsg}`);
-          console.error(`Full error for ${language}/common.json:`, error);
-          updateStats({ 
-            completed: stats.completed + 1, 
-            failed: stats.failed + 1 
-          });
-        }
-
-        // Small delay to avoid rate limits
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // Translate home.json
-        try {
-          addLog(`→ Translating ${language}/home.json...`);
-          
-          const homeData = await translateWithRetry(homeContent, language, 'home.json');
-          
-          if (homeData?.translatedContent) {
-            await saveTranslation(homeData.translatedContent, language, 'home');
-            addLog(`✓ ${language}/home.json saved (${homeData.duration || '?'}ms)`);
-            updateStats({ 
-              completed: stats.completed + 1, 
-              success: stats.success + 1 
-            });
-          } else {
-            addLog(`✗ ${language}/home.json - no content returned`);
+            setProgress((stats.completed / stats.total) * 100);
+          } catch (error) {
+            const errorMsg = formatErrorMessage(error);
+            addLog(`✗ ${language}/${fileName} failed after retries: ${errorMsg}`);
+            console.error(`Full error for ${language}/${fileName}:`, error);
             updateStats({ 
               completed: stats.completed + 1, 
               failed: stats.failed + 1 
             });
           }
 
-          setProgress((stats.completed / stats.total) * 100);
-        } catch (error) {
-          const errorMsg = formatErrorMessage(error);
-          addLog(`✗ ${language}/home.json failed after retries: ${errorMsg}`);
-          console.error(`Full error for ${language}/home.json:`, error);
-          updateStats({ 
-            completed: stats.completed + 1, 
-            failed: stats.failed + 1 
-          });
+          // Small delay between files
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
         // Delay between languages to avoid rate limits
@@ -378,7 +341,7 @@ export default function TranslationManager() {
           <CardContent className="space-y-6">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
-                This will translate common.json and home.json for all languages using Lovable AI.
+                This will translate all UI and data files for supported languages using Lovable AI.
                 Translations will be automatically saved to the database and served dynamically.
               </p>
               
@@ -389,7 +352,7 @@ export default function TranslationManager() {
               
               <div className="flex items-center gap-2 text-sm">
                 <span className="font-medium">Files per language:</span>
-                <span className="text-muted-foreground">{FILES_TO_TRANSLATE.join(', ')}</span>
+                <span className="text-muted-foreground">{FILES_TO_TRANSLATE.length} files (UI + Data)</span>
               </div>
             </div>
 
