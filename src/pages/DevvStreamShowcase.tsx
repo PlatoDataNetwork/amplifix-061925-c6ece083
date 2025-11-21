@@ -339,8 +339,19 @@ const DevvStreamShowcase = () => {
               {/* Executive Summary */}
               <div className="mb-12 p-6 md:p-8 bg-transparent border border-green-500/30 rounded-2xl">
                 <h3 className="text-2xl font-bold mb-4 text-green-500">Executive Summary</h3>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  DevvStream Corp (NASDAQ: DEVS) is a publicly traded company specializing in carbon management and environmental-asset monetization, with recent strategic initiatives in digital assets and sustainability programs. The company works with governments and corporations globally to create verified carbon credits through sustainable technology initiatives.
+                </p>
                 <p className="text-muted-foreground leading-relaxed">
-                  DevvStream Corp (NASDAQ: DEVS) is a technology-based company specializing in the development and monetization of environmental assets, with particular focus on carbon markets and green technology projects. The company works with governments and corporations globally to create verified carbon credits through sustainable technology initiatives. DevvStream's platform enables tracking, verification, and monetization of environmental assets at scale, positioning the company to capitalize on the rapidly expanding global carbon markets driven by net-zero commitments.
+                  DevvStream has been actively expanding its digital-asset and cryptocurrency treasury, having invested in Bitcoin (BTC) and Solana (SOL) as part of a broader crypto program. Strategic initiatives include launching a $300M asset-backed digital infrastructure and sustainability strategy, strengthening its presence in carbon credit monetization across Asia and the Middle East.
+                </p>
+              </div>
+
+              {/* Stock Analysis */}
+              <div className="mb-12 p-6 md:p-8 bg-transparent border border-green-500/30 rounded-2xl">
+                <h3 className="text-2xl font-bold mb-4 text-green-500">Stock Analysis</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  The company's beta is 0.56, showing modest stock price sensitivity relative to the market. Investors considering DEVS should note its high risk-reward profile, including past share volatility, negative earnings, and ongoing strategic growth efforts. The company is positioned in a niche environmental-asset market intersecting with digital finance, which may offer unique upside potential but is subject to market and regulatory risks.
                 </p>
               </div>
 
@@ -416,34 +427,80 @@ const DevvStreamShowcase = () => {
 
               {/* Recent Developments */}
               <div className="mb-12 p-6 md:p-8 bg-transparent border border-green-500/30 rounded-2xl">
-                <h3 className="text-2xl md:text-3xl font-bold mb-6">Recent Developments (2024-2025)</h3>
+                <h3 className="text-2xl md:text-3xl font-bold mb-6">Recent Developments & Key Milestones</h3>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3 pb-4 border-b border-border/50">
                     <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
                     <div>
-                      <h4 className="font-semibold mb-1">Corporate Partnerships Expansion</h4>
+                      <h4 className="font-semibold mb-1">NASDAQ Compliance Restored</h4>
                       <p className="text-sm text-muted-foreground">
-                        Secured agreements with multiple corporations to develop and monetize environmental assets through verified carbon credit projects.
+                        Regained compliance with NASDAQ listing requirements in August 2025, implementing a reverse stock split to manage share structure.
                       </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3 pb-4 border-b border-border/50">
                     <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
                     <div>
-                      <h4 className="font-semibold mb-1">Technology Platform Enhancement</h4>
+                      <h4 className="font-semibold mb-1">Digital Asset & Crypto Treasury Expansion</h4>
                       <p className="text-sm text-muted-foreground">
-                        Continued development of proprietary platform for environmental asset tracking and verification, improving efficiency and scalability.
+                        Launched $300M asset-backed digital infrastructure and sustainability strategy, with investments in Bitcoin (BTC) and Solana (SOL) as part of broader crypto program.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 pb-4 border-b border-border/50">
+                    <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Southeast Asia Partnerships & MoUs</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Partnerships and MoUs for waste-to-energy projects in Indonesia and other sustainability ventures across Southeast Asia.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 pb-4 border-b border-border/50">
+                    <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Joint Venture Formation</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Formation of "Fayafi x DevvStream Green Ventures" to accelerate global sustainability investments.
                       </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
                     <div>
-                      <h4 className="font-semibold mb-1">Government Project Pipeline</h4>
+                      <h4 className="font-semibold mb-1">Singapore Carbon Market & D-PIVOT Tool</h4>
                       <p className="text-sm text-muted-foreground">
-                        Building pipeline of government-backed green technology projects focused on carbon credit generation and environmental sustainability.
+                        Expansion into Singapore carbon market and partnerships promoting the D-PIVOT carbon offset tool across e-commerce platforms.
                       </p>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Strategic Focus */}
+              <div className="mb-12 p-6 md:p-8 bg-transparent border border-green-500/30 rounded-2xl">
+                <h3 className="text-2xl font-bold mb-4 text-green-500">Strategic Focus</h3>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  DevvStream's core focus integrates carbon management, digital asset investment, and environmental-asset monetization, with a forward-looking emphasis on:
+                </p>
+                <div className="space-y-3 text-muted-foreground">
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-500 mt-1">•</span>
+                    <p className="text-sm">
+                      Developing carbon-credit generation and monetization opportunities across global markets
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-500 mt-1">•</span>
+                    <p className="text-sm">
+                      Leveraging digital infrastructure and crypto-treasury strategies to enhance liquidity and diversify assets
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-500 mt-1">•</span>
+                    <p className="text-sm">
+                      Expanding internationally across Asia and the Middle East for energy and environmental projects
+                    </p>
                   </div>
                 </div>
               </div>
@@ -574,13 +631,19 @@ const DevvStreamShowcase = () => {
                   <div className="flex items-start gap-2">
                     <span className="text-green-500 mt-1">•</span>
                     <p className="text-sm">
-                      <strong>Market volatility:</strong> Carbon credit prices subject to regulatory changes and market dynamics
+                      <strong>High risk-reward profile:</strong> Past share volatility, negative earnings, and ongoing strategic growth efforts create elevated investment risk
                     </p>
                   </div>
                   <div className="flex items-start gap-2">
                     <span className="text-green-500 mt-1">•</span>
                     <p className="text-sm">
-                      <strong>Project execution:</strong> Success depends on converting partnerships into revenue-generating projects
+                      <strong>Market volatility:</strong> Carbon credit prices and cryptocurrency holdings subject to regulatory changes and market dynamics
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-500 mt-1">•</span>
+                    <p className="text-sm">
+                      <strong>Project execution:</strong> Success depends on converting partnerships into revenue-generating projects across multiple geographies
                     </p>
                   </div>
                   <div className="flex items-start gap-2">
@@ -592,7 +655,7 @@ const DevvStreamShowcase = () => {
                   <div className="flex items-start gap-2">
                     <span className="text-green-500 mt-1">•</span>
                     <p className="text-sm">
-                      <strong>Regulatory environment:</strong> Changes in carbon market regulations could impact business model
+                      <strong>Regulatory environment:</strong> Changes in carbon market and cryptocurrency regulations could significantly impact business model
                     </p>
                   </div>
                 </div>
