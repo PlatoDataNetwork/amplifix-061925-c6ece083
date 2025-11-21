@@ -12,6 +12,7 @@ import { Pencil, Trash2, Plus, Upload, X, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import MainHeader from "@/components/MainHeader";
 import { Helmet } from "react-helmet-async";
+import { ShowcaseLogoFixer } from "@/components/ShowcaseLogoFixer";
 
 interface ShowcaseCompany {
   id: string;
@@ -247,6 +248,8 @@ const ShowcaseAdmin = () => {
               </Button>
             )}
           </div>
+
+          <ShowcaseLogoFixer />
 
           {showForm && (
             <Card className="mb-8">
