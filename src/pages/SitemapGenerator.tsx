@@ -43,23 +43,6 @@ const SitemapGenerator = () => {
     }
   };
 
-  const downloadAllFiles = () => {
-    generatedFiles.forEach((file, index) => {
-      setTimeout(() => {
-        const blob = new Blob([file.content], { type: 'application/xml' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = file.filename;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      }, index * 200);
-    });
-    toast.success(`Downloading ${generatedFiles.length} files...`);
-  };
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SEOHead 
@@ -125,17 +108,9 @@ const SitemapGenerator = () => {
                     <p className="text-sm text-muted-foreground mb-3">
                       Generated {totalBatches} sitemap files. Submit this URL to Google Search Console:
                     </p>
-                    <div className="p-3 bg-background border border-border rounded font-mono text-sm mb-3">
+                    <div className="p-3 bg-background border border-border rounded font-mono text-sm">
                       {sitemapIndexUrl}
                     </div>
-                    <Button 
-                      onClick={downloadAllFiles}
-                      variant="outline"
-                      size="sm"
-                    >
-                      <Download className="mr-2 h-4 w-4" />
-                      Download All {generatedFiles.length} Files
-                    </Button>
                   </div>
                 </div>
               </div>
