@@ -121,54 +121,67 @@ const ImportAdmin = () => {
         return;
       }
 
-      toast.info('Starting full import and AI processing...', {
-        description: 'This will run in the background'
+      toast.info('Starting import of all verticals...', {
+        description: 'Importing one vertical at a time'
       });
 
-      setProgressStatus('Starting import process...');
-      setProgressPercent(5);
+      // Get all verticals that have articles to import
+      const allVerticals = [
+        'aerospace', 'artificial-intelligence', 'ar-vr', 'autism', 'automotive',
+        'aviation', 'big-data', 'biotech', 'cannabis', 'carbon', 'cleantech',
+        'clinical-trials', 'code', 'crowdfunding', 'blockchain', 'cyber-security',
+        'defense', 'ecommerce', 'edtech', 'energy', 'esg', 'esports', 'finance',
+        'financefeeds', 'fintech', 'forex', 'gaming', 'hydrogen', 'iot',
+        'medical-devices', 'music', 'nano-technology', 'nfts', 'patents',
+        'payments', 'private-equity', 'psychedelics', 'quantum', 'real-estate',
+        'saas', 'semiconductor', 'seo', 'solar', 'spacs', 'startups',
+        'stem-cell', 'supply-chain', 'trading', 'venture-capital', 'waste-management'
+      ];
 
-      const { data, error } = await supabase.functions.invoke('import-and-process-all', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
+      let totalImported = 0;
+      let completed = 0;
+
+      for (const verticalSlug of allVerticals) {
+        try {
+          setProgressStatus(`Importing ${verticalSlug}... (${completed + 1}/${allVerticals.length})`);
+          setProgressPercent(Math.floor((completed / allVerticals.length) * 100));
+
+          const { data, error } = await supabase.functions.invoke('import-articles', {
+            body: { vertical: verticalSlug },
+            headers: {
+              Authorization: `Bearer ${session.access_token}`
+            }
+          });
+
+          if (error) {
+            console.error(`Error importing ${verticalSlug}:`, error);
+            toast.error(`Failed to import ${verticalSlug}`);
+          } else if (data) {
+            totalImported += data.insertedArticles || 0;
+            console.log(`Imported ${data.insertedArticles} articles from ${verticalSlug}`);
+          }
+
+          completed++;
+        } catch (error) {
+          console.error(`Exception importing ${verticalSlug}:`, error);
         }
+
+        // Small delay between imports to avoid overwhelming the system
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+
+      setProgressPercent(100);
+      setProgressStatus(`Completed! Imported ${totalImported} total articles`);
+      
+      toast.success('All verticals imported!', {
+        description: `Successfully imported ${totalImported} articles from ${completed} verticals`
       });
-
-      if (error) throw error;
-
-      setProgressStatus('Import started! Processing in background...');
-      setProgressPercent(15);
-
-      // Poll for progress updates
-      const pollInterval = setInterval(async () => {
-        const { count: currentTotal } = await supabase
-          .from('articles')
-          .select('*', { count: 'exact', head: true });
-        
-        if (currentTotal && currentTotal > totalArticles) {
-          const diff = currentTotal - totalArticles;
-          setProgressStatus(`Imported ${diff} new articles...`);
-          setProgressPercent(Math.min(90, 15 + (diff / 100) * 75));
-        }
-      }, 3000);
-
-      // Wait for background process (simplified - just wait a bit then check)
-      setTimeout(async () => {
-        clearInterval(pollInterval);
-        setProgressPercent(100);
-        setProgressStatus('Import completed!');
-        
-        toast.success('Import and processing completed!', {
-          description: 'Articles have been imported and are being processed'
-        });
-        
-        await loadMetrics();
-        setResults(prev => ({ ...prev, 'all-verticals': data }));
-      }, 10000);
+      
+      await loadMetrics();
 
     } catch (error) {
-      console.error('Error importing and processing all:', error);
-      toast.error('Failed to import and process articles', {
+      console.error('Error importing all verticals:', error);
+      toast.error('Failed to import articles', {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
       setProgressStatus('Error occurred');
@@ -178,7 +191,7 @@ const ImportAdmin = () => {
         setImporting(null);
         setProgressStatus('');
         setProgressPercent(0);
-      }, 15000);
+      }, 5000);
     }
   };
 
