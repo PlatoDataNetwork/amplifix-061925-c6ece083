@@ -48,6 +48,9 @@ const ImportAdmin = () => {
   const [runningTotal, setRunningTotal] = useState(0);
   const [realtimeConnected, setRealtimeConnected] = useState(false);
   const [lastUpdateTime, setLastUpdateTime] = useState<Date | null>(null);
+  const [sessionArticlesImported, setSessionArticlesImported] = useState(0);
+  const [importStartTime, setImportStartTime] = useState<Date | null>(null);
+  const [articlesPerSecond, setArticlesPerSecond] = useState(0);
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
   useEffect(() => {
@@ -71,6 +74,24 @@ const ImportAdmin = () => {
         (payload) => {
           console.log('🔴 Real-time: New article inserted!', payload);
           setLastUpdateTime(new Date());
+          
+          // Increment session counter if import is active
+          if (importing === 'all-verticals') {
+            setSessionArticlesImported(prev => {
+              const newCount = prev + 1;
+              
+              // Calculate articles per second
+              if (importStartTime) {
+                const elapsedSeconds = (Date.now() - importStartTime.getTime()) / 1000;
+                if (elapsedSeconds > 0) {
+                  setArticlesPerSecond(Math.round(newCount / elapsedSeconds));
+                }
+              }
+              
+              return newCount;
+            });
+          }
+          
           // Refresh metrics when articles are inserted
           loadMetrics();
         }
@@ -91,7 +112,7 @@ const ImportAdmin = () => {
       supabase.removeChannel(channel);
       setRealtimeConnected(false);
     };
-  }, []);
+  }, [importing, importStartTime]);
   
   const loadMetrics = async () => {
     try {
@@ -165,6 +186,9 @@ const ImportAdmin = () => {
     setLiveImportResults([]);
     setRunningTotal(0);
     setCurrentVertical('');
+    setSessionArticlesImported(0);
+    setImportStartTime(new Date());
+    setArticlesPerSecond(0);
     
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -290,7 +314,8 @@ const ImportAdmin = () => {
         setProgressStatus('');
         setProgressPercent(0);
         setCurrentVertical('');
-      }, 5000);
+        setImportStartTime(null);
+      }, 10000); // Keep stats visible for 10 seconds after completion
     }
   };
 
@@ -446,6 +471,28 @@ const ImportAdmin = () => {
 
                 {importing === 'all-verticals' && (
                   <div className="space-y-4">
+                    {/* Real-time Import Stats */}
+                    <div className="grid grid-cols-3 gap-4 p-6 bg-gradient-to-br from-green-500/10 to-blue-500/10 rounded-lg border-2 border-green-500/20">
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground mb-2 flex items-center justify-center gap-1">
+                          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                          Articles This Session
+                        </p>
+                        <p className="text-4xl font-bold text-green-500">{sessionArticlesImported.toLocaleString()}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground mb-2">Import Rate</p>
+                        <p className="text-4xl font-bold text-blue-500">{articlesPerSecond}</p>
+                        <p className="text-xs text-muted-foreground">articles/sec</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground mb-2">Elapsed Time</p>
+                        <p className="text-4xl font-bold text-purple-500">
+                          {importStartTime ? Math.floor((Date.now() - importStartTime.getTime()) / 1000) : 0}s
+                        </p>
+                      </div>
+                    </div>
+
                     {/* Overall Progress */}
                     <div className="space-y-3 p-4 bg-background rounded-lg border">
                       <div className="flex items-center justify-between">
@@ -462,8 +509,8 @@ const ImportAdmin = () => {
                         <p className="text-lg font-bold text-blue-500">{currentVertical || 'Initializing...'}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-muted-foreground mb-1">Total Articles Imported</p>
-                        <p className="text-lg font-bold text-green-500">{runningTotal.toLocaleString()}</p>
+                        <p className="text-xs text-muted-foreground mb-1">Total in Database</p>
+                        <p className="text-lg font-bold text-green-500">{totalArticles.toLocaleString()}</p>
                       </div>
                     </div>
 
