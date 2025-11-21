@@ -14,4 +14,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://amplifix.ai/sitemap.xml
+Sitemap: https://www.amplifix.net/sitemap_index.xml
