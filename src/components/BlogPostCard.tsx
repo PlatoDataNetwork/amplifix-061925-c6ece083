@@ -38,6 +38,13 @@ const sanitizeText = (text?: string | null) => {
     .trim();
 };
 
+const capitalizeVertical = (text: string) => {
+  return text
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join('/');
+};
+
 const cacheArticle = (post: BlogPost) => {
   try {
     sessionStorage.setItem(`article_${post.id}`, JSON.stringify(post));
@@ -78,7 +85,7 @@ const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: B
             to={`${langPrefix}/intel/${post.category.toLowerCase().replace(/\//g, '-')}`}
             className="bg-blue-500/20 text-blue-500 px-2 py-1 rounded text-sm translate hover:bg-blue-500 hover:text-white transition-colors"
           >
-            {post.category}
+            {capitalizeVertical(post.category)}
           </Link>
           <span className="text-muted-foreground text-sm notranslate">{post.readTime}</span>
         </div>
