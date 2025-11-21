@@ -75,19 +75,24 @@ export default function TranslationTest() {
           <CardContent className="space-y-6">
             {/* Language Selector */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">Select Language</label>
-              <Select value={selectedLanguage} onValueChange={handleLanguageChange}>
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="max-h-[400px] overflow-y-auto">
-                  {SUPPORTED_LANGUAGES.map((lang) => (
-                    <SelectItem key={lang.code} value={lang.code}>
-                      {lang.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <label
+                className="text-sm font-medium"
+                htmlFor="translation-language-select"
+              >
+                Select Language
+              </label>
+              <select
+                id="translation-language-select"
+                value={selectedLanguage}
+                onChange={(e) => handleLanguageChange(e.target.value)}
+                className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {SUPPORTED_LANGUAGES.map((lang) => (
+                  <option key={lang.code} value={lang.code}>
+                    {lang.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Common Translations Preview */}
