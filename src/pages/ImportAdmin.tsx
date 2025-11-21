@@ -50,80 +50,71 @@ const ImportAdmin = () => {
   const [lastUpdateTime, setLastUpdateTime] = useState<Date | null>(null);
   const [sessionArticlesImported, setSessionArticlesImported] = useState(0);
   const [importStartTime, setImportStartTime] = useState<Date | null>(null);
-  const [articlesPerSecond, setArticlesPerSecond] = useState(0);
+  const [sessionDuration, setSessionDuration] = useState(0);
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
-  // Initialize timer on mount
+  // Derived import rate (articles per second)
+  const importRate =
+    sessionDuration > 0
+      ? Math.round(sessionArticlesImported / sessionDuration)
+      : 0;
+
+  // Session timer
   useEffect(() => {
-    if (!importStartTime) {
-      setImportStartTime(new Date());
-    }
-  }, []);
+    if (!importStartTime) return;
+
+    const interval = setInterval(() => {
+      setSessionDuration(
+        Math.floor((Date.now() - importStartTime.getTime()) / 1000)
+      );
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [importStartTime]);
   
+  // Real-time subscription for article inserts (updates totals + last updated time)
   useEffect(() => {
     loadMetrics();
 
     // Set up real-time subscription for article changes
-    console.log('Setting up real-time subscription for articles...');
+    console.log("Setting up real-time subscription for articles...");
     const channel = supabase
-      .channel('article-imports', {
+      .channel("article-imports", {
         config: {
-          broadcast: { self: true }
-        }
+          broadcast: { self: true },
+        },
       })
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'articles'
+          event: "INSERT",
+          schema: "public",
+          table: "articles",
         },
         (payload) => {
-          console.log('🔴 Real-time: New article inserted!', payload);
-          const now = new Date();
-          setLastUpdateTime(now);
-          
-          // Always increment session counter for any article insert
-          setSessionArticlesImported(prev => {
-            const newCount = prev + 1;
-            console.log('📈 Session articles updated:', newCount);
-            return newCount;
-          });
-          
-          // Calculate articles per second
-          setImportStartTime(prevStartTime => {
-            if (prevStartTime) {
-              const elapsedSeconds = (now.getTime() - prevStartTime.getTime()) / 1000;
-              if (elapsedSeconds > 0) {
-                const rate = Math.round((sessionArticlesImported + 1) / elapsedSeconds);
-                console.log('⚡ Import rate:', rate, 'articles/sec');
-                setArticlesPerSecond(rate);
-              }
-            }
-            return prevStartTime;
-          });
-          
+          console.log("🔴 Real-time: New article inserted!", payload);
+          setLastUpdateTime(new Date());
           // Refresh metrics when articles are inserted
           loadMetrics();
         }
       )
       .subscribe((status) => {
-        console.log('Real-time subscription status:', status);
-        if (status === 'SUBSCRIBED') {
+        console.log("Real-time subscription status:", status);
+        if (status === "SUBSCRIBED") {
           setRealtimeConnected(true);
-          console.log('✅ Real-time updates active for articles');
-        } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
+          console.log("✅ Real-time updates active for articles");
+        } else if (status === "CLOSED" || status === "CHANNEL_ERROR") {
           setRealtimeConnected(false);
-          console.log('❌ Real-time subscription error:', status);
+          console.log("❌ Real-time subscription error:", status);
         }
       });
 
     return () => {
-      console.log('Cleaning up real-time subscription');
+      console.log("Cleaning up real-time subscription");
       supabase.removeChannel(channel);
       setRealtimeConnected(false);
     };
-  }, [sessionArticlesImported]);
+  }, []);
   
   const loadMetrics = async () => {
     try {
@@ -202,7 +193,7 @@ const ImportAdmin = () => {
     if (!importStartTime) {
       setSessionArticlesImported(0);
       setImportStartTime(new Date());
-      setArticlesPerSecond(0);
+      setSessionDuration(0);
     }
     
     try {
@@ -269,6 +260,9 @@ const ImportAdmin = () => {
             
             // Update running total in real-time
             setRunningTotal(totalImported);
+
+            // Update session stats
+            setSessionArticlesImported(prev => prev + importedCount);
             
             // Update to success with count
             setLiveImportResults(prev => prev.map(item => 
@@ -337,11 +331,16 @@ const ImportAdmin = () => {
   const resetSessionStats = () => {
     setSessionArticlesImported(0);
     setImportStartTime(new Date());
-    setArticlesPerSecond(0);
+    setSessionDuration(0);
   };
 
   const importVertical = async (vertical: string, verticalSlug: string) => {
     setImporting(vertical);
+
+    if (!importStartTime) {
+      setImportStartTime(new Date());
+      setSessionDuration(0);
+    }
     
     try {
       const { data, error } = await supabase.functions.invoke('import-articles', {
@@ -351,8 +350,14 @@ const ImportAdmin = () => {
       if (error) throw error;
 
       setResults(prev => ({ ...prev, [vertical]: data }));
+
+      const importedCount = data?.insertedArticles || 0;
+      if (importedCount > 0) {
+        setSessionArticlesImported(prev => prev + importedCount);
+      }
+
       toast.success(`${vertical} import completed!`, {
-        description: `Imported ${data.insertedArticles} articles`
+        description: `Imported ${importedCount} articles`
       });
       await loadMetrics(); // Refresh metrics after import
     } catch (error) {
@@ -372,6 +377,11 @@ const ImportAdmin = () => {
     }
     
     setImporting('vertical-test');
+
+    if (!importStartTime) {
+      setImportStartTime(new Date());
+      setSessionDuration(0);
+    }
     
     try {
       const { data, error } = await supabase.functions.invoke('import-articles', {
@@ -391,6 +401,11 @@ const ImportAdmin = () => {
         .order('created_at', { ascending: false })
         .limit(limit);
 
+      const importedCount = data?.insertedArticles || 0;
+      if (importedCount > 0) {
+        setSessionArticlesImported(prev => prev + importedCount);
+      }
+
       setResults(prev => ({ 
         ...prev, 
         'vertical-test': {
@@ -400,7 +415,7 @@ const ImportAdmin = () => {
       }));
       
       toast.success(`${selectedTestVertical} test import completed!`, {
-        description: `Imported ${data.insertedArticles} articles`
+        description: `Imported ${importedCount} articles`
       });
       await loadMetrics();
     } catch (error) {
@@ -503,13 +518,13 @@ const ImportAdmin = () => {
                 </div>
                 <div className="text-center p-4 bg-background rounded-lg border">
                   <p className="text-xs text-muted-foreground mb-2">Import Rate</p>
-                  <p className="text-4xl font-bold text-blue-500">{articlesPerSecond}</p>
+                  <p className="text-4xl font-bold text-blue-500">{importRate}</p>
                   <p className="text-xs text-muted-foreground mt-1">articles/sec</p>
                 </div>
                 <div className="text-center p-4 bg-background rounded-lg border">
                   <p className="text-xs text-muted-foreground mb-2">Session Duration</p>
                   <p className="text-4xl font-bold text-purple-500">
-                    {importStartTime ? Math.floor((Date.now() - importStartTime.getTime()) / 1000) : 0}s
+                    {sessionDuration}s
                   </p>
                 </div>
               </div>
