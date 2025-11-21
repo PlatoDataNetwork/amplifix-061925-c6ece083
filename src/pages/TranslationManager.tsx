@@ -8,8 +8,9 @@ import { AlertCircle, CheckCircle2, Clock, Eye, Languages, Loader2, XCircle, Che
 import MainHeader from "@/components/MainHeader";
 import { useNavigate } from "react-router-dom";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const SUPPORTED_LANGUAGES = [
   { code: 'ar', name: 'Arabic' },
@@ -389,15 +390,32 @@ export default function TranslationManager() {
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="p-0" style={{ width: 'var(--radix-popover-trigger-width)' }} align="start">
-                    <Command>
-                      <CommandInput placeholder="Search languages..." />
-                      <CommandEmpty>No language found.</CommandEmpty>
-                      <CommandGroup className="max-h-64 overflow-auto">
+                  <PopoverContent className="w-[400px] p-0" align="start">
+                    <div className="p-4 border-b">
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSelectedLanguages(SUPPORTED_LANGUAGES.map(l => l.code))}
+                        >
+                          Select All
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSelectedLanguages([])}
+                        >
+                          Clear All
+                        </Button>
+                      </div>
+                    </div>
+                    <ScrollArea className="h-[300px]">
+                      <div className="p-4 space-y-2">
                         {SUPPORTED_LANGUAGES.map((lang) => (
-                          <CommandItem
+                          <div
                             key={lang.code}
-                            onSelect={() => {
+                            className="flex items-center space-x-2 hover:bg-muted/50 p-2 rounded-md cursor-pointer"
+                            onClick={() => {
                               setSelectedLanguages((prev) =>
                                 prev.includes(lang.code)
                                   ? prev.filter((code) => code !== lang.code)
@@ -405,16 +423,23 @@ export default function TranslationManager() {
                               );
                             }}
                           >
-                            <Check
-                              className={`mr-2 h-4 w-4 ${
-                                selectedLanguages.includes(lang.code) ? "opacity-100" : "opacity-0"
-                              }`}
+                            <Checkbox
+                              checked={selectedLanguages.includes(lang.code)}
+                              onCheckedChange={() => {
+                                setSelectedLanguages((prev) =>
+                                  prev.includes(lang.code)
+                                    ? prev.filter((code) => code !== lang.code)
+                                    : [...prev, lang.code]
+                                );
+                              }}
                             />
-                            {lang.name} ({lang.code})
-                          </CommandItem>
+                            <label className="text-sm cursor-pointer flex-1">
+                              {lang.name} ({lang.code})
+                            </label>
+                          </div>
                         ))}
-                      </CommandGroup>
-                    </Command>
+                      </div>
+                    </ScrollArea>
                   </PopoverContent>
                 </Popover>
                 
