@@ -13,6 +13,7 @@ import { useJsonData } from "@/hooks/useJsonData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 interface ContactData {
   contact: {
@@ -78,6 +79,7 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   useLanguage();
+  useGTranslateRefresh(!isLoading && !!data, [data]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

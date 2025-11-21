@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useJsonData } from "@/hooks/useJsonData";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 interface FAQItem {
   question: string;
@@ -31,6 +32,7 @@ const FAQ = () => {
   const { data, isLoading, error } = useJsonData<FAQData>('faq.json');
   const { t } = useTranslation('common');
   useLanguage();
+  useGTranslateRefresh(!isLoading && !!data, [data]);
 
   if (isLoading) {
   return (
