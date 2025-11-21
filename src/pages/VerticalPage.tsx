@@ -4,7 +4,7 @@ import MainHeader from "@/components/MainHeader";
 import SEOHead from "@/components/SEOHead";
 import BlogPostCard from "@/components/BlogPostCard";
 import NewsletterSignup from "@/components/NewsletterSignup";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useMemo, useState, useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
@@ -17,8 +17,15 @@ import { getCurrentLanguage } from "@/utils/language";
 const VerticalPage = () => {
   const { vertical } = useParams<{ vertical: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { verticals } = usePlatoVerticals();
   useLanguage();
+  
+  // Determine language prefix from current path (e.g. /uk/intel/...)
+  const pathParts = location.pathname.split("/").filter(Boolean);
+  const languagePrefix = pathParts[0];
+  const isLanguagePath = languagePrefix && languagePrefix.length === 2 && languagePrefix !== "intel";
+  const langPrefix = isLanguagePath ? `/${languagePrefix}` : "";
   
   const [visibleCount, setVisibleCount] = useState(12);
   const POSTS_INCREMENT = 12;
@@ -95,7 +102,7 @@ const VerticalPage = () => {
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-3xl font-bold mb-4">Vertical Not Found</h1>
             <p className="text-muted-foreground mb-6">The vertical you're looking for doesn't exist.</p>
-            <Button onClick={() => navigate('/intel')} variant="outline">
+            <Button onClick={() => navigate(`${langPrefix}/intel`)} variant="outline">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Intelligence
             </Button>
@@ -117,7 +124,7 @@ const VerticalPage = () => {
       <div className="pt-24 container mx-auto py-8 md:py-12 px-4">
         {/* Back Button */}
         <Button 
-          onClick={() => navigate('/intel')} 
+          onClick={() => navigate(`${langPrefix}/intel`)} 
           variant="ghost" 
           className="mb-8"
         >
@@ -174,7 +181,7 @@ const VerticalPage = () => {
                     ...post,
                     readTime: post.read_time
                   }} 
-                  articleLink={`/intel/external/${post.id}`}
+                  articleLink={`${langPrefix}/intel/external/${post.id}`}
                   buttonText="Read Full Article"
                 />
               ))}
@@ -205,7 +212,7 @@ const VerticalPage = () => {
             <p className="text-muted-foreground text-lg mb-4">
               No articles available for {verticalInfo.name} at the moment.
             </p>
-            <Button onClick={() => navigate('/intel')} variant="outline">
+            <Button onClick={() => navigate(`${langPrefix}/intel`)} variant="outline">
               View All Articles
             </Button>
           </div>

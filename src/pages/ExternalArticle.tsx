@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
@@ -15,12 +15,19 @@ import { getCurrentLanguage, getGTranslateCode } from "@/utils/language";
 const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { verticals } = usePlatoVerticals();
   const { isAdmin } = useAdminCheck();
   const [article, setArticle] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [tags, setTags] = useState<string[]>([]);
   useLanguage(); // Enable translation
+
+  // Determine language prefix from current path (e.g. /uk/intel/...)
+  const pathParts = location.pathname.split("/").filter(Boolean);
+  const languagePrefix = pathParts[0];
+  const isLanguagePath = languagePrefix && languagePrefix.length === 2 && languagePrefix !== "intel";
+  const langPrefix = isLanguagePath ? `/${languagePrefix}` : "";
 
   const shareArticle = (platform: string) => {
     const url = window.location.href;
@@ -194,7 +201,7 @@ if (!article) {
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-3xl font-bold mb-4">Article Not Found</h1>
           <p className="text-muted-foreground mb-6">The article you're looking for doesn't exist.</p>
-          <Button onClick={() => navigate('/intel')} variant="outline">
+          <Button onClick={() => navigate(`${langPrefix}/intel`)} variant="outline">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Intelligence
           </Button>
@@ -298,7 +305,7 @@ if (!article) {
                   </Button>
                 )}
                 <Button 
-                  onClick={() => navigate(`/intel/${article.vertical_slug || ''}`)} 
+                  onClick={() => navigate(`${langPrefix}/intel/${article.vertical_slug || ''}`)} 
                   variant="ghost" 
                   className="text-blue-500 hover:text-blue-400"
                 >
