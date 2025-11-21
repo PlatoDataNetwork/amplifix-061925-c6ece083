@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import MainHeader from "@/components/MainHeader";
 import { Helmet } from "react-helmet-async";
 import { ShowcaseLogoFixer } from "@/components/ShowcaseLogoFixer";
+import { LogoGallery } from "@/components/LogoGallery";
 
 interface ShowcaseCompany {
   id: string;
@@ -392,7 +393,7 @@ const ShowcaseAdmin = () => {
 
                     <div className="md:col-span-2">
                       <Label htmlFor="thumbnail">Thumbnail</Label>
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4 mb-4">
                         <Input
                           id="thumbnail"
                           type="file"
@@ -404,10 +405,18 @@ const ShowcaseAdmin = () => {
                           <img
                             src={formData.thumbnail}
                             alt="Preview"
-                            className="h-12 w-12 object-cover rounded"
+                            className="h-12 w-12 object-contain rounded border p-1"
                           />
                         )}
                       </div>
+                      
+                      <div className="text-sm text-muted-foreground mb-2">
+                        Or select from existing logos:
+                      </div>
+                      <LogoGallery 
+                        onSelect={(logoPath) => setFormData({ ...formData, thumbnail: logoPath })}
+                        selectedLogo={formData.thumbnail || undefined}
+                      />
                     </div>
                   </div>
 
