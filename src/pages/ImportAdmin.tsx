@@ -1352,18 +1352,19 @@ const ImportAdmin = () => {
                         setProgressPercent(0);
                         setProgressStatus('Initializing...');
 
-                        // Check for existing in-progress job
-                        const { data: existingJobs, error: jobCheckError } = await supabase
+                        // Always reset any previous non-completed jobs so we start clean
+                        const { error: resetError } = await supabase
                           .from('ai_processing_jobs')
-                          .select('*')
+                          .update({ 
+                            status: 'failed',
+                            updated_at: new Date().toISOString()
+                          })
                           .eq('vertical_slug', 'aerospace')
-                          .eq('status', 'in_progress')
-                          .order('started_at', { ascending: false })
-                          .limit(1);
+                          .neq('status', 'completed');
 
-                        if (jobCheckError) {
-                          console.error('Error checking for existing jobs:', jobCheckError);
-                          throw jobCheckError;
+                        if (resetError) {
+                          console.error('Error resetting previous AI jobs:', resetError);
+                          throw resetError;
                         }
 
                         // Get total count of aerospace articles
@@ -1375,41 +1376,28 @@ const ImportAdmin = () => {
 
                         const totalArticles = count || 0;
                         const chunkSize = 50;
-                        const totalChunks = Math.ceil(totalArticles / chunkSize);
+                        const totalChunks = Math.max(1, Math.ceil(totalArticles / chunkSize));
 
-                        let jobId: string;
-                        let processedChunks: number[] = [];
-                        let failedChunks: number[] = [];
+                        // Create a brand new processing job
+                        const { data: newJob, error: createError } = await supabase
+                          .from('ai_processing_jobs')
+                          .insert({
+                            vertical_slug: 'aerospace',
+                            total_chunks: totalChunks,
+                            status: 'in_progress'
+                          })
+                          .select()
+                          .single();
 
-                        if (existingJobs && existingJobs.length > 0) {
-                          const job = existingJobs[0];
-                          jobId = job.id;
-                          processedChunks = job.processed_chunks || [];
-                          failedChunks = job.failed_chunks || [];
-                          
-                          toast.info(`Resuming job with ${processedChunks.length}/${totalChunks} chunks completed`, {
-                            description: "Auto-resume enabled - will continue until complete"
-                          });
-                        } else {
-                          const { data: newJob, error: createError } = await supabase
-                            .from('ai_processing_jobs')
-                            .insert({
-                              vertical_slug: 'aerospace',
-                              total_chunks: totalChunks,
-                              status: 'in_progress'
-                            })
-                            .select()
-                            .single();
-
-                          if (createError || !newJob) {
-                            throw createError || new Error('Failed to create job');
-                          }
-
-                          jobId = newJob.id;
-                          toast.info("Starting AI processing", {
-                            description: `${totalChunks} chunks × 50 articles with 5× parallel processing`
-                          });
+                        if (createError || !newJob) {
+                          throw createError || new Error('Failed to create AI processing job');
                         }
+
+                        const jobId = newJob.id as string;
+
+                        toast.info('Starting AI processing from scratch', {
+                          description: `${totalChunks} chunks × ${chunkSize} articles with 5× parallel processing`
+                        });
 
                         setAiProcessingJobId(jobId);
                         setTotalAiChunks(totalChunks);
