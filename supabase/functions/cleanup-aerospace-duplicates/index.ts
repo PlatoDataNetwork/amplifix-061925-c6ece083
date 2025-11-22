@@ -26,12 +26,13 @@ Deno.serve(async (req) => {
 
     console.log(`🧹 Starting aerospace duplicate cleanup (dry run: ${dryRun})`);
 
-    // Step 1: Get all aerospace articles
+    // Step 1: Get all aerospace articles (remove default limit)
     const { data: allArticles, error: fetchError } = await supabaseClient
       .from('articles')
       .select('id, title, created_at')
       .eq('vertical_slug', 'aerospace')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(20000); // Set high limit to get all articles
 
     if (fetchError) {
       console.error('Error fetching articles:', fetchError);
