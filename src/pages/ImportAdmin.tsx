@@ -111,9 +111,12 @@ const ImportAdmin = () => {
       }
 
       if (job) {
-        const processedCount = (job.processed_chunks || []).length;
-        const failedCount = (job.failed_chunks || []).length;
         const totalChunks = job.total_chunks || 0;
+        const rawProcessed = (job.processed_chunks || []) as number[];
+        // Deduplicate and clamp processed chunk indexes so we never exceed totalChunks
+        const validProcessed = rawProcessed.filter((i) => i >= 0 && i < totalChunks);
+        const processedCount = Array.from(new Set(validProcessed)).length;
+        const failedCount = (job.failed_chunks || []).length;
         const rawProgressPercent = totalChunks > 0 ? Math.round((processedCount / totalChunks) * 100) : 0;
         const progressPercent = Math.max(0, Math.min(100, rawProgressPercent));
         
@@ -1482,7 +1485,10 @@ const ImportAdmin = () => {
                             .single();
                           
                           if (updatedJob) {
-                            const doneCount = (updatedJob.processed_chunks || []).length;
+                            const rawProcessed = (updatedJob.processed_chunks || []) as number[];
+                            // Deduplicate and clamp processed chunk indexes so we never exceed totalChunks
+                            const validProcessed = rawProcessed.filter((i) => i >= 0 && i < totalChunks);
+                            const doneCount = Array.from(new Set(validProcessed)).length;
                             const failCount = (updatedJob.failed_chunks || []).length;
                             const rawProgress = totalChunks > 0 ? Math.round((doneCount / totalChunks) * 100) : 0;
                             const clampedProgress = Math.max(0, Math.min(100, rawProgress));
