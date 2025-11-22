@@ -183,8 +183,14 @@ Deno.serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Create channel for real-time progress updates
-    const progressChannel = supabaseClient.channel(`aerospace-import-${user.id}`);
+    // Create and subscribe to channel for real-time progress updates
+    const progressChannel = supabaseClient.channel(`aerospace-import-${user.id}`, {
+      config: {
+        broadcast: { self: true }
+      }
+    });
+    
+    await progressChannel.subscribe();
 
     // Helper to broadcast progress
     const broadcastProgress = async (update: any) => {
