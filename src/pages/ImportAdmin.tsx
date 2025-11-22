@@ -75,6 +75,16 @@ const ImportAdmin = () => {
   const [parallelChunksInProgress, setParallelChunksInProgress] = useState<Set<number>>(new Set());
   const [aiProcessingJobId, setAiProcessingJobId] = useState<string | null>(null);
   const [totalAiChunks, setTotalAiChunks] = useState<number>(0);
+  const [aiJobStats, setAiJobStats] = useState<{
+    totalChunks: number;
+    processedChunks: number;
+    failedChunks: number;
+    progressPercent: number;
+    startedAt: string | null;
+    estimatedTimeRemaining: string | null;
+    articlesProcessed: number;
+    articlesPerMinute: number;
+  } | null>(null);
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
   // Derived import rate (articles per second)
@@ -82,6 +92,75 @@ const ImportAdmin = () => {
     sessionDuration > 0
       ? Math.round(sessionArticlesImported / sessionDuration)
       : 0;
+
+  // Load AI processing job stats on mount and refresh
+  const loadAiJobStats = async () => {
+    try {
+      const { data: job, error } = await supabase
+        .from('ai_processing_jobs')
+        .select('*')
+        .eq('vertical_slug', 'aerospace')
+        .eq('status', 'in_progress')
+        .order('started_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error loading AI job stats:', error);
+        return;
+      }
+
+      if (job) {
+        const processedCount = (job.processed_chunks || []).length;
+        const failedCount = (job.failed_chunks || []).length;
+        const totalChunks = job.total_chunks || 0;
+        const progressPercent = totalChunks > 0 ? Math.round((processedCount / totalChunks) * 100) : 0;
+        
+        // Calculate time estimates
+        const startTime = new Date(job.started_at);
+        const now = new Date();
+        const elapsedMinutes = (now.getTime() - startTime.getTime()) / 1000 / 60;
+        const articlesProcessed = processedCount * 50; // 50 articles per chunk
+        const articlesPerMinute = elapsedMinutes > 0 ? Math.round(articlesProcessed / elapsedMinutes) : 0;
+        
+        const remainingChunks = totalChunks - processedCount - failedCount;
+        const remainingArticles = remainingChunks * 50;
+        const estimatedMinutesRemaining = articlesPerMinute > 0 ? Math.round(remainingArticles / articlesPerMinute) : 0;
+        const estimatedTimeRemaining = estimatedMinutesRemaining > 60 
+          ? `${Math.floor(estimatedMinutesRemaining / 60)}h ${estimatedMinutesRemaining % 60}m`
+          : `${estimatedMinutesRemaining}m`;
+
+        setAiJobStats({
+          totalChunks,
+          processedChunks: processedCount,
+          failedChunks: failedCount,
+          progressPercent,
+          startedAt: job.started_at,
+          estimatedTimeRemaining: remainingChunks > 0 ? estimatedTimeRemaining : null,
+          articlesProcessed,
+          articlesPerMinute
+        });
+        
+        setAiProcessingJobId(job.id);
+        setTotalAiChunks(totalChunks);
+      } else {
+        setAiJobStats(null);
+      }
+    } catch (error) {
+      console.error('Error loading AI job stats:', error);
+    }
+  };
+
+  // Load AI job stats on mount and set up auto-refresh
+  useEffect(() => {
+    loadAiJobStats();
+    
+    const interval = setInterval(() => {
+      loadAiJobStats();
+    }, 5000); // Refresh every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Session timer
   useEffect(() => {
@@ -1094,6 +1173,56 @@ const ImportAdmin = () => {
                   <li className="text-green-600 dark:text-green-400 font-bold mt-2">Combined: ~25x faster than original!</li>
                 </ul>
               </div>
+              
+              {/* AI Processing Stats - Always Visible */}
+              {aiJobStats && (
+                <div className="mt-4 p-4 bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/30 rounded-lg">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-sm font-semibold text-purple-700 dark:text-purple-300">📊 Current AI Processing Job</h4>
+                    <span className="text-xs text-muted-foreground">
+                      Started: {new Date(aiJobStats.startedAt || '').toLocaleString()}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+                    <div className="p-3 bg-background/80 rounded-lg border">
+                      <p className="text-xs text-muted-foreground mb-1">Progress</p>
+                      <p className="text-2xl font-bold text-purple-500">{aiJobStats.progressPercent}%</p>
+                      <p className="text-xs text-muted-foreground">{aiJobStats.processedChunks}/{aiJobStats.totalChunks} chunks</p>
+                    </div>
+                    
+                    <div className="p-3 bg-background/80 rounded-lg border">
+                      <p className="text-xs text-muted-foreground mb-1">Articles Processed</p>
+                      <p className="text-2xl font-bold text-green-500">{aiJobStats.articlesProcessed.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground">{aiJobStats.articlesPerMinute}/min</p>
+                    </div>
+                    
+                    <div className="p-3 bg-background/80 rounded-lg border">
+                      <p className="text-xs text-muted-foreground mb-1">Failed Chunks</p>
+                      <p className="text-2xl font-bold text-red-500">{aiJobStats.failedChunks}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {aiJobStats.failedChunks > 0 ? 'needs retry' : 'all good'}
+                      </p>
+                    </div>
+                    
+                    <div className="p-3 bg-background/80 rounded-lg border">
+                      <p className="text-xs text-muted-foreground mb-1">Time Remaining</p>
+                      <p className="text-2xl font-bold text-blue-500">
+                        {aiJobStats.estimatedTimeRemaining || 'Done'}
+                      </p>
+                      <p className="text-xs text-muted-foreground">estimated</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Overall Progress</span>
+                      <span className="font-medium">{aiJobStats.progressPercent}%</span>
+                    </div>
+                    <Progress value={aiJobStats.progressPercent} className="h-2" />
+                  </div>
+                </div>
+              )}
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -1258,6 +1387,9 @@ const ImportAdmin = () => {
                             const progress = Math.round((doneCount / totalChunks) * 100);
                             setProgressPercent(progress);
                             setProgressStatus(`${doneCount}/${totalChunks} chunks done (${failCount} failed)`);
+                            
+                            // Refresh stats display
+                            loadAiJobStats();
                           }
 
                           return true; // Continue
@@ -1307,33 +1439,14 @@ const ImportAdmin = () => {
                   
                   <Button
                     onClick={async () => {
-                      try {
-                        const { data: job } = await supabase
-                          .from('ai_processing_jobs')
-                          .select('*')
-                          .eq('vertical_slug', 'aerospace')
-                          .eq('status', 'in_progress')
-                          .single();
-
-                        if (job) {
-                          const processed = job.processed_chunks?.length || 0;
-                          const failed = job.failed_chunks?.length || 0;
-                          const total = job.total_chunks || 0;
-                          toast.info(`Progress: ${processed}/${total} chunks`, {
-                            description: `${failed} failed • ${Array.from(parallelChunksInProgress).length} in progress`
-                          });
-                        } else {
-                          toast.info('No active job found');
-                        }
-                      } catch (error) {
-                        toast.error('Failed to fetch job status');
-                      }
+                      await loadAiJobStats();
+                      toast.success('Stats refreshed!');
                     }}
                     variant="outline"
                     className="h-14 px-6"
                     size="lg"
                   >
-                    📊 Status
+                    🔄 Refresh Stats
                   </Button>
                 </div>
 
