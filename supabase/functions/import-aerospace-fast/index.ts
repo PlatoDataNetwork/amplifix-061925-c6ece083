@@ -360,7 +360,7 @@ Deno.serve(async (req) => {
         .from('import_history')
         .select('*')
         .eq('id', resumeFromHistory)
-        .single();
+        .maybeSingle();
 
       if (!existingHistory || existingHistory.status !== 'partial' || !(existingHistory.metadata as any)?.nextPage) {
         throw new Error('Cannot resume: import not found or not resumable');

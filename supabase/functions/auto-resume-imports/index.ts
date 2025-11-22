@@ -194,7 +194,7 @@ async function processImportBatch(
     results.duration = Date.now() - startTime;
     
     const hasMore = hasMorePages && currentPage <= endPage;
-    const finalStatus = hasMore ? 'needs_resume' : (results.errors > 0 ? 'partial' : 'completed');
+    const finalStatus = hasMore ? 'partial' : (results.errors > 0 ? 'partial' : 'completed');
 
     await supabaseClient
       .from('import_history')
@@ -204,14 +204,17 @@ async function processImportBatch(
         error_count: results.errors,
         total_processed: results.totalInFeed,
         duration_ms: results.duration,
-        completed_at: finalStatus !== 'needs_resume' ? new Date().toISOString() : null,
+        completed_at: !hasMore ? new Date().toISOString() : null,
         status: finalStatus,
         metadata: {
           totalPages: results.totalPages,
           totalInFeed: results.totalInFeed,
           lastProcessedPage: currentPage - 1,
           nextPage: hasMore ? currentPage : null,
-          note: hasMore ? `Auto-resume: Processed ${maxPages} pages` : 'Auto-resume: Import completed'
+          resumable: hasMore,
+          note: hasMore 
+            ? `Auto-resume: Processed ${maxPages} pages, will continue from page ${currentPage}` 
+            : 'Auto-resume: Import completed'
         }
       })
       .eq('id', historyId);
