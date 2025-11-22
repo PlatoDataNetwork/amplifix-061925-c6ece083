@@ -1226,6 +1226,55 @@ const ImportAdmin = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
+                {/* Single Article Reformatter */}
+                <div className="p-4 bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-lg">
+                  <h4 className="text-sm font-semibold text-yellow-700 dark:text-yellow-300 mb-3">🔧 Reformat Single Article</h4>
+                  <div className="flex gap-2">
+                    <Input
+                      id="single-article-id"
+                      placeholder="Paste article ID here..."
+                      className="flex-1"
+                    />
+                    <Button
+                      onClick={async () => {
+                        const input = document.getElementById('single-article-id') as HTMLInputElement;
+                        const articleId = input?.value?.trim();
+                        
+                        if (!articleId) {
+                          toast.error('Please enter an article ID');
+                          return;
+                        }
+
+                        try {
+                          toast.info('Reformatting article...');
+                          const { data, error } = await supabase.functions.invoke('reformat-single-article', {
+                            body: { articleId }
+                          });
+
+                          if (error) throw error;
+
+                          toast.success('Article reformatted!', {
+                            description: data.title
+                          });
+                          input.value = '';
+                        } catch (error) {
+                          console.error('Error reformatting:', error);
+                          toast.error('Failed to reformat article', {
+                            description: error instanceof Error ? error.message : 'Unknown error'
+                          });
+                        }
+                      }}
+                      variant="default"
+                      className="bg-yellow-600 hover:bg-yellow-700"
+                    >
+                      Reformat
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Use this to fix formatting on specific articles. Article ID: <code className="bg-muted px-1 rounded">29db9154-72b2-46f1-851b-9eeae32af2f0</code>
+                  </p>
+                </div>
+
                 {/* Control Buttons */}
                 <div className="flex gap-2">
                   <Button

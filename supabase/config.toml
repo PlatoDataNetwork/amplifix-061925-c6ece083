@@ -54,6 +54,9 @@ verify_jwt = true
 [functions.format-all-articles]
 verify_jwt = true
 
+[functions.reformat-single-article]
+verify_jwt = true
+
 [functions.auto-resume-imports]
 verify_jwt = false
 
