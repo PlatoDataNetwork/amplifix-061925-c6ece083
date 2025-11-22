@@ -458,6 +458,96 @@ const ImportAdmin = () => {
     }
   };
 
+  const importAerospaceFast = async () => {
+    setImporting('aerospace-fast');
+    setProgressStatus('Starting FAST import (no AI)...');
+    setProgressPercent(0);
+    setAerospaceProgress(null);
+
+    if (!importStartTime) {
+      setImportStartTime(new Date());
+      setSessionDuration(0);
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('User not found');
+        return;
+      }
+
+      const progressChannel = supabase
+        .channel(`aerospace-fast-${user.id}`)
+        .on('broadcast', { event: 'import-progress' }, (payload) => {
+          console.log('📡 Progress update:', payload);
+          setAerospaceProgress(payload.payload);
+          
+          if (payload.payload.phase === 'processing') {
+            setProgressPercent(20 + (payload.payload.currentPage / 10));
+            setProgressStatus(payload.payload.message);
+          } else if (payload.payload.phase === 'complete') {
+            setProgressPercent(100);
+            setProgressStatus('Fast import complete!');
+          }
+        })
+        .subscribe();
+
+      toast.info('Starting FAST Aerospace import (no AI processing - all 9,240 articles)...');
+
+      setProgressPercent(10);
+      setProgressStatus('Connecting to import service...');
+
+      const { data, error } = await supabase.functions.invoke('import-aerospace-fast', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      await supabase.removeChannel(progressChannel);
+
+      if (error) throw error;
+
+      setProgressPercent(100);
+      setProgressStatus('Fast import completed!');
+
+      const importedCount = data?.imported || 0;
+      if (importedCount > 0) {
+        setSessionArticlesImported(prev => prev + importedCount);
+      }
+
+      setResults(prev => ({ 
+        ...prev, 
+        'aerospace-fast': data 
+      }));
+
+      toast.success('Aerospace FAST import completed!', {
+        description: `Imported ${data?.imported || 0} new articles from ${data?.totalPages || 0} pages • Skipped ${data?.skipped || 0} existing`,
+        duration: 10000
+      });
+
+      await loadMetrics();
+    } catch (error) {
+      console.error('Error importing Aerospace:', error);
+      toast.error('Failed to import Aerospace articles', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+      setProgressStatus('Error occurred');
+    } finally {
+      setTimeout(() => {
+        setImporting(null);
+        setProgressStatus('');
+        setProgressPercent(0);
+        setAerospaceProgress(null);
+      }, 3000);
+    }
+  };
+
   const importAerospaceWithAI = async () => {
     setImporting('aerospace-ai');
     setProgressStatus('Starting FULL FEED import (all pages)...');
@@ -796,6 +886,82 @@ const ImportAdmin = () => {
           </Card>
 
           {/* Aerospace Bulk Import with AI */}
+          <Card className="mb-8 border-orange-500/50 bg-gradient-to-br from-orange-500/5 to-orange-500/10">
+            <CardHeader>
+              <CardTitle className="text-2xl flex items-center gap-2">
+                ⚡ Aerospace FAST Import (No AI)
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Quick import of ALL 9,240 aerospace articles without AI processing. Import first, then process with AI later in batches.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Button
+                  onClick={importAerospaceFast}
+                  disabled={importing !== null}
+                  className="w-full h-14 text-lg bg-green-600 hover:bg-green-700"
+                  size="lg"
+                >
+                  {importing === 'aerospace-fast' ? 'Importing All Pages...' : 'Import ALL Aerospace (Fast, No AI)'}
+                </Button>
+
+                {importing === 'aerospace-fast' && aerospaceProgress && (
+                  <div className="space-y-4">
+                    <div className="space-y-3 p-4 bg-background rounded-lg border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{progressStatus}</span>
+                        <span className="text-sm text-muted-foreground">{progressPercent}%</span>
+                      </div>
+                      <Progress value={progressPercent} className="h-2" />
+                    </div>
+
+                    <div className="p-4 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-lg border border-blue-500/30">
+                      <div className="grid grid-cols-3 gap-3 text-sm">
+                        <div className="p-3 bg-background/80 rounded border">
+                          <p className="text-xs text-muted-foreground mb-1">Current Page</p>
+                          <p className="text-2xl font-bold text-blue-500">{aerospaceProgress.currentPage}</p>
+                        </div>
+                        <div className="p-3 bg-background/80 rounded border">
+                          <p className="text-xs text-muted-foreground mb-1">Imported</p>
+                          <p className="text-2xl font-bold text-green-500">{aerospaceProgress.imported || 0}</p>
+                        </div>
+                        <div className="p-3 bg-background/80 rounded border">
+                          <p className="text-xs text-muted-foreground mb-1">Skipped</p>
+                          <p className="text-2xl font-bold text-muted-foreground">{aerospaceProgress.skipped || 0}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {results['aerospace-fast'] && (
+                  <div className="p-4 bg-background rounded-lg space-y-3">
+                    <h3 className="font-semibold text-lg">Fast Import Complete! 🎉</h3>
+                    <div className="grid grid-cols-3 gap-4 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Total Pages</p>
+                        <p className="text-2xl font-bold">{results['aerospace-fast'].totalPages}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Imported</p>
+                        <p className="text-2xl font-bold text-green-500">{results['aerospace-fast'].imported}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Skipped</p>
+                        <p className="text-2xl font-bold text-muted-foreground">{results['aerospace-fast'].skipped}</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Duration: {Math.round(results['aerospace-fast'].duration / 1000)}s
+                    </p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Aerospace with AI (Original) */}
           <Card className="mb-8 border-orange-500/50 bg-gradient-to-br from-orange-500/5 to-orange-500/10">
             <CardHeader>
               <CardTitle className="text-2xl flex items-center gap-2">
