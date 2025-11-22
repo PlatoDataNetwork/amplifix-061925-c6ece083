@@ -26,7 +26,7 @@ interface ImportHistory {
   duration_ms: number | null;
   started_at: string;
   completed_at: string | null;
-  status: 'in_progress' | 'completed' | 'failed' | 'partial' | 'needs_resume';
+  status: 'in_progress' | 'completed' | 'failed' | 'partial';
   metadata: any;
 }
 
@@ -105,12 +105,13 @@ export const ImportHistoryTable = () => {
   };
 
   const getStatusBadge = (status: string, metadata?: any) => {
+    const isResumable = status === 'partial' && (metadata?.nextPage || metadata?.resumable);
+
     const variants: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; label: string }> = {
       in_progress: { variant: "secondary", label: "In Progress" },
       completed: { variant: "default", label: "Completed" },
       failed: { variant: "destructive", label: "Failed" },
-      partial: { variant: "outline", label: "Partial" },
-      needs_resume: { variant: "outline", label: "Needs Resume" },
+      partial: { variant: "outline", label: isResumable ? "Needs Resume" : "Partial" },
     };
 
     const config = variants[status] || variants.completed;
@@ -128,7 +129,7 @@ export const ImportHistoryTable = () => {
   };
 
   const calculateProgress = (record: ImportHistory): number => {
-    if (record.status !== 'in_progress') return 100;
+    if (record.status !== 'in_progress' && record.status !== 'partial') return 100;
     
     // Try to get progress from metadata
     const metadata = record.metadata as any;
@@ -210,6 +211,7 @@ export const ImportHistoryTable = () => {
               {history.map((record) => {
                 const progress = calculateProgress(record);
                 const isRunning = record.status === 'in_progress';
+                const isResumable = record.status === 'partial' && ((record.metadata as any)?.nextPage || (record.metadata as any)?.resumable);
                 
                 return (
                   <TableRow key={record.id} className={isRunning ? "bg-muted/30" : ""}>
@@ -253,7 +255,7 @@ export const ImportHistoryTable = () => {
                       {formatDistanceToNow(new Date(record.started_at), { addSuffix: true })}
                     </TableCell>
                     <TableCell>
-                      {record.status === 'needs_resume' && (
+                      {isResumable && (
                         <Button 
                           size="sm" 
                           variant="outline"
