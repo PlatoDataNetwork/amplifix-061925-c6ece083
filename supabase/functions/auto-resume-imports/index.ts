@@ -192,7 +192,8 @@ async function processImportBatch(
 
     results.duration = Date.now() - startTime;
     
-    const hasMore = hasMorePages && currentPage <= endPage;
+    // If hasMorePages is still true, we hit the batch limit and should continue
+    const hasMore = hasMorePages;
     const finalStatus = hasMore ? 'partial' : (results.errors > 0 ? 'partial' : 'completed');
 
     await supabaseClient
