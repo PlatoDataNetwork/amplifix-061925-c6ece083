@@ -34,113 +34,58 @@ function cleanText(text?: string | null): string {
     .trim();
 }
 
-Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
-
+// Background import function
+async function runBackgroundImport(
+  supabaseClient: any,
+  historyId: string,
+  userId: string
+) {
   const startTime = Date.now();
+  console.log('🚀 Background import started');
 
-  const authHeader = req.headers.get('Authorization');
-  if (!authHeader) {
-    return new Response(
-      JSON.stringify({ success: false, error: 'Unauthorized' }),
-      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-  }
+  const progressChannel = supabaseClient.channel(`aerospace-fast-${userId}`, {
+    config: { broadcast: { self: true } }
+  });
+  
+  await progressChannel.subscribe();
 
-  try {
-    const supabaseAuth = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        auth: { persistSession: false },
-        global: { headers: { Authorization: authHeader } },
-      }
-    );
-
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser(token);
-
-    if (authError || !user) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'Invalid token' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const { data: hasAdminRole, error: roleError } = await supabaseAuth
-      .rpc('has_role', { _user_id: user.id, _role: 'admin' });
-
-    if (roleError || !hasAdminRole) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'Admin access required' }),
-        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    console.log(`Admin ${user.email} starting FAST Aerospace import (NO AI processing)`);
-
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-      { auth: { persistSession: false } }
-    );
-
-    // Create import history
-    const { data: historyRecord } = await supabaseClient
-      .from('import_history')
-      .insert({
-        vertical_slug: 'aerospace',
-        status: 'in_progress',
-        imported_by: user.id,
-        started_at: new Date().toISOString()
-      })
-      .select()
-      .single();
-
-    const historyId = historyRecord?.id;
-
-    const progressChannel = supabaseClient.channel(`aerospace-fast-${user.id}`, {
-      config: { broadcast: { self: true } }
-    });
-    
-    await progressChannel.subscribe();
-
-    const broadcastProgress = async (update: any) => {
+  const broadcastProgress = async (update: any) => {
+    try {
       await progressChannel.send({
         type: 'broadcast',
         event: 'import-progress',
         payload: update
       });
-    };
+    } catch (err) {
+      console.error('Broadcast error:', err);
+    }
+  };
 
-    const results = {
-      success: true,
-      vertical: 'aerospace',
-      totalInFeed: 0,
-      totalPages: 0,
-      imported: 0,
-      skipped: 0,
-      errors: 0,
-      duration: 0
-    };
+  const results = {
+    totalInFeed: 0,
+    totalPages: 0,
+    imported: 0,
+    skipped: 0,
+    errors: 0,
+    duration: 0
+  };
 
-    let currentPage = 1;
-    let hasMorePages = true;
+  let currentPage = 1;
+  let hasMorePages = true;
 
-    console.log('🔄 Starting FAST paginated import (no AI) from https://platodata.ai/aerospace/json/');
+  console.log('🔄 Starting FAST paginated import (no AI) from https://platodata.ai/aerospace/json/');
 
-    await broadcastProgress({
-      phase: 'processing',
-      currentPage: 0,
-      totalPages: 0,
-      articlesCollected: 0,
-      imported: 0,
-      skipped: 0,
-      message: 'Starting fast import...'
-    });
+  await broadcastProgress({
+    phase: 'processing',
+    currentPage: 0,
+    totalPages: 0,
+    articlesCollected: 0,
+    imported: 0,
+    skipped: 0,
+    message: 'Starting fast import in background...'
+  });
 
+  try {
     while (hasMorePages) {
       console.log(`\n📄 Fetching page ${currentPage}...`);
       
@@ -209,7 +154,7 @@ Deno.serve(async (req) => {
           const articleData = {
             post_id: postId,
             title: article.title,
-            content: cleanedText, // Raw cleaned text, no AI formatting
+            content: cleanedText,
             excerpt: excerpt,
             published_at: article.date || new Date().toISOString(),
             vertical_slug: 'aerospace',
@@ -238,8 +183,24 @@ Deno.serve(async (req) => {
         }
       }
 
-      // Broadcast progress every 10 pages
+      // Update history every 10 pages
       if (currentPage % 10 === 0) {
+        await supabaseClient
+          .from('import_history')
+          .update({
+            imported_count: results.imported,
+            skipped_count: results.skipped,
+            error_count: results.errors,
+            total_processed: results.totalInFeed,
+            metadata: {
+              totalPages: results.totalPages,
+              currentPage: currentPage,
+              totalInFeed: results.totalInFeed,
+              note: 'Fast import without AI processing (in progress)'
+            }
+          })
+          .eq('id', historyId);
+
         await broadcastProgress({
           phase: 'processing',
           currentPage: currentPage,
@@ -256,32 +217,30 @@ Deno.serve(async (req) => {
 
       currentPage++;
 
-      // Small delay
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // Small delay to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 200));
     }
 
     results.duration = Date.now() - startTime;
 
-    // Update history
-    if (historyId) {
-      await supabaseClient
-        .from('import_history')
-        .update({
-          imported_count: results.imported,
-          skipped_count: results.skipped,
-          error_count: results.errors,
-          total_processed: results.totalInFeed,
-          duration_ms: results.duration,
-          completed_at: new Date().toISOString(),
-          status: results.errors > 0 ? 'partial' : 'completed',
-          metadata: {
-            totalPages: results.totalPages,
-            totalInFeed: results.totalInFeed,
-            note: 'Fast import without AI processing'
-          }
-        })
-        .eq('id', historyId);
-    }
+    // Final history update
+    await supabaseClient
+      .from('import_history')
+      .update({
+        imported_count: results.imported,
+        skipped_count: results.skipped,
+        error_count: results.errors,
+        total_processed: results.totalInFeed,
+        duration_ms: results.duration,
+        completed_at: new Date().toISOString(),
+        status: results.errors > 0 ? 'partial' : 'completed',
+        metadata: {
+          totalPages: results.totalPages,
+          totalInFeed: results.totalInFeed,
+          note: 'Fast import without AI processing'
+        }
+      })
+      .eq('id', historyId);
 
     await broadcastProgress({
       phase: 'complete',
@@ -295,12 +254,126 @@ Deno.serve(async (req) => {
       message: 'Fast import complete!'
     });
 
-    await supabaseClient.removeChannel(progressChannel);
-
     console.log('\n✅ Aerospace FAST import completed:', results);
 
+  } catch (error) {
+    console.error('Background import error:', error);
+    
+    // Update history with error
+    await supabaseClient
+      .from('import_history')
+      .update({
+        status: 'failed',
+        completed_at: new Date().toISOString(),
+        metadata: {
+          error: error.message,
+          totalPages: results.totalPages,
+          note: 'Import failed'
+        }
+      })
+      .eq('id', historyId);
+
+    await broadcastProgress({
+      phase: 'error',
+      message: `Import failed: ${error.message}`,
+      imported: results.imported,
+      skipped: results.skipped,
+      errors: results.errors
+    });
+  } finally {
+    await supabaseClient.removeChannel(progressChannel);
+  }
+}
+
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  const startTime = Date.now();
+
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader) {
     return new Response(
-      JSON.stringify(results),
+      JSON.stringify({ success: false, error: 'Unauthorized' }),
+      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
+  try {
+    const supabaseAuth = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        auth: { persistSession: false },
+        global: { headers: { Authorization: authHeader } },
+      }
+    );
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser(token);
+
+    if (authError || !user) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { data: hasAdminRole, error: roleError } = await supabaseAuth
+      .rpc('has_role', { _user_id: user.id, _role: 'admin' });
+
+    if (roleError || !hasAdminRole) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Admin access required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Admin ${user.email} starting FAST Aerospace import (NO AI processing) with background tasks`);
+
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      { auth: { persistSession: false } }
+    );
+
+    // Create import history
+    const { data: historyRecord } = await supabaseClient
+      .from('import_history')
+      .insert({
+        vertical_slug: 'aerospace',
+        status: 'in_progress',
+        imported_by: user.id,
+        started_at: new Date().toISOString()
+      })
+      .select()
+      .single();
+
+    const historyId = historyRecord?.id;
+
+    if (!historyId) {
+      throw new Error('Failed to create import history record');
+    }
+
+    // Start background import using waitUntil
+    const ctx = Deno.env.get('DENO_REGION') ? (globalThis as any).EdgeRuntime : null;
+    if (ctx && ctx.waitUntil) {
+      ctx.waitUntil(runBackgroundImport(supabaseClient, historyId, user.id));
+    } else {
+      // Fallback for local development
+      runBackgroundImport(supabaseClient, historyId, user.id).catch(console.error);
+    }
+
+    // Return immediately
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: 'Import started in background. Check the Import History table for progress.',
+        historyId: historyId,
+        vertical: 'aerospace',
+        note: 'This import will continue processing all 9,240 articles in the background without timing out.'
+      }),
       { 
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
