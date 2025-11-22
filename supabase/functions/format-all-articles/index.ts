@@ -187,7 +187,7 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { chunkIndex = 0, chunkSize = 10, verticalSlug = null } = await req.json();
+    const { chunkIndex = 0, chunkSize = 10, verticalSlug = null, jobId = null } = await req.json();
 
     console.log(`Processing chunk ${chunkIndex} with size ${chunkSize}${verticalSlug ? ` for vertical ${verticalSlug}` : ''}`);
 
@@ -296,17 +296,42 @@ Deno.serve(async (req) => {
                   .insert({ article_id: article.id, tag_id: tagId });
               }
               
-              processed++;
-            } catch (tagError) {
-              console.error(`Error extracting tags for article ${article.id}:`, tagError);
-              // Don't fail the whole process if tag extraction fails
-            }
+            processed++;
+          } catch (tagError) {
+            console.error(`Error extracting tags for article ${article.id}:`, tagError);
+            // Don't fail the whole process if tag extraction fails
           }
-        } catch (err) {
-          console.error(`Error processing article ${article.id}:`, err);
-          errors.push(`${article.id}: ${err.message}`);
         }
+      } catch (err) {
+        console.error(`Error processing article ${article.id}:`, err);
+        errors.push(`${article.id}: ${err.message}`);
       }
+    }
+
+    // Update job tracking if jobId provided
+    if (jobId) {
+      // Get current processed chunks
+      const { data: currentJob } = await supabase
+        .from('ai_processing_jobs')
+        .select('processed_chunks')
+        .eq('id', jobId)
+        .single();
+
+      const currentChunks = currentJob?.processed_chunks || [];
+      const updatedChunks = [...currentChunks, chunkIndex];
+
+      const { error: jobError } = await supabase
+        .from('ai_processing_jobs')
+        .update({
+          processed_chunks: updatedChunks,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', jobId);
+
+      if (jobError) {
+        console.error('Error updating job tracking:', jobError);
+      }
+    }
 
       // Small delay between batches to avoid rate limits
       if (i + batchSize < articles.length) {

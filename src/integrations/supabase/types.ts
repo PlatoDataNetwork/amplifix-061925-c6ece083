@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_processing_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          failed_chunks: number[] | null
+          id: string
+          processed_chunks: number[] | null
+          started_at: string
+          status: string
+          total_chunks: number
+          updated_at: string | null
+          vertical_slug: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          failed_chunks?: number[] | null
+          id?: string
+          processed_chunks?: number[] | null
+          started_at?: string
+          status?: string
+          total_chunks: number
+          updated_at?: string | null
+          vertical_slug: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          failed_chunks?: number[] | null
+          id?: string
+          processed_chunks?: number[] | null
+          started_at?: string
+          status?: string
+          total_chunks?: number
+          updated_at?: string | null
+          vertical_slug?: string
+        }
+        Relationships: []
+      }
       article_backups: {
         Row: {
           article_id: string
