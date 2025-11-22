@@ -38,3 +38,15 @@ verify_jwt = true
 
 [functions.fetch-analytics]
 verify_jwt = true
+
+[functions.import-aerospace-fast]
+verify_jwt = true
+
+[functions.import-aerospace-full]
+verify_jwt = true
+
+[functions.import-aerospace-test]
+verify_jwt = true
+
+[functions.import-plato-verticals]
+verify_jwt = true
