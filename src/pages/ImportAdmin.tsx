@@ -889,6 +889,11 @@ const ImportAdmin = () => {
               <p className="text-sm text-muted-foreground">
                 Quick import of ALL 9,240 aerospace articles without AI processing. Import first, then process with AI later in batches.
               </p>
+              <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                <p className="text-xs text-blue-700 dark:text-blue-300 font-medium">
+                  🤖 Auto-Resume Enabled: Imports process 50 pages at a time and automatically continue every 2 minutes until complete. No manual intervention needed!
+                </p>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
