@@ -9,6 +9,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import MainHeader from '@/components/MainHeader';
 import Footer from '@/components/Footer';
 import { Shield, AlertTriangle, AlertCircle, CheckCircle, Info, ArrowLeft, RefreshCw } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface SecurityFinding {
   id: string;
@@ -24,73 +26,62 @@ interface SecurityFinding {
 
 const SecurityDashboard = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [findings, setFindings] = useState<SecurityFinding[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastScan, setLastScan] = useState<string>('');
 
-  useEffect(() => {
-    // Mock security findings from the audit
-    const mockFindings: SecurityFinding[] = [
-      {
-        id: 'INPUT_VALIDATION',
-        internal_id: 'contact_form_xss',
-        name: 'XSS Vulnerability in Contact Email Function',
-        description: 'User inputs are directly embedded into HTML email templates without sanitization, enabling XSS attacks in email clients.',
-        level: 'error',
-        details: 'The send-contact-email edge function inserts user-controlled data directly into HTML email templates without validation or encoding at lines 43-50. An attacker could inject XSS payloads that execute in email clients. Remediation: Add zod validation schema, HTML-encode all user inputs before inserting into templates, and validate field lengths.',
-        remediation_difficulty: 'easy',
-        scanner_name: 'agent_security',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 'PUBLIC_DATA_EXPOSURE',
-        internal_id: 'translations_any_auth',
-        name: 'Translation Data Modifiable by Any User',
-        description: 'The translations table allows ANY authenticated user to modify all translations, not just admins, enabling data corruption and defacement.',
-        level: 'error',
-        details: 'The translations table has policy: USING (auth.role() = \'authenticated\') which grants full write access to any logged-in user. A malicious user could change critical UI text, pricing, legal terms, or inject phishing URLs. Remediation: Drop the permissive policy and create admin-only policy.',
-        remediation_difficulty: 'easy',
-        scanner_name: 'agent_security',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 'INPUT_VALIDATION',
-        internal_id: 'contact_form_no_validation',
-        name: 'Contact Form Lacks Input Validation',
-        description: 'The contact form accepts unlimited-length inputs without validation, enabling DoS attacks and amplifying XSS risks.',
-        level: 'error',
-        details: 'The Contact.tsx form has NO client-side input validation. Missing: length limits, character restrictions, format validation, rate limiting. Attack scenarios: DoS via large payloads, email bombing, data amplification. Remediation: Add zod validation schema with max lengths, validate before submission, implement same validation in edge function, consider rate limiting.',
-        remediation_difficulty: 'easy',
-        scanner_name: 'agent_security',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 'MISSING_RLS',
-        internal_id: 'articles_write_protection',
-        name: 'Articles Table Missing Write Protection',
-        description: 'The articles table has SELECT and UPDATE policies but lacks INSERT and DELETE policies, violating defense-in-depth principles.',
-        level: 'error',
-        details: 'The articles table has SELECT and UPDATE policies but lacks INSERT and DELETE policies. Without these policies, defense-in-depth is violated. An attacker with the public anon key could attempt direct database insertions/deletions. Remediation: Add admin-only INSERT and DELETE policies using has_role function.',
-        remediation_difficulty: 'medium',
-        scanner_name: 'agent_security',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 'MISSING_RLS',
-        internal_id: 'tags_article_tags_policies',
-        name: 'Tags Tables Missing Write Protection',
-        description: 'The tags and article_tags tables lack INSERT/UPDATE/DELETE policies, allowing potential unauthorized data manipulation.',
-        level: 'error',
-        details: 'Both tags and article_tags tables have RLS enabled but only define SELECT policies. No write policies exist. This allows anyone with the anon key to create spam tags, delete legitimate tags, or break article associations. Remediation: Add admin-only INSERT/UPDATE/DELETE policies for both tables using has_role function.',
-        remediation_difficulty: 'medium',
-        scanner_name: 'agent_security',
-        created_at: new Date().toISOString()
+  const fetchSecurityFindings = async () => {
+    setLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to view security findings.",
+          variant: "destructive",
+        });
+        navigate('/login');
+        return;
       }
-    ];
 
-    setFindings(mockFindings);
-    setLastScan(new Date().toLocaleString());
-    setLoading(false);
+      const { data, error } = await supabase.functions.invoke('get-security-findings', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) {
+        console.error('Error fetching security findings:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch security findings. Please try again.",
+          variant: "destructive",
+        });
+        setFindings([]);
+        return;
+      }
+
+      if (data?.findings) {
+        setFindings(data.findings);
+        setLastScan(new Date(data.last_scan).toLocaleString());
+      }
+    } catch (error) {
+      console.error('Error fetching security findings:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred.",
+        variant: "destructive",
+      });
+      setFindings([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSecurityFindings();
   }, []);
 
   const getLevelIcon = (level: string) => {
@@ -165,10 +156,11 @@ const SecurityDashboard = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => window.location.reload()}
+              onClick={fetchSecurityFindings}
               className="ml-2"
+              disabled={loading}
             >
-              <RefreshCw className="h-4 w-4 mr-2" />
+              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
           </div>
