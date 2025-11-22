@@ -62,3 +62,6 @@ verify_jwt = false
 
 [functions.fix-stuck-imports]
 verify_jwt = true
+
+[functions.backfill-aerospace-urls]
+verify_jwt = true

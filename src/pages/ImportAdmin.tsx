@@ -1281,6 +1281,53 @@ const ImportAdmin = () => {
                   </p>
                 </div>
 
+                {/* Backfill Aerospace Source URLs */}
+                <div className="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-lg">
+                  <h4 className="text-sm font-semibold text-blue-700 dark:text-blue-300 mb-3">🔗 Backfill Aerospace Source URLs</h4>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Scrape and populate missing source URLs from Plato Data for aerospace articles. Processes 50 articles at a time with 1 second delay between requests.
+                  </p>
+                  <Button
+                    onClick={async () => {
+                      if (!confirm('This will fetch and update source URLs for up to 50 aerospace articles. This may take a few minutes. Continue?')) {
+                        return;
+                      }
+
+                      try {
+                        setImporting('backfill-urls');
+                        toast.info('Starting URL backfill...', {
+                          description: 'This may take a few minutes'
+                        });
+
+                        const { data, error } = await supabase.functions.invoke('backfill-aerospace-urls', {
+                          body: { batchSize: 50, delayMs: 1000 }
+                        });
+
+                        if (error) throw error;
+
+                        toast.success(`Backfill complete!`, {
+                          description: `Updated: ${data.updated}, Failed: ${data.failed}`
+                        });
+
+                        // Refresh metrics after backfill
+                        await loadMetrics();
+                      } catch (error) {
+                        console.error('Error during backfill:', error);
+                        toast.error('Backfill failed', {
+                          description: error instanceof Error ? error.message : 'Unknown error'
+                        });
+                      } finally {
+                        setImporting(null);
+                      }
+                    }}
+                    disabled={importing === 'backfill-urls'}
+                    variant="default"
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                  >
+                    {importing === 'backfill-urls' ? 'Processing...' : 'Start Backfill (50 articles)'}
+                  </Button>
+                </div>
+
                 {/* Reset Stuck AI Job */}
                 {aiJobStats && (
                   <div className="p-4 bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/30 rounded-lg">
