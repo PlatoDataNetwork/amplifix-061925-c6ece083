@@ -85,6 +85,17 @@ const ImportAdmin = () => {
     articlesProcessed: number;
     articlesPerMinute: number;
   } | null>(null);
+  const [aerospaceStats, setAerospaceStats] = useState<{
+    totalInDb: number;
+    missingUrls: number;
+    platoTotal: number | null;
+    loading: boolean;
+  }>({
+    totalInDb: 0,
+    missingUrls: 0,
+    platoTotal: null,
+    loading: false
+  });
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
   // Derived import rate (articles per second)
@@ -155,9 +166,58 @@ const ImportAdmin = () => {
     }
   };
 
+  // Load aerospace stats
+  const loadAerospaceStats = async () => {
+    setAerospaceStats(prev => ({ ...prev, loading: true }));
+    
+    try {
+      // Get total aerospace articles in DB
+      const { count: totalInDb } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', 'aerospace');
+      
+      // Get count of aerospace articles missing URLs
+      const { count: missingUrls } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', 'aerospace')
+        .is('external_url', null);
+      
+      // Try to estimate total from Plato AI (first page to check if we can get count)
+      let platoTotal: number | null = null;
+      try {
+        const { data: feedData } = await supabase.functions.invoke('fetch-aerospace-feed', {
+          body: { page: 1 }
+        });
+        
+        // If the response has pagination info, calculate total
+        if (feedData?.count) {
+          platoTotal = feedData.count;
+        } else if (feedData?.results && Array.isArray(feedData.results)) {
+          // If no count but we have results, we can at least show we have data
+          platoTotal = feedData.results.length; // This is just page 1, actual total is unknown
+        }
+      } catch (e) {
+        console.error('Could not fetch Plato AI feed stats:', e);
+      }
+      
+      setAerospaceStats({
+        totalInDb: totalInDb || 0,
+        missingUrls: missingUrls || 0,
+        platoTotal,
+        loading: false
+      });
+    } catch (error) {
+      console.error('Error loading aerospace stats:', error);
+      setAerospaceStats(prev => ({ ...prev, loading: false }));
+    }
+  };
+
   // Load AI job stats on mount and set up auto-refresh
   useEffect(() => {
     loadAiJobStats();
+    loadAerospaceStats();
     
     const interval = setInterval(() => {
       loadAiJobStats();
@@ -1284,6 +1344,34 @@ const ImportAdmin = () => {
                 {/* Backfill Aerospace Source URLs */}
                 <div className="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-lg">
                   <h4 className="text-sm font-semibold text-blue-700 dark:text-blue-300 mb-3">🔗 Backfill Aerospace Source URLs</h4>
+                  
+                  {/* Stats Display */}
+                  <div className="grid grid-cols-3 gap-3 mb-4">
+                    <div className="bg-background/50 rounded-lg p-3 border border-border">
+                      <p className="text-xs text-muted-foreground mb-1">Total in Database</p>
+                      <p className="text-2xl font-bold text-foreground">
+                        {aerospaceStats.loading ? '...' : aerospaceStats.totalInDb.toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="bg-background/50 rounded-lg p-3 border border-border">
+                      <p className="text-xs text-muted-foreground mb-1">Missing Source URLs</p>
+                      <p className="text-2xl font-bold text-orange-500">
+                        {aerospaceStats.loading ? '...' : aerospaceStats.missingUrls.toLocaleString()}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {aerospaceStats.totalInDb > 0 && !aerospaceStats.loading
+                          ? `${Math.round((aerospaceStats.missingUrls / aerospaceStats.totalInDb) * 100)}%`
+                          : ''}
+                      </p>
+                    </div>
+                    <div className="bg-background/50 rounded-lg p-3 border border-border">
+                      <p className="text-xs text-muted-foreground mb-1">Plato AI Total</p>
+                      <p className="text-2xl font-bold text-blue-500">
+                        {aerospaceStats.loading ? '...' : aerospaceStats.platoTotal ? aerospaceStats.platoTotal.toLocaleString() + '+' : 'Unknown'}
+                      </p>
+                    </div>
+                  </div>
+                  
                   <p className="text-xs text-muted-foreground mb-3">
                     Scrape and populate missing source URLs from Plato Data for aerospace articles. Processes 50 articles at a time with 1 second delay between requests.
                   </p>
@@ -1311,6 +1399,7 @@ const ImportAdmin = () => {
 
                         // Refresh metrics after backfill
                         await loadMetrics();
+                        await loadAerospaceStats();
                       } catch (error) {
                         console.error('Error during backfill:', error);
                         toast.error('Backfill failed', {
