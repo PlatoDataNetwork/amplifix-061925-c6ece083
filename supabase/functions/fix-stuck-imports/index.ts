@@ -86,6 +86,7 @@ Deno.serve(async (req) => {
         .from('import_history')
         .update({
           status: 'partial',
+          completed_at: null,
           metadata: {
             ...metadata,
             lastProcessedPage: lastPage,
@@ -95,6 +96,8 @@ Deno.serve(async (req) => {
           }
         })
         .eq('id', imp.id);
+      
+      console.log(`Update result for ${imp.id}:`, updateError ? 'ERROR' : 'SUCCESS', updateError);
 
       if (!updateError) {
         fixed.push({
@@ -107,6 +110,18 @@ Deno.serve(async (req) => {
       } else {
         console.error(`Failed to fix import ${imp.id}:`, updateError);
       }
+    }
+
+    // Trigger auto-resume immediately
+    if (fixed.length > 0) {
+      console.log('Triggering auto-resume...');
+      fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/auto-resume-imports`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`,
+          'Content-Type': 'application/json'
+        }
+      }).catch(err => console.error('Failed to trigger auto-resume:', err));
     }
 
     return new Response(
