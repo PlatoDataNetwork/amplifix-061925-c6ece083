@@ -114,7 +114,8 @@ const ImportAdmin = () => {
         const processedCount = (job.processed_chunks || []).length;
         const failedCount = (job.failed_chunks || []).length;
         const totalChunks = job.total_chunks || 0;
-        const progressPercent = totalChunks > 0 ? Math.round((processedCount / totalChunks) * 100) : 0;
+        const rawProgressPercent = totalChunks > 0 ? Math.round((processedCount / totalChunks) * 100) : 0;
+        const progressPercent = Math.max(0, Math.min(100, rawProgressPercent));
         
         // Calculate time estimates
         const startTime = new Date(job.started_at);
@@ -642,7 +643,9 @@ const ImportAdmin = () => {
           setAerospaceProgress(payload.payload);
           
           if (payload.payload.phase === 'processing') {
-            setProgressPercent(20 + (payload.payload.currentPage / 10));
+            const rawPercent = 20 + (payload.payload.currentPage / 10);
+            const clampedPercent = Math.max(0, Math.min(99, Math.round(rawPercent)));
+            setProgressPercent(clampedPercent);
             setProgressStatus(payload.payload.message);
           } else if (payload.payload.phase === 'complete') {
             setProgressPercent(100);
@@ -1481,8 +1484,9 @@ const ImportAdmin = () => {
                           if (updatedJob) {
                             const doneCount = (updatedJob.processed_chunks || []).length;
                             const failCount = (updatedJob.failed_chunks || []).length;
-                            const progress = Math.round((doneCount / totalChunks) * 100);
-                            setProgressPercent(progress);
+                            const rawProgress = totalChunks > 0 ? Math.round((doneCount / totalChunks) * 100) : 0;
+                            const clampedProgress = Math.max(0, Math.min(100, rawProgress));
+                            setProgressPercent(clampedProgress);
                             setProgressStatus(`${doneCount}/${totalChunks} chunks done (${failCount} failed)`);
                             
                             // Refresh stats display

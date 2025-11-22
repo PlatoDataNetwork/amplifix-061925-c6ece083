@@ -134,7 +134,9 @@ export const ImportHistoryTable = () => {
     // Try to get progress from metadata
     const metadata = record.metadata as any;
     if (metadata?.currentPage && metadata?.totalPages) {
-      return Math.floor((metadata.currentPage / metadata.totalPages) * 100);
+      const rawProgress = (metadata.currentPage / metadata.totalPages) * 100;
+      const clampedProgress = Math.max(0, Math.min(100, Math.floor(rawProgress)));
+      return clampedProgress;
     }
     
     // Fallback: estimate based on processed count
