@@ -445,6 +445,69 @@ const ImportAdmin = () => {
     }
   };
 
+  const importAerospaceWithAI = async () => {
+    setImporting('aerospace-ai');
+    setProgressStatus('Importing Aerospace with AI processing...');
+    setProgressPercent(0);
+
+    if (!importStartTime) {
+      setImportStartTime(new Date());
+      setSessionDuration(0);
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      toast.info('Starting Aerospace import with AI formatting and tagging...');
+
+      setProgressPercent(30);
+      setProgressStatus('Fetching articles and processing with AI...');
+
+      const { data, error } = await supabase.functions.invoke('import-aerospace-with-ai', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (error) throw error;
+
+      setProgressPercent(100);
+      setProgressStatus('Aerospace import completed!');
+
+      const importedCount = data?.imported || 0;
+      if (importedCount > 0) {
+        setSessionArticlesImported(prev => prev + importedCount);
+      }
+
+      setResults(prev => ({ 
+        ...prev, 
+        'aerospace-ai': data 
+      }));
+
+      toast.success('Aerospace import completed!', {
+        description: `Imported ${data?.imported || 0} articles, formatted ${data?.formatted || 0}, tagged ${data?.tagged || 0}`
+      });
+
+      await loadMetrics();
+    } catch (error) {
+      console.error('Error importing Aerospace:', error);
+      toast.error('Failed to import Aerospace articles', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+      setProgressStatus('Error occurred');
+    } finally {
+      setTimeout(() => {
+        setImporting(null);
+        setProgressStatus('');
+        setProgressPercent(0);
+      }, 3000);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <MainHeader />
@@ -664,6 +727,73 @@ const ImportAdmin = () => {
                         </div>
                       </div>
                     )}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Aerospace Bulk Import with AI */}
+          <Card className="mb-8 border-orange-500/50 bg-gradient-to-br from-orange-500/5 to-orange-500/10">
+            <CardHeader>
+              <CardTitle className="text-2xl flex items-center gap-2">
+                🚀 Aerospace Bulk Import with AI
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Import all aerospace articles from platodata.ai/aerospace with AI formatting and tag extraction
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Button
+                  onClick={importAerospaceWithAI}
+                  disabled={importing !== null}
+                  className="w-full h-14 text-lg bg-orange-600 hover:bg-orange-700"
+                  size="lg"
+                >
+                  {importing === 'aerospace-ai' ? 'Processing...' : 'Import Aerospace with AI Processing'}
+                </Button>
+
+                {importing === 'aerospace-ai' && (
+                  <div className="space-y-3 p-4 bg-background rounded-lg border">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">{progressStatus}</span>
+                      <span className="text-sm text-muted-foreground">{progressPercent}%</span>
+                    </div>
+                    <Progress value={progressPercent} className="h-2" />
+                  </div>
+                )}
+
+                {results['aerospace-ai'] && (
+                  <div className="mt-4 p-4 bg-background rounded-lg space-y-3">
+                    <div className="grid grid-cols-3 gap-4 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Imported</p>
+                        <p className="text-2xl font-bold text-green-500">{results['aerospace-ai'].imported}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Formatted</p>
+                        <p className="text-2xl font-bold text-blue-500">{results['aerospace-ai'].formatted}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Tagged</p>
+                        <p className="text-2xl font-bold text-purple-500">{results['aerospace-ai'].tagged}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Skipped</p>
+                        <p className="text-xl font-medium">{results['aerospace-ai'].skipped}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Errors</p>
+                        <p className="text-xl font-medium text-red-500">{results['aerospace-ai'].errors}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Duration</p>
+                        <p className="text-xl font-medium">{(results['aerospace-ai'].duration / 1000).toFixed(1)}s</p>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
