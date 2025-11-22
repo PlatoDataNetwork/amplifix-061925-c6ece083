@@ -37,15 +37,36 @@ export default function JsonTester() {
       const parsed = JSON.parse(jsonInput);
       let articles: JsonArticle[] = [];
 
+      // Normalize article format (handle both id and post_id)
+      const normalizeArticle = (article: any): JsonArticle => ({
+        post_id: article.post_id || article.id,
+        title: article.title,
+        content: article.content,
+        excerpt: article.excerpt,
+        slug: article.slug,
+        date: article.date,
+        metadata: article.metadata || {
+          author: article.author,
+          source: article.source,
+          categories: article.categories
+        }
+      });
+
       // Handle different JSON structures
       if (Array.isArray(parsed)) {
-        articles = parsed;
+        articles = parsed.map(normalizeArticle);
       } else if (parsed.articles && Array.isArray(parsed.articles)) {
-        articles = parsed.articles;
-      } else if (parsed.post_id) {
-        articles = [parsed];
+        articles = parsed.articles.map(normalizeArticle);
+      } else if (parsed.id || parsed.post_id) {
+        articles = [normalizeArticle(parsed)];
       } else {
-        throw new Error("Invalid JSON structure. Expected an array of articles or an object with 'articles' array.");
+        throw new Error("Invalid JSON structure. Expected an array of articles, an object with 'articles' array, or a single article object.");
+      }
+
+      // Validate required fields
+      const invalidArticles = articles.filter(a => !a.post_id || !a.title || (!a.content && !a.excerpt));
+      if (invalidArticles.length > 0) {
+        throw new Error(`${invalidArticles.length} article(s) missing required fields (post_id/id, title, and content/excerpt)`);
       }
 
       setParsedData(articles);
