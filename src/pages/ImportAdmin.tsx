@@ -563,14 +563,23 @@ const ImportAdmin = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-4xl font-bold">Article Import Admin</h1>
-            <Button 
-              onClick={() => navigate('/admin/users')}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Users className="h-4 w-4" />
-              User Management
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button 
+                onClick={() => navigate('/admin/plato-import')}
+                variant="default"
+                className="flex items-center gap-2"
+              >
+                🚀 Plato Import
+              </Button>
+              <Button 
+                onClick={() => navigate('/admin/users')}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <Users className="h-4 w-4" />
+                User Management
+              </Button>
+            </div>
           </div>
           
           {/* Metrics Dashboard */}
