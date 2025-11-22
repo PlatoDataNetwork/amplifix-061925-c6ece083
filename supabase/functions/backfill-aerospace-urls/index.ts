@@ -9,6 +9,7 @@ interface Article {
   id: string;
   post_id: number;
   title: string;
+  external_url: string | null;
 }
 
 // Extract source URL from Plato Data article HTML
@@ -26,19 +27,28 @@ async function extractSourceUrl(postId: number): Promise<string | null> {
     const html = await response.text();
     
     // Look for source link patterns in the HTML
-    // Pattern 1: Look for "Source:" or "Read more at:" followed by a link
     const sourcePatterns = [
-      /<a[^>]*href=["']([^"']+)["'][^>]*>.*?(?:Source|Read more|Original article|View original)/i,
-      /(?:Source|Read more at|Original article):\s*<a[^>]*href=["']([^"']+)["']/i,
+      // Pattern 1: Direct "Source:" link
+      /Source:\s*<a[^>]*href=["']([^"']+)["'][^>]*>/i,
+      // Pattern 2: "Read more at" link
+      /Read more at:?\s*<a[^>]*href=["']([^"']+)["'][^>]*>/i,
+      // Pattern 3: Link with "Source" text inside
+      /<a[^>]*href=["']([^"']+)["'][^>]*>\s*(?:Source|View original|Original article)/i,
+      // Pattern 4: Source in span with link
       /<span[^>]*class=["'][^"']*source[^"']*["'][^>]*>.*?<a[^>]*href=["']([^"']+)["']/i,
+      // Pattern 5: First external link after "Source" text
+      /Source[^<]*<a[^>]*href=["']([^"']+)["']/i,
+      // Pattern 6: Via or attribution link
+      /(?:via|from):\s*<a[^>]*href=["']([^"']+)["'][^>]*>/i,
     ];
     
     for (const pattern of sourcePatterns) {
       const match = html.match(pattern);
       if (match && match[1]) {
         const sourceUrl = match[1];
-        // Validate it's a real URL
-        if (sourceUrl.startsWith('http://') || sourceUrl.startsWith('https://')) {
+        // Validate it's a real URL and NOT a platodata.ai URL
+        if ((sourceUrl.startsWith('http://') || sourceUrl.startsWith('https://')) && 
+            !sourceUrl.includes('platodata.ai')) {
           console.log(`✓ Found source URL: ${sourceUrl}`);
           return sourceUrl;
         }
@@ -74,13 +84,13 @@ Deno.serve(async (req) => {
 
     console.log(`🔄 Starting aerospace URL backfill (batch size: ${batchSize}, delay: ${delayMs}ms)`);
 
-    // Fetch aerospace articles without external_url
+    // Fetch aerospace articles without external_url OR with platodata.ai URLs
     const { data: articles, error: fetchError } = await supabaseClient
       .from('articles')
-      .select('id, post_id, title')
+      .select('id, post_id, title, external_url')
       .eq('vertical_slug', 'aerospace')
-      .is('external_url', null)
       .not('post_id', 'is', null)
+      .or('external_url.is.null,external_url.ilike.%platodata.ai%')
       .order('published_at', { ascending: false })
       .limit(batchSize);
 
@@ -111,7 +121,9 @@ Deno.serve(async (req) => {
       const article = articles[i] as Article;
       
       try {
-        console.log(`\n[${i + 1}/${articles.length}] Processing: ${article.title.substring(0, 60)}...`);
+        const hasPlato = article.external_url?.includes('platodata.ai');
+        const status = !article.external_url ? 'missing' : hasPlato ? 'cleaning' : 'skip';
+        console.log(`\n[${i + 1}/${articles.length}] Processing (${status}): ${article.title.substring(0, 60)}...`);
         
         const sourceUrl = await extractSourceUrl(article.post_id);
         
