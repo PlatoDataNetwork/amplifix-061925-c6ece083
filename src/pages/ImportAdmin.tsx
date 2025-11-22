@@ -1375,7 +1375,56 @@ const ImportAdmin = () => {
                   <p className="text-xs text-muted-foreground mb-3">
                     Scrape actual source URLs (SpaceNews, Space.com, etc.) from Plato Data article pages. Removes Plato Data URLs and replaces with original sources. Processes 50 articles at a time with 1 second delay.
                   </p>
-                  <Button
+                  
+                  <div className="grid grid-cols-2 gap-2 mb-3">
+                    <Button
+                      onClick={async () => {
+                        try {
+                          setImporting('backfill-test');
+                          toast.info('Testing URL extraction on 1 article...', {
+                            description: 'This will process just one article'
+                          });
+
+                          const { data, error } = await supabase.functions.invoke('backfill-aerospace-urls', {
+                            body: { batchSize: 1, delayMs: 0 }
+                          });
+
+                          if (error) throw error;
+
+                          if (data.updated > 0) {
+                            toast.success(`✓ Test successful!`, {
+                              description: `Found and updated source URL`,
+                              duration: 5000
+                            });
+                          } else if (data.failed > 0) {
+                            toast.error(`✗ Test failed`, {
+                              description: `Could not find source URL in article HTML`,
+                              duration: 5000
+                            });
+                          } else {
+                            toast.info(`No articles to process`, {
+                              description: data.message || 'All articles already have source URLs'
+                            });
+                          }
+
+                          // Show detailed results
+                          console.log('Test results:', data);
+                        } catch (error) {
+                          console.error('Error during test:', error);
+                          toast.error('Test failed', {
+                            description: error instanceof Error ? error.message : 'Unknown error'
+                          });
+                        } finally {
+                          setImporting(null);
+                        }
+                      }}
+                      disabled={importing === 'backfill-test'}
+                      variant="outline"
+                      className="bg-blue-600/10 border-blue-600 hover:bg-blue-600/20"
+                    >
+                      {importing === 'backfill-test' ? 'Testing...' : '🧪 Test (1 article)'}
+                    </Button>
+                    <Button
                     onClick={async () => {
                       if (!confirm('This will fetch and update source URLs for up to 50 aerospace articles. This may take a few minutes. Continue?')) {
                         return;
@@ -1409,12 +1458,13 @@ const ImportAdmin = () => {
                         setImporting(null);
                       }
                     }}
-                    disabled={importing === 'backfill-urls'}
-                    variant="default"
-                    className="w-full bg-blue-600 hover:bg-blue-700"
-                  >
-                    {importing === 'backfill-urls' ? 'Processing...' : 'Start Backfill (50 articles)'}
-                  </Button>
+                      disabled={importing === 'backfill-urls'}
+                      variant="default"
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      {importing === 'backfill-urls' ? 'Processing...' : '🚀 Run Backfill (50 articles)'}
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Reset Stuck AI Job */}
