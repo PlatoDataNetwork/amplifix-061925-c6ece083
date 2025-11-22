@@ -1467,6 +1467,92 @@ const ImportAdmin = () => {
                   </div>
                 </div>
 
+                {/* Cleanup Aerospace Duplicates */}
+                <div className="p-4 bg-gradient-to-br from-red-500/10 to-pink-500/10 border border-red-500/30 rounded-lg">
+                  <h4 className="text-sm font-semibold text-red-700 dark:text-red-300 mb-3">🧹 Clean Up Duplicate Articles</h4>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Remove duplicate aerospace articles with the same title, keeping only the most recent version of each.
+                  </p>
+                  
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      onClick={async () => {
+                        try {
+                          setImporting('cleanup-preview');
+                          toast.info('Analyzing duplicates...', {
+                            description: 'This may take a moment'
+                          });
+
+                          const { data, error } = await supabase.functions.invoke('cleanup-aerospace-duplicates', {
+                            body: { dryRun: true }
+                          });
+
+                          if (error) throw error;
+
+                          toast.success(`Found ${data.totalDuplicateArticles} duplicates`, {
+                            description: `${data.duplicateTitles} titles have duplicates. Check console for details.`,
+                            duration: 8000
+                          });
+
+                          console.log('🔍 Duplicate Preview:', data);
+                        } catch (error) {
+                          console.error('Error during preview:', error);
+                          toast.error('Preview failed', {
+                            description: error instanceof Error ? error.message : 'Unknown error'
+                          });
+                        } finally {
+                          setImporting(null);
+                        }
+                      }}
+                      disabled={importing === 'cleanup-preview'}
+                      variant="outline"
+                      className="border-orange-500 hover:bg-orange-500/10"
+                    >
+                      {importing === 'cleanup-preview' ? 'Analyzing...' : '🔍 Preview Duplicates'}
+                    </Button>
+                    <Button
+                      onClick={async () => {
+                        if (!confirm(`⚠️ WARNING: This will permanently delete duplicate articles!\n\nThis action cannot be undone. Are you absolutely sure?`)) {
+                          return;
+                        }
+
+                        try {
+                          setImporting('cleanup-delete');
+                          toast.info('Deleting duplicates...', {
+                            description: 'This may take several minutes'
+                          });
+
+                          const { data, error } = await supabase.functions.invoke('cleanup-aerospace-duplicates', {
+                            body: { dryRun: false }
+                          });
+
+                          if (error) throw error;
+
+                          toast.success(`Deleted ${data.deletedCount} duplicates!`, {
+                            description: `Cleaned up ${data.duplicateTitles} titles`,
+                            duration: 8000
+                          });
+
+                          // Refresh metrics after cleanup
+                          await loadMetrics();
+                          await loadAerospaceStats();
+                        } catch (error) {
+                          console.error('Error during cleanup:', error);
+                          toast.error('Cleanup failed', {
+                            description: error instanceof Error ? error.message : 'Unknown error'
+                          });
+                        } finally {
+                          setImporting(null);
+                        }
+                      }}
+                      disabled={importing === 'cleanup-delete'}
+                      variant="destructive"
+                    >
+                      {importing === 'cleanup-delete' ? 'Deleting...' : '🗑️ Delete Duplicates'}
+                    </Button>
+                  </div>
+                </div>
+
                 {/* Reset Stuck AI Job */}
                 {aiJobStats && (
                   <div className="p-4 bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/30 rounded-lg">

@@ -65,3 +65,7 @@ verify_jwt = true
 
 [functions.backfill-aerospace-urls]
 verify_jwt = true
+
+[functions.cleanup-aerospace-duplicates]
+verify_jwt = true
+
