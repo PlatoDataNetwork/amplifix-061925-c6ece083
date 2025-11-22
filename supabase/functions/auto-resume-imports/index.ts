@@ -259,7 +259,7 @@ Deno.serve(async (req) => {
       .select('*')
       .eq('status', 'partial')
       .eq('vertical_slug', 'aerospace')
-      .order('started_at', { ascending: true })
+      .order('started_at', { ascending: false })
       .limit(10);
 
     if (error) {
