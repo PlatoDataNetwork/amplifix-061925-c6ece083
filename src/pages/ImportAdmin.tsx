@@ -909,6 +909,41 @@ const ImportAdmin = () => {
                   <Button
                     onClick={async () => {
                       try {
+                        toast.info("Continuing aerospace import from page 281...");
+                        // Manually mark the last completed aerospace import as resumable
+                        const { error } = await supabase
+                          .from('import_history')
+                          .update({
+                            status: 'partial',
+                            completed_at: null,
+                            metadata: {
+                              nextPage: 281,
+                              lastProcessedPage: 280,
+                              resumable: true,
+                              note: 'Manually resumed to fetch remaining 640+ pages'
+                            }
+                          })
+                          .eq('vertical_slug', 'aerospace')
+                          .eq('status', 'completed')
+                          .order('started_at', { ascending: false })
+                          .limit(1);
+                        
+                        if (error) throw error;
+                        toast.success('Import will auto-resume within 2 minutes');
+                      } catch (error) {
+                        console.error('Continue error:', error);
+                        toast.error('Failed to continue import');
+                      }
+                    }}
+                    variant="default"
+                    className="h-14 px-6 bg-blue-600 hover:bg-blue-700"
+                    size="lg"
+                  >
+                    Continue Aerospace
+                  </Button>
+                  <Button
+                    onClick={async () => {
+                      try {
                         toast.info("Checking for stuck imports...");
                         const { data, error } = await supabase.functions.invoke('fix-stuck-imports');
                         if (error) throw error;
