@@ -29,3 +29,6 @@ verify_jwt = true
 
 [functions.test-extract-tags]
 verify_jwt = true
+
+[functions.fetch-aerospace-feed]
+verify_jwt = true

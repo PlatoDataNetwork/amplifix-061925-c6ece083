@@ -49,31 +49,41 @@ export default function JsonTester() {
   const handleLoadAerospaceFeed = async (page: number = 1) => {
     setLoadingFeed(true);
     try {
-      const response = await fetch(`https://platodata.ai/aerospace/json/?page=${page}`);
-      if (!response.ok) throw new Error('Failed to fetch aerospace feed');
-      
-      const data = await response.json();
-      
-      if (!data.success) {
-        throw new Error('API returned unsuccessful response');
+      const { data, error } = await supabase.functions.invoke("fetch-aerospace-feed", {
+        body: { page },
+      });
+
+      if (error) {
+        console.error("Supabase function error:", error);
+        throw new Error(error.message || "Failed to load aerospace feed");
       }
-      
-      // Store pagination data
-      if (data.pagination) {
-        setPagination(data.pagination);
+
+      if (!data || !data.success) {
+        console.error("Aerospace feed returned unsuccessful response", data);
+        throw new Error(
+          (data && (data as any).error) ||
+            "API returned unsuccessful response for aerospace feed",
+        );
       }
-      
+
+      if ((data as any).pagination) {
+        setPagination((data as any).pagination as PaginationData);
+      }
+
       setJsonInput(JSON.stringify(data, null, 2));
-      
+
       toast({
         title: "Feed Loaded",
-        description: `Loaded page ${page} - ${data.posts?.length || 0} articles. Click 'Parse JSON' to process.`,
+        description: `Loaded page ${page} - ${(data as any).posts?.length || 0} articles. Click 'Parse JSON' to process.`,
       });
     } catch (error) {
-      console.error('Aerospace feed error:', error);
+      console.error("Aerospace feed error:", error);
       toast({
         title: "Load Failed",
-        description: error instanceof Error ? error.message : "Failed to load aerospace feed",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to load aerospace feed via Supabase function",
         variant: "destructive",
       });
     } finally {
