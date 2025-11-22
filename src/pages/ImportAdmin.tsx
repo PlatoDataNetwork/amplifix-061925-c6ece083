@@ -177,12 +177,12 @@ const ImportAdmin = () => {
         .select('*', { count: 'exact', head: true })
         .eq('vertical_slug', 'aerospace');
       
-      // Get count of aerospace articles missing URLs
+      // Get count of aerospace articles missing URLs or with Plato URLs
       const { count: missingUrls } = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true })
         .eq('vertical_slug', 'aerospace')
-        .is('external_url', null);
+        .or('external_url.is.null,external_url.ilike.%platodata.ai%');
       
       // Try to estimate total from Plato AI (first page to check if we can get count)
       let platoTotal: number | null = null;
@@ -1354,13 +1354,13 @@ const ImportAdmin = () => {
                       </p>
                     </div>
                     <div className="bg-background/50 rounded-lg p-3 border border-border">
-                      <p className="text-xs text-muted-foreground mb-1">Missing Source URLs</p>
+                      <p className="text-xs text-muted-foreground mb-1">Needs Source URLs</p>
                       <p className="text-2xl font-bold text-orange-500">
                         {aerospaceStats.loading ? '...' : aerospaceStats.missingUrls.toLocaleString()}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
                         {aerospaceStats.totalInDb > 0 && !aerospaceStats.loading
-                          ? `${Math.round((aerospaceStats.missingUrls / aerospaceStats.totalInDb) * 100)}%`
+                          ? `${Math.round((aerospaceStats.missingUrls / aerospaceStats.totalInDb) * 100)}% need fixing`
                           : ''}
                       </p>
                     </div>
@@ -1373,7 +1373,7 @@ const ImportAdmin = () => {
                   </div>
                   
                   <p className="text-xs text-muted-foreground mb-3">
-                    Scrape and populate missing source URLs from Plato Data for aerospace articles. Processes 50 articles at a time with 1 second delay between requests.
+                    Scrape actual source URLs (SpaceNews, Space.com, etc.) from Plato Data article pages. Removes Plato Data URLs and replaces with original sources. Processes 50 articles at a time with 1 second delay.
                   </p>
                   <Button
                     onClick={async () => {
