@@ -447,7 +447,7 @@ const ImportAdmin = () => {
 
   const importAerospaceWithAI = async () => {
     setImporting('aerospace-ai');
-    setProgressStatus('Importing Aerospace with AI processing...');
+    setProgressStatus('Starting FULL FEED import (all pages)...');
     setProgressPercent(0);
 
     if (!importStartTime) {
@@ -462,10 +462,10 @@ const ImportAdmin = () => {
         return;
       }
 
-      toast.info('Starting Aerospace import with AI formatting and tagging...');
+      toast.info('Starting FULL FEED Aerospace import with AI formatting and tagging (all pages)...');
 
       setProgressPercent(30);
-      setProgressStatus('Fetching articles and processing with AI...');
+      setProgressStatus('Fetching ALL pages and processing with AI...');
 
       const { data, error } = await supabase.functions.invoke('import-aerospace-with-ai', {
         headers: {
@@ -476,7 +476,7 @@ const ImportAdmin = () => {
       if (error) throw error;
 
       setProgressPercent(100);
-      setProgressStatus('Aerospace import completed!');
+      setProgressStatus('Aerospace FULL FEED import completed!');
 
       const importedCount = data?.imported || 0;
       if (importedCount > 0) {
@@ -488,8 +488,9 @@ const ImportAdmin = () => {
         'aerospace-ai': data 
       }));
 
-      toast.success('Aerospace import completed!', {
-        description: `Imported ${data?.imported || 0} articles, formatted ${data?.formatted || 0}, tagged ${data?.tagged || 0}`
+      toast.success('Aerospace FULL FEED import completed!', {
+        description: `Scanned ${data?.totalPages || 0} pages • Imported ${data?.imported || 0} new articles • Formatted ${data?.formatted || 0} with AI • Tagged ${data?.tagged || 0} • Skipped ${data?.skipped || 0} existing`,
+        duration: 10000
       });
 
       await loadMetrics();
@@ -743,10 +744,10 @@ const ImportAdmin = () => {
           <Card className="mb-8 border-orange-500/50 bg-gradient-to-br from-orange-500/5 to-orange-500/10">
             <CardHeader>
               <CardTitle className="text-2xl flex items-center gap-2">
-                🚀 Aerospace Bulk Import with AI
+                🚀 Aerospace FULL FEED Import with AI
               </CardTitle>
               <p className="text-sm text-muted-foreground">
-                Import all aerospace articles from platodata.ai/aerospace with AI formatting and tag extraction
+                Import ALL aerospace articles from platodata.ai/aerospace with AI formatting and tag extraction. Automatically loops through all pages until the end of the feed.
               </p>
             </CardHeader>
             <CardContent>
@@ -757,7 +758,7 @@ const ImportAdmin = () => {
                   className="w-full h-14 text-lg bg-orange-600 hover:bg-orange-700"
                   size="lg"
                 >
-                  {importing === 'aerospace-ai' ? 'Processing...' : 'Import Aerospace with AI Processing'}
+                  {importing === 'aerospace-ai' ? 'Importing Full Feed (All Pages)...' : 'Import Full Aerospace Feed with AI'}
                 </Button>
 
                 {importing === 'aerospace-ai' && (

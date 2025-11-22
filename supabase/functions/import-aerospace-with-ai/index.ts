@@ -174,7 +174,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log(`Admin ${user.email} starting Aerospace import with AI processing`);
+    console.log(`Admin ${user.email} starting Aerospace import with AI processing (FULL FEED)`);
 
     // Create service role client
     const supabaseClient = createClient(
@@ -183,37 +183,11 @@ Deno.serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Fetch aerospace articles
-    console.log('Fetching aerospace articles from https://platodata.ai/aerospace/json/');
-    const response = await fetch('https://platodata.ai/aerospace/json/');
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch: ${response.statusText}`);
-    }
-
-    const articlesData = await response.json();
-    
-    // Parse articles from various formats
-    let articles: AerospaceArticle[] = [];
-    if (Array.isArray(articlesData)) {
-      articles = articlesData;
-    } else if (articlesData.posts && Array.isArray(articlesData.posts)) {
-      articles = articlesData.posts;
-    } else if (articlesData.articles && Array.isArray(articlesData.articles)) {
-      articles = articlesData.articles;
-    } else if (typeof articlesData === 'object' && articlesData !== null) {
-      const values = Object.values(articlesData);
-      if (values.length > 0 && typeof values[0] === 'object') {
-        articles = values as AerospaceArticle[];
-      }
-    }
-
-    console.log(`Found ${articles.length} articles in feed`);
-
     const results = {
       success: true,
       vertical: 'aerospace',
-      totalInFeed: articles.length,
+      totalInFeed: 0,
+      totalPages: 0,
       imported: 0,
       formatted: 0,
       tagged: 0,
@@ -222,8 +196,72 @@ Deno.serve(async (req) => {
       duration: 0
     };
 
+    // Loop through all pages
+    let currentPage = 1;
+    let hasMorePages = true;
+    let allArticles: AerospaceArticle[] = [];
+
+    console.log('🔄 Starting paginated import from https://platodata.ai/aerospace/json/');
+
+    while (hasMorePages) {
+      console.log(`\n📄 Fetching page ${currentPage}...`);
+      
+      // Fetch page
+      const pageUrl = `https://platodata.ai/aerospace/json/?page=${currentPage}`;
+      const response = await fetch(pageUrl);
+      
+      if (!response.ok) {
+        console.error(`Failed to fetch page ${currentPage}: ${response.statusText}`);
+        break;
+      }
+
+      const articlesData = await response.json();
+      
+      // Parse articles from various formats
+      let pageArticles: AerospaceArticle[] = [];
+      if (Array.isArray(articlesData)) {
+        pageArticles = articlesData;
+      } else if (articlesData.posts && Array.isArray(articlesData.posts)) {
+        pageArticles = articlesData.posts;
+      } else if (articlesData.articles && Array.isArray(articlesData.articles)) {
+        pageArticles = articlesData.articles;
+      } else if (typeof articlesData === 'object' && articlesData !== null) {
+        const values = Object.values(articlesData);
+        if (values.length > 0 && typeof values[0] === 'object') {
+          pageArticles = values as AerospaceArticle[];
+        }
+      }
+
+      console.log(`✓ Page ${currentPage}: Found ${pageArticles.length} articles`);
+
+      // Check if this is the last page (0 articles)
+      if (pageArticles.length === 0) {
+        console.log(`\n🏁 Reached last page (page ${currentPage} has 0 articles)`);
+        hasMorePages = false;
+        break;
+      }
+
+      // Add to all articles
+      allArticles = allArticles.concat(pageArticles);
+      results.totalPages = currentPage;
+      results.totalInFeed = allArticles.length;
+
+      currentPage++;
+
+      // Small delay between page fetches to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
+    console.log(`\n📊 Total articles collected: ${allArticles.length} from ${results.totalPages} pages`);
+    console.log(`\n🚀 Starting AI processing for all articles...\n`);
+
     // Process each article
-    for (const article of articles) {
+    for (let i = 0; i < allArticles.length; i++) {
+      const article = allArticles[i];
+      
+      if (i % 10 === 0) {
+        console.log(`\n📈 Progress: ${i}/${allArticles.length} articles processed (${Math.round((i/allArticles.length)*100)}%)`);
+      }
       try {
         const postId = article.post_id || article.id;
         
@@ -331,7 +369,15 @@ Deno.serve(async (req) => {
 
     results.duration = Date.now() - startTime;
 
-    console.log('Aerospace import completed:', results);
+    console.log('\n✅ Aerospace FULL FEED import completed:', results);
+    console.log(`   📊 Total Pages: ${results.totalPages}`);
+    console.log(`   📰 Total Articles in Feed: ${results.totalInFeed}`);
+    console.log(`   ✅ Imported: ${results.imported}`);
+    console.log(`   🎨 Formatted with AI: ${results.formatted}`);
+    console.log(`   🏷️  Tagged: ${results.tagged}`);
+    console.log(`   ⏭️  Skipped (existing): ${results.skipped}`);
+    console.log(`   ❌ Errors: ${results.errors}`);
+    console.log(`   ⏱️  Duration: ${Math.round(results.duration / 1000)}s`);
 
     return new Response(
       JSON.stringify(results),
