@@ -51,6 +51,18 @@ const ImportAdmin = () => {
   const [sessionArticlesImported, setSessionArticlesImported] = useState(0);
   const [importStartTime, setImportStartTime] = useState<Date | null>(null);
   const [sessionDuration, setSessionDuration] = useState(0);
+  const [aerospaceProgress, setAerospaceProgress] = useState<{
+    phase: string;
+    currentPage: number;
+    totalPages: number;
+    articlesCollected: number;
+    articlesProcessed?: number;
+    imported?: number;
+    skipped?: number;
+    errors?: number;
+    percentComplete?: number;
+    message: string;
+  } | null>(null);
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
   // Derived import rate (articles per second)
@@ -449,6 +461,7 @@ const ImportAdmin = () => {
     setImporting('aerospace-ai');
     setProgressStatus('Starting FULL FEED import (all pages)...');
     setProgressPercent(0);
+    setAerospaceProgress(null);
 
     if (!importStartTime) {
       setImportStartTime(new Date());
@@ -462,16 +475,47 @@ const ImportAdmin = () => {
         return;
       }
 
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('User not found');
+        return;
+      }
+
+      // Subscribe to real-time progress updates
+      const progressChannel = supabase
+        .channel(`aerospace-import-${user.id}`)
+        .on('broadcast', { event: 'import-progress' }, (payload) => {
+          console.log('📡 Progress update:', payload);
+          setAerospaceProgress(payload.payload);
+          
+          // Update progress bar based on phase
+          if (payload.payload.phase === 'fetching') {
+            setProgressPercent(20);
+            setProgressStatus(`Fetching page ${payload.payload.currentPage}...`);
+          } else if (payload.payload.phase === 'processing') {
+            const percent = 20 + (payload.payload.percentComplete || 0) * 0.8;
+            setProgressPercent(Math.round(percent));
+            setProgressStatus(payload.payload.message);
+          } else if (payload.payload.phase === 'complete') {
+            setProgressPercent(100);
+            setProgressStatus('Import complete!');
+          }
+        })
+        .subscribe();
+
       toast.info('Starting FULL FEED Aerospace import with AI formatting and tagging (all pages)...');
 
-      setProgressPercent(30);
-      setProgressStatus('Fetching ALL pages and processing with AI...');
+      setProgressPercent(10);
+      setProgressStatus('Connecting to import service...');
 
       const { data, error } = await supabase.functions.invoke('import-aerospace-with-ai', {
         headers: {
           Authorization: `Bearer ${session.access_token}`
         }
       });
+
+      // Clean up channel
+      await supabase.removeChannel(progressChannel);
 
       if (error) throw error;
 
@@ -505,6 +549,7 @@ const ImportAdmin = () => {
         setImporting(null);
         setProgressStatus('');
         setProgressPercent(0);
+        setAerospaceProgress(null);
       }, 3000);
     }
   };
@@ -762,12 +807,79 @@ const ImportAdmin = () => {
                 </Button>
 
                 {importing === 'aerospace-ai' && (
-                  <div className="space-y-3 p-4 bg-background rounded-lg border">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">{progressStatus}</span>
-                      <span className="text-sm text-muted-foreground">{progressPercent}%</span>
+                  <div className="space-y-4">
+                    {/* Progress Bar */}
+                    <div className="space-y-3 p-4 bg-background rounded-lg border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{progressStatus}</span>
+                        <span className="text-sm text-muted-foreground">{progressPercent}%</span>
+                      </div>
+                      <Progress value={progressPercent} className="h-2" />
                     </div>
-                    <Progress value={progressPercent} className="h-2" />
+
+                    {/* Real-time Progress Stats */}
+                    {aerospaceProgress && (
+                      <div className="p-4 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-lg border border-blue-500/30 animate-fade-in">
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="w-3 h-3 bg-blue-500 rounded-full animate-pulse shadow-lg shadow-blue-500/50"></span>
+                          <h4 className="font-semibold text-sm">Live Progress</h4>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-3 text-sm">
+                          {aerospaceProgress.phase === 'fetching' && (
+                            <>
+                              <div className="p-3 bg-background/80 rounded border">
+                                <p className="text-xs text-muted-foreground mb-1">Current Page</p>
+                                <p className="text-2xl font-bold text-blue-500 tabular-nums">
+                                  {aerospaceProgress.currentPage}
+                                </p>
+                              </div>
+                              <div className="p-3 bg-background/80 rounded border">
+                                <p className="text-xs text-muted-foreground mb-1">Articles Collected</p>
+                                <p className="text-2xl font-bold text-green-500 tabular-nums">
+                                  {aerospaceProgress.articlesCollected}
+                                </p>
+                              </div>
+                            </>
+                          )}
+                          
+                          {aerospaceProgress.phase === 'processing' && (
+                            <>
+                              <div className="p-3 bg-background/80 rounded border">
+                                <p className="text-xs text-muted-foreground mb-1">Processing</p>
+                                <p className="text-xl font-bold text-blue-500 tabular-nums">
+                                  {aerospaceProgress.articlesProcessed}/{aerospaceProgress.articlesCollected}
+                                </p>
+                              </div>
+                              <div className="p-3 bg-background/80 rounded border">
+                                <p className="text-xs text-muted-foreground mb-1">Imported</p>
+                                <p className="text-xl font-bold text-green-500 tabular-nums">
+                                  {aerospaceProgress.imported}
+                                </p>
+                              </div>
+                              <div className="p-3 bg-background/80 rounded border">
+                                <p className="text-xs text-muted-foreground mb-1">Skipped</p>
+                                <p className="text-xl font-bold text-yellow-500 tabular-nums">
+                                  {aerospaceProgress.skipped}
+                                </p>
+                              </div>
+                              <div className="p-3 bg-background/80 rounded border">
+                                <p className="text-xs text-muted-foreground mb-1">Total Pages</p>
+                                <p className="text-xl font-bold text-purple-500 tabular-nums">
+                                  {aerospaceProgress.totalPages}
+                                </p>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        
+                        <div className="mt-3 p-2 bg-background/60 rounded border border-primary/20">
+                          <p className="text-xs text-center text-muted-foreground">
+                            {aerospaceProgress.message}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
