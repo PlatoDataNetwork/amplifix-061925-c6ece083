@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainHeader from '@/components/MainHeader';
 import Footer from '@/components/Footer';
-import { Database, Users, FileText, Shield, Activity, Clock, LogOut, Archive, GitCompare, Map, Languages, Briefcase } from 'lucide-react';
+import { Database, Users, FileText, Shield, Activity, Clock, LogOut, Archive, GitCompare, Map, Languages, Briefcase, BarChart3 } from 'lucide-react';
 
 interface SystemStats {
   totalUsers: number;
@@ -74,6 +74,13 @@ const AdminDashboard = () => {
   }, []);
 
   const quickActions = [
+    {
+      title: 'Analytics',
+      description: 'View Google Analytics insights and metrics',
+      icon: BarChart3,
+      action: () => navigate('/admin/analytics'),
+      color: 'from-violet-500 to-purple-500'
+    },
     {
       title: 'Security',
       description: 'View security audit and vulnerability dashboard',
