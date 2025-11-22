@@ -897,14 +897,34 @@ const ImportAdmin = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <Button
-                  onClick={importAerospaceFast}
-                  disabled={importing !== null}
-                  className="w-full h-14 text-lg bg-green-600 hover:bg-green-700"
-                  size="lg"
-                >
-                  {importing === 'aerospace-fast' ? 'Importing All Pages...' : 'Import ALL Aerospace (Fast, No AI)'}
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={importAerospaceFast}
+                    disabled={importing !== null}
+                    className="flex-1 h-14 text-lg bg-green-600 hover:bg-green-700"
+                    size="lg"
+                  >
+                    {importing === 'aerospace-fast' ? 'Importing All Pages...' : 'Import ALL Aerospace (Fast, No AI)'}
+                  </Button>
+                  <Button
+                    onClick={async () => {
+                      try {
+                        toast.info("Checking for stuck imports...");
+                        const { data, error } = await supabase.functions.invoke('fix-stuck-imports');
+                        if (error) throw error;
+                        toast.success(data.message);
+                      } catch (error) {
+                        console.error('Fix error:', error);
+                        toast.error('Failed to fix stuck imports');
+                      }
+                    }}
+                    variant="outline"
+                    className="h-14 px-6"
+                    size="lg"
+                  >
+                    Fix Stuck
+                  </Button>
+                </div>
 
                 {importing === 'aerospace-fast' && aerospaceProgress && (
                   <div className="space-y-4">
