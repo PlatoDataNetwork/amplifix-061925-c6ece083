@@ -909,30 +909,16 @@ const ImportAdmin = () => {
                   <Button
                     onClick={async () => {
                       try {
-                        toast.info("Continuing aerospace import from page 281...");
-                        // Manually mark the last completed aerospace import as resumable
-                        const { error } = await supabase
-                          .from('import_history')
-                          .update({
-                            status: 'partial',
-                            completed_at: null,
-                            metadata: {
-                              nextPage: 281,
-                              lastProcessedPage: 280,
-                              resumable: true,
-                              note: 'Manually resumed to fetch remaining 640+ pages'
-                            }
-                          })
-                          .eq('vertical_slug', 'aerospace')
-                          .eq('status', 'completed')
-                          .order('started_at', { ascending: false })
-                          .limit(1);
-                        
+                        toast.info("Triggering auto-resume for aerospace...");
+                        const { data, error } = await supabase.functions.invoke('auto-resume-imports');
                         if (error) throw error;
-                        toast.success('Import will auto-resume within 2 minutes');
+                        const message =
+                          (data as any)?.message ||
+                          ((data as any)?.success ? 'Auto-resume started' : 'Checked for resumable imports');
+                        toast.success(message);
                       } catch (error) {
-                        console.error('Continue error:', error);
-                        toast.error('Failed to continue import');
+                        console.error('Auto-resume error:', error);
+                        toast.error('Failed to trigger auto-resume');
                       }
                     }}
                     variant="default"
