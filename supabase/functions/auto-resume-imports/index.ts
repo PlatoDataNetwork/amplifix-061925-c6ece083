@@ -164,26 +164,25 @@ async function processImportBatch(
         }
       }
 
-      // Update history every 10 pages
-      if (currentPage % 10 === 0) {
-        await supabaseClient
-          .from('import_history')
-          .update({
-            imported_count: results.imported,
-            skipped_count: results.skipped,
-            error_count: results.errors,
-            total_processed: results.totalInFeed,
-            metadata: {
-              totalPages: results.totalPages,
-              currentPage: currentPage,
-              totalInFeed: results.totalInFeed,
-              lastProcessedPage: currentPage,
-              nextPage: currentPage + 1,
-              note: 'Auto-resuming import (in progress)'
-            }
-          })
-          .eq('id', historyId);
-      }
+      // Update history after every page for real-time UI updates
+      await supabaseClient
+        .from('import_history')
+        .update({
+          status: 'in_progress',
+          imported_count: results.imported,
+          skipped_count: results.skipped,
+          error_count: results.errors,
+          total_processed: results.totalInFeed,
+          metadata: {
+            totalPages: results.totalPages,
+            currentPage: currentPage,
+            totalInFeed: results.totalInFeed,
+            lastProcessedPage: currentPage,
+            nextPage: currentPage + 1,
+            note: 'Auto-resuming import (in progress)'
+          }
+        })
+        .eq('id', historyId);
 
       console.log(`✅ Page ${currentPage} complete: ${results.imported} total imported`);
 
