@@ -63,6 +63,7 @@ import SitemapGenerator from "./pages/SitemapGenerator";
 import FynnAIShowcase from "./pages/FynnAIShowcase";
 import ShowcaseAdmin from "./pages/ShowcaseAdmin";
 import SecurityDashboard from "./pages/SecurityDashboard";
+import JsonTester from "./pages/JsonTester";
 
 const queryClient = new QueryClient();
 
@@ -131,6 +132,7 @@ const App = () => (
           <Route path="/admin/translations" element={<TranslationManager />} />
           <Route path="/admin/translations/test" element={<TranslationTest />} />
           <Route path="/admin/showcase" element={<AdminRoute><ShowcaseAdmin /></AdminRoute>} />
+          <Route path="/admin/json-tester" element={<AdminRoute><JsonTester /></AdminRoute>} />
           <Route path="/showcase/fynn-ai" element={<FynnAIShowcase />} />
 
               {/* Language-prefixed routes (e.g., /ar/, /fr/) */}

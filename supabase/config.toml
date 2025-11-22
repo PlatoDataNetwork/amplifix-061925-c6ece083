@@ -23,3 +23,9 @@ verify_jwt = false
 
 [functions.serve-language-sitemap]
 verify_jwt = false
+
+[functions.test-format-json]
+verify_jwt = true
+
+[functions.test-extract-tags]
+verify_jwt = true
