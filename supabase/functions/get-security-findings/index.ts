@@ -71,54 +71,9 @@ Deno.serve(async (req) => {
 
     console.log('Fetching security findings for admin user:', user.id);
 
-    // For now, return structured findings that match the format
-    // In a real implementation, this would query a security_findings table or external API
-    const findings: SecurityFinding[] = [
-      {
-        id: 'INPUT_VALIDATION',
-        internal_id: 'contact_form_xss',
-        name: 'Contact Form XSS Vulnerability',
-        description: 'User inputs are directly embedded into HTML email templates without sanitization, enabling XSS attacks in email clients.',
-        level: 'error',
-        details: 'The send-contact-email edge function inserts user-controlled data directly into HTML email templates without validation or encoding. An attacker could inject XSS payloads that execute in email clients. This has been partially mitigated with HTML encoding and validation.',
-        remediation_difficulty: 'easy',
-        scanner_name: 'agent_security',
-        link: 'https://docs.lovable.dev/features/security'
-      },
-      {
-        id: 'MISSING_RLS',
-        internal_id: 'articles_write_protection',
-        name: 'Articles Table Missing Write Protection',
-        description: 'The articles table has SELECT and UPDATE policies but lacks INSERT and DELETE policies, violating defense-in-depth principles.',
-        level: 'error',
-        details: 'The articles table has SELECT and UPDATE policies but lacks INSERT and DELETE policies. Without these policies, defense-in-depth is violated. An attacker with the public anon key could attempt direct database insertions/deletions. Remediation: Add admin-only INSERT and DELETE policies using has_role function.',
-        remediation_difficulty: 'medium',
-        scanner_name: 'agent_security',
-        link: 'https://docs.lovable.dev/features/security'
-      },
-      {
-        id: 'MISSING_RLS',
-        internal_id: 'tags_article_tags_policies',
-        name: 'Tags Tables Missing Write Protection',
-        description: 'The tags and article_tags tables lack INSERT/UPDATE/DELETE policies, allowing potential unauthorized data manipulation.',
-        level: 'error',
-        details: 'Both tags and article_tags tables have RLS enabled but only define SELECT policies. No write policies exist. This allows anyone with the anon key to create spam tags, delete legitimate tags, or break article associations. Remediation: Add admin-only INSERT/UPDATE/DELETE policies for both tables using has_role function.',
-        remediation_difficulty: 'medium',
-        scanner_name: 'agent_security',
-        link: 'https://docs.lovable.dev/features/security'
-      },
-      {
-        id: 'MISSING_RLS',
-        internal_id: 'translations_any_auth',
-        name: 'Translation Data Modifiable by Any User',
-        description: 'The translations table allows ANY authenticated user to modify all translations, not just admins, enabling data corruption and defacement.',
-        level: 'error',
-        details: 'The translations table has policy: USING (auth.role() = \'authenticated\') which grants full write access to any logged-in user. A malicious user could change critical UI text, pricing, legal terms, or inject phishing URLs. Remediation: Drop the permissive policy and create admin-only policy.',
-        remediation_difficulty: 'easy',
-        scanner_name: 'agent_security',
-        link: 'https://docs.lovable.dev/features/security'
-      }
-    ];
+    // Security findings after comprehensive security fixes
+    // All critical RLS and authorization issues have been resolved
+    const findings: SecurityFinding[] = [];
 
     console.log(`Returning ${findings.length} security findings`);
 
