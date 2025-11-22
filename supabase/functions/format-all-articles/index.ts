@@ -187,7 +187,7 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { chunkIndex = 0, chunkSize = 10, verticalSlug = null, jobId = null } = await req.json();
+    const { chunkIndex = 0, chunkSize = 50, verticalSlug = null, jobId = null } = await req.json();
 
     console.log(`Processing chunk ${chunkIndex} with size ${chunkSize}${verticalSlug ? ` for vertical ${verticalSlug}` : ''}`);
 
