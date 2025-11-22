@@ -1087,13 +1087,23 @@ const ImportAdmin = () => {
                 <Button
                   onClick={async () => {
                     try {
-                      toast.info("Starting AI processing for aerospace articles...", {
-                        description: "This will process all aerospace articles with AI formatting and tag extraction in batches."
-                      });
-                      
                       setImporting('process-aerospace-ai');
                       setProgressPercent(0);
-                      setProgressStatus('Initializing...');
+                      setProgressStatus('Checking for existing job...');
+
+                      // Check for existing in-progress job
+                      const { data: existingJobs, error: jobCheckError } = await supabase
+                        .from('ai_processing_jobs')
+                        .select('*')
+                        .eq('vertical_slug', 'aerospace')
+                        .eq('status', 'in_progress')
+                        .order('started_at', { ascending: false })
+                        .limit(1);
+
+                      if (jobCheckError) {
+                        console.error('Error checking for existing jobs:', jobCheckError);
+                        throw jobCheckError;
+                      }
 
                       // Get total count of aerospace articles
                       const { count } = await supabase
@@ -1103,17 +1113,68 @@ const ImportAdmin = () => {
                         .not('content', 'is', null);
 
                       const totalArticles = count || 0;
-                      let processed = 0;
-                      const chunkSize = 10; // Reduced from 100 to avoid timeouts
+                      const chunkSize = 10;
                       const totalChunks = Math.ceil(totalArticles / chunkSize);
 
-                      for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+                      let jobId: string;
+                      let processedChunks: number[] = [];
+                      let startChunk = 0;
+
+                      if (existingJobs && existingJobs.length > 0) {
+                        // Resume existing job
+                        const job = existingJobs[0];
+                        jobId = job.id;
+                        processedChunks = job.processed_chunks || [];
+                        
+                        // Find first unprocessed chunk
+                        for (let i = 0; i < totalChunks; i++) {
+                          if (!processedChunks.includes(i)) {
+                            startChunk = i;
+                            break;
+                          }
+                        }
+
+                        toast.info(`Resuming AI processing from chunk ${startChunk + 1}/${totalChunks}`, {
+                          description: `${processedChunks.length} chunks already processed.`
+                        });
+                      } else {
+                        // Create new job
+                        const { data: newJob, error: createError } = await supabase
+                          .from('ai_processing_jobs')
+                          .insert({
+                            vertical_slug: 'aerospace',
+                            total_chunks: totalChunks,
+                            status: 'in_progress'
+                          })
+                          .select()
+                          .single();
+
+                        if (createError || !newJob) {
+                          console.error('Error creating job:', createError);
+                          throw createError || new Error('Failed to create job');
+                        }
+
+                        jobId = newJob.id;
+                        
+                        toast.info("Starting AI processing for aerospace articles...", {
+                          description: `Processing ${totalChunks} chunks of ${chunkSize} articles each.`
+                        });
+                      }
+
+                      let processed = processedChunks.length * chunkSize;
+
+                      for (let chunkIndex = startChunk; chunkIndex < totalChunks; chunkIndex++) {
+                        // Skip already processed chunks
+                        if (processedChunks.includes(chunkIndex)) {
+                          continue;
+                        }
+
                         setProgressStatus(`Processing chunk ${chunkIndex + 1}/${totalChunks}...`);
                         setProgressPercent(Math.round((chunkIndex / totalChunks) * 100));
 
                         try {
                           const { data, error } = await supabase.functions.invoke('format-all-articles', {
-                            body: { chunkIndex, chunkSize, verticalSlug: 'aerospace' }
+                            body: { chunkIndex, chunkSize, verticalSlug: 'aerospace', jobId }
                           });
 
                           if (error) {
@@ -1121,6 +1182,15 @@ const ImportAdmin = () => {
                             toast.error(`Error processing chunk ${chunkIndex + 1}`, {
                               description: error.message || 'Function timed out or returned an error'
                             });
+                            
+                            // Mark chunk as failed
+                            await supabase
+                              .from('ai_processing_jobs')
+                              .update({
+                                failed_chunks: [...(processedChunks || []), chunkIndex]
+                              })
+                              .eq('id', jobId);
+                            
                             continue;
                           }
 
@@ -1133,6 +1203,7 @@ const ImportAdmin = () => {
                           }
 
                           processed += data.processed || 0;
+                          processedChunks.push(chunkIndex);
                           console.log(`Processed chunk ${chunkIndex + 1}/${totalChunks}:`, data);
                         } catch (err) {
                           console.error('Exception processing chunk:', chunkIndex, err);
@@ -1142,6 +1213,15 @@ const ImportAdmin = () => {
                           continue;
                         }
                       }
+
+                      // Mark job as completed
+                      await supabase
+                        .from('ai_processing_jobs')
+                        .update({
+                          status: 'completed',
+                          completed_at: new Date().toISOString()
+                        })
+                        .eq('id', jobId);
 
                       setProgressPercent(100);
                       setProgressStatus('Complete!');
