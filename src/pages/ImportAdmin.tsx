@@ -1125,17 +1125,23 @@ const ImportAdmin = () => {
                         const job = existingJobs[0];
                         jobId = job.id;
                         processedChunks = job.processed_chunks || [];
+                        const failedChunks = job.failed_chunks || [];
                         
-                        // Find first unprocessed chunk
+                        // Find first unprocessed and non-failed chunk
                         for (let i = 0; i < totalChunks; i++) {
-                          if (!processedChunks.includes(i)) {
+                          if (!processedChunks.includes(i) && !failedChunks.includes(i)) {
                             startChunk = i;
                             break;
                           }
                         }
 
-                        toast.info(`Resuming AI processing from chunk ${startChunk + 1}/${totalChunks}`, {
-                          description: `${processedChunks.length} chunks already processed.`
+                        const resumeMsg = failedChunks.length > 0
+                          ? `Resuming from chunk ${startChunk + 1}/${totalChunks} (${processedChunks.length} completed, ${failedChunks.length} failed)`
+                          : `Resuming from chunk ${startChunk + 1}/${totalChunks} (${processedChunks.length} completed)`;
+                        
+                        console.log(`📍 ${resumeMsg}`);
+                        toast.info(resumeMsg, {
+                          description: "Processing will continue from where it stopped."
                         });
                       } else {
                         // Create new job
@@ -1162,6 +1168,7 @@ const ImportAdmin = () => {
                       }
 
                       let processed = processedChunks.length * chunkSize;
+                      let hasError = false;
 
                       for (let chunkIndex = startChunk; chunkIndex < totalChunks; chunkIndex++) {
                         // Skip already processed chunks
@@ -1179,49 +1186,93 @@ const ImportAdmin = () => {
 
                           if (error) {
                             console.error('Error processing chunk:', chunkIndex, error);
-                            toast.error(`Error processing chunk ${chunkIndex + 1}`, {
-                              description: error.message || 'Function timed out or returned an error'
-                            });
                             
-                            // Mark chunk as failed
+                            // Mark chunk as failed in database
+                            const { data: currentJob } = await supabase
+                              .from('ai_processing_jobs')
+                              .select('failed_chunks')
+                              .eq('id', jobId)
+                              .single();
+                            
+                            const failedChunks = currentJob?.failed_chunks || [];
                             await supabase
                               .from('ai_processing_jobs')
                               .update({
-                                failed_chunks: [...(processedChunks || []), chunkIndex]
+                                failed_chunks: [...failedChunks, chunkIndex]
                               })
                               .eq('id', jobId);
                             
-                            continue;
+                            toast.error(`Error processing chunk ${chunkIndex + 1}`, {
+                              description: `Job paused at chunk ${chunkIndex + 1}. Click button to resume.`
+                            });
+                            hasError = true;
+                            break; // Stop processing on error so user can resume
                           }
 
                           if (!data || !data.success) {
                             console.error('Chunk processing failed:', chunkIndex, data);
+                            
+                            // Mark chunk as failed in database
+                            const { data: currentJob } = await supabase
+                              .from('ai_processing_jobs')
+                              .select('failed_chunks')
+                              .eq('id', jobId)
+                              .single();
+                            
+                            const failedChunks = currentJob?.failed_chunks || [];
+                            await supabase
+                              .from('ai_processing_jobs')
+                              .update({
+                                failed_chunks: [...failedChunks, chunkIndex]
+                              })
+                              .eq('id', jobId);
+                            
                             toast.error(`Chunk ${chunkIndex + 1} failed`, {
-                              description: data?.error || 'Unknown error'
+                              description: `Job paused at chunk ${chunkIndex + 1}. Click button to resume.`
                             });
-                            continue;
+                            hasError = true;
+                            break; // Stop processing on failure so user can resume
                           }
 
                           processed += data.processed || 0;
                           processedChunks.push(chunkIndex);
-                          console.log(`Processed chunk ${chunkIndex + 1}/${totalChunks}:`, data);
+                          console.log(`✅ Processed chunk ${chunkIndex + 1}/${totalChunks}:`, data);
                         } catch (err) {
                           console.error('Exception processing chunk:', chunkIndex, err);
-                          toast.error(`Exception in chunk ${chunkIndex + 1}`, {
-                            description: err instanceof Error ? err.message : 'Unknown exception'
+                          
+                          // Mark chunk as failed in database
+                          const { data: currentJob } = await supabase
+                            .from('ai_processing_jobs')
+                            .select('failed_chunks')
+                            .eq('id', jobId)
+                            .single();
+                          
+                          const failedChunks = currentJob?.failed_chunks || [];
+                          await supabase
+                            .from('ai_processing_jobs')
+                            .update({
+                              failed_chunks: [...failedChunks, chunkIndex]
+                            })
+                            .eq('id', jobId);
+                          
+                          toast.error(`Timeout on chunk ${chunkIndex + 1}`, {
+                            description: `Job paused at chunk ${chunkIndex + 1}. Click button to resume from here.`
                           });
-                          continue;
+                          hasError = true;
+                          break; // Stop processing on timeout so user can resume
                         }
                       }
 
-                      // Mark job as completed
-                      await supabase
-                        .from('ai_processing_jobs')
-                        .update({
-                          status: 'completed',
-                          completed_at: new Date().toISOString()
-                        })
-                        .eq('id', jobId);
+                      // Only mark job as completed if all chunks were processed without error
+                      if (!hasError) {
+                        await supabase
+                          .from('ai_processing_jobs')
+                          .update({
+                            status: 'completed',
+                            completed_at: new Date().toISOString()
+                          })
+                          .eq('id', jobId);
+                      }
 
                       setProgressPercent(100);
                       setProgressStatus('Complete!');
