@@ -34,6 +34,31 @@ export default function JsonTester() {
   const [processing, setProcessing] = useState(false);
   const [result, setResult] = useState<ProcessedResult | null>(null);
   const [previewArticle, setPreviewArticle] = useState<JsonArticle | null>(null);
+  const [loadingFeed, setLoadingFeed] = useState(false);
+
+  const handleLoadAerospaceFeed = async () => {
+    setLoadingFeed(true);
+    try {
+      const response = await fetch('https://platodata.ai/aerospace/json/');
+      if (!response.ok) throw new Error('Failed to fetch aerospace feed');
+      
+      const data = await response.json();
+      setJsonInput(JSON.stringify(data, null, 2));
+      
+      toast({
+        title: "Feed Loaded",
+        description: "Aerospace JSON feed loaded successfully. Click 'Parse JSON' to process.",
+      });
+    } catch (error) {
+      toast({
+        title: "Load Failed",
+        description: error instanceof Error ? error.message : "Failed to load aerospace feed",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingFeed(false);
+    }
+  };
 
   const handleParseJson = () => {
     try {
@@ -163,43 +188,104 @@ export default function JsonTester() {
       
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 flex items-center gap-3">
-            <FileJson className="w-10 h-10 text-primary" />
-            JSON Formatter & Tag Tester
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Test AI formatting and tag extraction on JSON data without affecting the database
-          </p>
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-4xl font-bold mb-2 flex items-center gap-3">
+                <FileJson className="w-10 h-10 text-primary" />
+                JSON Formatter & Tag Tester
+              </h1>
+              <p className="text-muted-foreground text-lg">
+                Test AI formatting and tag extraction on JSON data without affecting the database
+              </p>
+            </div>
+            <Button 
+              onClick={handleLoadAerospaceFeed}
+              disabled={loadingFeed}
+              size="lg"
+              variant="outline"
+              className="shrink-0"
+            >
+              {loadingFeed ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <FileJson className="w-4 h-4 mr-2" />
+              )}
+              Load Aerospace Feed
+            </Button>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
           {/* JSON Input Section */}
           <Card className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Input JSON</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold">Input JSON</h2>
+              {jsonInput && (
+                <span className="text-sm text-muted-foreground">
+                  {(jsonInput.length / 1024).toFixed(1)} KB
+                </span>
+              )}
+            </div>
             <Textarea
               value={jsonInput}
               onChange={(e) => setJsonInput(e.target.value)}
-              placeholder='Paste your JSON here. Format: {"articles": [{"post_id": 123, "title": "...", "content": "..."}]} or an array of articles'
+              placeholder='Paste your JSON here. Format: {"articles": [{"post_id": 123, "title": "...", "content": "..."}]} or an array of articles. Or click "Load Aerospace Feed" above.'
               className="min-h-[400px] font-mono text-sm"
             />
-            <Button 
-              onClick={handleParseJson} 
-              className="w-full mt-4"
-              disabled={!jsonInput.trim()}
-            >
-              <FileJson className="w-4 h-4 mr-2" />
-              Parse JSON
-            </Button>
+            <div className="flex gap-2 mt-4">
+              <Button 
+                onClick={handleParseJson} 
+                className="flex-1"
+                disabled={!jsonInput.trim()}
+              >
+                <FileJson className="w-4 h-4 mr-2" />
+                Parse JSON
+              </Button>
+              {jsonInput && (
+                <Button 
+                  onClick={() => {
+                    setJsonInput("");
+                    setParsedData([]);
+                    setSelectedIndex(null);
+                    setResult(null);
+                  }}
+                  variant="outline"
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Clear
+                </Button>
+              )}
+            </div>
           </Card>
 
           {/* Parsed Data Preview */}
           <Card className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Parsed Articles</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold">Parsed Articles</h2>
+              {parsedData.length > 0 && (
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={async () => {
+                      for (let i = 0; i < Math.min(5, parsedData.length); i++) {
+                        await handleTestFormat(i);
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                      }
+                    }}
+                    disabled={processing}
+                  >
+                    Test First 5
+                  </Button>
+                </div>
+              )}
+            </div>
             <div className="space-y-4 max-h-[500px] overflow-y-auto">
               {parsedData.length === 0 ? (
                 <div className="text-center text-muted-foreground py-12">
                   <FileJson className="w-16 h-16 mx-auto mb-4 opacity-50" />
                   <p>No articles parsed yet</p>
+                  <p className="text-sm mt-2">Load the aerospace feed or paste JSON to get started</p>
                 </div>
               ) : (
                 parsedData.map((article, index) => (
