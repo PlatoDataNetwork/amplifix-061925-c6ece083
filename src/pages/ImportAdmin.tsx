@@ -1494,18 +1494,13 @@ const ImportAdmin = () => {
 
                         // Recursive auto-resume
                         const autoResume = async () => {
-                          if (!aiProcessingActive) {
-                            console.log('⏸ Auto-resume stopped by user');
-                            return;
-                          }
-
                           const shouldContinue = await processNextBatch();
                           
-                          if (shouldContinue && aiProcessingActive) {
+                          if (shouldContinue) {
                             // Continue with next batch
                             setTimeout(() => autoResume(), 1000);
                           } else {
-                            // Done or stopped
+                            // Done
                             setAiProcessingActive(false);
                             setTimeout(() => {
                               setImporting(null);
