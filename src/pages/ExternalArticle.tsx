@@ -333,7 +333,7 @@ if (!article) {
             </div>
           )}
 
-          {/* Article Content */}
+           {/* Article Content */}
           <div className="prose prose-invert max-w-none mb-2 translate">
             <div 
                className={`${ARTICLE_CONTENT_CLASSES} translate`}
@@ -353,6 +353,23 @@ if (!article) {
                }}
              />
            </div>
+
+          {/* Source Link */}
+          {article.external_url && (
+            <div className="mb-6 pb-6 border-b border-border">
+              <p className="text-sm text-muted-foreground">
+                <span className="translate">Source:</span>{' '}
+                <a 
+                  href={article.external_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:text-blue-400 transition-colors underline"
+                >
+                  {new URL(article.external_url).hostname}
+                </a>
+              </p>
+            </div>
+          )}
 
           {/* AmplifiX Branding */}
           <div className="mb-6 text-center pt-2">
