@@ -232,12 +232,11 @@ Deno.serve(async (req) => {
       duration: 0
     };
 
-    // Loop through all pages
+    // Loop through all pages and process immediately
     let currentPage = 1;
     let hasMorePages = true;
-    let allArticles: AerospaceArticle[] = [];
 
-    console.log('🔄 Starting paginated import from https://platodata.ai/aerospace/json/');
+    console.log('🔄 Starting paginated import with immediate processing from https://platodata.ai/aerospace/json/');
 
     // Send initial progress
     await broadcastProgress({
@@ -245,11 +244,13 @@ Deno.serve(async (req) => {
       currentPage: 0,
       totalPages: 0,
       articlesCollected: 0,
+      imported: 0,
+      skipped: 0,
       message: 'Starting import...'
     });
 
-    while (hasMorePages) {
-      console.log(`\n📄 Fetching page ${currentPage}...`);
+    while (hasMorePages && currentPage <= 200) { // Max 200 pages safety limit
+      console.log(`\n📄 Fetching and processing page ${currentPage}...`);
       
       // Fetch page
       const pageUrl = `https://platodata.ai/aerospace/json/?page=${currentPage}`;
@@ -283,179 +284,144 @@ Deno.serve(async (req) => {
       if (pageArticles.length === 0) {
         console.log(`\n🏁 Reached last page (page ${currentPage} has 0 articles)`);
         hasMorePages = false;
-        
-        await broadcastProgress({
-          phase: 'fetching-complete',
-          currentPage: currentPage - 1,
-          totalPages: currentPage - 1,
-          articlesCollected: allArticles.length,
-          message: `Fetching complete: ${allArticles.length} articles collected`
-        });
         break;
       }
 
-      // Add to all articles
-      allArticles = allArticles.concat(pageArticles);
       results.totalPages = currentPage;
-      results.totalInFeed = allArticles.length;
+      results.totalInFeed += pageArticles.length;
 
-      // Broadcast page progress
+      // Broadcast page fetched
       await broadcastProgress({
-        phase: 'fetching',
+        phase: 'processing',
         currentPage: currentPage,
         totalPages: currentPage,
-        articlesCollected: allArticles.length,
-        articlesOnPage: pageArticles.length,
-        message: `Page ${currentPage}: Found ${pageArticles.length} articles`
+        articlesCollected: results.totalInFeed,
+        imported: results.imported,
+        skipped: results.skipped,
+        errors: results.errors,
+        message: `Processing page ${currentPage}...`
       });
+
+      // Process articles from this page immediately
+      for (const article of pageArticles) {
+        try {
+          const postId = article.post_id || article.id;
+          
+          if (!postId) {
+            console.error('Article missing ID');
+            results.errors++;
+            continue;
+          }
+
+          // Check if exists
+          const { data: existingArticle } = await supabaseClient
+            .from('articles')
+            .select('id, post_id')
+            .eq('post_id', postId)
+            .maybeSingle();
+
+          if (existingArticle) {
+            results.skipped++;
+            continue;
+          }
+
+          // Clean and format content
+          const rawContent = article.content || article.excerpt || '';
+          const cleanedText = cleanText(rawContent);
+          
+          const formattedContent = await formatArticleWithAI(cleanedText);
+          
+          // Extract keywords
+          const keywords = extractKeywords(cleanedText, article.title);
+
+          // Prepare article data
+          const imageUrl = article.metadata?.featuredImage?.[0] || null;
+          const externalUrl = article.metadata?.sourceLink?.[0] || null;
+          const excerpt = article.excerpt || cleanedText.substring(0, 300);
+
+          const articleData = {
+            post_id: postId,
+            title: article.title,
+            content: formattedContent,
+            excerpt: excerpt,
+            published_at: article.date || new Date().toISOString(),
+            vertical_slug: 'aerospace',
+            author: 'PlatoData',
+            read_time: '3 Min Read',
+            image_url: imageUrl,
+            external_url: externalUrl,
+            metadata: article.metadata || {},
+          };
+
+          // Insert article
+          const { data: insertedArticle, error: insertError } = await supabaseClient
+            .from('articles')
+            .insert(articleData)
+            .select('id')
+            .single();
+
+          if (insertError) {
+            console.error(`Error inserting article ${postId}:`, insertError);
+            results.errors++;
+            continue;
+          }
+
+          results.imported++;
+          results.formatted++;
+
+          // Save tags
+          if (insertedArticle && keywords.length > 0) {
+            for (const keyword of keywords) {
+              const slug = keyword.toLowerCase().replace(/\s+/g, '-');
+              
+              // Upsert tag
+              const { data: tag } = await supabaseClient
+                .from('tags')
+                .upsert({ name: keyword, slug: slug }, { onConflict: 'slug' })
+                .select('id')
+                .single();
+
+              if (tag) {
+                // Link article to tag
+                await supabaseClient
+                  .from('article_tags')
+                  .upsert({
+                    article_id: insertedArticle.id,
+                    tag_id: tag.id
+                  }, { onConflict: 'article_id,tag_id' });
+              }
+            }
+            results.tagged++;
+          }
+
+          // Broadcast progress every 5 articles
+          if (results.imported % 5 === 0) {
+            await broadcastProgress({
+              phase: 'processing',
+              currentPage: currentPage,
+              totalPages: currentPage,
+              articlesCollected: results.totalInFeed,
+              imported: results.imported,
+              skipped: results.skipped,
+              errors: results.errors,
+              percentComplete: 0,
+              message: `Page ${currentPage}: Imported ${results.imported} articles`
+            });
+          }
+
+        } catch (err) {
+          const postId = article.post_id || article.id || 'unknown';
+          console.error(`Error processing article ${postId}:`, err);
+          results.errors++;
+        }
+      }
+
+      console.log(`✅ Page ${currentPage} complete: +${pageArticles.length} processed, ${results.imported} total imported`);
 
       currentPage++;
 
-      // Small delay between page fetches to avoid rate limiting
+      // Small delay between pages
       await new Promise(resolve => setTimeout(resolve, 500));
-    }
-
-    console.log(`\n📊 Total articles collected: ${allArticles.length} from ${results.totalPages} pages`);
-    console.log(`\n🚀 Starting AI processing for all articles...\n`);
-
-    // Broadcast processing start
-    await broadcastProgress({
-      phase: 'processing',
-      currentPage: results.totalPages,
-      totalPages: results.totalPages,
-      articlesCollected: allArticles.length,
-      articlesProcessed: 0,
-      imported: 0,
-      skipped: 0,
-      message: 'Starting AI processing...'
-    });
-
-    // Process each article
-    for (let i = 0; i < allArticles.length; i++) {
-      const article = allArticles[i];
-      
-      // Broadcast progress every 5 articles
-      if (i % 5 === 0 && i > 0) {
-        await broadcastProgress({
-          phase: 'processing',
-          currentPage: results.totalPages,
-          totalPages: results.totalPages,
-          articlesCollected: allArticles.length,
-          articlesProcessed: i,
-          imported: results.imported,
-          skipped: results.skipped,
-          errors: results.errors,
-          percentComplete: Math.round((i / allArticles.length) * 100),
-          message: `Processing: ${i}/${allArticles.length} articles`
-        });
-      }
-      
-      if (i % 10 === 0) {
-        console.log(`\n📈 Progress: ${i}/${allArticles.length} articles processed (${Math.round((i/allArticles.length)*100)}%)`);
-      }
-      try {
-        const postId = article.post_id || article.id;
-        
-        if (!postId) {
-          console.error('Article missing ID');
-          results.errors++;
-          continue;
-        }
-
-        // Check if exists
-        const { data: existingArticle } = await supabaseClient
-          .from('articles')
-          .select('id, post_id')
-          .eq('post_id', postId)
-          .maybeSingle();
-
-        if (existingArticle) {
-          console.log(`Article ${postId} exists, skipping`);
-          results.skipped++;
-          continue;
-        }
-
-        // Clean and format content
-        const rawContent = article.content || article.excerpt || '';
-        const cleanedText = cleanText(rawContent);
-        
-        console.log(`Formatting article ${postId} with AI...`);
-        const formattedContent = await formatArticleWithAI(cleanedText);
-        
-        // Extract keywords
-        const keywords = extractKeywords(cleanedText, article.title);
-        console.log(`Extracted ${keywords.length} keywords for article ${postId}`);
-
-        // Prepare article data
-        const imageUrl = article.metadata?.featuredImage?.[0] || null;
-        const externalUrl = article.metadata?.sourceLink?.[0] || null;
-        const excerpt = article.excerpt || cleanedText.substring(0, 300);
-
-        const articleData = {
-          post_id: postId,
-          title: article.title,
-          content: formattedContent,
-          excerpt: excerpt,
-          published_at: article.date || new Date().toISOString(),
-          vertical_slug: 'aerospace',
-          author: 'PlatoData',
-          read_time: '3 Min Read',
-          image_url: imageUrl,
-          external_url: externalUrl,
-          metadata: article.metadata || {},
-        };
-
-        // Insert article
-        const { data: insertedArticle, error: insertError } = await supabaseClient
-          .from('articles')
-          .insert(articleData)
-          .select('id')
-          .single();
-
-        if (insertError) {
-          console.error(`Error inserting article ${postId}:`, insertError);
-          results.errors++;
-          continue;
-        }
-
-        results.imported++;
-        results.formatted++;
-
-        // Save tags
-        if (insertedArticle && keywords.length > 0) {
-          for (const keyword of keywords) {
-            const slug = keyword.toLowerCase().replace(/\s+/g, '-');
-            
-            // Upsert tag
-            const { data: tag } = await supabaseClient
-              .from('tags')
-              .upsert({ name: keyword, slug: slug }, { onConflict: 'slug' })
-              .select('id')
-              .single();
-
-            if (tag) {
-              // Link article to tag
-              await supabaseClient
-                .from('article_tags')
-                .upsert({
-                  article_id: insertedArticle.id,
-                  tag_id: tag.id
-                }, { onConflict: 'article_id,tag_id' });
-            }
-          }
-          results.tagged++;
-        }
-
-        console.log(`✓ Article ${postId} imported, formatted, and tagged`);
-
-        // Small delay to avoid rate limits
-        await new Promise(resolve => setTimeout(resolve, 100));
-
-      } catch (err) {
-        const postId = article.post_id || article.id || 'unknown';
-        console.error(`Error processing article ${postId}:`, err);
-        results.errors++;
-      }
     }
 
     results.duration = Date.now() - startTime;
