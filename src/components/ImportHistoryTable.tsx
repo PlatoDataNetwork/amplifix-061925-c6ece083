@@ -32,6 +32,7 @@ export const ImportHistoryTable = () => {
   const [loading, setLoading] = useState(true);
 
   const loadHistory = async () => {
+    console.log('📜 Loading import history...');
     try {
       const { data, error } = await supabase
         .from('import_history')
@@ -39,7 +40,13 @@ export const ImportHistoryTable = () => {
         .order('started_at', { ascending: false })
         .limit(50);
 
-      if (error) throw error;
+      console.log('Import history data:', data);
+      console.log('Import history error:', error);
+
+      if (error) {
+        console.error('Error loading import history:', error);
+        throw error;
+      }
       setHistory((data || []) as ImportHistory[]);
     } catch (error) {
       console.error('Error loading import history:', error);
@@ -49,6 +56,7 @@ export const ImportHistoryTable = () => {
   };
 
   useEffect(() => {
+    console.log('📜 ImportHistoryTable component mounted');
     loadHistory();
 
     // Subscribe to real-time updates
@@ -62,15 +70,19 @@ export const ImportHistoryTable = () => {
           table: 'import_history',
         },
         () => {
+          console.log('📡 Import history real-time update received');
           loadHistory();
         }
       )
       .subscribe();
 
     return () => {
+      console.log('📜 ImportHistoryTable component unmounting');
       supabase.removeChannel(channel);
     };
   }, []);
+
+  console.log('📜 ImportHistoryTable rendering, loading:', loading, 'history count:', history.length);
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; label: string }> = {
