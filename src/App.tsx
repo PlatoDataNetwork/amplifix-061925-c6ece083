@@ -62,6 +62,7 @@ import Signup from "./pages/Signup";
 import SitemapGenerator from "./pages/SitemapGenerator";
 import FynnAIShowcase from "./pages/FynnAIShowcase";
 import ShowcaseAdmin from "./pages/ShowcaseAdmin";
+import SecurityDashboard from "./pages/SecurityDashboard";
 
 const queryClient = new QueryClient();
 
@@ -118,6 +119,7 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+          <Route path="/admin/security" element={<AdminRoute><SecurityDashboard /></AdminRoute>} />
           <Route path="/admin/import" element={<AdminRoute><ImportAdmin /></AdminRoute>} />
           <Route path="/admin/users" element={<AdminRoute><UserManagement /></AdminRoute>} />
           <Route path="/admin/articles" element={<AdminRoute><ArticleEditor /></AdminRoute>} />

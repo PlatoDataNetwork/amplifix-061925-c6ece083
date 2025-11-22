@@ -75,6 +75,13 @@ const AdminDashboard = () => {
 
   const quickActions = [
     {
+      title: 'Security',
+      description: 'View security audit and vulnerability dashboard',
+      icon: Shield,
+      action: () => navigate('/admin/security'),
+      color: 'from-red-500 to-orange-500'
+    },
+    {
       title: 'User Management',
       description: 'Manage users, roles, and permissions',
       icon: Users,
