@@ -187,15 +187,22 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { chunkIndex = 0, chunkSize = 100 } = await req.json();
+    const { chunkIndex = 0, chunkSize = 100, verticalSlug = null } = await req.json();
 
-    console.log(`Processing chunk ${chunkIndex} with size ${chunkSize}`);
+    console.log(`Processing chunk ${chunkIndex} with size ${chunkSize}${verticalSlug ? ` for vertical ${verticalSlug}` : ''}`);
 
     // Fetch articles in this chunk (excluding those with null content)
-    const { data: articles, error: fetchError } = await supabase
+    let query = supabase
       .from('articles')
       .select('id, title, content, excerpt')
-      .not('content', 'is', null)
+      .not('content', 'is', null);
+    
+    // Filter by vertical if specified
+    if (verticalSlug) {
+      query = query.eq('vertical_slug', verticalSlug);
+    }
+    
+    const { data: articles, error: fetchError } = await query
       .range(chunkIndex * chunkSize, (chunkIndex + 1) * chunkSize - 1);
 
     if (fetchError) {

@@ -1072,6 +1072,103 @@ const ImportAdmin = () => {
             </CardContent>
           </Card>
 
+          {/* Process Existing Aerospace Articles with AI */}
+          <Card className="mb-8 border-purple-500/50 bg-gradient-to-br from-purple-500/5 to-purple-500/10">
+            <CardHeader>
+              <CardTitle className="text-2xl flex items-center gap-2">
+                🤖 Process Existing Aerospace Articles with AI
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Apply AI-powered content formatting and tag extraction to the 9,240 aerospace articles already in the database. Processes articles in batches of 100.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Button
+                  onClick={async () => {
+                    try {
+                      toast.info("Starting AI processing for aerospace articles...", {
+                        description: "This will process all aerospace articles with AI formatting and tag extraction in batches."
+                      });
+                      
+                      setImporting('process-aerospace-ai');
+                      setProgressPercent(0);
+                      setProgressStatus('Initializing...');
+
+                      // Get total count of aerospace articles
+                      const { count } = await supabase
+                        .from('articles')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('vertical_slug', 'aerospace')
+                        .not('content', 'is', null);
+
+                      const totalArticles = count || 0;
+                      let processed = 0;
+                      const chunkSize = 100;
+                      const totalChunks = Math.ceil(totalArticles / chunkSize);
+
+                      for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+                        setProgressStatus(`Processing chunk ${chunkIndex + 1}/${totalChunks}...`);
+                        setProgressPercent(Math.round((chunkIndex / totalChunks) * 100));
+
+                        const { data, error } = await supabase.functions.invoke('format-all-articles', {
+                          body: { chunkIndex, chunkSize, verticalSlug: 'aerospace' }
+                        });
+
+                        if (error) {
+                          console.error('Error processing chunk:', error);
+                          toast.error(`Error processing chunk ${chunkIndex + 1}`, {
+                            description: error.message
+                          });
+                          continue;
+                        }
+
+                        processed += data.processed || 0;
+                        console.log(`Processed chunk ${chunkIndex + 1}/${totalChunks}:`, data);
+                      }
+
+                      setProgressPercent(100);
+                      setProgressStatus('Complete!');
+                      toast.success(`AI processing complete!`, {
+                        description: `Processed ${processed}/${totalArticles} aerospace articles with AI formatting and tag extraction.`
+                      });
+
+                      await loadMetrics();
+                      
+                      setTimeout(() => {
+                        setImporting(null);
+                        setProgressPercent(0);
+                        setProgressStatus('');
+                      }, 3000);
+
+                    } catch (error) {
+                      console.error('Error processing aerospace articles:', error);
+                      toast.error('Failed to process aerospace articles', {
+                        description: error instanceof Error ? error.message : 'Unknown error'
+                      });
+                      setImporting(null);
+                    }
+                  }}
+                  disabled={importing !== null}
+                  className="w-full h-14 text-lg bg-purple-600 hover:bg-purple-700"
+                  size="lg"
+                >
+                  {importing === 'process-aerospace-ai' ? `${progressStatus} (${progressPercent}%)` : 'Process All Aerospace Articles with AI'}
+                </Button>
+
+                {importing === 'process-aerospace-ai' && (
+                  <div className="space-y-3 p-4 bg-background rounded-lg border">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">{progressStatus}</span>
+                      <span className="text-sm text-muted-foreground">{progressPercent}%</span>
+                    </div>
+                    <Progress value={progressPercent} className="h-2" />
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Aerospace with AI (Original) */}
           <Card className="mb-8 border-orange-500/50 bg-gradient-to-br from-orange-500/5 to-orange-500/10">
             <CardHeader>
