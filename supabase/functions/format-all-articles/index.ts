@@ -187,7 +187,7 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { chunkIndex = 0, chunkSize = 100, verticalSlug = null } = await req.json();
+    const { chunkIndex = 0, chunkSize = 10, verticalSlug = null } = await req.json();
 
     console.log(`Processing chunk ${chunkIndex} with size ${chunkSize}${verticalSlug ? ` for vertical ${verticalSlug}` : ''}`);
 
@@ -223,7 +223,7 @@ Deno.serve(async (req) => {
     console.log(`Found ${articles.length} articles to process`);
 
     // Process articles in smaller batches to avoid rate limits
-    const batchSize = 5;
+    const batchSize = 3;
     let processed = 0;
     const errors: string[] = [];
 
@@ -310,7 +310,7 @@ Deno.serve(async (req) => {
 
       // Small delay between batches to avoid rate limits
       if (i + batchSize < articles.length) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
     }
 

@@ -1104,27 +1104,43 @@ const ImportAdmin = () => {
 
                       const totalArticles = count || 0;
                       let processed = 0;
-                      const chunkSize = 100;
+                      const chunkSize = 10; // Reduced from 100 to avoid timeouts
                       const totalChunks = Math.ceil(totalArticles / chunkSize);
 
                       for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
                         setProgressStatus(`Processing chunk ${chunkIndex + 1}/${totalChunks}...`);
                         setProgressPercent(Math.round((chunkIndex / totalChunks) * 100));
 
-                        const { data, error } = await supabase.functions.invoke('format-all-articles', {
-                          body: { chunkIndex, chunkSize, verticalSlug: 'aerospace' }
-                        });
+                        try {
+                          const { data, error } = await supabase.functions.invoke('format-all-articles', {
+                            body: { chunkIndex, chunkSize, verticalSlug: 'aerospace' }
+                          });
 
-                        if (error) {
-                          console.error('Error processing chunk:', error);
-                          toast.error(`Error processing chunk ${chunkIndex + 1}`, {
-                            description: error.message
+                          if (error) {
+                            console.error('Error processing chunk:', chunkIndex, error);
+                            toast.error(`Error processing chunk ${chunkIndex + 1}`, {
+                              description: error.message || 'Function timed out or returned an error'
+                            });
+                            continue;
+                          }
+
+                          if (!data || !data.success) {
+                            console.error('Chunk processing failed:', chunkIndex, data);
+                            toast.error(`Chunk ${chunkIndex + 1} failed`, {
+                              description: data?.error || 'Unknown error'
+                            });
+                            continue;
+                          }
+
+                          processed += data.processed || 0;
+                          console.log(`Processed chunk ${chunkIndex + 1}/${totalChunks}:`, data);
+                        } catch (err) {
+                          console.error('Exception processing chunk:', chunkIndex, err);
+                          toast.error(`Exception in chunk ${chunkIndex + 1}`, {
+                            description: err instanceof Error ? err.message : 'Unknown exception'
                           });
                           continue;
                         }
-
-                        processed += data.processed || 0;
-                        console.log(`Processed chunk ${chunkIndex + 1}/${totalChunks}:`, data);
                       }
 
                       setProgressPercent(100);
