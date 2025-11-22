@@ -254,9 +254,10 @@ Deno.serve(async (req) => {
     const { data: pendingImports, error } = await supabaseClient
       .from('import_history')
       .select('*')
-      .eq('status', 'needs_resume')
+      .eq('status', 'partial')
+      .eq('vertical_slug', 'aerospace')
       .order('started_at', { ascending: true })
-      .limit(1);
+      .limit(10);
 
     if (error) {
       console.error('Error finding pending imports:', error);
@@ -271,7 +272,16 @@ Deno.serve(async (req) => {
       );
     }
 
-    const importToResume = pendingImports[0];
+    const importToResume = pendingImports.find((imp: any) => (imp.metadata as any)?.nextPage || (imp.metadata as any)?.resumable);
+
+    if (!importToResume) {
+      console.log('✓ No resumable imports found');
+      return new Response(
+        JSON.stringify({ message: 'No resumable imports found' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const nextPage = (importToResume.metadata as any)?.nextPage || 1;
 
     console.log(`🔄 Auto-resuming import ${importToResume.id} from page ${nextPage}`);

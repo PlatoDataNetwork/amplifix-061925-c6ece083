@@ -227,7 +227,7 @@ async function runBackgroundImport(
     results.duration = Date.now() - startTime;
     
     const hasMore = hasMorePages && currentPage <= endPage;
-    const finalStatus = hasMore ? 'needs_resume' : (results.errors > 0 ? 'partial' : 'completed');
+    const finalStatus = hasMore ? 'partial' : (results.errors > 0 ? 'partial' : 'completed');
 
     // Final history update
     await supabaseClient
@@ -238,20 +238,23 @@ async function runBackgroundImport(
         error_count: results.errors,
         total_processed: results.totalInFeed,
         duration_ms: results.duration,
-        completed_at: finalStatus !== 'needs_resume' ? new Date().toISOString() : null,
+        completed_at: !hasMore ? new Date().toISOString() : null,
         status: finalStatus,
         metadata: {
           totalPages: results.totalPages,
           totalInFeed: results.totalInFeed,
           lastProcessedPage: currentPage - 1,
           nextPage: hasMore ? currentPage : null,
-          note: hasMore ? `Processed ${maxPages} pages. Resume to continue.` : 'Fast import completed'
+          resumable: hasMore,
+          note: hasMore
+            ? `Processed ${maxPages} pages. Auto-resume will continue from page ${currentPage}.`
+            : 'Fast import without AI processing completed'
         }
       })
       .eq('id', historyId);
 
     await broadcastProgress({
-      phase: hasMore ? 'needs_resume' : 'complete',
+      phase: hasMore ? 'processing' : 'complete',
       currentPage: results.totalPages,
       totalPages: results.totalPages,
       articlesCollected: results.totalInFeed,
@@ -259,10 +262,12 @@ async function runBackgroundImport(
       skipped: results.skipped,
       errors: results.errors,
       percentComplete: hasMore ? 50 : 100,
-      message: hasMore ? `Batch complete. Resume to continue from page ${currentPage}` : 'Import complete!'
+      message: hasMore 
+        ? `Batch complete. Auto-resume will continue from page ${currentPage}.`
+        : 'Import complete!'
     });
 
-    console.log(hasMore ? '\n⏸️ Batch completed, needs resume' : '\n✅ Import completed:', results);
+    console.log(hasMore ? '\n⏸️ Batch complete, marked as partial (resumable)' : '\n✅ Aerospace FAST import completed:', results);
 
   } catch (error) {
     console.error('Background import error:', error);
@@ -357,7 +362,7 @@ Deno.serve(async (req) => {
         .eq('id', resumeFromHistory)
         .single();
 
-      if (!existingHistory || existingHistory.status !== 'needs_resume') {
+      if (!existingHistory || existingHistory.status !== 'partial' || !(existingHistory.metadata as any)?.nextPage) {
         throw new Error('Cannot resume: import not found or not resumable');
       }
 
