@@ -183,6 +183,24 @@ Deno.serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
+    // Create import history record
+    const { data: historyRecord, error: historyError } = await supabaseClient
+      .from('import_history')
+      .insert({
+        vertical_slug: 'aerospace',
+        status: 'in_progress',
+        imported_by: user.id,
+        started_at: new Date().toISOString()
+      })
+      .select()
+      .single();
+
+    if (historyError) {
+      console.error('Failed to create history record:', historyError);
+    }
+
+    const historyId = historyRecord?.id;
+
     // Create and subscribe to channel for real-time progress updates
     const progressChannel = supabaseClient.channel(`aerospace-import-${user.id}`, {
       config: {
@@ -441,6 +459,28 @@ Deno.serve(async (req) => {
     }
 
     results.duration = Date.now() - startTime;
+
+    // Update import history with final results
+    if (historyId) {
+      await supabaseClient
+        .from('import_history')
+        .update({
+          imported_count: results.imported,
+          skipped_count: results.skipped,
+          error_count: results.errors,
+          total_processed: allArticles.length,
+          duration_ms: results.duration,
+          completed_at: new Date().toISOString(),
+          status: results.errors > 0 ? 'partial' : 'completed',
+          metadata: {
+            totalPages: results.totalPages,
+            totalInFeed: results.totalInFeed,
+            formatted: results.formatted,
+            tagged: results.tagged
+          }
+        })
+        .eq('id', historyId);
+    }
 
     // Send final progress update
     await broadcastProgress({

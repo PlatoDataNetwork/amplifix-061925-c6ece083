@@ -152,6 +152,54 @@ export type Database = {
         }
         Relationships: []
       }
+      import_history: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          duration_ms: number | null
+          error_count: number
+          id: string
+          imported_by: string | null
+          imported_count: number
+          metadata: Json | null
+          skipped_count: number
+          started_at: string
+          status: string
+          total_processed: number
+          vertical_slug: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          duration_ms?: number | null
+          error_count?: number
+          id?: string
+          imported_by?: string | null
+          imported_count?: number
+          metadata?: Json | null
+          skipped_count?: number
+          started_at?: string
+          status?: string
+          total_processed?: number
+          vertical_slug: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          duration_ms?: number | null
+          error_count?: number
+          id?: string
+          imported_by?: string | null
+          imported_count?: number
+          metadata?: Json | null
+          skipped_count?: number
+          started_at?: string
+          status?: string
+          total_processed?: number
+          vertical_slug?: string
+        }
+        Relationships: []
+      }
       showcase_companies: {
         Row: {
           button_text: string
