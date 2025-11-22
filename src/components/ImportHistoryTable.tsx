@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
@@ -84,7 +85,7 @@ export const ImportHistoryTable = () => {
 
   console.log('📜 ImportHistoryTable rendering, loading:', loading, 'history count:', history.length);
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: string, metadata?: any) => {
     const variants: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; label: string }> = {
       in_progress: { variant: "secondary", label: "In Progress" },
       completed: { variant: "default", label: "Completed" },
@@ -93,7 +94,36 @@ export const ImportHistoryTable = () => {
     };
 
     const config = variants[status] || variants.completed;
+    
+    if (status === 'in_progress') {
+      return (
+        <Badge variant={config.variant} className="gap-1.5">
+          <Loader2 className="h-3 w-3 animate-spin" />
+          {config.label}
+        </Badge>
+      );
+    }
+    
     return <Badge variant={config.variant}>{config.label}</Badge>;
+  };
+
+  const calculateProgress = (record: ImportHistory): number => {
+    if (record.status !== 'in_progress') return 100;
+    
+    // Try to get progress from metadata
+    const metadata = record.metadata as any;
+    if (metadata?.currentPage && metadata?.totalPages) {
+      return Math.floor((metadata.currentPage / metadata.totalPages) * 100);
+    }
+    
+    // Fallback: estimate based on processed count
+    if (record.total_processed > 0) {
+      // Assume ~50 items per page for aerospace (rough estimate)
+      const estimatedTotal = 9240; // For aerospace specifically
+      return Math.min(Math.floor((record.total_processed / estimatedTotal) * 100), 99);
+    }
+    
+    return 5; // Just started
   };
 
   const formatDuration = (ms: number | null) => {
@@ -151,36 +181,59 @@ export const ImportHistoryTable = () => {
                 <TableHead className="text-right">Errors</TableHead>
                 <TableHead className="text-right">Total</TableHead>
                 <TableHead className="text-right">Duration</TableHead>
+                <TableHead>Progress</TableHead>
                 <TableHead>Started</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {history.map((record) => (
-                <TableRow key={record.id}>
-                  <TableCell className="font-medium">
-                    {record.vertical_slug}
-                  </TableCell>
-                  <TableCell>{getStatusBadge(record.status)}</TableCell>
-                  <TableCell className="text-right text-green-600 font-semibold">
-                    {record.imported_count.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right text-muted-foreground">
-                    {record.skipped_count.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right text-red-600">
-                    {record.error_count > 0 ? record.error_count.toLocaleString() : "-"}
-                  </TableCell>
-                  <TableCell className="text-right font-medium">
-                    {record.total_processed.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right text-muted-foreground">
-                    {formatDuration(record.duration_ms)}
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {formatDistanceToNow(new Date(record.started_at), { addSuffix: true })}
-                  </TableCell>
-                </TableRow>
-              ))}
+              {history.map((record) => {
+                const progress = calculateProgress(record);
+                const isRunning = record.status === 'in_progress';
+                
+                return (
+                  <TableRow key={record.id} className={isRunning ? "bg-muted/30" : ""}>
+                    <TableCell className="font-medium">
+                      {record.vertical_slug}
+                    </TableCell>
+                    <TableCell>{getStatusBadge(record.status, record.metadata)}</TableCell>
+                    <TableCell className="text-right text-green-600 font-semibold">
+                      {record.imported_count.toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-right text-muted-foreground">
+                      {record.skipped_count.toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-right text-red-600">
+                      {record.error_count > 0 ? record.error_count.toLocaleString() : "-"}
+                    </TableCell>
+                    <TableCell className="text-right font-medium">
+                      {record.total_processed.toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-right text-muted-foreground">
+                      {formatDuration(record.duration_ms)}
+                    </TableCell>
+                    <TableCell className="min-w-[160px]">
+                      {isRunning ? (
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">Processing...</span>
+                            <span className="font-medium">{progress}%</span>
+                          </div>
+                          <Progress value={progress} className="h-2" />
+                        </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">
+                          {record.status === 'completed' ? '100%' : 
+                           record.status === 'failed' ? 'Failed' : 
+                           record.status === 'partial' ? `${progress}%` : '-'}
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {formatDistanceToNow(new Date(record.started_at), { addSuffix: true })}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
