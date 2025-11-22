@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
-import { ExternalLink, TrendingUp, Leaf, Globe2, LineChart, Zap, Target, Users } from "lucide-react";
+import { ExternalLink, TrendingUp, Leaf, Globe2, LineChart, Zap, Target, Users, Coins, Lock, Shield } from "lucide-react";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
@@ -198,6 +198,192 @@ const DevvStreamShowcase = () => {
                         <h4 className="font-semibold mb-1">Technology Platform</h4>
                         <p className="text-sm text-muted-foreground">
                           Proprietary technology for tracking, verifying, and monetizing environmental assets
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Crypto Treasury Section */}
+          <section className="py-12 md:py-16 px-4 bg-muted/30">
+            <div className="container mx-auto max-w-6xl">
+              <div className="text-center mb-8 md:mb-12">
+                <div className="inline-block px-4 py-2 bg-transparent border border-green-500/30 rounded-full mb-4">
+                  <span className="text-green-500 font-semibold text-sm">Corporate Treasury Strategy</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+                  Crypto Treasury Initiatives
+                </h2>
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                  DevvStream has established a corporate crypto treasury combining institutional-grade liquidity with tokenization of real-world sustainability assets
+                </p>
+              </div>
+
+              {/* Treasury Overview */}
+              <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-8">
+                <Card className="bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/30">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                        <Coins className="w-6 h-6 text-green-500" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold mb-3">Diversified Digital Assets</h3>
+                        <p className="text-muted-foreground mb-4">
+                          The treasury holds a strategic portfolio including Bitcoin (BTC), Solana (SOL), and the proprietary DevvE (DEVVE) token, designed to provide liquidity and align with sustainability missions.
+                        </p>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 text-sm">
+                            <div className="w-2 h-2 rounded-full bg-green-500" />
+                            <span className="text-muted-foreground"><strong>Bitcoin:</strong> Foundational secure and liquid asset</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm">
+                            <div className="w-2 h-2 rounded-full bg-green-500" />
+                            <span className="text-muted-foreground"><strong>Solana:</strong> High-speed, low-fee transactions</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm">
+                            <div className="w-2 h-2 rounded-full bg-green-500" />
+                            <span className="text-muted-foreground"><strong>DevvE Token:</strong> Native asset bridging environmental assets</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-emerald-500/5 to-transparent border border-green-500/30">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                        <Target className="w-6 h-6 text-green-500" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold mb-3">Strategic Purpose</h3>
+                        <p className="text-muted-foreground mb-4">
+                          The treasury aligns capital with the company&apos;s mission of funding sustainable infrastructure and tokenizing environmental assets like carbon credits.
+                        </p>
+                        <div className="p-4 bg-green-500/5 rounded-lg border border-green-500/20">
+                          <div className="text-2xl font-bold text-green-500 mb-1">$5.4M</div>
+                          <p className="text-sm text-muted-foreground">Treasury value as of October 2025</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Treasury Management */}
+              <div className="mb-8 p-6 md:p-8 bg-transparent border border-green-500/30 rounded-2xl">
+                <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                  <Shield className="w-6 h-6 text-green-500" />
+                  Institutional-Grade Management
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <Lock className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold mb-1">Qualified Custodian</h4>
+                        <p className="text-sm text-muted-foreground">
+                          BitGo Trust Company serves as the qualified custodian for digital assets, ensuring institutional-grade security and compliance
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <LineChart className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold mb-1">Treasury Consultant</h4>
+                        <p className="text-sm text-muted-foreground">
+                          FRNT Financial Inc. provides digital treasury consulting to ensure secure and compliant asset management
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recent Developments */}
+              <div className="mb-8 p-6 md:p-8 bg-transparent border border-green-500/30 rounded-2xl">
+                <h3 className="text-2xl font-bold mb-6">Recent Treasury Developments</h3>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 pb-4 border-b border-border/50">
+                    <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold mb-1">DevvE Token Commitment (November 2025)</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Announced plans to add more $DEVVE tokens to treasury with a commitment to purchase $3.54 million worth of tokens through 2027, solidifying long-term commitment to the native asset
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 pb-4 border-b border-border/50">
+                    <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Enhanced Financial Backing</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Amended agreement with Helena Global Investment Opportunities 1 Ltd., raising commitment from $40 million to $300 million to support digital asset strategy
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Initial Treasury Establishment</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Established corporate crypto treasury holding Bitcoin, Solana, and DevvE tokens with focus on institutional liquidity and sustainability asset tokenization
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* DevvE Token Details */}
+              <div className="p-6 md:p-8 bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/30 rounded-2xl">
+                <h3 className="text-2xl font-bold mb-4">About the DevvE Token</h3>
+                <p className="text-muted-foreground mb-6">
+                  The DevvE token powers the DevvX network, a Layer-1 blockchain specifically built for environmental, social, and governance (ESG) initiatives. The network provides transparency, traceability, and scalability for measuring, verifying, and trading sustainability outcomes on-chain.
+                </p>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <Zap className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold mb-1">Token Functionality</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Used for transaction fuel, governance, and as the primary liquidity mechanism within DevvExchange for institutional use
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Globe2 className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold mb-1">Network Features</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Instant settlement, high energy efficiency, designed for institutional ESG initiatives
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <Coins className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold mb-1">Token Availability</h4>
+                        <p className="text-sm text-muted-foreground">
+                          DevvE (DEVVE) can be purchased on decentralized exchanges (DEXs), including through the Binance Web3 Wallet
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Leaf className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold mb-1">Environmental Bridge</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Bridges environmental assets with blockchain infrastructure, enabling tokenization of carbon credits
                         </p>
                       </div>
                     </div>
