@@ -81,13 +81,11 @@ const DevvStreamShowcase = () => {
                         Visit Website
                       </a>
                     </Button>
-                    <Button 
-                      size="default" 
-                      className="gap-2 bg-green-500 text-white hover:bg-green-600"
-                      onClick={() => document.getElementById('presentation-section')?.scrollIntoView({ behavior: 'smooth' })}
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      Presentation
+                    <Button asChild size="default" className="gap-2 bg-green-500 text-white hover:bg-green-600">
+                      <a href="https://www.devvstream.com/investors/corporate-presentation/" target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="w-4 h-4" />
+                        Presentation
+                      </a>
                     </Button>
                   </div>
                 </div>
@@ -445,37 +443,6 @@ const DevvStreamShowcase = () => {
                     Contributing to environmental sustainability on a global scale
                   </p>
                 </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Investor Presentation Section */}
-          <section id="presentation-section" className="py-12 md:py-16 px-4 bg-muted/30">
-            <div className="container mx-auto max-w-6xl">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
-                  Investor Presentation
-                </h2>
-                <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
-                  View our latest corporate presentation
-                </p>
-              </div>
-              
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-green-500/30">
-                <iframe
-                  src="/documents/devvstream-presentation.pdf"
-                  className="w-full h-[600px] md:h-[800px]"
-                  title="DevvStream Investor Presentation"
-                />
-              </div>
-              
-              <div className="text-center mt-6">
-                <Button asChild size="default" className="gap-2 bg-green-500 text-white hover:bg-green-600">
-                  <a href="/documents/devvstream-presentation.pdf" download>
-                    <ExternalLink className="w-4 h-4" />
-                    Download PDF
-                  </a>
-                </Button>
               </div>
             </div>
           </section>
