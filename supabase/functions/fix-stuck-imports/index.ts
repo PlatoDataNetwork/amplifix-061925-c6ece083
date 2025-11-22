@@ -57,6 +57,7 @@ Deno.serve(async (req) => {
       .from('import_history')
       .select('*')
       .eq('status', 'in_progress')
+      .eq('vertical_slug', 'aerospace')
       .lt('started_at', fiveMinutesAgo);
 
     if (fetchError) throw fetchError;
@@ -77,18 +78,19 @@ Deno.serve(async (req) => {
     const fixed = [];
 
     for (const imp of stuckImports) {
-      const metadata = imp.metadata || {};
+      const metadata = (imp.metadata || {}) as any;
       const lastPage = metadata.currentPage || metadata.lastProcessedPage || 1;
       const nextPage = lastPage + 1;
 
       const { error: updateError } = await supabaseClient
         .from('import_history')
         .update({
-          status: 'needs_resume',
+          status: 'partial',
           metadata: {
             ...metadata,
             lastProcessedPage: lastPage,
             nextPage: nextPage,
+            resumable: true,
             note: `Auto-fixed: Resume from page ${nextPage}`
           }
         })
@@ -102,6 +104,8 @@ Deno.serve(async (req) => {
           vertical: imp.vertical_slug
         });
         console.log(`Fixed import ${imp.id}: will resume from page ${nextPage}`);
+      } else {
+        console.error(`Failed to fix import ${imp.id}:`, updateError);
       }
     }
 
