@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { FileJson, Sparkles, Tags, Loader2, Eye, X } from "lucide-react";
+import { FileJson, Sparkles, Tags, Loader2, Eye, X, ChevronLeft, ChevronRight } from "lucide-react";
 import SharedHeader from "@/components/SharedHeader";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -26,6 +26,15 @@ interface ProcessedResult {
   error?: string;
 }
 
+interface PaginationData {
+  page: number;
+  per_page: number;
+  total_posts: number;
+  total_pages: number;
+  next_page: number | null;
+  prev_page: number | null;
+}
+
 export default function JsonTester() {
   const { toast } = useToast();
   const [jsonInput, setJsonInput] = useState("");
@@ -35,21 +44,33 @@ export default function JsonTester() {
   const [result, setResult] = useState<ProcessedResult | null>(null);
   const [previewArticle, setPreviewArticle] = useState<JsonArticle | null>(null);
   const [loadingFeed, setLoadingFeed] = useState(false);
+  const [pagination, setPagination] = useState<PaginationData | null>(null);
 
-  const handleLoadAerospaceFeed = async () => {
+  const handleLoadAerospaceFeed = async (page: number = 1) => {
     setLoadingFeed(true);
     try {
-      const response = await fetch('https://platodata.ai/aerospace/json/');
+      const response = await fetch(`https://platodata.ai/aerospace/json/?page=${page}`);
       if (!response.ok) throw new Error('Failed to fetch aerospace feed');
       
       const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error('API returned unsuccessful response');
+      }
+      
+      // Store pagination data
+      if (data.pagination) {
+        setPagination(data.pagination);
+      }
+      
       setJsonInput(JSON.stringify(data, null, 2));
       
       toast({
         title: "Feed Loaded",
-        description: "Aerospace JSON feed loaded successfully. Click 'Parse JSON' to process.",
+        description: `Loaded page ${page} - ${data.posts?.length || 0} articles. Click 'Parse JSON' to process.`,
       });
     } catch (error) {
+      console.error('Aerospace feed error:', error);
       toast({
         title: "Load Failed",
         description: error instanceof Error ? error.message : "Failed to load aerospace feed",
@@ -83,12 +104,19 @@ export default function JsonTester() {
       // Handle different JSON structures
       if (Array.isArray(parsed)) {
         articles = parsed.map(normalizeArticle);
+      } else if (parsed.posts && Array.isArray(parsed.posts)) {
+        // Handle aerospace feed structure with posts array
+        articles = parsed.posts.map(normalizeArticle);
+        // Store pagination if available
+        if (parsed.pagination) {
+          setPagination(parsed.pagination);
+        }
       } else if (parsed.articles && Array.isArray(parsed.articles)) {
         articles = parsed.articles.map(normalizeArticle);
       } else if (parsed.id || parsed.post_id) {
         articles = [normalizeArticle(parsed)];
       } else {
-        throw new Error("Invalid JSON structure. Expected an array of articles, an object with 'articles' array, or a single article object.");
+        throw new Error("Invalid JSON structure. Expected an array of articles, an object with 'posts' or 'articles' array, or a single article object.");
       }
 
       // Validate required fields
@@ -198,20 +226,47 @@ export default function JsonTester() {
                 Test AI formatting and tag extraction on JSON data without affecting the database
               </p>
             </div>
-            <Button 
-              onClick={handleLoadAerospaceFeed}
-              disabled={loadingFeed}
-              size="lg"
-              variant="outline"
-              className="shrink-0"
-            >
-              {loadingFeed ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              ) : (
-                <FileJson className="w-4 h-4 mr-2" />
+            <div className="flex items-center gap-2">
+              {pagination && (
+                <div className="flex items-center gap-2 mr-4 text-sm">
+                  <span className="text-muted-foreground">
+                    Page {pagination.page} of {pagination.total_pages}
+                  </span>
+                  <div className="flex gap-1">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleLoadAerospaceFeed(pagination.prev_page || 1)}
+                      disabled={!pagination.prev_page || loadingFeed}
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleLoadAerospaceFeed(pagination.next_page || pagination.page)}
+                      disabled={!pagination.next_page || loadingFeed}
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
               )}
-              Load Aerospace Feed
-            </Button>
+              <Button 
+                onClick={() => handleLoadAerospaceFeed(1)}
+                disabled={loadingFeed}
+                size="lg"
+                variant="outline"
+                className="shrink-0"
+              >
+                {loadingFeed ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <FileJson className="w-4 h-4 mr-2" />
+                )}
+                Load Aerospace Feed
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -229,7 +284,7 @@ export default function JsonTester() {
             <Textarea
               value={jsonInput}
               onChange={(e) => setJsonInput(e.target.value)}
-              placeholder='Paste your JSON here. Format: {"articles": [{"post_id": 123, "title": "...", "content": "..."}]} or an array of articles. Or click "Load Aerospace Feed" above.'
+              placeholder='Paste your JSON here. Supports formats: {"posts": [...]} (aerospace feed), {"articles": [...]}, or array of articles. Or click "Load Aerospace Feed" above.'
               className="min-h-[400px] font-mono text-sm"
             />
             <div className="flex gap-2 mt-4">
