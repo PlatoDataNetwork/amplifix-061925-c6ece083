@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { FileJson, Sparkles, Tags, Loader2 } from "lucide-react";
+import { FileJson, Sparkles, Tags, Loader2, Eye, X } from "lucide-react";
 import SharedHeader from "@/components/SharedHeader";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface JsonArticle {
   post_id: number;
@@ -31,6 +33,7 @@ export default function JsonTester() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [processing, setProcessing] = useState(false);
   const [result, setResult] = useState<ProcessedResult | null>(null);
+  const [previewArticle, setPreviewArticle] = useState<JsonArticle | null>(null);
 
   const handleParseJson = () => {
     try {
@@ -223,6 +226,18 @@ export default function JsonTester() {
                         variant="outline"
                         onClick={(e) => {
                           e.stopPropagation();
+                          setPreviewArticle(article);
+                        }}
+                        className="flex-1"
+                      >
+                        <Eye className="w-3 h-3 mr-1" />
+                        Preview
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           handleTestFormat(index);
                         }}
                         disabled={processing}
@@ -306,6 +321,92 @@ export default function JsonTester() {
             )}
           </Card>
         )}
+
+        {/* Article Preview Dialog */}
+        <Dialog open={!!previewArticle} onOpenChange={(open) => !open && setPreviewArticle(null)}>
+          <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+            <DialogHeader className="px-6 pt-6 pb-4 border-b">
+              <div className="flex items-start justify-between">
+                <div className="flex-1 pr-8">
+                  <DialogTitle className="text-2xl font-bold mb-2">
+                    {previewArticle?.title}
+                  </DialogTitle>
+                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                    <span>Post ID: {previewArticle?.post_id}</span>
+                    {previewArticle?.date && (
+                      <span>Date: {new Date(previewArticle.date).toLocaleDateString()}</span>
+                    )}
+                    {previewArticle?.metadata?.author && (
+                      <span>Author: {previewArticle.metadata.author}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </DialogHeader>
+            
+            <ScrollArea className="h-[calc(90vh-120px)] px-6 py-4">
+              {previewArticle?.excerpt && (
+                <div className="mb-6 p-4 bg-muted/50 rounded-lg">
+                  <h3 className="font-semibold mb-2 text-sm text-muted-foreground">Excerpt</h3>
+                  <p className="text-sm">{previewArticle.excerpt}</p>
+                </div>
+              )}
+
+              {previewArticle?.content && (
+                <div className="prose prose-sm max-w-none dark:prose-invert">
+                  <h3 className="font-semibold mb-3">Content</h3>
+                  <div 
+                    dangerouslySetInnerHTML={{ __html: previewArticle.content }}
+                    className="text-sm leading-relaxed"
+                  />
+                </div>
+              )}
+
+              {previewArticle?.metadata && (
+                <div className="mt-6 p-4 bg-muted/30 rounded-lg">
+                  <h3 className="font-semibold mb-3 text-sm">Metadata</h3>
+                  <pre className="text-xs bg-background p-3 rounded overflow-x-auto">
+                    {JSON.stringify(previewArticle.metadata, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </ScrollArea>
+
+            <div className="px-6 py-4 border-t flex gap-2 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => setPreviewArticle(null)}
+              >
+                <X className="w-4 h-4 mr-2" />
+                Close
+              </Button>
+              <Button
+                onClick={() => {
+                  const index = parsedData.findIndex(a => a.post_id === previewArticle?.post_id);
+                  if (index !== -1) {
+                    handleTestFormat(index);
+                    setPreviewArticle(null);
+                  }
+                }}
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                Test Format
+              </Button>
+              <Button
+                onClick={() => {
+                  const index = parsedData.findIndex(a => a.post_id === previewArticle?.post_id);
+                  if (index !== -1) {
+                    handleTestTags(index);
+                    setPreviewArticle(null);
+                  }
+                }}
+              >
+                <Tags className="w-4 h-4 mr-2" />
+                Extract Tags
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
