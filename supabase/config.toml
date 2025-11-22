@@ -32,3 +32,6 @@ verify_jwt = true
 
 [functions.fetch-aerospace-feed]
 verify_jwt = true
+
+[functions.fetch-analytics]
+verify_jwt = true
