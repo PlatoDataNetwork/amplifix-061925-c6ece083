@@ -11,8 +11,10 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Loader2, PlayCircle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { toast } from "sonner";
 
 interface ImportHistory {
   id: string;
@@ -24,7 +26,7 @@ interface ImportHistory {
   duration_ms: number | null;
   started_at: string;
   completed_at: string | null;
-  status: 'in_progress' | 'completed' | 'failed' | 'partial';
+  status: 'in_progress' | 'completed' | 'failed' | 'partial' | 'needs_resume';
   metadata: any;
 }
 
@@ -85,12 +87,30 @@ export const ImportHistoryTable = () => {
 
   console.log('📜 ImportHistoryTable rendering, loading:', loading, 'history count:', history.length);
 
+  const handleResume = async (historyId: string) => {
+    try {
+      toast.info("Resuming import...");
+      
+      const { data, error } = await supabase.functions.invoke('import-aerospace-fast', {
+        body: { resumeHistoryId: historyId }
+      });
+
+      if (error) throw error;
+      
+      toast.success(data.message);
+    } catch (error) {
+      console.error('Resume error:', error);
+      toast.error('Failed to resume import');
+    }
+  };
+
   const getStatusBadge = (status: string, metadata?: any) => {
     const variants: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; label: string }> = {
       in_progress: { variant: "secondary", label: "In Progress" },
       completed: { variant: "default", label: "Completed" },
       failed: { variant: "destructive", label: "Failed" },
       partial: { variant: "outline", label: "Partial" },
+      needs_resume: { variant: "outline", label: "Needs Resume" },
     };
 
     const config = variants[status] || variants.completed;
@@ -183,6 +203,7 @@ export const ImportHistoryTable = () => {
                 <TableHead className="text-right">Duration</TableHead>
                 <TableHead>Progress</TableHead>
                 <TableHead>Started</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -230,6 +251,19 @@ export const ImportHistoryTable = () => {
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {formatDistanceToNow(new Date(record.started_at), { addSuffix: true })}
+                    </TableCell>
+                    <TableCell>
+                      {record.status === 'needs_resume' && (
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleResume(record.id)}
+                          className="gap-1"
+                        >
+                          <PlayCircle className="h-3 w-3" />
+                          Resume
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 );
