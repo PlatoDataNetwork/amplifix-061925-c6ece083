@@ -334,12 +334,25 @@ const FAIMShowcase = () => {
                 </p>
               </div>
               
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-purple-500/30">
-                <iframe
-                  src="/documents/faim-presentation.pdf"
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-purple-500/30 bg-card">
+                <object
+                  data="/documents/faim-presentation.pdf"
+                  type="application/pdf"
                   className="w-full h-[600px] md:h-[800px]"
-                  title="FAIM Business Presentation"
-                />
+                  aria-label="FAIM Business Presentation"
+                >
+                  <div className="p-6 text-center space-y-4">
+                    <p className="text-muted-foreground">
+                      Your browser doesn't support embedded PDFs. Please download the FAIM presentation to view it.
+                    </p>
+                    <Button asChild>
+                      <a href="/documents/faim-presentation.pdf" download>
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Download Presentation
+                      </a>
+                    </Button>
+                  </div>
+                </object>
               </div>
               
               <div className="text-center mt-6">
