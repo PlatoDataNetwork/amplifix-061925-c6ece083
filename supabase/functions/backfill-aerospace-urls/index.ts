@@ -125,6 +125,15 @@ Deno.serve(async (req) => {
         const status = !article.external_url ? 'missing' : hasPlato ? 'cleaning' : 'skip';
         console.log(`\n[${i + 1}/${articles.length}] Processing (${status}): ${article.title.substring(0, 60)}...`);
         
+        if (article.external_url && !hasPlato) {
+          console.log(`⊗ Skipping - already has non-Plato URL: ${article.external_url}`);
+          continue;
+        }
+        
+        if (hasPlato) {
+          console.log(`⚠ Current URL is Plato Data: ${article.external_url}`);
+        }
+        
         const sourceUrl = await extractSourceUrl(article.post_id);
         
         if (sourceUrl) {
@@ -139,7 +148,7 @@ Deno.serve(async (req) => {
             failed++;
           } else {
             updated++;
-            console.log(`✓ Updated article ${article.id} with source URL`);
+            console.log(`✓ Updated article ${article.id} with source URL: ${sourceUrl}`);
           }
         } else {
           console.log(`⚠ No source URL found for article ${article.id}`);
