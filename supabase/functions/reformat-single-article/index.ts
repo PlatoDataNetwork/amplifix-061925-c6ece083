@@ -70,19 +70,44 @@ const formatArticleWithAI = async (text: string): Promise<string> => {
     const data = await response.json();
     const formattedText = data.choices?.[0]?.message?.content || text;
     
-    // Process blocks and wrap in appropriate tags
-    const blocks = formattedText
-      .split(/\n\n+/)
-      .map((block: string) => block.trim())
-      .filter(Boolean);
-
-    return blocks.map((block: string) => {
-      if (block.startsWith('[HEADER]')) {
-        const headerText = block.replace('[HEADER]', '').trim();
-        return `<h3>${headerText}</h3>`;
+    // Process the text line by line to properly separate headers from content
+    const lines = formattedText.split('\n').map((line: string) => line.trim());
+    const result: string[] = [];
+    let currentParagraph: string[] = [];
+    
+    for (const line of lines) {
+      if (!line) {
+        // Empty line - end current paragraph if any
+        if (currentParagraph.length > 0) {
+          result.push(`<p>${currentParagraph.join(' ')}</p>`);
+          currentParagraph = [];
+        }
+        continue;
       }
-      return `<p>${block}</p>`;
-    }).join("\n\n");
+      
+      if (line.startsWith('[HEADER]')) {
+        // End current paragraph before adding header
+        if (currentParagraph.length > 0) {
+          result.push(`<p>${currentParagraph.join(' ')}</p>`);
+          currentParagraph = [];
+        }
+        // Extract ONLY the header text (first line after [HEADER])
+        const headerText = line.replace('[HEADER]', '').trim();
+        if (headerText) {
+          result.push(`<h3>${headerText}</h3>`);
+        }
+      } else {
+        // Regular content line - add to current paragraph
+        currentParagraph.push(line);
+      }
+    }
+    
+    // Add any remaining paragraph
+    if (currentParagraph.length > 0) {
+      result.push(`<p>${currentParagraph.join(' ')}</p>`);
+    }
+    
+    return result.filter(Boolean).join("\n\n");
   } catch (error) {
     console.error("Error using AI for formatting:", error);
     return fallbackFormatting(text);
