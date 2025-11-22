@@ -1275,6 +1275,66 @@ const ImportAdmin = () => {
                   </p>
                 </div>
 
+                {/* Reset Stuck AI Job */}
+                {aiJobStats && (
+                  <div className="p-4 bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/30 rounded-lg">
+                    <h4 className="text-sm font-semibold text-red-700 dark:text-red-300 mb-3">⚠️ AI Processing Job Status</h4>
+                    <p className="text-xs text-muted-foreground mb-3">
+                      Started: <strong>{new Date(aiJobStats.startedAt).toLocaleString()}</strong>
+                      <br />
+                      Progress: <strong>{aiJobStats.processedChunks} / {aiJobStats.totalChunks} chunks ({aiJobStats.progressPercent}%)</strong>
+                      <br />
+                      {aiJobStats.failedChunks > 0 && (
+                        <>Failed chunks: <strong className="text-red-500">{aiJobStats.failedChunks}</strong><br /></>
+                      )}
+                      Articles processed: <strong>{aiJobStats.articlesProcessed}</strong>
+                      <br />
+                      Rate: <strong>{aiJobStats.articlesPerMinute} articles/min</strong>
+                    </p>
+                    <Button
+                      onClick={async () => {
+                        if (!confirm('This will reset the AI processing job. You will need to restart it manually. Continue?')) {
+                          return;
+                        }
+
+                        try {
+                          const { data: jobs } = await supabase
+                            .from('ai_processing_jobs')
+                            .select('id')
+                            .eq('vertical_slug', 'aerospace')
+                            .eq('status', 'in_progress')
+                            .single();
+
+                          if (!jobs) {
+                            toast.error('No active job found');
+                            return;
+                          }
+
+                          const { error } = await supabase
+                            .from('ai_processing_jobs')
+                            .update({ 
+                              status: 'failed',
+                              updated_at: new Date().toISOString()
+                            })
+                            .eq('id', jobs.id);
+                          
+                          if (error) throw error;
+                          
+                          toast.success('AI processing job reset successfully');
+                          window.location.reload();
+                        } catch (error) {
+                          console.error('Error resetting job:', error);
+                          toast.error('Failed to reset AI processing job');
+                        }
+                      }}
+                      variant="destructive"
+                      size="sm"
+                    >
+                      Reset Job
+                    </Button>
+                  </div>
+                )}
+
                 {/* Control Buttons */}
                 <div className="flex gap-2">
                   <Button
