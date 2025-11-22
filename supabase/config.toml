@@ -9,6 +9,9 @@ verify_jwt = true
 [functions.import-and-process-all]
 verify_jwt = true
 
+[functions.import-aerospace-with-ai]
+verify_jwt = true
+
 [functions.translate-locales]
 verify_jwt = false
 
