@@ -245,10 +245,10 @@ const SecurityDashboard = () => {
           </Alert>
         )}
 
-        {/* Security Findings */}
+        {/* Security Audit */}
         <Card>
           <CardHeader>
-            <CardTitle>Security Findings</CardTitle>
+            <CardTitle>Security Audit</CardTitle>
             <CardDescription>
               Detailed vulnerability report and remediation guidance
             </CardDescription>
