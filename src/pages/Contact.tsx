@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
 import { useJsonData } from "@/hooks/useJsonData";
+import { z } from "zod";
 
 interface ContactData {
   contact: {
@@ -28,6 +29,16 @@ interface ContactData {
     consultation: Record<string, string>;
   };
 }
+
+// Client-side validation schema
+const contactSchema = z.object({
+  firstName: z.string().trim().min(1, "First name is required").max(100, "First name must be less than 100 characters"),
+  lastName: z.string().trim().min(1, "Last name is required").max(100, "Last name must be less than 100 characters"),
+  email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
+  company: z.string().trim().max(200, "Company name must be less than 200 characters"),
+  companyType: z.string().optional(),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(5000, "Message must be less than 5000 characters"),
+});
 
 const Contact = () => {
   const { data: contactData } = useJsonData<ContactData>('/data/contact.json');
@@ -61,10 +72,13 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.message) {
+    // Validate form data
+    const validationResult = contactSchema.safeParse(formData);
+    if (!validationResult.success) {
+      const firstError = validationResult.error.errors[0];
       toast({
-        title: "Missing fields",
-        description: "Please fill in all required fields.",
+        title: "Validation error",
+        description: firstError.message,
         variant: "destructive",
       });
       return;
@@ -74,7 +88,7 @@ const Contact = () => {
 
     try {
       const { data: responseData, error } = await supabase.functions.invoke('send-contact-email', {
-        body: formData
+        body: validationResult.data
       });
 
       if (error) throw error;
@@ -158,32 +172,34 @@ const Contact = () => {
               <h2 className="text-2xl font-bold mb-6">{contactData?.contact.form.title || 'Send us a message'}</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium mb-2">
-                      First Name
-                    </label>
-                    <Input 
-                      id="firstName" 
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      placeholder="John"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium mb-2">
-                      Last Name
-                    </label>
-                    <Input 
-                      id="lastName" 
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      placeholder="Doe"
-                      required
-                    />
-                  </div>
+                <div>
+                  <label htmlFor="firstName" className="block text-sm font-medium mb-2">
+                    First Name
+                  </label>
+                  <Input 
+                    id="firstName" 
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    placeholder="John"
+                    maxLength={100}
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block text-sm font-medium mb-2">
+                    Last Name
+                  </label>
+                  <Input 
+                    id="lastName" 
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    placeholder="Doe"
+                    maxLength={100}
+                    required
+                  />
+                </div>
                 </div>
 
                 <div>
@@ -197,6 +213,7 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="john@company.com"
+                    maxLength={255}
                     required
                   />
                 </div>
@@ -211,6 +228,7 @@ const Contact = () => {
                     value={formData.company}
                     onChange={handleInputChange}
                     placeholder="Your company"
+                    maxLength={200}
                   />
                 </div>
 
@@ -244,8 +262,12 @@ const Contact = () => {
                     onChange={handleInputChange}
                     placeholder="Tell us about your needs..."
                     className="min-h-[150px]"
+                    maxLength={5000}
                     required
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {formData.message.length}/5000 characters
+                  </p>
                 </div>
 
                 <Button 
