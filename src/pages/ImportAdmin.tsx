@@ -565,14 +565,15 @@ const ImportAdmin = () => {
           </div>
 
           {/* Real-time Stats Banner - Always Visible */}
-          <Card className="mb-8 border-green-500/30 bg-gradient-to-br from-green-500/5 to-blue-500/5">
+          <Card className="mb-8 border-green-500/50 bg-gradient-to-br from-green-500/10 to-blue-500/10 shadow-lg">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  📊 Live Import Statistics
+                <CardTitle className="text-xl flex items-center gap-3">
+                  <span className="text-3xl">📊</span>
+                  Live Import Statistics
                   {realtimeConnected && (
-                    <span className="text-xs font-normal text-green-500 flex items-center gap-1">
-                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    <span className="text-sm font-normal text-green-500 flex items-center gap-2 bg-green-500/20 px-3 py-1 rounded-full border border-green-500/30">
+                      <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></span>
                       Real-time Active
                     </span>
                   )}
@@ -589,23 +590,28 @@ const ImportAdmin = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-background rounded-lg border">
-                  <p className="text-xs text-muted-foreground mb-2 flex items-center justify-center gap-1">
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <div className="text-center p-6 bg-background rounded-lg border-2 border-green-500/30 shadow-md transition-all hover:shadow-lg hover:border-green-500/50">
+                  <p className="text-sm text-muted-foreground mb-3 flex items-center justify-center gap-2 font-medium">
+                    <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></span>
                     Articles This Session
                   </p>
-                  <p className="text-4xl font-bold text-green-500">{sessionArticlesImported.toLocaleString()}</p>
-                </div>
-                <div className="text-center p-4 bg-background rounded-lg border">
-                  <p className="text-xs text-muted-foreground mb-2">Import Rate</p>
-                  <p className="text-4xl font-bold text-blue-500">{importRate}</p>
-                  <p className="text-xs text-muted-foreground mt-1">articles/sec</p>
-                </div>
-                <div className="text-center p-4 bg-background rounded-lg border">
-                  <p className="text-xs text-muted-foreground mb-2">Session Duration</p>
-                  <p className="text-4xl font-bold text-purple-500">
-                    {sessionDuration}s
+                  <p className="text-5xl font-bold text-green-500 tabular-nums tracking-tight animate-in fade-in duration-500">
+                    {sessionArticlesImported.toLocaleString()}
                   </p>
+                </div>
+                <div className="text-center p-6 bg-background rounded-lg border-2 border-blue-500/30 shadow-md transition-all hover:shadow-lg hover:border-blue-500/50">
+                  <p className="text-sm text-muted-foreground mb-3 font-medium">Import Rate</p>
+                  <p className="text-5xl font-bold text-blue-500 tabular-nums tracking-tight">
+                    {importRate}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2 font-medium">articles/sec</p>
+                </div>
+                <div className="text-center p-6 bg-background rounded-lg border-2 border-purple-500/30 shadow-md transition-all hover:shadow-lg hover:border-purple-500/50">
+                  <p className="text-sm text-muted-foreground mb-3 font-medium">Session Duration</p>
+                  <p className="text-5xl font-bold text-purple-500 tabular-nums tracking-tight">
+                    {Math.floor(sessionDuration / 60)}:{String(sessionDuration % 60).padStart(2, '0')}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2 font-medium">min:sec</p>
                 </div>
               </div>
             </CardContent>

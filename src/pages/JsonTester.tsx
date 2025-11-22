@@ -495,32 +495,75 @@ export default function JsonTester() {
               </div>
             </DialogHeader>
             
-            <ScrollArea className="h-[calc(90vh-120px)] px-6 py-4">
-              {previewArticle?.excerpt && (
-                <div className="mb-6 p-4 bg-muted/50 rounded-lg">
-                  <h3 className="font-semibold mb-2 text-sm text-muted-foreground">Excerpt</h3>
-                  <p className="text-sm">{previewArticle.excerpt}</p>
-                </div>
-              )}
+            <ScrollArea className="h-[calc(90vh-120px)]">
+              {/* Article Page Preview */}
+              <article className="max-w-4xl mx-auto px-6 py-8">
+                {/* Article Header */}
+                <header className="mb-8 pb-8 border-b">
+                  <h1 className="text-4xl font-bold mb-4 leading-tight">
+                    {previewArticle?.title}
+                  </h1>
+                  
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                    {previewArticle?.metadata?.author && (
+                      <span className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
+                          {previewArticle.metadata.author.charAt(0).toUpperCase()}
+                        </div>
+                        {previewArticle.metadata.author}
+                      </span>
+                    )}
+                    {previewArticle?.date && (
+                      <span>• {new Date(previewArticle.date).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      })}</span>
+                    )}
+                    <span>• Post ID: {previewArticle?.post_id}</span>
+                  </div>
+                </header>
 
-              {previewArticle?.content && (
-                <div className="prose prose-sm max-w-none dark:prose-invert">
-                  <h3 className="font-semibold mb-3">Content</h3>
+                {/* Excerpt/Lead */}
+                {previewArticle?.excerpt && (
+                  <div className="mb-8 text-lg leading-relaxed text-muted-foreground italic border-l-4 border-primary/30 pl-6 py-4 bg-muted/30 rounded-r-lg">
+                    {previewArticle.excerpt}
+                  </div>
+                )}
+
+                {/* Article Content */}
+                {previewArticle?.content && (
                   <div 
+                    className="prose prose-lg dark:prose-invert max-w-none 
+                      prose-headings:font-bold prose-headings:text-foreground
+                      prose-p:text-foreground prose-p:leading-relaxed
+                      prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+                      prose-strong:text-foreground prose-strong:font-semibold
+                      prose-ul:text-foreground prose-ol:text-foreground
+                      prose-li:text-foreground
+                      prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground
+                      prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded
+                      prose-pre:bg-muted prose-pre:text-foreground
+                      prose-img:rounded-lg prose-img:shadow-lg"
                     dangerouslySetInnerHTML={{ __html: previewArticle.content }}
-                    className="text-sm leading-relaxed"
                   />
-                </div>
-              )}
+                )}
 
-              {previewArticle?.metadata && (
-                <div className="mt-6 p-4 bg-muted/30 rounded-lg">
-                  <h3 className="font-semibold mb-3 text-sm">Metadata</h3>
-                  <pre className="text-xs bg-background p-3 rounded overflow-x-auto">
-                    {JSON.stringify(previewArticle.metadata, null, 2)}
-                  </pre>
-                </div>
-              )}
+                {/* Metadata Footer */}
+                {previewArticle?.metadata && Object.keys(previewArticle.metadata).length > 0 && (
+                  <div className="mt-12 pt-8 border-t">
+                    <details className="group">
+                      <summary className="cursor-pointer text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors list-none flex items-center gap-2">
+                        <span className="group-open:rotate-90 transition-transform">▶</span>
+                        Article Metadata
+                      </summary>
+                      <pre className="mt-4 text-xs bg-muted p-4 rounded-lg overflow-x-auto border">
+                        {JSON.stringify(previewArticle.metadata, null, 2)}
+                      </pre>
+                    </details>
+                  </div>
+                )}
+              </article>
             </ScrollArea>
 
             <div className="px-6 py-4 border-t flex gap-2 justify-end">
