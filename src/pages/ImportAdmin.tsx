@@ -494,14 +494,34 @@ const ImportAdmin = () => {
           } else if (payload.payload.phase === 'complete') {
             setProgressPercent(100);
             setProgressStatus('Fast import complete!');
+            
+            // Update session stats when complete
+            const imported = payload.payload.imported || 0;
+            if (imported > 0) {
+              setSessionArticlesImported(prev => prev + imported);
+            }
+            
+            // Auto-close after completion
+            setTimeout(() => {
+              setImporting(null);
+              supabase.removeChannel(progressChannel);
+            }, 3000);
+          } else if (payload.payload.phase === 'error') {
+            setProgressStatus(`Error: ${payload.payload.message}`);
+            setTimeout(() => {
+              setImporting(null);
+              supabase.removeChannel(progressChannel);
+            }, 5000);
           }
         })
         .subscribe();
 
-      toast.info('Starting FAST Aerospace import (no AI processing - all 9,240 articles)...');
+      toast.info('Starting FAST Aerospace import in background...', {
+        description: 'All 9,240 articles will be imported without timing out. Check Import History below for progress.'
+      });
 
       setProgressPercent(10);
-      setProgressStatus('Connecting to import service...');
+      setProgressStatus('Launching background import...');
 
       const { data, error } = await supabase.functions.invoke('import-aerospace-fast', {
         headers: {
@@ -509,42 +529,17 @@ const ImportAdmin = () => {
         }
       });
 
-      await supabase.removeChannel(progressChannel);
-
-      if (error) throw error;
-
-      setProgressPercent(100);
-      setProgressStatus('Fast import completed!');
-
-      const importedCount = data?.imported || 0;
-      if (importedCount > 0) {
-        setSessionArticlesImported(prev => prev + importedCount);
-      }
-
-      setResults(prev => ({ 
-        ...prev, 
-        'aerospace-fast': data 
-      }));
-
-      toast.success('Aerospace FAST import completed!', {
-        description: `Imported ${data?.imported || 0} new articles from ${data?.totalPages || 0} pages • Skipped ${data?.skipped || 0} existing`,
-        duration: 10000
-      });
+      // Note: Channel stays open to receive background updates
+      // It will auto-close when phase === 'complete' or 'error'
 
       await loadMetrics();
     } catch (error) {
       console.error('Error importing Aerospace:', error);
-      toast.error('Failed to import Aerospace articles', {
+      toast.error('Failed to start Aerospace import', {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
       setProgressStatus('Error occurred');
-    } finally {
-      setTimeout(() => {
-        setImporting(null);
-        setProgressStatus('');
-        setProgressPercent(0);
-        setAerospaceProgress(null);
-      }, 3000);
+      setImporting(null);
     }
   };
 
