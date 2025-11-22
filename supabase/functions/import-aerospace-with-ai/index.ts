@@ -183,6 +183,18 @@ Deno.serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
+    // Create channel for real-time progress updates
+    const progressChannel = supabaseClient.channel(`aerospace-import-${user.id}`);
+
+    // Helper to broadcast progress
+    const broadcastProgress = async (update: any) => {
+      await progressChannel.send({
+        type: 'broadcast',
+        event: 'import-progress',
+        payload: update
+      });
+    };
+
     const results = {
       success: true,
       vertical: 'aerospace',
@@ -202,6 +214,15 @@ Deno.serve(async (req) => {
     let allArticles: AerospaceArticle[] = [];
 
     console.log('🔄 Starting paginated import from https://platodata.ai/aerospace/json/');
+
+    // Send initial progress
+    await broadcastProgress({
+      phase: 'fetching',
+      currentPage: 0,
+      totalPages: 0,
+      articlesCollected: 0,
+      message: 'Starting import...'
+    });
 
     while (hasMorePages) {
       console.log(`\n📄 Fetching page ${currentPage}...`);
@@ -238,6 +259,14 @@ Deno.serve(async (req) => {
       if (pageArticles.length === 0) {
         console.log(`\n🏁 Reached last page (page ${currentPage} has 0 articles)`);
         hasMorePages = false;
+        
+        await broadcastProgress({
+          phase: 'fetching-complete',
+          currentPage: currentPage - 1,
+          totalPages: currentPage - 1,
+          articlesCollected: allArticles.length,
+          message: `Fetching complete: ${allArticles.length} articles collected`
+        });
         break;
       }
 
@@ -245,6 +274,16 @@ Deno.serve(async (req) => {
       allArticles = allArticles.concat(pageArticles);
       results.totalPages = currentPage;
       results.totalInFeed = allArticles.length;
+
+      // Broadcast page progress
+      await broadcastProgress({
+        phase: 'fetching',
+        currentPage: currentPage,
+        totalPages: currentPage,
+        articlesCollected: allArticles.length,
+        articlesOnPage: pageArticles.length,
+        message: `Page ${currentPage}: Found ${pageArticles.length} articles`
+      });
 
       currentPage++;
 
@@ -255,9 +294,37 @@ Deno.serve(async (req) => {
     console.log(`\n📊 Total articles collected: ${allArticles.length} from ${results.totalPages} pages`);
     console.log(`\n🚀 Starting AI processing for all articles...\n`);
 
+    // Broadcast processing start
+    await broadcastProgress({
+      phase: 'processing',
+      currentPage: results.totalPages,
+      totalPages: results.totalPages,
+      articlesCollected: allArticles.length,
+      articlesProcessed: 0,
+      imported: 0,
+      skipped: 0,
+      message: 'Starting AI processing...'
+    });
+
     // Process each article
     for (let i = 0; i < allArticles.length; i++) {
       const article = allArticles[i];
+      
+      // Broadcast progress every 5 articles
+      if (i % 5 === 0 && i > 0) {
+        await broadcastProgress({
+          phase: 'processing',
+          currentPage: results.totalPages,
+          totalPages: results.totalPages,
+          articlesCollected: allArticles.length,
+          articlesProcessed: i,
+          imported: results.imported,
+          skipped: results.skipped,
+          errors: results.errors,
+          percentComplete: Math.round((i / allArticles.length) * 100),
+          message: `Processing: ${i}/${allArticles.length} articles`
+        });
+      }
       
       if (i % 10 === 0) {
         console.log(`\n📈 Progress: ${i}/${allArticles.length} articles processed (${Math.round((i/allArticles.length)*100)}%)`);
@@ -368,6 +435,23 @@ Deno.serve(async (req) => {
     }
 
     results.duration = Date.now() - startTime;
+
+    // Send final progress update
+    await broadcastProgress({
+      phase: 'complete',
+      currentPage: results.totalPages,
+      totalPages: results.totalPages,
+      articlesCollected: allArticles.length,
+      articlesProcessed: allArticles.length,
+      imported: results.imported,
+      skipped: results.skipped,
+      errors: results.errors,
+      percentComplete: 100,
+      message: 'Import complete!'
+    });
+
+    // Clean up channel
+    await supabaseClient.removeChannel(progressChannel);
 
     console.log('\n✅ Aerospace FULL FEED import completed:', results);
     console.log(`   📊 Total Pages: ${results.totalPages}`);
