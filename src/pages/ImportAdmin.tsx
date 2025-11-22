@@ -64,6 +64,13 @@ const ImportAdmin = () => {
     percentComplete?: number;
     message: string;
   } | null>(null);
+  const [aerospaceImportTotals, setAerospaceImportTotals] = useState<{
+    imported: number;
+    skipped: number;
+    totalProcessed: number;
+    lastPage: number | null;
+    status: string;
+  } | null>(null);
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
   // Derived import rate (articles per second)
@@ -146,6 +153,46 @@ const ImportAdmin = () => {
     };
   }, []);
   
+  // Real-time subscription for aerospace import history (drives live stats even when rows are skipped)
+  useEffect(() => {
+    console.log('Setting up real-time subscription for aerospace import_history...');
+    const historyChannel = supabase
+      .channel('aerospace-import-history')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'import_history',
+        },
+        (payload: any) => {
+          const row = payload.new;
+          if (!row || row.vertical_slug !== 'aerospace') return;
+
+          const meta = row.metadata || {};
+          const totalProcessed = row.total_processed ?? 0;
+
+          setAerospaceImportTotals({
+            imported: row.imported_count ?? 0,
+            skipped: row.skipped_count ?? 0,
+            totalProcessed,
+            lastPage: meta.lastProcessedPage ?? meta.currentPage ?? null,
+            status: row.status ?? 'unknown',
+          });
+
+          // Keep the big "Articles This Session" number in sync with aerospace processing
+          setSessionArticlesImported(totalProcessed);
+        }
+      )
+      .subscribe((status) => {
+        console.log('Aerospace import_history realtime status:', status);
+      });
+
+    return () => {
+      console.log('Cleaning up aerospace import_history subscription');
+      supabase.removeChannel(historyChannel);
+    };
+  }, []);
   const loadMetrics = async () => {
     try {
       // Get total articles count
@@ -161,16 +208,39 @@ const ImportAdmin = () => {
       
       if (error) {
         console.error('Error fetching vertical counts:', error);
-        return;
-      }
-      
-      if (verticalCounts) {
+      } else if (verticalCounts) {
         const counts: Record<string, number> = {};
         verticalCounts.forEach((item: { vertical_slug: string; article_count: number }) => {
           counts[item.vertical_slug] = item.article_count;
         });
         setMetrics(counts);
         console.log('Loaded metrics:', counts);
+      }
+
+      // Load latest aerospace import summary to drive live stats
+      const { data: latestAero, error: aeroError } = await supabase
+        .from('import_history')
+        .select('imported_count, skipped_count, total_processed, status, metadata')
+        .eq('vertical_slug', 'aerospace')
+        .order('started_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (aeroError) {
+        console.error('Error fetching aerospace import summary:', aeroError);
+      } else if (latestAero) {
+        const anyAero = latestAero as any;
+        const meta = anyAero.metadata || {};
+        const totalProcessed = anyAero.total_processed ?? 0;
+        setAerospaceImportTotals({
+          imported: anyAero.imported_count ?? 0,
+          skipped: anyAero.skipped_count ?? 0,
+          totalProcessed,
+          lastPage: meta.lastProcessedPage ?? meta.currentPage ?? null,
+          status: anyAero.status ?? 'unknown',
+        });
+        // Use total processed to keep the session articles number moving with imports
+        setSessionArticlesImported(totalProcessed);
       }
     } catch (error) {
       console.error('Error loading metrics:', error);
