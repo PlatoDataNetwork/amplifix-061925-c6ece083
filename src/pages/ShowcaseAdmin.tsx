@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import MainHeader from "@/components/MainHeader";
 import { Helmet } from "react-helmet-async";
 import { ShowcaseLogoFixer } from "@/components/ShowcaseLogoFixer";
+import { AddVseeHealthShowcase } from "@/components/AddVseeHealthShowcase";
 import { LogoGallery } from "@/components/LogoGallery";
 
 interface ShowcaseCompany {
@@ -393,6 +394,10 @@ const ShowcaseAdmin = () => {
           </div>
 
           <ShowcaseLogoFixer />
+          
+          <div className="mb-8">
+            <AddVseeHealthShowcase />
+          </div>
 
           {showForm && (
             <Card className="mb-8">
