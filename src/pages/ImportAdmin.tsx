@@ -1572,47 +1572,82 @@ const ImportAdmin = () => {
                       <br />
                       Rate: <strong>{aiJobStats.articlesPerMinute} articles/min</strong>
                     </p>
-                    <Button
-                      onClick={async () => {
-                        if (!confirm('This will reset the AI processing job. You will need to restart it manually. Continue?')) {
-                          return;
-                        }
-
-                        try {
-                          const { data: jobs } = await supabase
-                            .from('ai_processing_jobs')
-                            .select('id')
-                            .eq('vertical_slug', 'aerospace')
-                            .eq('status', 'in_progress')
-                            .single();
-
-                          if (!jobs) {
-                            toast.error('No active job found');
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={async () => {
+                          if (!confirm('This will reset the AI processing job. You will need to restart it manually. Continue?')) {
                             return;
                           }
 
-                          const { error } = await supabase
-                            .from('ai_processing_jobs')
-                            .update({ 
-                              status: 'failed',
-                              updated_at: new Date().toISOString()
-                            })
-                            .eq('id', jobs.id);
-                          
-                          if (error) throw error;
-                          
-                          toast.success('AI processing job reset successfully');
-                          window.location.reload();
-                        } catch (error) {
-                          console.error('Error resetting job:', error);
-                          toast.error('Failed to reset AI processing job');
-                        }
-                      }}
-                      variant="destructive"
-                      size="sm"
-                    >
-                      Reset Job
-                    </Button>
+                          try {
+                            const { data: jobs } = await supabase
+                              .from('ai_processing_jobs')
+                              .select('id')
+                              .eq('vertical_slug', 'aerospace')
+                              .eq('status', 'in_progress')
+                              .single();
+
+                            if (!jobs) {
+                              toast.error('No active job found');
+                              return;
+                            }
+
+                            const { error } = await supabase
+                              .from('ai_processing_jobs')
+                              .update({ 
+                                status: 'failed',
+                                updated_at: new Date().toISOString()
+                              })
+                              .eq('id', jobs.id);
+                            
+                            if (error) throw error;
+                            
+                            toast.success('AI processing job reset successfully');
+                            window.location.reload();
+                          } catch (error) {
+                            console.error('Error resetting job:', error);
+                            toast.error('Failed to reset AI processing job');
+                          }
+                        }}
+                        variant="destructive"
+                        size="sm"
+                      >
+                        Reset Current Job
+                      </Button>
+                      <Button
+                        onClick={async () => {
+                          if (!confirm('⚠️ This will DELETE ALL AI processing jobs (current and past). This action cannot be undone. Continue?')) {
+                            return;
+                          }
+
+                          try {
+                            toast.info('Deleting all AI processing jobs...');
+                            
+                            const { data, error } = await supabase.functions.invoke('reset-ai-jobs');
+                            
+                            if (error) throw error;
+                            
+                            toast.success('All AI jobs reset!', {
+                              description: data.message,
+                              duration: 5000
+                            });
+                            
+                            // Refresh the page to clear state
+                            setTimeout(() => window.location.reload(), 1000);
+                          } catch (error) {
+                            console.error('Error resetting all jobs:', error);
+                            toast.error('Failed to reset AI jobs', {
+                              description: error instanceof Error ? error.message : 'Unknown error'
+                            });
+                          }
+                        }}
+                        variant="destructive"
+                        size="sm"
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        🗑️ Reset ALL Jobs
+                      </Button>
+                    </div>
                   </div>
                 )}
 
