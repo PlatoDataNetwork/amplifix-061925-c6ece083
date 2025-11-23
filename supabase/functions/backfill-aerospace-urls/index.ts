@@ -92,7 +92,7 @@ Deno.serve(async (req) => {
       }
     );
 
-    const { batchSize = 50, delayMs = 200 } = await req.json().catch(() => ({}));
+    const { batchSize = 500, delayMs = 200 } = await req.json().catch(() => ({}));
 
     console.log(`🔄 Starting aerospace URL backfill (batch size: ${batchSize}, delay: ${delayMs}ms)`);
 
