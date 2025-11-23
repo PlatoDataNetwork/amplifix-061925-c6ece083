@@ -47,7 +47,7 @@ export const QuickShowcaseUpdates = () => {
             tags: ["AI", "Telehealth", "Healthcare Technology", "Medical Devices"],
             button_text: "View Showcase",
             link: "/showcase/vsee-health",
-            website: "https://vseehealth.com/",
+            website: "https://vseehealth.com/about",
             stock_url: "https://www.tradingview.com/symbols/NASDAQ-VSEE/",
             search_url: "https://www.google.com/search?q=VSee+Health+NASDAQ+VSEE",
             thumbnail: "/lovable-uploads/vsee-health-thumbnail.png",
