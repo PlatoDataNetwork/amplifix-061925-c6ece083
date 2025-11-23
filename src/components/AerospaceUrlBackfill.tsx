@@ -56,12 +56,13 @@ export const AerospaceUrlBackfill = () => {
         return;
       }
 
-      toast.info("Starting aerospace URL backfill...");
+      toast.info("Starting aerospace URL backfill (500 articles per batch)...");
 
       const { data, error } = await supabase.functions.invoke('backfill-aerospace-urls', {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
+        body: { batchSize: 500, delayMs: 200 },
       });
 
       if (error) throw error;
@@ -84,13 +85,13 @@ export const AerospaceUrlBackfill = () => {
           Aerospace Source Links Backfill
         </CardTitle>
         <CardDescription>
-          Automatically fetch and update source links for aerospace articles from the Plato feed
+          Automatically fetch and update source links for aerospace articles from Plato feed (500 articles per batch)
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">
-            This will match articles by post_id and add their original source URLs from platodata.ai
+            Processes 500 articles per batch. Fetches original source URLs by querying Plato JSON feed with post_id.
           </p>
         </div>
 
