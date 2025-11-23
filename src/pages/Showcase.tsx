@@ -91,27 +91,16 @@ const Showcase = () => {
     return jsonShowcases;
   }, [dbShowcases, showcaseData, loading]);
 
-  // Predefined sectors for the dropdown
-  const predefinedSectors = [
-    'Aerospace',
-    'AI',
-    'Automotive',
-    'Biotech',
-    'Blockchain',
-    'Cannabis',
-    'Carbon',
-    'Cyber',
-    'Facial Analysis',
-    'Fintech',
-    'Forex',
-    'Healthcare Technology',
-    'Medical Devices',
-    'Pharma',
-    'Psychedelics',
-    'Real Estate',
-    'Telehealth',
-    'Venture Capital'
-  ];
+  // Dynamically get all unique tags from showcases for the filter dropdown
+  const availableSectors = useMemo(() => {
+    const sectors = new Set<string>();
+    allShowcases.forEach(showcase => {
+      if (showcase.tags && Array.isArray(showcase.tags)) {
+        showcase.tags.forEach(tag => sectors.add(tag));
+      }
+    });
+    return Array.from(sectors).sort();
+  }, [allShowcases]);
 
   // Filter showcases based on selected filters
   const filteredShowcases = useMemo(() => {
@@ -212,7 +201,7 @@ const Showcase = () => {
                     >
                       All Sectors
                     </DropdownMenuItem>
-                    {predefinedSectors.map((sector) => (
+                    {availableSectors.map((sector) => (
                       <DropdownMenuItem
                         key={sector}
                         onClick={() => setFilterSector(sector)}
