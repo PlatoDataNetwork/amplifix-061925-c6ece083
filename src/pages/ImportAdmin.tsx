@@ -1646,30 +1646,39 @@ const ImportAdmin = () => {
                 <div className="p-4 bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/30 rounded-lg">
                   <h4 className="text-sm font-semibold text-red-700 dark:text-red-300 mb-3">⚠️ AI Processing Job Status</h4>
                   
-                  {/* Aerospace Article Counts */}
-                  {aerospaceArticleCounts && (
-                    <div className="grid grid-cols-3 gap-3 mb-4 p-3 bg-background/50 rounded-lg border border-border">
-                      <div className="text-center">
-                        <p className="text-xs text-muted-foreground mb-1">Total Articles</p>
-                        <p className="text-2xl font-bold text-foreground">{aerospaceArticleCounts.total.toLocaleString()}</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-xs text-muted-foreground mb-1">AI Processed</p>
-                        <p className="text-2xl font-bold text-green-600 dark:text-green-400">{aerospaceArticleCounts.aiProcessed.toLocaleString()}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {aerospaceArticleCounts.total > 0 ? Math.round((aerospaceArticleCounts.aiProcessed / aerospaceArticleCounts.total) * 100) : 0}%
-                        </p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-xs text-muted-foreground mb-1">Remaining</p>
-                        <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">{aerospaceArticleCounts.remaining.toLocaleString()}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {aerospaceArticleCounts.total > 0 ? Math.round((aerospaceArticleCounts.remaining / aerospaceArticleCounts.total) * 100) : 0}%
-                        </p>
-                      </div>
+                  {/* Aerospace Article Counts - Always Visible */}
+                  <div className="grid grid-cols-3 gap-3 mb-4 p-3 bg-background/50 rounded-lg border border-border">
+                    <div className="text-center">
+                      <p className="text-xs text-muted-foreground mb-1">Total Articles</p>
+                      <p className="text-2xl font-bold text-foreground">
+                        {aerospaceArticleCounts ? aerospaceArticleCounts.total.toLocaleString() : '...'}
+                      </p>
                     </div>
-                  )}
+                    <div className="text-center">
+                      <p className="text-xs text-muted-foreground mb-1">AI Processed</p>
+                      <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                        {aerospaceArticleCounts ? aerospaceArticleCounts.aiProcessed.toLocaleString() : '...'}
+                      </p>
+                      {aerospaceArticleCounts && aerospaceArticleCounts.total > 0 && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {Math.round((aerospaceArticleCounts.aiProcessed / aerospaceArticleCounts.total) * 100)}%
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-muted-foreground mb-1">Remaining</p>
+                      <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                        {aerospaceArticleCounts ? aerospaceArticleCounts.remaining.toLocaleString() : '...'}
+                      </p>
+                      {aerospaceArticleCounts && aerospaceArticleCounts.total > 0 && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {Math.round((aerospaceArticleCounts.remaining / aerospaceArticleCounts.total) * 100)}%
+                        </p>
+                      )}
+                    </div>
+                  </div>
                   
+                  {/* Current Job Info */}
                   {aiJobStats ? (
                     <p className="text-xs text-muted-foreground mb-3">
                       Status: <strong className={aiJobStats.status === 'completed' ? 'text-green-600' : aiJobStats.status === 'completed_with_errors' ? 'text-orange-600' : 'text-blue-600'}>{aiJobStats.status || 'in_progress'}</strong>
