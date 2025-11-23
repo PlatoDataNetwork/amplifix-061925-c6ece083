@@ -9,18 +9,18 @@ export const UpdateShowcaseTags = () => {
   const { toast } = useToast();
 
   const companyTagUpdates = [
-    { name: 'Forex-GPT.ai', tags: ['Fintech', 'Forex'] },
+    { name: 'Forex-GPT.ai', tags: ['AI', 'Fintech', 'Forex'] },
     { name: 'CUT', tags: ['Carbon', 'Blockchain'] },
     { name: 'DevvStream Corp', tags: ['Carbon', 'Blockchain'] },
-    { name: 'Naoris Protocol', tags: ['Cyber', 'Blockchain'] },
+    { name: 'Naoris Protocol', tags: ['AI', 'Cyber', 'Blockchain'] },
     { name: 'Abatis', tags: ['Cyber', 'Blockchain'] },
-    { name: 'SILO Pharma Inc.', tags: ['Biotechnology', 'Pharma', 'Psychedelics'] },
+    { name: 'SILO Pharma Inc.', tags: ['AI', 'Biotechnology', 'Pharma', 'Psychedelics'] },
     { name: 'Micropolis', tags: ['Automotive'] },
     { name: 'Karbon-X', tags: ['Carbon'] },
-    { name: 'FacialDX', tags: ['Facial Analysis'] },
+    { name: 'FacialDX', tags: ['AI', 'Facial Analysis'] },
     { name: 'Int\'l Land Alliance', tags: ['Real Estate'] },
-    { name: 'Synbio Int\'l', tags: ['Facial Analysis'] },
-    { name: 'FAIM', tags: ['Blockchain'] }
+    { name: 'Synbio Int\'l', tags: ['AI', 'Facial Analysis'] },
+    { name: 'FAIM', tags: ['AI', 'Blockchain'] }
   ];
 
   const handleUpdate = async () => {
