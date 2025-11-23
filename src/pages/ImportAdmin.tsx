@@ -85,6 +85,7 @@ const ImportAdmin = () => {
     estimatedTimeRemaining: string | null;
     articlesProcessed: number;
     articlesPerMinute: number;
+    status?: string;
   } | null>(null);
   const [lastAiStatsUpdate, setLastAiStatsUpdate] = useState<Date | null>(null);
   const [aerospaceStats, setAerospaceStats] = useState<{
@@ -113,7 +114,6 @@ const ImportAdmin = () => {
         .from('ai_processing_jobs')
         .select('*')
         .eq('vertical_slug', 'aerospace')
-        .eq('status', 'in_progress')
         .order('started_at', { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -155,7 +155,8 @@ const ImportAdmin = () => {
           startedAt: job.started_at,
           estimatedTimeRemaining: remainingChunks > 0 ? estimatedTimeRemaining : null,
           articlesProcessed,
-          articlesPerMinute
+          articlesPerMinute,
+          status: job.status
         });
         
         setAiProcessingJobId(job.id);
@@ -1583,6 +1584,8 @@ const ImportAdmin = () => {
                   <div className="p-4 bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/30 rounded-lg">
                     <h4 className="text-sm font-semibold text-red-700 dark:text-red-300 mb-3">⚠️ AI Processing Job Status</h4>
                     <p className="text-xs text-muted-foreground mb-3">
+                      Status: <strong className={aiJobStats.status === 'completed' ? 'text-green-600' : aiJobStats.status === 'completed_with_errors' ? 'text-orange-600' : 'text-blue-600'}>{aiJobStats.status || 'in_progress'}</strong>
+                      <br />
                       Started: <strong>{new Date(aiJobStats.startedAt).toLocaleString()}</strong>
                       <br />
                       Progress: <strong>{aiJobStats.processedChunks} / {aiJobStats.totalChunks} chunks ({aiJobStats.progressPercent}%)</strong>
