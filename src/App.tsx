@@ -29,6 +29,7 @@ import SynbioInteractivePresentation from "./pages/SynbioInteractivePresentation
 import AbatisShowcase from "./pages/AbatisShowcase";
 import FacialDXShowcase from "./pages/FacialDXShowcase";
 import ForexGPTShowcase from "./pages/ForexGPTShowcase";
+import BlockwellShowcase from "./pages/BlockwellShowcase";
 import Showcase from "./pages/Showcase";
 import Solutions from "./pages/Solutions";
 import PublicCompanies from "./pages/PublicCompanies";
@@ -116,6 +117,7 @@ const App = () => (
               <Route path="/showcase/synbio-interactive" element={<SynbioInteractivePresentation />} />
               <Route path="/showcase/abatis" element={<AbatisShowcase />} />
               <Route path="/showcase/forex-gpt" element={<ForexGPTShowcase />} />
+              <Route path="/showcase/blockwell" element={<BlockwellShowcase />} />
               <Route path="/showcase/vsee-health" element={<VseeHealthShowcase />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />

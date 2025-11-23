@@ -72,3 +72,9 @@ verify_jwt = true
 [functions.reset-aerospace-ai]
 verify_jwt = true
 
+[functions.add-blockwell-company]
+verify_jwt = false
+
+[functions.update-showcase-data]
+verify_jwt = false
+
