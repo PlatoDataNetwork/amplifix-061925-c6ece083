@@ -37,34 +37,82 @@ const ForexGPTShowcase = () => {
   const features = [
     {
       title: "AI-Powered Technical Analysis",
-      description: "Get real-time forex market insights powered by GPT-4o mini, delivering analysis across 100+ assets and 22 timeframes.",
+      description: "Get real-time forex market insights powered by GPT-4o mini and Whisper API from OpenAI, delivering comprehensive analysis across 120+ assets and 22 timeframes within seconds.",
       icon: "brain"
     },
     {
       title: "ForexGPT Sentiment Score",
-      description: "Quickly analyze charts with the Sentiment Score ranging from -100 (very bearish) to +100 (very bullish).",
+      description: "Quickly analyze charts with the proprietary Sentiment Score ranging from -100 (very bearish) to +100 (very bullish), where closer to zero indicates neutral market conditions.",
       icon: "chart"
     },
     {
       title: "Trading Signals & Setups",
-      description: "Receive AI-generated trading signals with example setups and risk management advice for various market conditions.",
+      description: "Receive AI-generated trading signals with example setups and comprehensive risk management advice for various market conditions, all tailored to current market dynamics.",
       icon: "target"
     },
     {
-      title: "AiWatchlist & Heatmap",
-      description: "Analyze multiple assets per timeframe or multiple timeframes per asset with our advanced screening tools.",
+      title: "AiWatchlist & Heatmap Screener",
+      description: "Simultaneously analyze up to 15 assets per timeframe or 15 timeframes per asset with advanced screening tools, perfect for identifying market opportunities at scale.",
       icon: "linechart"
     },
     {
-      title: "24/7 Real-Time Insights",
-      description: "Access around-the-clock analysis across forex, crypto, indices, commodities, and bonds—120 symbols in total.",
+      title: "24/7 Real-Time Market Analysis",
+      description: "Access around-the-clock analysis across forex pairs, cryptocurrencies, global indices, commodities, and bonds—120 symbols in total with continuous updates.",
       icon: "clock"
     },
     {
       title: "MCP Server Integration",
-      description: "Connect your favorite MCP client to interact with ForexGPT using natural language or programmatically via API.",
+      description: "Connect Claude, ChatGPT, or any MCP-compatible client to interact with ForexGPT using natural language or programmatically via API for seamless AI-powered trading workflows.",
       icon: "globe"
+    },
+    {
+      title: "Advanced Text-to-Speech",
+      description: "Listen to AI-generated post-chart analysis with integrated text-to-speech functionality, making it easier to consume insights while multitasking.",
+      icon: "zap"
+    },
+    {
+      title: "Chain-of-Thought Prompting",
+      description: "Leverage sophisticated chain-of-thought prompting integrated with Large Language Models to provide deeper, more reasoned analysis devoid of human bias.",
+      icon: "brain"
+    },
+    {
+      title: "Beta Features First Access",
+      description: "Premium subscribers receive early access to new features including the Smartket Scanner and other innovations pushed from beta servers before public release.",
+      icon: "shield"
     }
+  ];
+
+  const platforms = [
+    {
+      name: "Live2 Server",
+      status: "Operational",
+      description: "Main production server for advanced charting analysis with standalone capabilities and integration with the Free GPT for ChatGPT.",
+      url: "https://live2.forex-gpt.ai/login",
+      badge: "Primary"
+    },
+    {
+      name: "Live4 Server (Beta)",
+      status: "Operational",
+      description: "Beta server featuring newest innovations including Heatmap screener, AiWatchlist for bulk analysis, and Smartket Scanner for market scanning.",
+      url: "https://live4.forex-gpt.ai/login",
+      badge: "Latest Features"
+    },
+    {
+      name: "MCP Server",
+      status: "Operational",
+      description: "Model Context Protocol server enabling natural language interaction with ForexGPT through Claude, ChatGPT, or any MCP-compatible client.",
+      url: "https://forex-gpt.ai/",
+      badge: "New"
+    }
+  ];
+
+  const assetCategories = [
+    { category: "Forex Pairs", count: "40+", examples: "EUR/USD, GBP/JPY, AUD/CAD" },
+    { category: "Cryptocurrencies", count: "25+", examples: "BTC, ETH, XRP, SOL" },
+    { category: "Indices", count: "20+", examples: "S&P 500, NASDAQ, DAX" },
+    { category: "Commodities", count: "15+", examples: "Gold, Silver, Oil, Natural Gas" },
+    { category: "Bonds", count: "10+", examples: "US 10Y, German Bund, UK Gilt" },
+    { category: "Timeframes", count: "22", examples: "1m, 5m, 15m, 1h, 4h, Daily, Weekly" }
   ];
 
   const plans = [
@@ -177,11 +225,6 @@ const ForexGPTShowcase = () => {
                       View Pricing
                     </a>
                   </Button>
-                  <Button size="lg" variant="ghost" asChild>
-                    <LanguageAwareLink to="/showcase">
-                      ← Back to Showcase
-                    </LanguageAwareLink>
-                  </Button>
                 </div>
 
                 {/* Stats */}
@@ -236,6 +279,213 @@ const ForexGPTShowcase = () => {
                   </Card>
                 );
               })}
+            </div>
+          </div>
+        </section>
+
+        {/* Platform Servers Section */}
+        <section className="py-20">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold mb-4">Multiple Platform Servers</h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                Access ForexGPT through our production, beta, and MCP integration servers
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {platforms.map((platform, index) => (
+                <Card key={index} className="border-border/50 hover:border-green-500/50 transition-all duration-300 hover:shadow-lg">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xl font-semibold">{platform.name}</h3>
+                      <span className="px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-medium rounded-full">
+                        {platform.badge}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-sm text-green-600 dark:text-green-400">{platform.status}</span>
+                    </div>
+                    <p className="text-muted-foreground leading-relaxed text-sm">
+                      {platform.description}
+                    </p>
+                    <Button variant="outline" className="w-full" asChild>
+                      <a href={platform.url} target="_blank" rel="noopener noreferrer">
+                        Access Server
+                        <ExternalLink className="ml-2 h-4 w-4" />
+                      </a>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Asset Coverage Section */}
+        <section className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold mb-4">Comprehensive Asset Coverage</h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                Analyze 120+ financial instruments across multiple asset classes and 22 timeframes
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {assetCategories.map((category, index) => (
+                <Card key={index} className="border-border/50">
+                  <CardContent className="p-6 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold">{category.category}</h3>
+                      <span className="px-3 py-1 bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm font-bold rounded-full">
+                        {category.count}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {category.examples}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* MCP Server Details Section */}
+        <section className="py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-12">
+                <span className="px-4 py-2 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-full text-sm font-medium text-purple-600 dark:text-purple-400 inline-block mb-4">
+                  November 2025 Update
+                </span>
+                <h2 className="text-4xl font-bold mb-4">MCP Server Integration</h2>
+                <p className="text-xl text-muted-foreground">
+                  Connect ForexGPT to Claude, ChatGPT, or any MCP-compatible client for seamless AI-powered trading workflows
+                </p>
+              </div>
+
+              <Card className="border-border/50 bg-gradient-to-br from-purple-500/5 to-blue-500/5">
+                <CardContent className="p-8 space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="text-2xl font-semibold">What is MCP?</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      The Model Context Protocol (MCP) provides a standardized approach for AI models to interact with external tools and services. ForexGPT subscribers can now connect their favorite MCP client to access ForexGPT&apos;s analysis capabilities using natural language or programmatic API calls.
+                    </p>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <h4 className="text-lg font-semibold flex items-center gap-2">
+                        <Zap className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                        Key Capabilities
+                      </h4>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 dark:text-green-400 mt-0.5">✓</span>
+                          <span>Natural language analysis requests</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 dark:text-green-400 mt-0.5">✓</span>
+                          <span>Programmatic API access</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 dark:text-green-400 mt-0.5">✓</span>
+                          <span>Multi-asset bulk analysis</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 dark:text-green-400 mt-0.5">✓</span>
+                          <span>Sentiment score retrieval</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="space-y-3">
+                      <h4 className="text-lg font-semibold flex items-center gap-2">
+                        <Globe className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                        Compatible Clients
+                      </h4>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
+                          <span>Claude Desktop (Anthropic)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
+                          <span>ChatGPT with Connectors</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
+                          <span>Any MCP-compatible client</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
+                          <span>Custom integrations via API</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700" asChild>
+                    <a href="https://youtu.be/eXL_4yO3FDY" target="_blank" rel="noopener noreferrer">
+                      Watch MCP Demo Walkthrough
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </a>
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Technology & Innovation Section */}
+        <section className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold mb-4">Powered by Cutting-Edge AI</h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                ForexGPT leverages the latest AI models and innovative techniques for superior trading analysis
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              <Card className="border-border/50">
+                <CardContent className="p-8 space-y-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-lg flex items-center justify-center">
+                    <Brain className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <h3 className="text-2xl font-semibold">OpenAI Integration</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Powered by GPT-4o mini and Whisper API from OpenAI, providing advanced natural language processing and text-to-speech capabilities for comprehensive market analysis.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-border/50">
+                <CardContent className="p-8 space-y-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500/10 to-teal-500/10 rounded-lg flex items-center justify-center">
+                    <Target className="h-6 w-6 text-green-600 dark:text-green-400" />
+                  </div>
+                  <h3 className="text-2xl font-semibold">Chain-of-Thought Prompting</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Integrated chain-of-thought prompting from our web application provides deeper reasoning and more accurate analysis, completely devoid of human opinions or bias.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="mt-12 p-8 bg-gradient-to-br from-orange-500/5 to-red-500/5 border border-orange-500/20 rounded-2xl max-w-5xl mx-auto">
+              <div className="flex items-start gap-4">
+                <Shield className="h-6 w-6 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-1" />
+                <div className="space-y-2">
+                  <h3 className="text-xl font-semibold">Educational Purpose Disclaimer</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    ForexGPT is designed solely for <strong>educational and research purposes</strong>. It is not investment advice and should not be used as the sole basis for trading decisions. Always conduct your own research and consult with qualified financial advisors before making investment decisions.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
