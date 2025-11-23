@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/hooks/useTheme";
+import { Analytics } from "@vercel/analytics/react";
 import PrivacyPopup from "@/components/PrivacyPopup";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
@@ -78,6 +79,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <PrivacyPopup />
+          <Analytics />
           <BrowserRouter>
             <Routes>
               {/* English routes (no prefix) */}
