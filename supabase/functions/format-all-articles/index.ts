@@ -320,17 +320,17 @@ Deno.serve(async (req) => {
                   .from('article_tags')
                   .insert({ article_id: article.id, tag_id: tagId });
               }
-              
+            } catch (tagError) {
+              console.error(`Error extracting tags for article ${article.id}:`, tagError);
+              // Don't fail the whole process if tag extraction fails
+            }
+            
             processed++;
-          } catch (tagError) {
-            console.error(`Error extracting tags for article ${article.id}:`, tagError);
-            // Don't fail the whole process if tag extraction fails
           }
+        } catch (err) {
+          console.error(`Error processing article ${article.id}:`, err);
+          errors.push(`${article.id}: ${err.message}`);
         }
-      } catch (err) {
-        console.error(`Error processing article ${article.id}:`, err);
-        errors.push(`${article.id}: ${err.message}`);
-      }
     }
 
     // Update job tracking if jobId provided
