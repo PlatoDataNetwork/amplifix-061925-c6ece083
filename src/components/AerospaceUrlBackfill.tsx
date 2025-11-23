@@ -1,13 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Link as LinkIcon } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+
+interface ProgressUpdate {
+  phase: string;
+  total?: number;
+  current?: number;
+  currentTitle?: string;
+  updated: number;
+  failed: number;
+  percentComplete: number;
+}
 
 export const AerospaceUrlBackfill = () => {
   const [isRunning, setIsRunning] = useState(false);
+  const [progress, setProgress] = useState<ProgressUpdate | null>(null);
   const [result, setResult] = useState<{
     updated: number;
     skipped: number;
@@ -15,10 +27,28 @@ export const AerospaceUrlBackfill = () => {
     pagesProcessed: number;
   } | null>(null);
 
+  // Subscribe to progress updates
+  useEffect(() => {
+    if (!isRunning) return;
+
+    const channel = supabase
+      .channel('aerospace-url-backfill-progress')
+      .on('broadcast', { event: 'progress' }, (payload) => {
+        console.log('📡 Progress update:', payload.payload);
+        setProgress(payload.payload as ProgressUpdate);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isRunning]);
+
   const startBackfill = async () => {
     try {
       setIsRunning(true);
       setResult(null);
+      setProgress(null);
 
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -63,6 +93,49 @@ export const AerospaceUrlBackfill = () => {
             This will match articles by post_id and add their original source URLs from platodata.ai
           </p>
         </div>
+
+        {isRunning && progress && (
+          <div className="space-y-4">
+            {/* Phase Badge */}
+            <div className="flex items-center justify-between">
+              <Badge variant={progress.phase === 'complete' ? 'default' : 'secondary'}>
+                {progress.phase === 'starting' && '🚀 Starting...'}
+                {progress.phase === 'processing' && '⚙️ Processing'}
+                {progress.phase === 'complete' && '✅ Complete'}
+              </Badge>
+              <span className="text-sm font-medium">{progress.percentComplete}%</span>
+            </div>
+
+            {/* Progress Bar */}
+            <Progress value={progress.percentComplete} className="h-2" />
+
+            {/* Current Article */}
+            {progress.currentTitle && (
+              <div className="p-3 bg-muted rounded-lg">
+                <p className="text-xs text-muted-foreground mb-1">
+                  Processing [{progress.current}/{progress.total}]
+                </p>
+                <p className="text-sm font-medium line-clamp-1">{progress.currentTitle}...</p>
+              </div>
+            )}
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="p-3 bg-muted rounded-lg text-center">
+                <div className="text-xs text-muted-foreground mb-1">Total</div>
+                <div className="text-xl font-bold">{progress.total || 0}</div>
+              </div>
+              <div className="p-3 bg-green-500/10 rounded-lg text-center">
+                <div className="text-xs text-muted-foreground mb-1">Updated</div>
+                <div className="text-xl font-bold text-green-600">{progress.updated}</div>
+              </div>
+              <div className="p-3 bg-red-500/10 rounded-lg text-center">
+                <div className="text-xs text-muted-foreground mb-1">Failed</div>
+                <div className="text-xl font-bold text-red-600">{progress.failed}</div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {result && (
           <div className="space-y-3 p-4 bg-muted rounded-lg">

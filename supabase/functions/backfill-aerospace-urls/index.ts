@@ -79,6 +79,22 @@ Deno.serve(async (req) => {
 
     console.log(`🔄 Starting aerospace URL backfill (batch size: ${batchSize}, delay: ${delayMs}ms)`);
 
+    // Get authorization header for realtime broadcasting
+    const authHeader = req.headers.get('Authorization');
+    const token = authHeader?.replace('Bearer ', '');
+    
+    // Set up realtime channel for progress updates
+    const progressChannel = supabaseClient.channel('aerospace-url-backfill-progress');
+    await progressChannel.subscribe();
+
+    const broadcastProgress = async (data: any) => {
+      await progressChannel.send({
+        type: 'broadcast',
+        event: 'progress',
+        payload: data
+      });
+    };
+
     // Fetch aerospace articles without external_url OR with platodata.ai URLs
     const { data: articles, error: fetchError } = await supabaseClient
       .from('articles')
@@ -111,6 +127,15 @@ Deno.serve(async (req) => {
     let updated = 0;
     let failed = 0;
 
+    // Broadcast initial progress
+    await broadcastProgress({
+      phase: 'starting',
+      total: articles.length,
+      updated: 0,
+      failed: 0,
+      percentComplete: 0
+    });
+
     // Process each article
     for (let i = 0; i < articles.length; i++) {
       const article = articles[i] as Article;
@@ -119,6 +144,17 @@ Deno.serve(async (req) => {
         const hasPlato = article.external_url?.includes('platodata.ai');
         const status = !article.external_url ? 'missing' : hasPlato ? 'cleaning' : 'skip';
         console.log(`\n[${i + 1}/${articles.length}] Processing (${status}): ${article.title.substring(0, 60)}...`);
+        
+        // Broadcast progress for this article
+        await broadcastProgress({
+          phase: 'processing',
+          total: articles.length,
+          current: i + 1,
+          currentTitle: article.title.substring(0, 60),
+          updated,
+          failed,
+          percentComplete: Math.round(((i + 1) / articles.length) * 100)
+        });
         
         if (article.external_url && !hasPlato) {
           console.log(`⊗ Skipping - already has non-Plato URL: ${article.external_url}`);
@@ -172,6 +208,18 @@ Deno.serve(async (req) => {
     };
 
     console.log('\n📊 Summary:', summary);
+
+    // Broadcast final progress
+    await broadcastProgress({
+      phase: 'complete',
+      total: articles.length,
+      updated,
+      failed,
+      percentComplete: 100
+    });
+
+    // Clean up channel
+    await supabaseClient.removeChannel(progressChannel);
 
     return new Response(
       JSON.stringify(summary),
