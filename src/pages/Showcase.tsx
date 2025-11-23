@@ -91,6 +91,8 @@ const Showcase = () => {
     }
     
     return jsonShowcases;
+  }, [loading, dbShowcases, showcaseData]);
+
   // Determine color theme based on tags and company name
   const getColorClasses = (showcase: any) => {
     // Special case: ForexGPT gets hot pink
@@ -350,17 +352,17 @@ const Showcase = () => {
                          <Building className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : colors.text}`} />
                        )}
                      </div>
-                     <div className="flex-1 min-w-0">
-                       <h3 className={`text-xl font-bold whitespace-nowrap ${showcase.disabled ? 'text-muted-foreground' : ''}`}>
-                         {showcase.company_name}
-                       </h3>
-                       <p className={`text-sm font-semibold mt-1 ${
-                         showcase.disabled 
-                           ? 'text-muted-foreground'
-                           : colors.text
-                       }`}>
-                         {showcase.ticker || showcase.subtitle}
-                       </p>
+                      <div className="flex-1 min-w-0">
+                        <h3 className={`text-xl font-bold whitespace-nowrap ${showcase.disabled ? 'text-muted-foreground' : ''}`}>
+                          {showcase.company_name}
+                        </h3>
+                        <p className={`text-sm font-semibold mt-1 ${
+                          showcase.disabled 
+                            ? 'text-muted-foreground'
+                            : colors.text
+                        }`}>
+                          {showcase.company_name === 'FAIM' ? 'AI Powered Fan Engagement' : (showcase.ticker || showcase.subtitle)}
+                        </p>
                        {showcase.tags && showcase.tags.length > 0 && (
                          <div className="flex flex-wrap gap-1.5 mt-2">
                            {showcase.tags.map((tag: string, tagIndex: number) => (
