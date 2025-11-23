@@ -26,6 +26,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ImportHistoryTable } from "@/components/ImportHistoryTable";
+import { DuplicateMonitor } from "@/components/DuplicateMonitor";
 
 const ImportAdmin = () => {
   const navigate = useNavigate();
@@ -887,7 +888,7 @@ const ImportAdmin = () => {
           </div>
           
           {/* Metrics Dashboard */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium text-muted-foreground flex items-center justify-between">
@@ -922,6 +923,8 @@ const ImportAdmin = () => {
                 <p className="text-xs text-muted-foreground mt-1">In directory</p>
               </CardContent>
             </Card>
+
+            <DuplicateMonitor threshold={50} autoRefresh={true} refreshInterval={60000} />
           </div>
 
           {/* Real-time Stats Banner - Always Visible */}
