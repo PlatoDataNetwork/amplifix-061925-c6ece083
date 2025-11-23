@@ -361,7 +361,11 @@ const Showcase = () => {
                             ? 'text-muted-foreground'
                             : colors.text
                         }`}>
-                          {showcase.company_name === 'FAIM' ? 'AI Powered Fan Engagement' : (showcase.ticker || showcase.subtitle)}
+                          {showcase.company_name === 'FAIM'
+                            ? 'AI Powered Fan Engagement'
+                            : showcase.type === 'token'
+                              ? (showcase.subtitle || showcase.ticker)
+                              : (showcase.ticker || showcase.subtitle)}
                         </p>
                        {showcase.tags && showcase.tags.length > 0 && (
                          <div className="flex flex-wrap gap-1.5 mt-2">
