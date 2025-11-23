@@ -269,7 +269,7 @@ const Showcase = () => {
                   {/* Main Sector Badge */}
                   {showcase.main_sector && (
                     <div className="absolute top-4 right-4">
-                      <div className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide shadow-sm ${
+                      <div className={`px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wide shadow-sm ${
                         showcase.disabled 
                           ? 'bg-muted text-muted-foreground border border-border' 
                           : index % 4 === 0 
