@@ -341,14 +341,16 @@ Deno.serve(async (req) => {
 
     // Update job tracking if jobId provided
     if (jobId) {
-      // Get current processed chunks
+      // Get current processed chunks and total chunks
       const { data: currentJob } = await supabase
         .from('ai_processing_jobs')
-        .select('processed_chunks')
+        .select('processed_chunks, total_chunks')
         .eq('id', jobId)
         .single();
 
       const currentChunks = currentJob?.processed_chunks || [];
+      const totalChunks = currentJob?.total_chunks || 0;
+      
       // Use Set to prevent duplicates
       const uniqueChunks = new Set([...currentChunks, chunkIndex]);
       const updatedChunks = Array.from(uniqueChunks).sort((a, b) => a - b);
@@ -363,6 +365,36 @@ Deno.serve(async (req) => {
 
       if (jobError) {
         console.error('Error updating job tracking:', jobError);
+      } else {
+        // Auto-continue: Find next unprocessed chunk and trigger it
+        const processedSet = new Set(updatedChunks);
+        const nextChunk = Array.from({ length: totalChunks }, (_, i) => i)
+          .find(i => !processedSet.has(i));
+        
+        if (nextChunk !== undefined) {
+          console.log(`Auto-triggering next chunk ${nextChunk}/${totalChunks - 1}`);
+          // Trigger next chunk without waiting (fire and forget)
+          supabase.functions.invoke('format-all-articles', {
+            body: { 
+              chunkIndex: nextChunk, 
+              chunkSize, 
+              verticalSlug, 
+              jobId 
+            }
+          }).catch(err => {
+            console.error(`Failed to trigger chunk ${nextChunk}:`, err);
+          });
+        } else {
+          // All chunks processed - mark job as complete
+          console.log('All chunks processed! Marking job as complete.');
+          await supabase
+            .from('ai_processing_jobs')
+            .update({
+              status: 'completed',
+              completed_at: new Date().toISOString()
+            })
+            .eq('id', jobId);
+        }
       }
     }
 
