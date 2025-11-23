@@ -1685,7 +1685,12 @@ const ImportAdmin = () => {
                       <br />
                       Started: <strong>{new Date(aiJobStats.startedAt).toLocaleString()}</strong>
                       <br />
-                      Progress: <strong>{aiJobStats.processedChunks} / {aiJobStats.totalChunks} chunks ({aiJobStats.progressPercent}%)</strong>
+                      Overall progress:{' '}
+                      <strong>
+                        {aerospaceArticleCounts && aerospaceArticleCounts.total > 0
+                          ? `${aerospaceArticleCounts.aiProcessed.toLocaleString()} / ${aerospaceArticleCounts.total.toLocaleString()} articles (${Math.round((aerospaceArticleCounts.aiProcessed / aerospaceArticleCounts.total) * 100)}%)`
+                          : `${aiJobStats.processedChunks} / ${aiJobStats.totalChunks} chunks (${aiJobStats.progressPercent}%)`}
+                      </strong>
                       <br />
                       {aiJobStats.failedChunks > 0 && (
                         <>Failed chunks: <strong className="text-red-500">{aiJobStats.failedChunks}</strong><br /></>
