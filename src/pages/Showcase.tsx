@@ -1,8 +1,9 @@
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
-import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home, Search, ScanFace, Filter, ChevronDown } from "lucide-react";
+import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home, Search, ScanFace, Filter, ChevronDown, Coins } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -123,7 +124,10 @@ const Showcase = () => {
     } else if (filterType === 'private') {
       filtered = filtered.filter(s => s.type === 'private');
     } else if (filterType === 'token') {
-      filtered = filtered.filter(s => s.type === 'token');
+      filtered = filtered.filter(s => 
+        s.type === 'token' ||
+        (s.tags && Array.isArray(s.tags) && (s.tags.includes('Token') || s.tags.includes('Cryptocurrency')))
+      );
     }
 
     // Filter by sector (companies can have multiple tags)
@@ -243,7 +247,10 @@ const Showcase = () => {
                   onClick={() => setFilterType('token')}
                   className={filterType === 'token' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
                 >
-                  Token ({allShowcases.filter(s => s.type === 'token').length})
+                  Token ({allShowcases.filter(s => 
+                    s.type === 'token' ||
+                    (s.tags && Array.isArray(s.tags) && (s.tags.includes('Token') || s.tags.includes('Cryptocurrency')))
+                  ).length})
                 </Button>
               </div>
 
@@ -320,6 +327,16 @@ const Showcase = () => {
                       }`}>
                         {showcase.ticker || showcase.subtitle}
                       </p>
+                      {(showcase.type === 'token' || (showcase.tags && Array.isArray(showcase.tags) && (showcase.tags.includes('Token') || showcase.tags.includes('Cryptocurrency')))) && (
+                        <div className="mt-2">
+                          <Badge
+                            variant="outline"
+                            className="inline-flex items-center gap-1 border-highlight-blue/60 text-highlight-blue bg-background/60">
+                            <Coins className="h-3 w-3" />
+                            <span className="text-[10px] font-semibold tracking-wide uppercase">Token</span>
+                          </Badge>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <p className="text-muted-foreground mb-6">
