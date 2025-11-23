@@ -326,6 +326,18 @@ const Showcase = () => {
                       }`}>
                         {showcase.ticker || showcase.subtitle}
                       </p>
+                      {showcase.tags && showcase.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {showcase.tags.map((tag: string, tagIndex: number) => (
+                            <span 
+                              key={tagIndex}
+                              className="px-2 py-0.5 text-xs font-medium rounded-full bg-muted/50 text-muted-foreground border border-border/50"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <p className="text-muted-foreground mb-6">
