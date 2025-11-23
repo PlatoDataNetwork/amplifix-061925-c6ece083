@@ -15,6 +15,7 @@ import Footer from "@/components/Footer";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
 import { useJsonData } from "@/hooks/useJsonData";
+import { DirectShowcaseUpdate } from "@/components/DirectShowcaseUpdate";
 
 interface ShowcaseData {
   showcase: {
@@ -242,9 +243,12 @@ const Showcase = () => {
                 </Button>
               </div>
 
-              {/* Results Count */}
-              <div className="text-sm text-muted-foreground">
-                Showing {filteredShowcases.length} of {allShowcases.length} companies
+              {/* Results Count and Update Button */}
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-muted-foreground">
+                  Showing {filteredShowcases.length} of {allShowcases.length} companies
+                </div>
+                <DirectShowcaseUpdate />
               </div>
             </div>
             
