@@ -1342,13 +1342,26 @@ const ImportAdmin = () => {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
                     <div className="p-3 bg-background/80 rounded-lg border">
                       <p className="text-xs text-muted-foreground mb-1">Progress</p>
-                      <p className="text-2xl font-bold text-purple-500">{aiJobStats.progressPercent}%</p>
-                      <p className="text-xs text-muted-foreground">{aiJobStats.processedChunks}/{aiJobStats.totalChunks} chunks</p>
+                      <p className="text-2xl font-bold text-purple-500">
+                        {aerospaceArticleCounts && aerospaceArticleCounts.total > 0
+                          ? Math.round((aerospaceArticleCounts.aiProcessed / aerospaceArticleCounts.total) * 100)
+                          : aiJobStats.progressPercent}%
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {aerospaceArticleCounts && aerospaceArticleCounts.total > 0
+                          ? `${aerospaceArticleCounts.aiProcessed.toLocaleString()}/${aerospaceArticleCounts.total.toLocaleString()} articles`
+                          : `${aiJobStats.processedChunks}/${aiJobStats.totalChunks} chunks`}
+                      </p>
                     </div>
                     
                     <div className="p-3 bg-background/80 rounded-lg border">
                       <p className="text-xs text-muted-foreground mb-1">Articles Processed</p>
-                      <p className="text-2xl font-bold text-green-500">{aiJobStats.articlesProcessed.toLocaleString()}</p>
+                      <p className="text-2xl font-bold text-green-500">
+                        {(aerospaceArticleCounts
+                          ? aerospaceArticleCounts.aiProcessed
+                          : aiJobStats.articlesProcessed
+                        ).toLocaleString()}
+                      </p>
                       <p className="text-xs text-muted-foreground">{aiJobStats.articlesPerMinute}/min</p>
                     </div>
                     
@@ -1372,9 +1385,18 @@ const ImportAdmin = () => {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-muted-foreground">Overall Progress</span>
-                      <span className="font-medium">{aiJobStats.progressPercent}%</span>
+                      <span className="font-medium">
+                        {aerospaceArticleCounts && aerospaceArticleCounts.total > 0
+                          ? `${Math.round((aerospaceArticleCounts.aiProcessed / aerospaceArticleCounts.total) * 100)}%`
+                          : `${aiJobStats.progressPercent}%`}
+                      </span>
                     </div>
-                    <Progress value={aiJobStats.progressPercent} className="h-2" />
+                    <Progress
+                      value={aerospaceArticleCounts && aerospaceArticleCounts.total > 0
+                        ? Math.round((aerospaceArticleCounts.aiProcessed / aerospaceArticleCounts.total) * 100)
+                        : aiJobStats.progressPercent}
+                      className="h-2"
+                    />
                   </div>
                 </div>
               )}
@@ -1695,9 +1717,19 @@ const ImportAdmin = () => {
                       {aiJobStats.failedChunks > 0 && (
                         <>Failed chunks: <strong className="text-red-500">{aiJobStats.failedChunks}</strong><br /></>
                       )}
-                      Articles processed: <strong>{aiJobStats.articlesProcessed}</strong>
+                      Articles processed:{' '}
+                      <strong>
+                        {aerospaceArticleCounts
+                          ? aerospaceArticleCounts.aiProcessed.toLocaleString()
+                          : aiJobStats.articlesProcessed.toLocaleString()}
+                      </strong>
                       <br />
-                      Rate: <strong>{aiJobStats.articlesPerMinute} articles/min</strong>
+                      Rate:{' '}
+                      <strong>
+                        {aiJobStats.articlesPerMinute > 0
+                          ? `${aiJobStats.articlesPerMinute} articles/min`
+                          : 'calculating...'}
+                      </strong>
                     </p>
                   ) : (
                     <p className="text-xs text-muted-foreground mb-3">
