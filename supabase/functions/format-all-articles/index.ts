@@ -244,6 +244,9 @@ Deno.serve(async (req) => {
     if (verticalSlug) {
       query = query.eq('vertical_slug', verticalSlug);
     }
+
+    // Only process articles that have not yet been AI-processed
+    query = query.or('metadata->>ai_processed.is.null,metadata->>ai_processed.eq.false');
     
     const { data: articles, error: fetchError } = await query
       .range(chunkIndex * chunkSize, (chunkIndex + 1) * chunkSize - 1);
