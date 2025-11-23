@@ -141,8 +141,8 @@ export const QuickShowcaseUpdates = () => {
             subtitle: "Global Leader in Telehealth Solutions",
             description: "VSee Health is a global leader in telehealth solutions, providing secure video consultation platforms, remote patient monitoring, and integrated care management systems.",
             tags: ["AI", "Telehealth", "Healthcare Technology", "Medical Devices"],
-            button_text: "View on AmplifiX",
-            link: "https://www.bing.com/copilotsearch?q=VSEE%20Health%20NASDAQ:%20VSEE&FORM=CSSCOP",
+            button_text: "View Showcase",
+            link: "/showcase/vsee-health",
             website: "https://vseehealth.com/about",
             stock_url: "https://www.tradingview.com/symbols/NASDAQ-VSEE/",
             search_url: "https://www.bing.com/copilotsearch?q=VSEE%20Health%20NASDAQ:%20VSEE&FORM=CSSCOP",
@@ -160,8 +160,8 @@ export const QuickShowcaseUpdates = () => {
           .update({
             ticker: "NAS: VSEE",
             description: "VSee Health is a global leader in telehealth solutions, providing secure video consultation platforms, remote patient monitoring, and integrated care management systems.",
-            button_text: "View on AmplifiX",
-            link: "https://www.bing.com/copilotsearch?q=VSEE%20Health%20NASDAQ:%20VSEE&FORM=CSSCOP",
+            button_text: "View Showcase",
+            link: "/showcase/vsee-health",
             search_url: "https://www.bing.com/copilotsearch?q=VSEE%20Health%20NASDAQ:%20VSEE&FORM=CSSCOP"
           })
           .eq("company_name", "VSee Health");
