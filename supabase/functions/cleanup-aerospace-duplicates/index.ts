@@ -26,37 +26,52 @@ Deno.serve(async (req) => {
 
     console.log(`🧹 Starting aerospace duplicate cleanup (dry run: ${dryRun})`);
 
-    // Step 1: Fetch ALL articles using pagination (Supabase default limit is 1000)
+    // Step 1: Fetch ALL articles using cursor-based pagination
     let allArticles: Array<{ id: string; title: string; created_at: string }> = [];
-    let page = 0;
-    const pageSize = 1000;
     let hasMore = true;
+    let offset = 0;
+    const batchSize = 1000;
+
+    console.log('📡 Starting to fetch all aerospace articles...');
 
     while (hasMore) {
-      const { data: pageData, error: fetchError } = await supabaseClient
+      const { data: batch, error: fetchError, count } = await supabaseClient
         .from('articles')
-        .select('id, title, created_at')
+        .select('id, title, created_at', { count: 'exact' })
         .eq('vertical_slug', 'aerospace')
-        .order('title', { ascending: true })
         .order('created_at', { ascending: false })
-        .range(page * pageSize, (page + 1) * pageSize - 1);
+        .range(offset, offset + batchSize - 1);
 
       if (fetchError) {
         console.error('Error fetching articles:', fetchError);
         throw fetchError;
       }
 
-      if (!pageData || pageData.length === 0) {
-        hasMore = false;
+      if (batch && batch.length > 0) {
+        allArticles = allArticles.concat(batch);
+        console.log(`📄 Batch ${Math.floor(offset / batchSize) + 1}: fetched ${batch.length} articles (total so far: ${allArticles.length})`);
+        
+        // Check if we've fetched everything
+        if (count !== null) {
+          console.log(`📊 Database reports ${count} total articles`);
+          hasMore = allArticles.length < count;
+        } else {
+          hasMore = batch.length === batchSize;
+        }
+        
+        offset += batchSize;
       } else {
-        allArticles = allArticles.concat(pageData);
-        console.log(`📄 Fetched page ${page + 1}: ${pageData.length} articles (total: ${allArticles.length})`);
-        hasMore = pageData.length === pageSize;
-        page++;
+        hasMore = false;
+      }
+
+      // Safety valve - stop after 20 pages (20,000 articles)
+      if (offset >= 20000) {
+        console.log('⚠️ Reached safety limit of 20,000 articles');
+        hasMore = false;
       }
     }
 
-    console.log(`📊 Fetched ${allArticles.length} total aerospace articles`);
+    console.log(`✅ Fetched ${allArticles.length} total aerospace articles`);
 
     // Step 2: Group by title to find duplicates
     const titleGroups = new Map<string, Array<{ id: string; created_at: string }>>();
