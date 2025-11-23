@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Download, RefreshCw } from "lucide-react";
+import { AerospaceUrlBackfill } from "@/components/AerospaceUrlBackfill";
 
 interface VerticalResult {
   vertical: string;
@@ -163,6 +164,11 @@ const PlatoImport = () => {
               </Button>
               <h1 className="text-4xl font-bold">Plato Import Dashboard</h1>
             </div>
+          </div>
+
+          {/* Aerospace URL Backfill */}
+          <div className="mb-8">
+            <AerospaceUrlBackfill />
           </div>
 
           {/* Main Import Card */}
