@@ -21,13 +21,80 @@ export const QuickShowcaseUpdates = () => {
 
       if (!cutError) successCount++;
 
-      // Update Naoris Protocol to private
+      // Update Naoris Protocol to private with new subtitle
       const { error: naorisError } = await supabase
         .from('showcase_companies')
-        .update({ type: 'private' })
+        .update({ 
+          type: 'private',
+          subtitle: 'Quantum Resistant Cybersecurity'
+        })
         .eq('company_name', 'Naoris Protocol');
 
       if (!naorisError) successCount++;
+
+      // Update VSee Health ticker
+      const { error: vseeTickerError } = await supabase
+        .from('showcase_companies')
+        .update({ ticker: 'NAS: VSEE' })
+        .eq('company_name', 'VSee Health');
+
+      if (!vseeTickerError) successCount++;
+
+      // Update FAIM subtitle
+      const { error: faimError } = await supabase
+        .from('showcase_companies')
+        .update({ subtitle: 'AI Powered Fan Engagement' })
+        .eq('company_name', 'FAIM');
+
+      if (!faimError) successCount++;
+
+      // Update DevvStream ticker
+      const { error: devvError } = await supabase
+        .from('showcase_companies')
+        .update({ ticker: 'NAS: DEVS' })
+        .eq('company_name', 'DevvStream Corp');
+
+      if (!devvError) successCount++;
+
+      // Update FacialDX subtitle
+      const { error: facialError } = await supabase
+        .from('showcase_companies')
+        .update({ subtitle: 'Early Detection for PTSD' })
+        .eq('company_name', 'FacialDX');
+
+      if (!facialError) successCount++;
+
+      // Update Micropolis ticker
+      const { error: micropolisError } = await supabase
+        .from('showcase_companies')
+        .update({ ticker: 'NYSE: MCRP' })
+        .eq('company_name', 'Micropolis');
+
+      if (!micropolisError) successCount++;
+
+      // Update Karbon-X ticker
+      const { error: karbonError } = await supabase
+        .from('showcase_companies')
+        .update({ ticker: 'OTC: KARX' })
+        .eq('company_name', 'Karbon-X');
+
+      if (!karbonError) successCount++;
+
+      // Update Abatis subtitle
+      const { error: abatisError } = await supabase
+        .from('showcase_companies')
+        .update({ subtitle: 'Defense Proof Cybersecurity' })
+        .eq('company_name', 'Abatis');
+
+      if (!abatisError) successCount++;
+
+      // Update Silo Pharma ticker
+      const { error: siloError } = await supabase
+        .from('showcase_companies')
+        .update({ ticker: 'NAS: SILO' })
+        .eq('company_name', 'SILO Pharma Inc.');
+
+      if (!siloError) successCount++;
 
       // Add VSee Health if it doesn't exist
       const { data: existing } = await supabase
@@ -63,7 +130,7 @@ export const QuickShowcaseUpdates = () => {
 
       toast({
         title: "Updates Complete!",
-        description: `Updated CUT and Naoris to private, and added VSee Health.`,
+        description: `Updated ${successCount} showcase companies with new tickers and subtitles.`,
       });
 
       // Refresh after a short delay
@@ -87,7 +154,7 @@ export const QuickShowcaseUpdates = () => {
         <h3 className="text-xl font-bold">Quick Updates</h3>
       </div>
       <p className="text-sm text-muted-foreground mb-4">
-        Click to: Update CUT & Naoris to private + Add VSee Health to showcase
+        Click to: Update all showcase company tickers and subtitles
       </p>
       <Button 
         onClick={handleQuickUpdate}
@@ -95,7 +162,7 @@ export const QuickShowcaseUpdates = () => {
         className="bg-highlight-blue hover:bg-highlight-blue/90 text-lg px-8 py-6"
         size="lg"
       >
-        {isUpdating ? "Updating..." : "Update CUT, Naoris & Add VSEE"}
+        {isUpdating ? "Updating..." : "Update All Showcase Companies"}
       </Button>
     </div>
   );
