@@ -21,7 +21,7 @@ export const UpdateShowcaseTags = () => {
     { name: 'FacialDX', tags: ['AI', 'Facial Analysis'], type: 'private', subtitle: 'AI Powered Facial Analysis', main_sector: 'AI, FACIAL ANALYSIS' },
     { name: 'Naoris Protocol', tags: ['AI', 'Blockchain', 'Cyber', 'Token'], type: 'token', subtitle: 'Quantum Resistant Cybersecurity', main_sector: 'CYBERSECURITY' },
     { name: 'Karbon-X', tags: ['Carbon'], type: 'stock', subtitle: 'Carbon Credits', main_sector: 'CARBON' },
-    { name: 'Micropolis', tags: ['AI', 'Automotive'], type: 'stock', subtitle: 'AI Autonomous Vehicles', main_sector: 'ROBOTICS' },
+    { name: 'Micropolis', tags: ['AI', 'Automotive', 'Robotics'], type: 'stock', subtitle: 'AI Autonomous Vehicles', main_sector: 'ROBOTICS' },
   ];
 
   const handleUpdate = async () => {
