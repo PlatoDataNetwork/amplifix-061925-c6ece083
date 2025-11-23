@@ -13,10 +13,10 @@ export const QuickShowcaseUpdates = () => {
     let successCount = 0;
     
     try {
-      // Update CUT to private
+      // Update CUT to token
       const { error: cutError } = await supabase
         .from('showcase_companies')
-        .update({ type: 'private' })
+        .update({ type: 'token' })
         .eq('company_name', 'CUT');
 
       if (!cutError) successCount++;
