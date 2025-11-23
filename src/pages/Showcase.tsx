@@ -174,9 +174,9 @@ const Showcase = () => {
             ).length > 0 && (
               <div className="mb-16 pb-12 border-b border-border">
                 <div className="text-center mb-8">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-full mb-4">
-                    <Globe className="h-4 w-4 text-purple-500" />
-                    <span className="text-sm font-semibold text-purple-500">Web3 & Tokenization</span>
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-highlight-blue/10 to-purple-500/10 border border-highlight-blue/20 rounded-full mb-4">
+                    <Globe className="h-4 w-4 text-highlight-blue" />
+                    <span className="text-sm font-semibold text-highlight-blue">Web3 & Tokenization</span>
                   </div>
                   <h2 className="text-3xl md:text-4xl font-bold mb-4">
                     Blockchain & Token Innovators
@@ -195,18 +195,42 @@ const Showcase = () => {
                     .map((showcase, index) => (
                       <div 
                         key={index} 
-                        className="relative bg-gradient-to-br from-card via-card to-purple-500/5 border border-purple-500/20 hover:border-purple-500/40 p-6 rounded-xl hover:shadow-xl transition-all duration-300 group"
+                        className={`relative bg-gradient-to-br ${
+                          index % 4 === 0 
+                            ? 'from-card via-card to-highlight-blue/5 border-highlight-blue/20 hover:border-highlight-blue/40' 
+                            : index % 4 === 1 
+                              ? 'from-card via-card to-purple-500/5 border-purple-500/20 hover:border-purple-500/40'
+                              : index % 4 === 2
+                                ? 'from-card via-card to-green-500/5 border-green-500/20 hover:border-green-500/40'
+                                : 'from-card via-card to-orange-500/5 border-orange-500/20 hover:border-orange-500/40'
+                        } border p-6 rounded-xl hover:shadow-xl transition-all duration-300 group`}
                       >
                         {/* Web3 Badge */}
                         <div className="absolute top-4 right-4">
-                          <div className="px-2 py-1 bg-purple-500/10 border border-purple-500/30 rounded text-xs font-semibold text-purple-500">
+                          <div className={`px-2 py-1 rounded text-xs font-semibold ${
+                            index % 4 === 0 
+                              ? 'bg-highlight-blue/10 border border-highlight-blue/30 text-highlight-blue' 
+                              : index % 4 === 1 
+                                ? 'bg-purple-500/10 border border-purple-500/30 text-purple-500'
+                                : index % 4 === 2
+                                  ? 'bg-green-500/10 border border-green-500/30 text-green-500'
+                                  : 'bg-orange-500/10 border border-orange-500/30 text-orange-500'
+                          }`}>
                             WEB3
                           </div>
                         </div>
                         
                         {/* Company Header */}
                         <div className="flex items-center gap-3 mb-4">
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500/10 to-purple-500/30 border border-purple-500/50 flex items-center justify-center flex-shrink-0 shadow-sm overflow-hidden">
+                          <div className={`w-12 h-12 rounded-full bg-gradient-to-br flex items-center justify-center flex-shrink-0 shadow-sm border overflow-hidden ${
+                            index % 4 === 0 
+                              ? 'from-highlight-blue/10 to-highlight-blue/30 border-highlight-blue/50' 
+                              : index % 4 === 1 
+                                ? 'from-purple-500/10 to-purple-500/30 border-purple-500/50'
+                                : index % 4 === 2
+                                  ? 'from-green-500/10 to-green-500/30 border-green-500/50'
+                                  : 'from-orange-500/10 to-orange-500/30 border-orange-500/50'
+                          }`}>
                             {showcase.company_name === 'Naoris Protocol' && showcase.thumbnail ? (
                               <img 
                                 src={showcase.thumbnail} 
@@ -214,14 +238,20 @@ const Showcase = () => {
                                 className="w-full h-full object-contain p-1"
                               />
                             ) : showcase.company_name === 'Abatis' ? (
-                              <span className="text-purple-500 text-2xl font-bold">A</span>
+                              <span className={`text-2xl font-bold ${
+                                index % 4 === 0 ? 'text-highlight-blue' : index % 4 === 1 ? 'text-purple-500' : index % 4 === 2 ? 'text-green-500' : 'text-orange-500'
+                              }`}>A</span>
                             ) : (
-                              <Building className="h-6 w-6 text-purple-500" />
+                              <Building className={`h-6 w-6 ${
+                                index % 4 === 0 ? 'text-highlight-blue' : index % 4 === 1 ? 'text-purple-500' : index % 4 === 2 ? 'text-green-500' : 'text-orange-500'
+                              }`} />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
                             <h3 className="text-lg font-bold">{showcase.company_name}</h3>
-                            <p className="text-sm font-semibold text-purple-500">
+                            <p className={`text-sm font-semibold ${
+                              index % 4 === 0 ? 'text-highlight-blue' : index % 4 === 1 ? 'text-purple-500' : index % 4 === 2 ? 'text-green-500' : 'text-orange-500'
+                            }`}>
                               {showcase.ticker || showcase.subtitle}
                             </p>
                           </div>
@@ -234,9 +264,23 @@ const Showcase = () => {
                               <span
                                 key={tagIndex}
                                 className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                  tag === 'Blockchain' || tag === 'Token'
-                                    ? 'bg-purple-500/20 text-purple-500 border border-purple-500/30'
-                                    : 'bg-muted text-muted-foreground border border-border'
+                                  tag === 'Token'
+                                    ? index % 4 === 0 
+                                      ? 'bg-highlight-blue/20 text-highlight-blue border border-highlight-blue/30 font-semibold' 
+                                      : index % 4 === 1 
+                                        ? 'bg-purple-500/20 text-purple-500 border border-purple-500/30 font-semibold'
+                                        : index % 4 === 2
+                                          ? 'bg-green-500/20 text-green-500 border border-green-500/30 font-semibold'
+                                          : 'bg-orange-500/20 text-orange-500 border border-orange-500/30 font-semibold'
+                                    : tag === 'Blockchain'
+                                      ? index % 4 === 0 
+                                        ? 'bg-highlight-blue/15 text-highlight-blue border border-highlight-blue/25' 
+                                        : index % 4 === 1 
+                                          ? 'bg-purple-500/15 text-purple-500 border border-purple-500/25'
+                                          : index % 4 === 2
+                                            ? 'bg-green-500/15 text-green-500 border border-green-500/25'
+                                            : 'bg-orange-500/15 text-orange-500 border border-orange-500/25'
+                                      : 'bg-muted text-muted-foreground border border-border'
                                 }`}
                               >
                                 {tag}
@@ -255,7 +299,15 @@ const Showcase = () => {
                           <LanguageAwareLink to={showcase.link}>
                             <Button 
                               size="sm" 
-                              className="bg-purple-500 hover:bg-purple-600 text-white group-hover:shadow-lg transition-all"
+                              className={`text-white group-hover:shadow-lg transition-all ${
+                                index % 4 === 0 
+                                  ? 'bg-highlight-blue hover:bg-highlight-blue/90' 
+                                  : index % 4 === 1 
+                                    ? 'bg-purple-500 hover:bg-purple-600'
+                                    : index % 4 === 2
+                                      ? 'bg-green-500 hover:bg-green-600'
+                                      : 'bg-orange-500 hover:bg-orange-600'
+                              }`}
                             >
                               {showcase.button_text || 'Learn More'}
                               <ExternalLink className="ml-2 h-3 w-3" />
@@ -271,7 +323,15 @@ const Showcase = () => {
                               <Button 
                                 size="sm" 
                                 variant="outline"
-                                className="border-purple-500/30 hover:bg-purple-500/10"
+                                className={
+                                  index % 4 === 0 
+                                    ? 'border-highlight-blue/30 hover:bg-highlight-blue/10' 
+                                    : index % 4 === 1 
+                                      ? 'border-purple-500/30 hover:bg-purple-500/10'
+                                      : index % 4 === 2
+                                        ? 'border-green-500/30 hover:bg-green-500/10'
+                                        : 'border-orange-500/30 hover:bg-orange-500/10'
+                                }
                               >
                                 <Globe className="h-3 w-3" />
                               </Button>
@@ -283,6 +343,7 @@ const Showcase = () => {
                 </div>
               </div>
             )}
+            
             
             {/* Filter Controls */}
             <div className="mb-8">
