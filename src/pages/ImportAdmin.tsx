@@ -92,6 +92,7 @@ const ImportAdmin = () => {
     aiProcessed: number;
     remaining: number;
   } | null>(null);
+  const [lastCountsUpdate, setLastCountsUpdate] = useState<Date | null>(null);
   const [lastAiStatsUpdate, setLastAiStatsUpdate] = useState<Date | null>(null);
   const [aerospaceStats, setAerospaceStats] = useState<{
     totalInDb: number;
@@ -133,6 +134,7 @@ const ImportAdmin = () => {
         aiProcessed: processed || 0,
         remaining: (total || 0) - (processed || 0)
       });
+      setLastCountsUpdate(new Date());
     } catch (error) {
       console.error('Error loading aerospace article counts:', error);
     }
@@ -1666,7 +1668,27 @@ const ImportAdmin = () => {
 
                 {/* AI Processing Job Controls - Always Visible */}
                 <div className="p-4 bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/30 rounded-lg">
-                  <h4 className="text-sm font-semibold text-red-700 dark:text-red-300 mb-3">⚠️ AI Processing Job Status</h4>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-sm font-semibold text-red-700 dark:text-red-300">⚠️ AI Processing Job Status</h4>
+                    <div className="flex items-center gap-2">
+                      {lastCountsUpdate && (
+                        <span className="text-xs text-muted-foreground">
+                          Last updated: {lastCountsUpdate.toLocaleTimeString()}
+                        </span>
+                      )}
+                      <Button
+                        onClick={() => {
+                          loadAerospaceArticleCounts();
+                          loadAiJobStats();
+                        }}
+                        size="sm"
+                        variant="outline"
+                        className="h-7 px-2 text-xs"
+                      >
+                        ↻ Refresh
+                      </Button>
+                    </div>
+                  </div>
                   
                   {/* Aerospace Article Counts - Always Visible */}
                   <div className="grid grid-cols-3 gap-3 mb-4 p-3 bg-background/50 rounded-lg border border-border">
