@@ -2,7 +2,13 @@ import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
-import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home, Search, ScanFace, Filter } from "lucide-react";
+import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home, Search, ScanFace, Filter, ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
@@ -85,16 +91,20 @@ const Showcase = () => {
     return jsonShowcases;
   }, [dbShowcases, showcaseData, loading]);
 
-  // Extract unique sectors from all tags
-  const allSectors = useMemo(() => {
-    const sectorsSet = new Set<string>();
-    allShowcases.forEach(showcase => {
-      if (showcase.tags && Array.isArray(showcase.tags)) {
-        showcase.tags.forEach((tag: string) => sectorsSet.add(tag));
-      }
-    });
-    return Array.from(sectorsSet).sort();
-  }, [allShowcases]);
+  // Predefined sectors for the dropdown
+  const predefinedSectors = [
+    'AI',
+    'Automotive',
+    'Biotechnology',
+    'Blockchain',
+    'Cannabis',
+    'Carbon',
+    'Cyber',
+    'Facial Analysis',
+    'Fintech',
+    'Medical Devices',
+    'Psychedelics'
+  ];
 
   // Filter showcases based on selected filters
   const filteredShowcases = useMemo(() => {
@@ -156,71 +166,68 @@ const Showcase = () => {
             </div>
             
             {/* Filter Controls */}
-            <div className="mb-8 space-y-4">
-              {/* Type Filter */}
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <Filter className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-semibold text-muted-foreground">Filter by Type:</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    variant={filterType === 'all' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setFilterType('all')}
-                    className={filterType === 'all' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
-                  >
-                    All ({allShowcases.length})
-                  </Button>
-                  <Button
-                    variant={filterType === 'public' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setFilterType('public')}
-                    className={filterType === 'public' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
-                  >
-                    Public ({allShowcases.filter(s => s.type === 'stock' || s.type === 'token').length})
-                  </Button>
-                  <Button
-                    variant={filterType === 'private' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setFilterType('private')}
-                    className={filterType === 'private' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
-                  >
-                    Private ({allShowcases.filter(s => s.type === 'private').length})
-                  </Button>
-                </div>
+            <div className="mb-8">
+              <div className="flex items-center gap-2 mb-3">
+                <Filter className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm font-semibold text-muted-foreground">Filter by Type:</span>
               </div>
-
-              {/* Sector Filter */}
-              {allSectors.length > 0 && (
-                <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Filter className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-semibold text-muted-foreground">Filter by Sector:</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 mb-4">
+                <Button
+                  variant={filterType === 'all' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setFilterType('all')}
+                  className={filterType === 'all' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
+                >
+                  All ({allShowcases.length})
+                </Button>
+                <Button
+                  variant={filterType === 'public' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setFilterType('public')}
+                  className={filterType === 'public' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
+                >
+                  Public ({allShowcases.filter(s => s.type === 'stock' || s.type === 'token').length})
+                </Button>
+                <Button
+                  variant={filterType === 'private' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setFilterType('private')}
+                  className={filterType === 'private' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
+                >
+                  Private ({allShowcases.filter(s => s.type === 'private').length})
+                </Button>
+                
+                {/* Sector Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
                     <Button
-                      variant={filterSector === 'all' ? 'default' : 'outline'}
+                      variant={filterSector !== 'all' ? 'default' : 'outline'}
                       size="sm"
+                      className={filterSector !== 'all' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
+                    >
+                      {filterSector !== 'all' ? filterSector : 'Sector'}
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48 max-h-[300px] overflow-y-auto bg-popover">
+                    <DropdownMenuItem
                       onClick={() => setFilterSector('all')}
-                      className={filterSector === 'all' ? 'bg-purple-500 hover:bg-purple-600' : ''}
+                      className={filterSector === 'all' ? 'bg-accent' : ''}
                     >
                       All Sectors
-                    </Button>
-                    {allSectors.map((sector) => (
-                      <Button
+                    </DropdownMenuItem>
+                    {predefinedSectors.map((sector) => (
+                      <DropdownMenuItem
                         key={sector}
-                        variant={filterSector === sector ? 'default' : 'outline'}
-                        size="sm"
                         onClick={() => setFilterSector(sector)}
-                        className={filterSector === sector ? 'bg-purple-500 hover:bg-purple-600' : ''}
+                        className={filterSector === sector ? 'bg-accent' : ''}
                       >
                         {sector}
-                      </Button>
+                      </DropdownMenuItem>
                     ))}
-                  </div>
-                </div>
-              )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
 
               {/* Results Count */}
               <div className="text-sm text-muted-foreground">
