@@ -9,19 +9,19 @@ export const UpdateShowcaseTags = () => {
   const { toast } = useToast();
 
   const companyTagUpdates = [
-    { name: 'VSee Health', tags: ['Medical Devices', 'AI', 'Telehealth'], type: 'stock' },
-    { name: 'FAIM', tags: ['AI', 'Blockchain'], type: 'token' },
-    { name: 'ForexGPT', tags: ['AI', 'Fintech', 'Forex'], type: 'private' },
-    { name: 'CUT', tags: ['AI', 'Blockchain', 'Carbon', 'Fintech'], type: 'token' },
-    { name: 'DevvStream Corp', tags: ['AI', 'Blockchain', 'Carbon', 'Fintech'], type: 'token' },
-    { name: "Int'l Land Alliance", tags: ['Real Estate'], type: 'stock' },
-    { name: 'SILO Pharma Inc.', tags: ['AI', 'Biotech', 'Psychedelics'], type: 'stock' },
-    { name: "Synbio Int'l", tags: ['AI', 'Medical Devices', 'Facial Analysis'], type: 'stock' },
-    { name: 'Abatis', tags: ['AI', 'Blockchain', 'Cyber'], type: 'token' },
-    { name: 'FacialDX', tags: ['AI', 'Facial Analysis'], type: 'private' },
-    { name: 'Naoris Protocol', tags: ['AI', 'Blockchain', 'Cyber'], type: 'token' },
-    { name: 'Karbon-X', tags: ['Carbon'], type: 'stock' },
-    { name: 'Micropolis', tags: ['AI', 'Automotive', 'Robotics'], type: 'stock' },
+    { name: 'VSee Health', tags: ['Medical Device', 'AI', 'Telehealth'], type: 'stock', subtitle: 'NAS:VSEE' },
+    { name: 'FAIM', tags: ['AI', 'Blockchain'], type: 'token', subtitle: 'AI Powered Fan Engagement' },
+    { name: 'ForexGPT', tags: ['AI', 'Fintech', 'Forex'], type: 'private', subtitle: 'AI Powered Forex Analysis' },
+    { name: 'CUT', tags: ['AI', 'Blockchain', 'Carbon', 'Fintech'], type: 'token', subtitle: 'RWA / Carbon Tokenization' },
+    { name: 'DevvStream Corp', tags: ['AI', 'Blockchain', 'Carbon', 'Fintech'], type: 'token', subtitle: 'NAS:DEVS' },
+    { name: "Int'l Land Alliance", tags: ['Real Estate'], type: 'stock', subtitle: 'OTCQB:ILAL' },
+    { name: 'SILO Pharma Inc.', tags: ['AI', 'Biotech', 'Psychedelics'], type: 'stock', subtitle: 'NAS:SILO' },
+    { name: "Synbio Int'l", tags: ['AI', 'Medical Device', 'Facial Analysis'], type: 'stock', subtitle: 'OTC:SYIN' },
+    { name: 'Abatis', tags: ['AI', 'Blockchain', 'Cyber'], type: 'token', subtitle: 'Defense Grade Cybersecurity' },
+    { name: 'FacialDX', tags: ['AI', 'Facial Analysis'], type: 'private', subtitle: 'AI Powered Facial Analysis' },
+    { name: 'Naoris Protocol', tags: ['AI', 'Blockchain', 'Cyber'], type: 'token', subtitle: 'Quantum Resistant Cybersecurity' },
+    { name: 'Karbon-X', tags: ['Carbon'], type: 'stock', subtitle: 'Carbon Credits' },
+    { name: 'Micropolis', tags: ['AI', 'Automotive'], type: 'stock', subtitle: 'AI Autonomous Vehicles' },
   ];
 
   const handleUpdate = async () => {
@@ -36,7 +36,8 @@ export const UpdateShowcaseTags = () => {
           .from('showcase_companies')
           .update({ 
             tags: company.tags,
-            type: company.type 
+            type: company.type,
+            subtitle: company.subtitle
           })
           .eq('company_name', company.name);
 
@@ -86,7 +87,7 @@ export const UpdateShowcaseTags = () => {
         <h3 className="text-lg font-semibold">Update Showcase Company Tags</h3>
       </div>
       <p className="text-sm text-muted-foreground mb-4">
-        Update all 13 companies with correct tags and types from the spreadsheet. This will update tags for filtering and set proper company types (stock/private/token).
+        Update all 13 companies with correct tags, types, and subtexts from the spreadsheet. This will update tags for filtering, set proper company types (stock/private/token), and add descriptive subtexts.
       </p>
       <Button 
         onClick={handleUpdate}
