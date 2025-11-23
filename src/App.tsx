@@ -64,6 +64,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import SitemapGenerator from "./pages/SitemapGenerator";
 import FynnAIShowcase from "./pages/FynnAIShowcase";
+import VseeHealthShowcase from "./pages/VseeHealthShowcase";
 import ShowcaseAdmin from "./pages/ShowcaseAdmin";
 import SecurityDashboard from "./pages/SecurityDashboard";
 import JsonTester from "./pages/JsonTester";
@@ -115,6 +116,7 @@ const App = () => (
               <Route path="/showcase/synbio-interactive" element={<SynbioInteractivePresentation />} />
               <Route path="/showcase/abatis" element={<AbatisShowcase />} />
               <Route path="/showcase/forex-gpt" element={<ForexGPTShowcase />} />
+              <Route path="/showcase/vsee-health" element={<VseeHealthShowcase />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/solutions/ipo-preparation" element={<IPOPreparation />} />
@@ -173,6 +175,7 @@ const App = () => (
               <Route path="/:lang/showcase/fynn-ai" element={<FynnAIShowcase />} />
               <Route path="/:lang/showcase/abatis" element={<AbatisShowcase />} />
               <Route path="/:lang/showcase/forex-gpt" element={<ForexGPTShowcase />} />
+              <Route path="/:lang/showcase/vsee-health" element={<VseeHealthShowcase />} />
               <Route path="/:lang/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/:lang/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/:lang/solutions/ipo-preparation" element={<IPOPreparation />} />
