@@ -94,6 +94,8 @@ const ImportAdmin = () => {
   } | null>(null);
   const [lastCountsUpdate, setLastCountsUpdate] = useState<Date | null>(null);
   const [lastAiStatsUpdate, setLastAiStatsUpdate] = useState<Date | null>(null);
+  const [lastAiProgress, setLastAiProgress] = useState<number>(0);
+  const [autoRestartEnabled, setAutoRestartEnabled] = useState(true);
   const [aerospaceStats, setAerospaceStats] = useState<{
     totalInDb: number;
     missingUrls: number;
@@ -129,12 +131,24 @@ const ImportAdmin = () => {
 
       if (processedError) throw processedError;
 
+      const currentProgress = processed || 0;
       setAerospaceArticleCounts({
         total: total || 0,
-        aiProcessed: processed || 0,
-        remaining: (total || 0) - (processed || 0)
+        aiProcessed: currentProgress,
+        remaining: (total || 0) - currentProgress
       });
       setLastCountsUpdate(new Date());
+      
+      // Check if progress is stalled (no change in 10 minutes) and auto-restart
+      if (autoRestartEnabled && lastAiProgress === currentProgress && currentProgress < (total || 0)) {
+        const timeSinceLastUpdate = lastCountsUpdate ? (new Date().getTime() - lastCountsUpdate.getTime()) / 1000 / 60 : 0;
+        if (timeSinceLastUpdate > 10) {
+          console.log('🔄 AI processing stalled, auto-restarting...');
+          toast.info('AI processing stalled, restarting automatically...');
+          await handleResetAerospaceAI();
+        }
+      }
+      setLastAiProgress(currentProgress);
     } catch (error) {
       console.error('Error loading aerospace article counts:', error);
     }
@@ -254,6 +268,33 @@ const ImportAdmin = () => {
     } catch (error) {
       console.error('Error loading aerospace stats:', error);
       setAerospaceStats(prev => ({ ...prev, loading: false }));
+    }
+  };
+
+  // Handle aerospace AI processing reset
+  const handleResetAerospaceAI = async () => {
+    try {
+      toast.info('Resetting aerospace AI processing...');
+      setImporting('reset-aerospace-ai');
+      
+      const { data, error } = await supabase.functions.invoke('reset-aerospace-ai');
+      
+      if (error) throw error;
+      
+      toast.success('Aerospace AI processing reset and restarted!', {
+        description: `Job ID: ${data.jobId} | ${data.totalChunks} chunks to process`,
+        duration: 5000
+      });
+      
+      // Refresh stats
+      await loadAiJobStats();
+      await loadAerospaceArticleCounts();
+    } catch (error) {
+      toast.error('Failed to reset aerospace AI processing', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setImporting(null);
     }
   };
 
@@ -1671,6 +1712,14 @@ const ImportAdmin = () => {
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="text-sm font-semibold text-red-700 dark:text-red-300">⚠️ AI Processing Job Status</h4>
                     <div className="flex items-center gap-2">
+                      <Button
+                        onClick={() => setAutoRestartEnabled(!autoRestartEnabled)}
+                        size="sm"
+                        variant={autoRestartEnabled ? "default" : "outline"}
+                        className="h-7 px-2 text-xs"
+                      >
+                        🔄 Auto-restart: {autoRestartEnabled ? 'ON' : 'OFF'}
+                      </Button>
                       {lastCountsUpdate && (
                         <span className="text-xs text-muted-foreground">
                           Last updated: {lastCountsUpdate.toLocaleTimeString()}
@@ -1805,30 +1854,7 @@ const ImportAdmin = () => {
                           if (!confirm('🚀 This will safely reset and restart aerospace AI processing from scratch. Continue?')) {
                             return;
                           }
-
-                          try {
-                            toast.info('Resetting aerospace AI processing...');
-                            setImporting('reset-aerospace-ai');
-                            
-                            const { data, error } = await supabase.functions.invoke('reset-aerospace-ai');
-                            
-                            if (error) throw error;
-                            
-                            toast.success('Aerospace AI processing reset and restarted!', {
-                              description: `Job ID: ${data.jobId} | ${data.totalChunks} chunks to process`,
-                              duration: 5000
-                            });
-                            
-                            // Refresh the page to reload state
-                            setTimeout(() => window.location.reload(), 2000);
-                          } catch (error) {
-                            console.error('Error resetting aerospace AI:', error);
-                            toast.error('Failed to reset aerospace AI', {
-                              description: error instanceof Error ? error.message : 'Unknown error'
-                            });
-                          } finally {
-                            setImporting(null);
-                          }
+                          await handleResetAerospaceAI();
                         }}
                         variant="default"
                         size="sm"
