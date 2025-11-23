@@ -93,6 +93,7 @@ const Showcase = () => {
 
   // Predefined sectors for the dropdown
   const predefinedSectors = [
+    'Aerospace',
     'AI',
     'Automotive',
     'Biotechnology',
@@ -102,8 +103,12 @@ const Showcase = () => {
     'Cyber',
     'Facial Analysis',
     'Fintech',
+    'Forex',
     'Medical Devices',
-    'Psychedelics'
+    'Pharma',
+    'Psychedelics',
+    'Real Estate',
+    'Venture Capital'
   ];
 
   // Filter showcases based on selected filters
@@ -117,10 +122,10 @@ const Showcase = () => {
       filtered = filtered.filter(s => s.type === 'private');
     }
 
-    // Filter by sector
+    // Filter by sector (companies can have multiple tags)
     if (filterSector !== 'all') {
       filtered = filtered.filter(s => 
-        s.tags && Array.isArray(s.tags) && s.tags.includes(filterSector)
+        s.tags && Array.isArray(s.tags) && s.tags.some(tag => tag === filterSector)
       );
     }
 

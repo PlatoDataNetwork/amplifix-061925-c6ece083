@@ -14,6 +14,7 @@ import MainHeader from "@/components/MainHeader";
 import { Helmet } from "react-helmet-async";
 import { ShowcaseLogoFixer } from "@/components/ShowcaseLogoFixer";
 import { AddVseeHealthShowcase } from "@/components/AddVseeHealthShowcase";
+import { UpdateShowcaseTags } from "@/components/UpdateShowcaseTags";
 import { LogoGallery } from "@/components/LogoGallery";
 
 interface ShowcaseCompany {
@@ -397,6 +398,10 @@ const ShowcaseAdmin = () => {
           
           <div className="mb-8">
             <AddVseeHealthShowcase />
+          </div>
+
+          <div className="mb-8">
+            <UpdateShowcaseTags />
           </div>
 
           {showForm && (
