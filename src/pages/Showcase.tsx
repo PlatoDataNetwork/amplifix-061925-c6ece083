@@ -51,7 +51,7 @@ const Showcase = () => {
   const { data: showcaseData } = useJsonData<ShowcaseData>('showcase.json');
   const [dbShowcases, setDbShowcases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterType, setFilterType] = useState<'all' | 'public' | 'private'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'public' | 'private' | 'token'>('all');
   const [filterSector, setFilterSector] = useState<string>('all');
   useLanguage();
 
@@ -117,11 +117,13 @@ const Showcase = () => {
   const filteredShowcases = useMemo(() => {
     let filtered = [...allShowcases];
 
-    // Filter by type (public/private)
+    // Filter by type (public/private/token)
     if (filterType === 'public') {
-      filtered = filtered.filter(s => s.type === 'stock' || s.type === 'token');
+      filtered = filtered.filter(s => s.type === 'stock');
     } else if (filterType === 'private') {
       filtered = filtered.filter(s => s.type === 'private');
+    } else if (filterType === 'token') {
+      filtered = filtered.filter(s => s.type === 'token');
     }
 
     // Filter by sector (companies can have multiple tags)
@@ -187,22 +189,6 @@ const Showcase = () => {
                 >
                   All ({allShowcases.length})
                 </Button>
-                <Button
-                  variant={filterType === 'public' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setFilterType('public')}
-                  className={filterType === 'public' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
-                >
-                  Public ({allShowcases.filter(s => s.type === 'stock' || s.type === 'token').length})
-                </Button>
-                <Button
-                  variant={filterType === 'private' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setFilterType('private')}
-                  className={filterType === 'private' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
-                >
-                  Private ({allShowcases.filter(s => s.type === 'private').length})
-                </Button>
                 
                 {/* Sector Dropdown */}
                 <DropdownMenu>
@@ -234,6 +220,31 @@ const Showcase = () => {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
+                
+                <Button
+                  variant={filterType === 'public' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setFilterType('public')}
+                  className={filterType === 'public' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
+                >
+                  Public ({allShowcases.filter(s => s.type === 'stock').length})
+                </Button>
+                <Button
+                  variant={filterType === 'private' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setFilterType('private')}
+                  className={filterType === 'private' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
+                >
+                  Private ({allShowcases.filter(s => s.type === 'private').length})
+                </Button>
+                <Button
+                  variant={filterType === 'token' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setFilterType('token')}
+                  className={filterType === 'token' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
+                >
+                  Token ({allShowcases.filter(s => s.type === 'token').length})
+                </Button>
               </div>
 
               {/* Results Count */}
