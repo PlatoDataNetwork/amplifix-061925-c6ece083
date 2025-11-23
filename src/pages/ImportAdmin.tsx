@@ -1579,10 +1579,10 @@ const ImportAdmin = () => {
                   </div>
                 </div>
 
-                {/* Reset Stuck AI Job */}
-                {aiJobStats && (
-                  <div className="p-4 bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/30 rounded-lg">
-                    <h4 className="text-sm font-semibold text-red-700 dark:text-red-300 mb-3">⚠️ AI Processing Job Status</h4>
+                {/* AI Processing Job Controls - Always Visible */}
+                <div className="p-4 bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/30 rounded-lg">
+                  <h4 className="text-sm font-semibold text-red-700 dark:text-red-300 mb-3">⚠️ AI Processing Job Status</h4>
+                  {aiJobStats ? (
                     <p className="text-xs text-muted-foreground mb-3">
                       Status: <strong className={aiJobStats.status === 'completed' ? 'text-green-600' : aiJobStats.status === 'completed_with_errors' ? 'text-orange-600' : 'text-blue-600'}>{aiJobStats.status || 'in_progress'}</strong>
                       <br />
@@ -1597,7 +1597,12 @@ const ImportAdmin = () => {
                       <br />
                       Rate: <strong>{aiJobStats.articlesPerMinute} articles/min</strong>
                     </p>
-                    <div className="flex gap-2">
+                  ) : (
+                    <p className="text-xs text-muted-foreground mb-3">
+                      No active AI processing job found. Click "Smart Reset & Restart" to begin processing.
+                    </p>
+                  )}
+                  <div className="flex gap-2">
                       <Button
                         onClick={async () => {
                           if (!confirm('This will reset the AI processing job. You will need to restart it manually. Continue?')) {
@@ -1711,7 +1716,7 @@ const ImportAdmin = () => {
                       </Button>
                     </div>
                   </div>
-                )}
+                
 
                 {/* Control Buttons */}
                 <div className="flex gap-2">
