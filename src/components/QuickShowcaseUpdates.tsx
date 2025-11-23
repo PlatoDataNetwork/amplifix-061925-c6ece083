@@ -44,7 +44,7 @@ export const QuickShowcaseUpdates = () => {
             ticker: "VSEE",
             subtitle: "Global Leader in Telehealth Solutions",
             description: "VSee Health is a global leader in telehealth solutions, providing secure video consultation platforms, remote patient monitoring, and integrated care management systems used by healthcare providers in over 100 countries.",
-            tags: ["AI", "Telehealth", "Healthcare Technology"],
+            tags: ["AI", "Telehealth", "Healthcare Technology", "Medical Devices"],
             button_text: "View Showcase",
             link: "/showcase/vsee-health",
             website: "https://vseehealth.com/",
