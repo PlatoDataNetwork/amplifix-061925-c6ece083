@@ -9,18 +9,19 @@ export const UpdateShowcaseTags = () => {
   const { toast } = useToast();
 
   const companyTagUpdates = [
-    { name: 'ForexGPT', tags: ['AI', 'Fintech', 'Forex'] },
-    { name: 'CUT', tags: ['Carbon', 'Blockchain'] },
-    { name: 'DevvStream Corp', tags: ['Carbon', 'Blockchain'] },
-    { name: 'Naoris Protocol', tags: ['AI', 'Cyber', 'Blockchain'] },
-    { name: 'Abatis', tags: ['Cyber', 'Blockchain'] },
-    { name: 'SILO Pharma Inc.', tags: ['AI', 'Biotechnology', 'Pharma', 'Psychedelics'] },
-    { name: 'Micropolis', tags: ['Automotive'] },
-    { name: 'Karbon-X', tags: ['Carbon'] },
-    { name: 'FacialDX', tags: ['AI', 'Facial Analysis'] },
-    { name: 'Int\'l Land Alliance', tags: ['Real Estate'] },
-    { name: 'Synbio Int\'l', tags: ['AI', 'Facial Analysis'] },
-    { name: 'FAIM', tags: ['AI', 'Blockchain'] }
+    { name: 'VSee Health', tags: ['Medical Devices', 'AI', 'Telehealth'], type: 'stock' },
+    { name: 'FAIM', tags: ['AI', 'Blockchain'], type: 'token' },
+    { name: 'ForexGPT', tags: ['AI', 'Fintech', 'Forex'], type: 'private' },
+    { name: 'CUT', tags: ['AI', 'Blockchain', 'Carbon', 'Fintech'], type: 'token' },
+    { name: 'DevvStream Corp', tags: ['AI', 'Blockchain', 'Carbon', 'Fintech'], type: 'token' },
+    { name: "Int'l Land Alliance", tags: ['Real Estate'], type: 'stock' },
+    { name: 'SILO Pharma Inc.', tags: ['AI', 'Biotech', 'Psychedelics'], type: 'stock' },
+    { name: "Synbio Int'l", tags: ['AI', 'Medical Devices', 'Facial Analysis'], type: 'stock' },
+    { name: 'Abatis', tags: ['AI', 'Blockchain', 'Cyber'], type: 'token' },
+    { name: 'FacialDX', tags: ['AI', 'Facial Analysis'], type: 'private' },
+    { name: 'Naoris Protocol', tags: ['AI', 'Blockchain', 'Cyber'], type: 'token' },
+    { name: 'Karbon-X', tags: ['Carbon'], type: 'stock' },
+    { name: 'Micropolis', tags: ['AI', 'Automotive'], type: 'stock' },
   ];
 
   const handleUpdate = async () => {
@@ -33,7 +34,10 @@ export const UpdateShowcaseTags = () => {
       for (const company of companyTagUpdates) {
         const { error } = await supabase
           .from('showcase_companies')
-          .update({ tags: company.tags })
+          .update({ 
+            tags: company.tags,
+            type: company.type 
+          })
           .eq('company_name', company.name);
 
         if (error) {
@@ -82,7 +86,7 @@ export const UpdateShowcaseTags = () => {
         <h3 className="text-lg font-semibold">Update Showcase Company Tags</h3>
       </div>
       <p className="text-sm text-muted-foreground mb-4">
-        Update sector tags for all companies to support the new filtering system with multiple tags per company.
+        Update all 13 companies with correct tags and types from the spreadsheet. This will update tags for filtering and set proper company types (stock/private/token).
       </p>
       <Button 
         onClick={handleUpdate}
