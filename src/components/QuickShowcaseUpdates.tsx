@@ -13,10 +13,13 @@ export const QuickShowcaseUpdates = () => {
     let successCount = 0;
     
     try {
-      // Update CUT to token
+      // Update CUT to token with green thumbnail
       const { error: cutError } = await supabase
         .from('showcase_companies')
-        .update({ type: 'token' })
+        .update({ 
+          type: 'token',
+          thumbnail: '/lovable-uploads/cut-eco-thumbnail.png'
+        })
         .eq('company_name', 'CUT');
 
       if (!cutError) successCount++;
