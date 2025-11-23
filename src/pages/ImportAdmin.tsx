@@ -1467,11 +1467,11 @@ const ImportAdmin = () => {
                   </div>
                 </div>
 
-                {/* Cleanup Aerospace Duplicates */}
+                {/* Cleanup All Duplicates */}
                 <div className="p-4 bg-gradient-to-br from-red-500/10 to-pink-500/10 border border-red-500/30 rounded-lg">
-                  <h4 className="text-sm font-semibold text-red-700 dark:text-red-300 mb-3">🧹 Clean Up Duplicate Articles</h4>
+                  <h4 className="text-sm font-semibold text-red-700 dark:text-red-300 mb-3">🧹 Clean Up Duplicate Articles (All Verticals)</h4>
                   <p className="text-xs text-muted-foreground mb-3">
-                    Remove duplicate aerospace articles with the same title, keeping only the most recent version of each.
+                    Remove duplicate articles across ALL verticals with the same title, keeping only the most recent version of each.
                   </p>
                   
                   <div className="grid grid-cols-2 gap-2">
@@ -1484,7 +1484,7 @@ const ImportAdmin = () => {
                           });
 
                           const { data, error } = await supabase.functions.invoke('cleanup-aerospace-duplicates', {
-                            body: { dryRun: true }
+                            body: { dryRun: true, verticalSlug: null }
                           });
 
                           if (error) throw error;
@@ -1523,7 +1523,7 @@ const ImportAdmin = () => {
                           });
 
                           const { data, error } = await supabase.functions.invoke('cleanup-aerospace-duplicates', {
-                            body: { dryRun: false }
+                            body: { dryRun: false, verticalSlug: null }
                           });
 
                           if (error) throw error;

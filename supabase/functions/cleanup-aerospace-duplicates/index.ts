@@ -22,25 +22,32 @@ Deno.serve(async (req) => {
       }
     );
 
-    const { dryRun = true } = await req.json().catch(() => ({ dryRun: true }));
+    const { dryRun = true, verticalSlug = null } = await req.json().catch(() => ({ dryRun: true, verticalSlug: null }));
 
-    console.log(`🧹 Starting aerospace duplicate cleanup (dry run: ${dryRun})`);
+    const scope = verticalSlug ? `vertical "${verticalSlug}"` : 'ALL VERTICALS';
+    console.log(`🧹 Starting duplicate cleanup for ${scope} (dry run: ${dryRun})`);
 
     // Step 1: Fetch ALL articles using cursor-based pagination
-    let allArticles: Array<{ id: string; title: string; created_at: string }> = [];
+    let allArticles: Array<{ id: string; title: string; created_at: string; vertical_slug: string }> = [];
     let hasMore = true;
     let offset = 0;
     const batchSize = 1000;
 
-    console.log('📡 Starting to fetch all aerospace articles...');
+    console.log(`📡 Starting to fetch articles for ${scope}...`);
 
     while (hasMore) {
-      const { data: batch, error: fetchError, count } = await supabaseClient
+      let query = supabaseClient
         .from('articles')
-        .select('id, title, created_at', { count: 'exact' })
-        .eq('vertical_slug', 'aerospace')
+        .select('id, title, created_at, vertical_slug', { count: 'exact' })
         .order('created_at', { ascending: false })
         .range(offset, offset + batchSize - 1);
+      
+      // Filter by vertical if specified
+      if (verticalSlug) {
+        query = query.eq('vertical_slug', verticalSlug);
+      }
+      
+      const { data: batch, error: fetchError, count } = await query;
 
       if (fetchError) {
         console.error('Error fetching articles:', fetchError);
@@ -71,10 +78,10 @@ Deno.serve(async (req) => {
       }
     }
 
-    console.log(`✅ Fetched ${allArticles.length} total aerospace articles`);
+    console.log(`✅ Fetched ${allArticles.length} total articles for ${scope}`);
 
-    // Step 2: Group by title to find duplicates
-    const titleGroups = new Map<string, Array<{ id: string; created_at: string }>>();
+    // Step 2: Group by title to find duplicates (regardless of vertical)
+    const titleGroups = new Map<string, Array<{ id: string; created_at: string; vertical_slug: string }>>();
     
     for (const article of allArticles) {
       if (!titleGroups.has(article.title)) {
@@ -82,7 +89,8 @@ Deno.serve(async (req) => {
       }
       titleGroups.get(article.title)!.push({
         id: article.id,
-        created_at: article.created_at
+        created_at: article.created_at,
+        vertical_slug: article.vertical_slug
       });
     }
 
@@ -99,6 +107,7 @@ Deno.serve(async (req) => {
       title: string;
       kept: string;
       deleted: number;
+      verticals: string[];
     }> = [];
 
     // For each duplicate title group
@@ -110,6 +119,7 @@ Deno.serve(async (req) => {
       
       const keepId = sorted[0].id; // Keep the most recent
       const deleteIds = sorted.slice(1).map(a => a.id); // Delete all others
+      const affectedVerticals = Array.from(new Set(articles.map(a => a.vertical_slug)));
       
       totalDuplicates += deleteIds.length;
 
@@ -117,6 +127,7 @@ Deno.serve(async (req) => {
         title: title.substring(0, 100), // Truncate long titles
         kept: keepId,
         deleted: deleteIds.length,
+        verticals: affectedVerticals
       });
 
       if (!dryRun && deleteIds.length > 0) {
