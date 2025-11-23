@@ -18,7 +18,7 @@ import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 
-const forexGptThumbnail = "/lovable-uploads/forex-gpt-thumbnail.png";
+const forexGptThumbnail = "/lovable-uploads/forex-gpt-social-thumbnail.png";
 
 const ForexGPTShowcase = () => {
   const iconMap: Record<string, any> = {
