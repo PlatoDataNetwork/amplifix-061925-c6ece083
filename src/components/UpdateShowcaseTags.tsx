@@ -10,16 +10,16 @@ export const UpdateShowcaseTags = () => {
 
   const companyTagUpdates = [
     { name: 'VSee Health', tags: ['Medical Device', 'AI', 'Telehealth'], type: 'stock', subtitle: 'NAS:VSEE' },
-    { name: 'FAIM', tags: ['AI', 'Blockchain'], type: 'token', subtitle: 'AI Powered Fan Engagement' },
+    { name: 'FAIM', tags: ['AI', 'Blockchain', 'Token'], type: 'token', subtitle: 'AI Powered Fan Engagement' },
     { name: 'ForexGPT', tags: ['AI', 'Fintech', 'Forex'], type: 'private', subtitle: 'AI Powered Forex Analysis' },
-    { name: 'CUT', tags: ['AI', 'Blockchain', 'Carbon', 'Fintech'], type: 'token', subtitle: 'RWA / Carbon Tokenization' },
-    { name: 'DevvStream Corp', tags: ['AI', 'Blockchain', 'Carbon', 'Fintech'], type: 'token', subtitle: 'NAS:DEVS' },
+    { name: 'CUT', tags: ['AI', 'Blockchain', 'Carbon', 'Fintech', 'Token'], type: 'token', subtitle: 'RWA / Carbon Tokenization' },
+    { name: 'DevvStream Corp', tags: ['AI', 'Blockchain', 'Carbon', 'Fintech', 'Token'], type: 'token', subtitle: 'NAS:DEVS' },
     { name: "Int'l Land Alliance", tags: ['Real Estate'], type: 'stock', subtitle: 'OTCQB:ILAL' },
     { name: 'SILO Pharma Inc.', tags: ['AI', 'Biotech', 'Psychedelics'], type: 'stock', subtitle: 'NAS:SILO' },
     { name: "Synbio Int'l", tags: ['AI', 'Medical Device', 'Facial Analysis'], type: 'stock', subtitle: 'OTC:SYIN' },
-    { name: 'Abatis', tags: ['AI', 'Blockchain', 'Cyber'], type: 'token', subtitle: 'Defense Grade Cybersecurity' },
+    { name: 'Abatis', tags: ['AI', 'Blockchain', 'Cyber', 'Token'], type: 'token', subtitle: 'Defense Grade Cybersecurity' },
     { name: 'FacialDX', tags: ['AI', 'Facial Analysis'], type: 'private', subtitle: 'AI Powered Facial Analysis' },
-    { name: 'Naoris Protocol', tags: ['AI', 'Blockchain', 'Cyber'], type: 'token', subtitle: 'Quantum Resistant Cybersecurity' },
+    { name: 'Naoris Protocol', tags: ['AI', 'Blockchain', 'Cyber', 'Token'], type: 'token', subtitle: 'Quantum Resistant Cybersecurity' },
     { name: 'Karbon-X', tags: ['Carbon'], type: 'stock', subtitle: 'Carbon Credits' },
     { name: 'Micropolis', tags: ['AI', 'Automotive'], type: 'stock', subtitle: 'AI Autonomous Vehicles' },
   ];
