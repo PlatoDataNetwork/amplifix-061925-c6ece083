@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import MainHeader from "@/components/MainHeader";
 import { Helmet } from "react-helmet-async";
 import { ShowcaseLogoFixer } from "@/components/ShowcaseLogoFixer";
+import { QuickShowcaseUpdates } from "@/components/QuickShowcaseUpdates";
 import { AddVseeHealthShowcase } from "@/components/AddVseeHealthShowcase";
 import { UpdateShowcaseTags } from "@/components/UpdateShowcaseTags";
 import { UpdateCompanyTypes } from "@/components/UpdateCompanyTypes";
@@ -393,6 +394,10 @@ const ShowcaseAdmin = () => {
                 </Button>
               </div>
             )}
+          </div>
+
+          <div className="mb-8">
+            <QuickShowcaseUpdates />
           </div>
 
           <ShowcaseLogoFixer />
