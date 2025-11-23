@@ -27,6 +27,7 @@ import SynbioPresentation from "./pages/SynbioPresentation";
 import SynbioInteractivePresentation from "./pages/SynbioInteractivePresentation";
 import AbatisShowcase from "./pages/AbatisShowcase";
 import FacialDXShowcase from "./pages/FacialDXShowcase";
+import ForexGPTShowcase from "./pages/ForexGPTShowcase";
 import Showcase from "./pages/Showcase";
 import Solutions from "./pages/Solutions";
 import PublicCompanies from "./pages/PublicCompanies";
@@ -111,6 +112,7 @@ const App = () => (
               <Route path="/showcase/synbio-presentation" element={<SynbioPresentation />} />
               <Route path="/showcase/synbio-interactive" element={<SynbioInteractivePresentation />} />
               <Route path="/showcase/abatis" element={<AbatisShowcase />} />
+              <Route path="/showcase/forex-gpt" element={<ForexGPTShowcase />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/solutions/ipo-preparation" element={<IPOPreparation />} />
@@ -168,6 +170,7 @@ const App = () => (
               <Route path="/:lang/showcase/international-land-alliance" element={<InternationalLandAllianceShowcase />} />
               <Route path="/:lang/showcase/fynn-ai" element={<FynnAIShowcase />} />
               <Route path="/:lang/showcase/abatis" element={<AbatisShowcase />} />
+              <Route path="/:lang/showcase/forex-gpt" element={<ForexGPTShowcase />} />
               <Route path="/:lang/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/:lang/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/:lang/solutions/ipo-preparation" element={<IPOPreparation />} />
