@@ -168,18 +168,18 @@ const ForexGPTShowcase = () => {
   return (
     <>
       <Helmet>
-        <title>Forex-GPT.ai - AI-Powered Forex Trading Analysis | PLATO</title>
+        <title>ForexGPT - AI-Powered Forex Trading Analysis | PLATO</title>
         <meta name="description" content="ForexGPT leverages advanced AI models to provide real-time technical analysis, trading signals, and sentiment scores across 100+ assets and 22 timeframes." />
         <meta name="keywords" content="forex trading, AI trading analysis, technical analysis, trading signals, forex sentiment, automated trading, GPT trading, crypto analysis" />
         <link rel="canonical" href="https://plato.so/showcase/forex-gpt" />
         
-        <meta property="og:title" content="Forex-GPT.ai - AI-Powered Forex Trading Analysis" />
+        <meta property="og:title" content="ForexGPT - AI-Powered Forex Trading Analysis" />
         <meta property="og:description" content="Advanced AI-powered trading analysis platform providing real-time insights across forex, crypto, indices, commodities, and bonds." />
         <meta property="og:image" content={forexGptThumbnail} />
         <meta property="og:type" content="website" />
         
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Forex-GPT.ai - AI-Powered Trading Analysis" />
+        <meta name="twitter:title" content="ForexGPT - AI-Powered Trading Analysis" />
         <meta name="twitter:description" content="ForexGPT provides AI-powered technical analysis and trading signals across 100+ assets." />
         <meta name="twitter:image" content={forexGptThumbnail} />
       </Helmet>

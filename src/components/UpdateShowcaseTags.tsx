@@ -9,7 +9,7 @@ export const UpdateShowcaseTags = () => {
   const { toast } = useToast();
 
   const companyTagUpdates = [
-    { name: 'Forex-GPT.ai', tags: ['AI', 'Fintech', 'Forex'] },
+    { name: 'ForexGPT', tags: ['AI', 'Fintech', 'Forex'] },
     { name: 'CUT', tags: ['Carbon', 'Blockchain'] },
     { name: 'DevvStream Corp', tags: ['Carbon', 'Blockchain'] },
     { name: 'Naoris Protocol', tags: ['AI', 'Cyber', 'Blockchain'] },
