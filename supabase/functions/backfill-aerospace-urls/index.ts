@@ -13,48 +13,65 @@ interface Article {
   content: string | null;
 }
 
-// Extract source URL from article content HTML
+// Extract source URL from Plato article HTML content
 function extractSourceUrlFromContent(content: string): string | null {
   if (!content) return null;
-  
-  // Find all links in the content
+
+  // Find all href attributes in the HTML
   const linkPattern = /<a[^>]+href=["']([^"']+)["'][^>]*>/gi;
   const matches = [...content.matchAll(linkPattern)];
-  
+
   if (matches.length === 0) return null;
-  
-  // Look for external source URLs (not platodata.ai)
+
   for (const match of matches) {
-    let url = match[1];
-    
-    // Clean up malformed URLs
-    url = url.replace(/\\"/g, '').replace(/\\\//g, '/').replace(/%22/g, '').replace(/\/\/\//g, '//');
-    
-    // Check if it's a valid external URL
-    if ((url.startsWith('http://') || url.startsWith('https://')) && 
-        !url.includes('platodata.ai') &&
-        !url.includes('platodata.network') &&
-        !url.includes('amplifipr.com')) {
-      
-      // Common news sources for aerospace
-      const validDomains = [
-        'spacenews.com', 'spaceflightnow.com', 'nasa.gov', 'esa.int',
-        'space.com', 'arstechnica.com', 'reuters.com', 'bloomberg.com',
-        'cnbc.com', 'theverge.com', 'techcrunch.com', 'spaceref.com'
-      ];
-      
-      const hasValidDomain = validDomains.some(domain => url.includes(domain));
-      if (hasValidDomain) {
-        return url;
-      }
-      
-      // If no known domain, return the first external link
-      if (matches.length <= 3) {
-        return url;
-      }
+    let href = match[1];
+
+    // Clean up common encoding artifacts from the JSON feed
+    href = href
+      .replace(/\\\"/g, "")
+      .replace(/\%22/g, "")
+      .replace(/\\\\\//g, "/")
+      .replace(/\\\//g, "/");
+
+    // Look for an inner non-Plato URL inside the href
+    const innerMatch = href.match(/https?:\/\/(?!platodata\.ai)[^"']+/i);
+    if (!innerMatch) {
+      continue;
     }
+
+    let url = innerMatch[0];
+
+    // Normalize excessive slashes that sometimes appear in the JSON
+    url = url.replace(/([^:])\/{2,}/g, "$1/");
+
+    // Preferred news domains (for prioritization, not strict filtering)
+    const preferredDomains = [
+      "spacenews.com",
+      "spaceflightnow.com",
+      "nasa.gov",
+      "esa.int",
+      "space.com",
+      "arstechnica.com",
+      "reuters.com",
+      "bloomberg.com",
+      "cnbc.com",
+      "theverge.com",
+      "techcrunch.com",
+      "spaceref.com",
+    ];
+
+    const hasPreferredDomain = preferredDomains.some((domain) =>
+      url.includes(domain)
+    );
+
+    if (hasPreferredDomain) {
+      return url;
+    }
+
+    // Fallback: return the first non-Plato external URL we find
+    return url;
   }
-  
+
   return null;
 }
 
@@ -165,11 +182,35 @@ Deno.serve(async (req) => {
           console.log(`⚠ Current URL is Plato Data: ${article.external_url}`);
         }
         
-        // Extract source URL from article content
-        const sourceUrl = article.content ? extractSourceUrlFromContent(article.content) : null;
+        // Fetch fresh Plato JSON for this post_id to get raw content with source link
+        let sourceUrl: string | null = null;
+
+        try {
+          const feedUrl = `https://platodata.ai/aerospace/json/?post_id=${article.post_id}`;
+          console.log(`Fetching Plato JSON for post_id ${article.post_id}: ${feedUrl}`);
+          const response = await fetch(feedUrl);
+
+          if (!response.ok) {
+            console.log(`Failed to fetch Plato JSON for post ${article.post_id}: ${response.status}`);
+          } else {
+            const json = await response.json().catch((err) => {
+              console.error('Error parsing Plato JSON:', err);
+              return null;
+            });
+
+            const rawContent = json?.posts?.[0]?.content as string | undefined;
+            if (rawContent) {
+              sourceUrl = extractSourceUrlFromContent(rawContent);
+            } else {
+              console.log(`No content field in Plato JSON for post ${article.post_id}`);
+            }
+          }
+        } catch (err) {
+          console.error(`Error fetching Plato JSON for post ${article.post_id}:`, err);
+        }
         
         if (sourceUrl) {
-          console.log(`✓ Found source URL in content: ${sourceUrl}`);
+          console.log(`✓ Found source URL: ${sourceUrl}`);
           // Update article with source URL
           const { error: updateError } = await supabaseClient
             .from('articles')
@@ -184,7 +225,7 @@ Deno.serve(async (req) => {
             console.log(`✓ Updated article ${article.id} with source URL: ${sourceUrl}`);
           }
         } else {
-          console.log(`⚠ No source URL found for article ${article.id}`);
+          console.log(`⚠ No source URL found for article ${article.id} (post_id ${article.post_id})`);
           failed++;
         }
         
