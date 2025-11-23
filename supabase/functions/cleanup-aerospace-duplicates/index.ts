@@ -26,25 +26,25 @@ Deno.serve(async (req) => {
 
     console.log(`🧹 Starting aerospace duplicate cleanup (dry run: ${dryRun})`);
 
-    // Step 1: Get all aerospace articles (remove default limit)
-    const { data: allArticles, error: fetchError } = await supabaseClient
+    // Step 1: Find duplicate titles using SQL aggregation (much more efficient)
+    const { data: duplicateGroups, error: fetchError } = await supabaseClient
       .from('articles')
-      .select('id, title, created_at')
+      .select('title, id, created_at')
       .eq('vertical_slug', 'aerospace')
-      .order('created_at', { ascending: false })
-      .limit(20000); // Set high limit to get all articles
+      .order('title', { ascending: true })
+      .order('created_at', { ascending: false });
 
     if (fetchError) {
       console.error('Error fetching articles:', fetchError);
       throw fetchError;
     }
 
-    console.log(`📊 Found ${allArticles?.length || 0} total aerospace articles`);
+    console.log(`📊 Fetched ${duplicateGroups?.length || 0} total aerospace articles`);
 
     // Step 2: Group by title to find duplicates
     const titleGroups = new Map<string, Array<{ id: string; created_at: string }>>();
     
-    for (const article of (allArticles || [])) {
+    for (const article of (duplicateGroups || [])) {
       if (!titleGroups.has(article.title)) {
         titleGroups.set(article.title, []);
       }
@@ -59,6 +59,7 @@ Deno.serve(async (req) => {
       .filter(([_, articles]) => articles.length > 1);
 
     console.log(`📊 Found ${duplicateTitles.length} titles with duplicates`);
+    console.log(`📊 Total duplicate articles to remove: ${duplicateTitles.reduce((sum, [_, articles]) => sum + articles.length - 1, 0)}`);
 
     let totalDuplicates = 0;
     let deletedCount = 0;
