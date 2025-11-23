@@ -57,12 +57,6 @@ const VseeHealthShowcase = () => {
                       <TrendingUp className="ml-2 h-4 w-4" />
                     </Button>
                   </a>
-                  <a href="https://ir.vsee.com/" target="_blank" rel="noopener noreferrer">
-                    <Button size="lg" variant="outline" className="border-border hover:bg-accent transition-colors">
-                      Investor Relations
-                      <ExternalLink className="ml-2 h-4 w-4" />
-                    </Button>
-                  </a>
                 </div>
               </div>
               
