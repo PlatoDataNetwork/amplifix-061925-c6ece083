@@ -167,6 +167,123 @@ const Showcase = () => {
               </p>
             </div>
             
+            {/* Web3 & Tokenization Featured Section */}
+            {allShowcases.filter(s => 
+              s.tags && Array.isArray(s.tags) && 
+              (s.tags.includes('Blockchain') || s.tags.includes('Token'))
+            ).length > 0 && (
+              <div className="mb-16 pb-12 border-b border-border">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-full mb-4">
+                    <Globe className="h-4 w-4 text-purple-500" />
+                    <span className="text-sm font-semibold text-purple-500">Web3 & Tokenization</span>
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                    Blockchain & Token Innovators
+                  </h2>
+                  <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                    Explore companies leveraging blockchain technology and tokenization to revolutionize their industries
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {allShowcases
+                    .filter(s => 
+                      s.tags && Array.isArray(s.tags) && 
+                      (s.tags.includes('Blockchain') || s.tags.includes('Token'))
+                    )
+                    .map((showcase, index) => (
+                      <div 
+                        key={index} 
+                        className="relative bg-gradient-to-br from-card via-card to-purple-500/5 border border-purple-500/20 hover:border-purple-500/40 p-6 rounded-xl hover:shadow-xl transition-all duration-300 group"
+                      >
+                        {/* Web3 Badge */}
+                        <div className="absolute top-4 right-4">
+                          <div className="px-2 py-1 bg-purple-500/10 border border-purple-500/30 rounded text-xs font-semibold text-purple-500">
+                            WEB3
+                          </div>
+                        </div>
+                        
+                        {/* Company Header */}
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500/10 to-purple-500/30 border border-purple-500/50 flex items-center justify-center flex-shrink-0 shadow-sm overflow-hidden">
+                            {showcase.company_name === 'Naoris Protocol' && showcase.thumbnail ? (
+                              <img 
+                                src={showcase.thumbnail} 
+                                alt={showcase.company_name} 
+                                className="w-full h-full object-contain p-1"
+                              />
+                            ) : showcase.company_name === 'Abatis' ? (
+                              <span className="text-purple-500 text-2xl font-bold">A</span>
+                            ) : (
+                              <Building className="h-6 w-6 text-purple-500" />
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-lg font-bold">{showcase.company_name}</h3>
+                            <p className="text-sm font-semibold text-purple-500">
+                              {showcase.ticker || showcase.subtitle}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        {/* Tags */}
+                        {showcase.tags && showcase.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mb-4">
+                            {showcase.tags.map((tag: string, tagIndex: number) => (
+                              <span
+                                key={tagIndex}
+                                className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  tag === 'Blockchain' || tag === 'Token'
+                                    ? 'bg-purple-500/20 text-purple-500 border border-purple-500/30'
+                                    : 'bg-muted text-muted-foreground border border-border'
+                                }`}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {/* Description */}
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                          {showcase.description}
+                        </p>
+                        
+                        {/* Action Buttons */}
+                        <div className="flex gap-2">
+                          <LanguageAwareLink to={showcase.link}>
+                            <Button 
+                              size="sm" 
+                              className="bg-purple-500 hover:bg-purple-600 text-white group-hover:shadow-lg transition-all"
+                            >
+                              {showcase.button_text || 'Learn More'}
+                              <ExternalLink className="ml-2 h-3 w-3" />
+                            </Button>
+                          </LanguageAwareLink>
+                          
+                          {showcase.website && (
+                            <a 
+                              href={showcase.website} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                            >
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                className="border-purple-500/30 hover:bg-purple-500/10"
+                              >
+                                <Globe className="h-3 w-3" />
+                              </Button>
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+            
             {/* Filter Controls */}
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-3">
