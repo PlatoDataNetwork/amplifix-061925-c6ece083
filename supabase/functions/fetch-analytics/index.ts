@@ -162,7 +162,43 @@ serve(async (req: Request): Promise<Response> => {
       );
     }
 
-    const credentials: GoogleCredentials = JSON.parse(credentialsJson);
+    // Trim and validate the credentials JSON
+    const trimmedCredentials = credentialsJson.trim();
+    console.log("Credentials string length:", trimmedCredentials.length);
+    console.log("First 50 chars:", trimmedCredentials.substring(0, 50));
+    
+    let credentials: GoogleCredentials;
+    try {
+      credentials = JSON.parse(trimmedCredentials);
+    } catch (parseError: any) {
+      console.error("Failed to parse GOOGLE_ANALYTICS_CREDENTIALS:", parseError.message);
+      console.error("Credentials preview:", trimmedCredentials.substring(0, 100));
+      return new Response(
+        JSON.stringify({ 
+          error: "Invalid Google Analytics credentials format. The secret must be valid JSON.",
+          details: parseError.message,
+          preview: trimmedCredentials.substring(0, 50)
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    // Validate required fields
+    if (!credentials.client_email || !credentials.private_key || !credentials.project_id) {
+      console.error("Missing required credential fields");
+      return new Response(
+        JSON.stringify({ 
+          error: "Invalid credentials: missing required fields (client_email, private_key, or project_id)" 
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
 
     // Get request parameters
     const { propertyId = "properties/464543802", startDate = "30daysAgo", endDate = "today" } = 
