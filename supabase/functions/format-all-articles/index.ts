@@ -32,86 +32,104 @@ const cleanText = (text?: string | null): string => {
 };
 
 // Use AI to detect semantic breaks and split into paragraphs with headers
-const formatArticleWithAI = async (text: string): Promise<string> => {
+const formatArticleWithAI = async (text: string, retries = 3): Promise<string> => {
   const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
   if (!LOVABLE_API_KEY) {
     console.error("LOVABLE_API_KEY not found, falling back to simple formatting");
     return fallbackFormatting(text);
   }
 
-  try {
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          {
-            role: "system",
-            content: "You are an expert content formatter. Identify section headers - these are short topic titles (3-15 words) that introduce new sections, often at the start of major content blocks. Common patterns: 'The [Topic]', '[Topic]: [Subtitle]', '[Action/Concept] and [Action/Concept]'. Mark ALL section headers by prefixing with [HEADER]. Insert paragraph breaks at semantic boundaries. Return ONLY formatted text with [HEADER] markers."
-          },
-          {
-            role: "user",
-            content: `Identify ALL section headers in this article. Section headers are topic titles like "China Experiences Commercial Rocket Failure While Achieving Record-Breaking Annual Launch Count", "A Record-Breaking Year for Chinese Space Launches", "The Commercial Rocket Failure", "Balancing Success and Challenges". Prefix EVERY section header with [HEADER] and add paragraph breaks:\n\n${text}`
-          }
-        ],
-        temperature: 0.3,
-      }),
-    });
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            {
+              role: "system",
+              content: "You are an expert content formatter. Identify section headers - these are short topic titles (3-15 words) that introduce new sections, often at the start of major content blocks. Common patterns: 'The [Topic]', '[Topic]: [Subtitle]', '[Action/Concept] and [Action/Concept]'. Mark ALL section headers by prefixing with [HEADER]. Insert paragraph breaks at semantic boundaries. Return ONLY formatted text with [HEADER] markers."
+            },
+            {
+              role: "user",
+              content: `Identify ALL section headers in this article. Section headers are topic titles like "China Experiences Commercial Rocket Failure While Achieving Record-Breaking Annual Launch Count", "A Record-Breaking Year for Chinese Space Launches", "The Commercial Rocket Failure", "Balancing Success and Challenges". Prefix EVERY section header with [HEADER] and add paragraph breaks:\n\n${text}`
+            }
+          ],
+          temperature: 0.3,
+        }),
+      });
 
-    if (!response.ok) {
-      console.error("AI API error:", response.status, await response.text());
-      return fallbackFormatting(text);
-    }
-
-    const data = await response.json();
-    const formattedText = data.choices?.[0]?.message?.content || text;
-    
-    // Process the text line by line to properly separate headers from content
-    const lines = formattedText.split('\n').map((line: string) => line.trim());
-    const result: string[] = [];
-    let currentParagraph: string[] = [];
-    
-    for (const line of lines) {
-      if (!line) {
-        // Empty line - end current paragraph if any
-        if (currentParagraph.length > 0) {
-          result.push(`<p>${currentParagraph.join(' ')}</p>`);
-          currentParagraph = [];
-        }
+      if (response.status === 429) {
+        // Rate limited - exponential backoff
+        const backoffMs = Math.min(1000 * Math.pow(2, attempt), 10000);
+        console.log(`Rate limited, retrying in ${backoffMs}ms (attempt ${attempt + 1}/${retries})`);
+        await new Promise(resolve => setTimeout(resolve, backoffMs));
         continue;
       }
-      
-      if (line.startsWith('[HEADER]')) {
-        // End current paragraph before adding header
-        if (currentParagraph.length > 0) {
-          result.push(`<p>${currentParagraph.join(' ')}</p>`);
-          currentParagraph = [];
-        }
-        // Extract ONLY the header text (first line after [HEADER])
-        const headerText = line.replace('[HEADER]', '').trim();
-        if (headerText) {
-          result.push(`<h3>${headerText}</h3>`);
-        }
-      } else {
-        // Regular content line - add to current paragraph
-        currentParagraph.push(line);
+
+      if (!response.ok) {
+        console.error("AI API error:", response.status, await response.text());
+        return fallbackFormatting(text);
       }
-    }
+
+      const data = await response.json();
+      const formattedText = data.choices?.[0]?.message?.content || text;
     
-    // Add any remaining paragraph
-    if (currentParagraph.length > 0) {
-      result.push(`<p>${currentParagraph.join(' ')}</p>`);
+      // Process the text line by line to properly separate headers from content
+      const lines = formattedText.split('\n').map((line: string) => line.trim());
+      const result: string[] = [];
+      let currentParagraph: string[] = [];
+      
+      for (const line of lines) {
+        if (!line) {
+          // Empty line - end current paragraph if any
+          if (currentParagraph.length > 0) {
+            result.push(`<p>${currentParagraph.join(' ')}</p>`);
+            currentParagraph = [];
+          }
+          continue;
+        }
+        
+        if (line.startsWith('[HEADER]')) {
+          // End current paragraph before adding header
+          if (currentParagraph.length > 0) {
+            result.push(`<p>${currentParagraph.join(' ')}</p>`);
+            currentParagraph = [];
+          }
+          // Extract ONLY the header text (first line after [HEADER])
+          const headerText = line.replace('[HEADER]', '').trim();
+          if (headerText) {
+            result.push(`<h3>${headerText}</h3>`);
+          }
+        } else {
+          // Regular content line - add to current paragraph
+          currentParagraph.push(line);
+        }
+      }
+      
+      // Add any remaining paragraph
+      if (currentParagraph.length > 0) {
+        result.push(`<p>${currentParagraph.join(' ')}</p>`);
+      }
+      
+      return result.filter(Boolean).join("\n\n");
+    } catch (error) {
+      if (attempt === retries - 1) {
+        console.error("Error using AI for formatting after retries:", error);
+        return fallbackFormatting(text);
+      }
+      // Retry on error
+      const backoffMs = Math.min(1000 * Math.pow(2, attempt), 10000);
+      console.log(`Error on attempt ${attempt + 1}, retrying in ${backoffMs}ms`);
+      await new Promise(resolve => setTimeout(resolve, backoffMs));
     }
-    
-    return result.filter(Boolean).join("\n\n");
-  } catch (error) {
-    console.error("Error using AI for formatting:", error);
-    return fallbackFormatting(text);
   }
+  
+  return fallbackFormatting(text);
 };
 
 // Tag extraction logic (copied from extract-article-tags)
@@ -247,118 +265,126 @@ Deno.serve(async (req) => {
 
     console.log(`Found ${articles.length} articles to process`);
 
-    // Process articles in smaller batches to avoid rate limits
-    const batchSize = 3;
+    // Process articles one at a time with delays to avoid rate limits
     let processed = 0;
-    const errors: string[] = [];
+    const failed: string[] = [];
 
-    for (let i = 0; i < articles.length; i += batchSize) {
-      const batch = articles.slice(i, i + batchSize);
-      
-      for (const article of batch) {
-        try {
-          console.log(`Formatting article ${article.id}...`);
-          const cleanedText = cleanText(article.content);
-          const formattedContent = await formatArticleWithAI(cleanedText);
+    for (let i = 0; i < articles.length; i++) {
+      const article = articles[i];
+      try {
+        console.log(`[${i + 1}/${articles.length}] Formatting article ${article.id}...`);
+        const cleanedText = cleanText(article.content);
+        const formattedContent = await formatArticleWithAI(cleanedText);
 
-          // Update article content and set ai_processed flag
-          const currentMetadata = article.metadata || {};
-          const { error: updateError } = await supabase
-            .from('articles')
-            .update({
-              content: formattedContent,
-              updated_at: new Date().toISOString(),
-              metadata: {
-                ...currentMetadata,
-                ai_processed: true,
-                ai_processed_at: new Date().toISOString()
-              }
-            })
-            .eq('id', article.id);
+        // Update article content and set ai_processed flag
+        const currentMetadata = article.metadata || {};
+        const { error: updateError } = await supabase
+          .from('articles')
+          .update({
+            content: formattedContent,
+            updated_at: new Date().toISOString(),
+            metadata: {
+              ...currentMetadata,
+              ai_processed: true,
+              ai_processed_at: new Date().toISOString()
+            }
+          })
+          .eq('id', article.id);
 
-          if (updateError) {
-            console.error(`Error updating article ${article.id}:`, updateError);
-            errors.push(`${article.id}: ${updateError.message}`);
-          } else {
-            console.log(`Successfully formatted article ${article.id}`);
+        if (updateError) {
+          console.error(`Error updating article ${article.id}:`, updateError);
+          failed.push(article.id);
+        } else {
+          console.log(`Successfully formatted article ${article.id}`);
+          
+          // Extract and store tags
+          try {
+            const tags = extractKeywords(article.content || article.excerpt || '', article.title);
+            console.log(`Extracted ${tags.length} tags for article ${article.id}`);
             
-            // Extract and store tags
-            try {
-              const tags = extractKeywords(article.content || article.excerpt || '', article.title);
-              console.log(`Extracted ${tags.length} tags for article ${article.id}`);
+            // Delete existing tags first
+            await supabase
+              .from('article_tags')
+              .delete()
+              .eq('article_id', article.id);
+            
+            // Create or get tags and link to article
+            for (const tagName of tags) {
+              const tagSlug = tagName.toLowerCase().replace(/\s+/g, '-');
               
-              // Delete existing tags first
+              const { data: existingTag } = await supabase
+                .from('tags')
+                .select('id')
+                .eq('slug', tagSlug)
+                .maybeSingle();
+
+              let tagId: string;
+              
+              if (existingTag) {
+                tagId = existingTag.id;
+              } else {
+                const { data: newTag, error: tagError } = await supabase
+                  .from('tags')
+                  .insert({ name: tagName, slug: tagSlug })
+                  .select('id')
+                  .single();
+                
+                if (tagError || !newTag) {
+                  console.error(`Failed to create tag ${tagName}:`, tagError);
+                  continue;
+                }
+                
+                tagId = newTag.id;
+              }
+
               await supabase
                 .from('article_tags')
-                .delete()
-                .eq('article_id', article.id);
-              
-              // Create or get tags and link to article
-              for (const tagName of tags) {
-                const tagSlug = tagName.toLowerCase().replace(/\s+/g, '-');
-                
-                const { data: existingTag } = await supabase
-                  .from('tags')
-                  .select('id')
-                  .eq('slug', tagSlug)
-                  .maybeSingle();
-
-                let tagId: string;
-                
-                if (existingTag) {
-                  tagId = existingTag.id;
-                } else {
-                  const { data: newTag, error: tagError } = await supabase
-                    .from('tags')
-                    .insert({ name: tagName, slug: tagSlug })
-                    .select('id')
-                    .single();
-                  
-                  if (tagError || !newTag) {
-                    console.error(`Failed to create tag ${tagName}:`, tagError);
-                    continue;
-                  }
-                  
-                  tagId = newTag.id;
-                }
-
-                await supabase
-                  .from('article_tags')
-                  .insert({ article_id: article.id, tag_id: tagId });
-              }
-            } catch (tagError) {
-              console.error(`Error extracting tags for article ${article.id}:`, tagError);
-              // Don't fail the whole process if tag extraction fails
+                .insert({ article_id: article.id, tag_id: tagId });
             }
-            
-            processed++;
+          } catch (tagError) {
+            console.error(`Error extracting tags for article ${article.id}:`, tagError);
+            // Don't fail the whole process if tag extraction fails
           }
-        } catch (err) {
-          console.error(`Error processing article ${article.id}:`, err);
-          errors.push(`${article.id}: ${err.message}`);
+          
+          processed++;
         }
+      } catch (err) {
+        console.error(`Error processing article ${article.id}:`, err);
+        failed.push(article.id);
+      }
+
+      // Add delay between articles to avoid rate limits (2 seconds)
+      if (i < articles.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
     }
 
     // Update job tracking if jobId provided
     if (jobId) {
-      // Get current processed chunks and total chunks
       const { data: currentJob } = await supabase
         .from('ai_processing_jobs')
-        .select('processed_chunks, total_chunks')
+        .select('processed_chunks, failed_chunks, total_chunks')
         .eq('id', jobId)
         .single();
 
       const currentChunks = currentJob?.processed_chunks || [];
+      const failedChunks = currentJob?.failed_chunks || [];
       const totalChunks = currentJob?.total_chunks || 0;
       
       // Use Set to prevent duplicates
       const uniqueChunks = new Set([...currentChunks, chunkIndex]);
       const updatedChunks = Array.from(uniqueChunks).sort((a, b) => a - b);
+      
+      // Track failed chunks if we had failures
+      const updatedFailedChunks = failed.length > 0 
+        ? Array.from(new Set([...failedChunks, chunkIndex]))
+        : failedChunks;
 
       const { error: jobError } = await supabase
         .from('ai_processing_jobs')
         .update({
           processed_chunks: updatedChunks,
+          failed_chunks: updatedFailedChunks,
           updated_at: new Date().toISOString()
         })
         .eq('id', jobId);
@@ -372,8 +398,10 @@ Deno.serve(async (req) => {
           .find(i => !processedSet.has(i));
         
         if (nextChunk !== undefined) {
-          console.log(`Auto-triggering next chunk ${nextChunk}/${totalChunks - 1}`);
-          // Trigger next chunk without waiting (fire and forget)
+          console.log(`Auto-triggering next chunk ${nextChunk}/${totalChunks - 1} (${updatedChunks.length} done, ${updatedFailedChunks.length} failed)`);
+          // Add delay before triggering next chunk to avoid overwhelming the system
+          await new Promise(resolve => setTimeout(resolve, 5000));
+          
           supabase.functions.invoke('format-all-articles', {
             body: { 
               chunkIndex: nextChunk, 
@@ -385,12 +413,12 @@ Deno.serve(async (req) => {
             console.error(`Failed to trigger chunk ${nextChunk}:`, err);
           });
         } else {
-          // All chunks processed - mark job as complete
-          console.log('All chunks processed! Marking job as complete.');
+          // All chunks attempted - mark job as complete
+          console.log(`All chunks processed! ${updatedChunks.length}/${totalChunks} completed, ${updatedFailedChunks.length} failed`);
           await supabase
             .from('ai_processing_jobs')
             .update({
-              status: 'completed',
+              status: updatedFailedChunks.length > 0 ? 'completed_with_errors' : 'completed',
               completed_at: new Date().toISOString()
             })
             .eq('id', jobId);
@@ -398,19 +426,14 @@ Deno.serve(async (req) => {
       }
     }
 
-      // Small delay between batches to avoid rate limits
-      if (i + batchSize < articles.length) {
-        await new Promise(resolve => setTimeout(resolve, 500));
-      }
-    }
-
     return new Response(
       JSON.stringify({ 
         success: true, 
         processed,
+        failed: failed.length,
         total: articles.length,
-        errors: errors.length > 0 ? errors : undefined,
-        message: `Processed ${processed}/${articles.length} articles with AI-powered formatting and tag extraction`
+        failedArticles: failed.length > 0 ? failed : undefined,
+        message: `Processed ${processed}/${articles.length} articles (${failed.length} failed)`
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
