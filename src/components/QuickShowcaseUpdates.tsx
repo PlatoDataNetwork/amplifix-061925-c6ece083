@@ -96,6 +96,32 @@ export const QuickShowcaseUpdates = () => {
 
       if (!siloError) successCount++;
 
+      // Add Token tag to FAIM, CUT, ABATIS, NAORIS, DEVS
+      const tokenCompanies = ['FAIM', 'CUT', 'Abatis', 'Naoris Protocol', 'DevvStream Corp'];
+      
+      for (const companyName of tokenCompanies) {
+        const { data: company } = await supabase
+          .from('showcase_companies')
+          .select('tags')
+          .eq('company_name', companyName)
+          .maybeSingle();
+
+        if (company) {
+          const existingTags = company.tags || [];
+          if (!existingTags.includes('Token')) {
+            const updatedTags = [...existingTags, 'Token'];
+            const { error: tokenError } = await supabase
+              .from('showcase_companies')
+              .update({ tags: updatedTags })
+              .eq('company_name', companyName);
+
+            if (!tokenError) successCount++;
+          } else {
+            successCount++; // Already has Token tag
+          }
+        }
+      }
+
       // Add VSee Health if it doesn't exist
       const { data: existing } = await supabase
         .from("showcase_companies")
