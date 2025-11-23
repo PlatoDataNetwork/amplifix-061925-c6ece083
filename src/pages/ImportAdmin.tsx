@@ -87,6 +87,11 @@ const ImportAdmin = () => {
     articlesPerMinute: number;
     status?: string;
   } | null>(null);
+  const [aerospaceArticleCounts, setAerospaceArticleCounts] = useState<{
+    total: number;
+    aiProcessed: number;
+    remaining: number;
+  } | null>(null);
   const [lastAiStatsUpdate, setLastAiStatsUpdate] = useState<Date | null>(null);
   const [aerospaceStats, setAerospaceStats] = useState<{
     totalInDb: number;
@@ -100,6 +105,38 @@ const ImportAdmin = () => {
     loading: false
   });
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
+  
+  // Load aerospace article counts
+  const loadAerospaceArticleCounts = async () => {
+    try {
+      // Get total aerospace articles
+      const { count: total, error: totalError } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', 'aerospace')
+        .not('content', 'is', null);
+
+      if (totalError) throw totalError;
+
+      // Get AI-processed count
+      const { count: processed, error: processedError } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', 'aerospace')
+        .not('content', 'is', null)
+        .eq('metadata->>ai_processed', 'true');
+
+      if (processedError) throw processedError;
+
+      setAerospaceArticleCounts({
+        total: total || 0,
+        aiProcessed: processed || 0,
+        remaining: (total || 0) - (processed || 0)
+      });
+    } catch (error) {
+      console.error('Error loading aerospace article counts:', error);
+    }
+  };
   
   // Derived import rate (articles per second)
   const importRate =
@@ -222,12 +259,38 @@ const ImportAdmin = () => {
   useEffect(() => {
     loadAiJobStats();
     loadAerospaceStats();
+    loadAerospaceArticleCounts();
     
     const interval = setInterval(() => {
       loadAiJobStats();
+      loadAerospaceArticleCounts();
     }, 5000); // Refresh every 5 seconds
 
     return () => clearInterval(interval);
+  }, []);
+
+  // Real-time updates for aerospace articles
+  useEffect(() => {
+    const channel = supabase
+      .channel('aerospace-articles-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'articles',
+          filter: 'vertical_slug=eq.aerospace'
+        },
+        () => {
+          // Reload counts when any aerospace article is updated
+          loadAerospaceArticleCounts();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   // Session timer
@@ -1582,6 +1645,31 @@ const ImportAdmin = () => {
                 {/* AI Processing Job Controls - Always Visible */}
                 <div className="p-4 bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-500/30 rounded-lg">
                   <h4 className="text-sm font-semibold text-red-700 dark:text-red-300 mb-3">⚠️ AI Processing Job Status</h4>
+                  
+                  {/* Aerospace Article Counts */}
+                  {aerospaceArticleCounts && (
+                    <div className="grid grid-cols-3 gap-3 mb-4 p-3 bg-background/50 rounded-lg border border-border">
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground mb-1">Total Articles</p>
+                        <p className="text-2xl font-bold text-foreground">{aerospaceArticleCounts.total.toLocaleString()}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground mb-1">AI Processed</p>
+                        <p className="text-2xl font-bold text-green-600 dark:text-green-400">{aerospaceArticleCounts.aiProcessed.toLocaleString()}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {aerospaceArticleCounts.total > 0 ? Math.round((aerospaceArticleCounts.aiProcessed / aerospaceArticleCounts.total) * 100) : 0}%
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground mb-1">Remaining</p>
+                        <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">{aerospaceArticleCounts.remaining.toLocaleString()}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {aerospaceArticleCounts.total > 0 ? Math.round((aerospaceArticleCounts.remaining / aerospaceArticleCounts.total) * 100) : 0}%
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  
                   {aiJobStats ? (
                     <p className="text-xs text-muted-foreground mb-3">
                       Status: <strong className={aiJobStats.status === 'completed' ? 'text-green-600' : aiJobStats.status === 'completed_with_errors' ? 'text-orange-600' : 'text-blue-600'}>{aiJobStats.status || 'in_progress'}</strong>
