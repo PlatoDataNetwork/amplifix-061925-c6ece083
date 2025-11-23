@@ -45,7 +45,7 @@ const VseeHealthShowcase = () => {
                   remote patient monitoring, and integrated care management systems used by healthcare providers in over 100 countries.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <a href="https://vseehealth.com/" target="_blank" rel="noopener noreferrer">
+                  <a href="https://vseehealth.com/about" target="_blank" rel="noopener noreferrer">
                     <Button size="lg" className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors">
                       Visit Website
                       <ExternalLink className="ml-2 h-4 w-4" />
