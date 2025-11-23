@@ -65,7 +65,7 @@ const ShowcaseAdmin = () => {
       const { data, error } = await supabase
         .from("showcase_companies")
         .select("*")
-        .order("display_order", { ascending: true });
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setCompanies(data || []);

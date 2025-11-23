@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
-import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home, Search, ScanFace } from "lucide-react";
+import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building, Globe, Lightbulb, Target, CheckCircle, BarChart3, Brain, Stethoscope, Pill, Beaker, Microscope, Home, Search, ScanFace, Filter } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
@@ -45,6 +45,8 @@ const Showcase = () => {
   const { data: showcaseData } = useJsonData<ShowcaseData>('showcase.json');
   const [dbShowcases, setDbShowcases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filterType, setFilterType] = useState<'all' | 'public' | 'private'>('all');
+  const [filterSector, setFilterSector] = useState<string>('all');
   useLanguage();
 
   useEffect(() => {
@@ -54,7 +56,7 @@ const Showcase = () => {
           .from("showcase_companies")
           .select("*")
           .eq("disabled", false)
-          .order("display_order", { ascending: true });
+          .order("created_at", { ascending: false });
 
         if (error) throw error;
         
@@ -71,7 +73,7 @@ const Showcase = () => {
   }, []);
 
   // Merge database data with JSON data, adding any JSON items not in database
-  const showcases = (() => {
+  const allShowcases = useMemo(() => {
     const jsonShowcases = showcaseData?.showcase.showcases || [];
     
     if (!loading && dbShowcases.length > 0) {
@@ -81,9 +83,41 @@ const Showcase = () => {
     }
     
     return jsonShowcases;
-  })();
+  }, [dbShowcases, showcaseData, loading]);
 
-  console.log("Rendering with showcases:", showcases.length, "items");
+  // Extract unique sectors from all tags
+  const allSectors = useMemo(() => {
+    const sectorsSet = new Set<string>();
+    allShowcases.forEach(showcase => {
+      if (showcase.tags && Array.isArray(showcase.tags)) {
+        showcase.tags.forEach((tag: string) => sectorsSet.add(tag));
+      }
+    });
+    return Array.from(sectorsSet).sort();
+  }, [allShowcases]);
+
+  // Filter showcases based on selected filters
+  const filteredShowcases = useMemo(() => {
+    let filtered = [...allShowcases];
+
+    // Filter by type (public/private)
+    if (filterType === 'public') {
+      filtered = filtered.filter(s => s.type === 'stock' || s.type === 'token');
+    } else if (filterType === 'private') {
+      filtered = filtered.filter(s => s.type === 'private');
+    }
+
+    // Filter by sector
+    if (filterSector !== 'all') {
+      filtered = filtered.filter(s => 
+        s.tags && Array.isArray(s.tags) && s.tags.includes(filterSector)
+      );
+    }
+
+    return filtered;
+  }, [allShowcases, filterType, filterSector]);
+
+  console.log("Rendering with showcases:", filteredShowcases.length, "items");
 
   const whyChooseFeatures = Object.values(showcaseData?.showcase.why_choose.features || {});
 
@@ -121,8 +155,81 @@ const Showcase = () => {
               </p>
             </div>
             
+            {/* Filter Controls */}
+            <div className="mb-8 space-y-4">
+              {/* Type Filter */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Filter className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-semibold text-muted-foreground">Filter by Type:</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={filterType === 'all' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFilterType('all')}
+                    className={filterType === 'all' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
+                  >
+                    All ({allShowcases.length})
+                  </Button>
+                  <Button
+                    variant={filterType === 'public' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFilterType('public')}
+                    className={filterType === 'public' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
+                  >
+                    Public ({allShowcases.filter(s => s.type === 'stock' || s.type === 'token').length})
+                  </Button>
+                  <Button
+                    variant={filterType === 'private' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFilterType('private')}
+                    className={filterType === 'private' ? 'bg-highlight-blue hover:bg-highlight-blue/90' : ''}
+                  >
+                    Private ({allShowcases.filter(s => s.type === 'private').length})
+                  </Button>
+                </div>
+              </div>
+
+              {/* Sector Filter */}
+              {allSectors.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Filter className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-semibold text-muted-foreground">Filter by Sector:</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant={filterSector === 'all' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setFilterSector('all')}
+                      className={filterSector === 'all' ? 'bg-purple-500 hover:bg-purple-600' : ''}
+                    >
+                      All Sectors
+                    </Button>
+                    {allSectors.map((sector) => (
+                      <Button
+                        key={sector}
+                        variant={filterSector === sector ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setFilterSector(sector)}
+                        className={filterSector === sector ? 'bg-purple-500 hover:bg-purple-600' : ''}
+                      >
+                        {sector}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Results Count */}
+              <div className="text-sm text-muted-foreground">
+                Showing {filteredShowcases.length} of {allShowcases.length} companies
+              </div>
+            </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              {showcases.map((showcase, index) => (
+              {filteredShowcases.map((showcase, index) => (
                 <div key={index} className={`relative bg-gradient-to-br ${
                   showcase.disabled 
                     ? 'from-card to-muted/50 border-dashed border-border opacity-60' 
