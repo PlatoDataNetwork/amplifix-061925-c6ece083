@@ -134,15 +134,15 @@ export const QuickShowcaseUpdates = () => {
           .from("showcase_companies")
           .insert({
             company_name: "VSee Health",
-            ticker: "VSEE",
+            ticker: "NAS: VSEE",
             subtitle: "Global Leader in Telehealth Solutions",
-            description: "VSee Health is a global leader in telehealth solutions, providing secure video consultation platforms, remote patient monitoring, and integrated care management systems used by healthcare providers in over 100 countries.",
+            description: "VSee Health is a global leader in telehealth solutions, providing secure video consultation platforms, remote patient monitoring, and integrated care management systems.",
             tags: ["AI", "Telehealth", "Healthcare Technology", "Medical Devices"],
-            button_text: "View Showcase",
-            link: "/showcase/vsee-health",
+            button_text: "View on AmplifiX",
+            link: "https://www.bing.com/copilotsearch?q=VSEE%20Health%20NASDAQ:%20VSEE&FORM=CSSCOP",
             website: "https://vseehealth.com/about",
             stock_url: "https://www.tradingview.com/symbols/NASDAQ-VSEE/",
-            search_url: "https://www.google.com/search?q=VSee+Health+NASDAQ+VSEE",
+            search_url: "https://www.bing.com/copilotsearch?q=VSEE%20Health%20NASDAQ:%20VSEE&FORM=CSSCOP",
             thumbnail: "/lovable-uploads/vsee-health-thumbnail.png",
             type: "stock",
             display_order: 12,
@@ -151,7 +151,19 @@ export const QuickShowcaseUpdates = () => {
 
         if (!vseeError) successCount++;
       } else {
-        successCount++; // Already exists
+        // Update existing entry
+        const { error: updateError } = await supabase
+          .from("showcase_companies")
+          .update({
+            ticker: "NAS: VSEE",
+            description: "VSee Health is a global leader in telehealth solutions, providing secure video consultation platforms, remote patient monitoring, and integrated care management systems.",
+            button_text: "View on AmplifiX",
+            link: "https://www.bing.com/copilotsearch?q=VSEE%20Health%20NASDAQ:%20VSEE&FORM=CSSCOP",
+            search_url: "https://www.bing.com/copilotsearch?q=VSEE%20Health%20NASDAQ:%20VSEE&FORM=CSSCOP"
+          })
+          .eq("company_name", "VSee Health");
+        
+        if (!updateError) successCount++;
       }
 
       toast({
