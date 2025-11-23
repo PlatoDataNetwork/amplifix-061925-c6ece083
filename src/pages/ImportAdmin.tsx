@@ -86,6 +86,7 @@ const ImportAdmin = () => {
     articlesProcessed: number;
     articlesPerMinute: number;
   } | null>(null);
+  const [lastAiStatsUpdate, setLastAiStatsUpdate] = useState<Date | null>(null);
   const [aerospaceStats, setAerospaceStats] = useState<{
     totalInDb: number;
     missingUrls: number;
@@ -159,6 +160,7 @@ const ImportAdmin = () => {
         
         setAiProcessingJobId(job.id);
         setTotalAiChunks(totalChunks);
+        setLastAiStatsUpdate(new Date());
       } else {
         setAiJobStats(null);
       }
@@ -1247,11 +1249,31 @@ const ImportAdmin = () => {
               {aiJobStats && (
                 <div className="mt-4 p-4 bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/30 rounded-lg">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-sm font-semibold text-purple-700 dark:text-purple-300">📊 Current AI Processing Job</h4>
-                    <span className="text-xs text-muted-foreground">
-                      Started: {new Date(aiJobStats.startedAt || '').toLocaleString()}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-sm font-semibold text-purple-700 dark:text-purple-300">📊 Current AI Processing Job</h4>
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span className="text-xs text-green-600 dark:text-green-400 font-medium">LIVE</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground">
+                        {lastAiStatsUpdate && `Updated: ${lastAiStatsUpdate.toLocaleTimeString()}`}
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={loadAiJobStats}
+                        className="h-6 px-2 text-xs"
+                      >
+                        ↻ Refresh
+                      </Button>
+                    </div>
                   </div>
+                  
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Job started: {new Date(aiJobStats.startedAt || '').toLocaleString()}
+                  </p>
                   
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
                     <div className="p-3 bg-background/80 rounded-lg border">
