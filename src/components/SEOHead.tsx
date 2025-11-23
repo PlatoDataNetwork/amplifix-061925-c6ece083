@@ -103,9 +103,9 @@ const SEOHead = ({ title, description }: SEOHeadProps) => {
       <meta property="og:description" content={finalDescription} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={`${baseUrl}${location.pathname}`} />
-      <meta property="og:image" content={`${baseUrl}/lovable-uploads/synbio-social-thumbnail.png`} />
+      <meta property="og:image" content={`${baseUrl}/lovable-uploads/amplifix-social-logo.png`} />
       <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
+      <meta property="og:image:height" content="1200" />
       <meta property="og:site_name" content="AmplifiX" />
       <meta property="og:locale" content={currentLocale} />
       
@@ -125,7 +125,7 @@ const SEOHead = ({ title, description }: SEOHeadProps) => {
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={finalTitle} />
       <meta name="twitter:description" content={finalDescription} />
-      <meta name="twitter:image" content={`${baseUrl}/lovable-uploads/synbio-social-thumbnail.png`} />
+      <meta name="twitter:image" content={`${baseUrl}/lovable-uploads/amplifix-social-logo.png`} />
       <meta name="twitter:site" content="@AmplifiX" />
       <meta name="twitter:creator" content="@AmplifiX" />
       
@@ -185,7 +185,7 @@ const SEOHead = ({ title, description }: SEOHeadProps) => {
           "@type": "Organization",
           "name": "AmplifiX",
           "url": baseUrl,
-          "logo": `${baseUrl}/lovable-uploads/synbio-social-thumbnail.png`,
+          "logo": `${baseUrl}/lovable-uploads/amplifix-social-logo.png`,
           "description": seoDescriptions.en,
           "sameAs": [
             "https://twitter.com/AmplifiX",
