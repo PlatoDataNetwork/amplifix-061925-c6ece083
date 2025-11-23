@@ -219,7 +219,7 @@ Deno.serve(async (req) => {
     // Fetch articles in this chunk (excluding those with null content)
     let query = supabase
       .from('articles')
-      .select('id, title, content, excerpt')
+      .select('id, title, content, excerpt, metadata')
       .not('content', 'is', null);
     
     // Filter by vertical if specified
@@ -261,12 +261,18 @@ Deno.serve(async (req) => {
           const cleanedText = cleanText(article.content);
           const formattedContent = await formatArticleWithAI(cleanedText);
 
-          // Update article content
+          // Update article content and set ai_processed flag
+          const currentMetadata = article.metadata || {};
           const { error: updateError } = await supabase
             .from('articles')
             .update({
               content: formattedContent,
               updated_at: new Date().toISOString(),
+              metadata: {
+                ...currentMetadata,
+                ai_processed: true,
+                ai_processed_at: new Date().toISOString()
+              }
             })
             .eq('id', article.id);
 
@@ -343,7 +349,9 @@ Deno.serve(async (req) => {
         .single();
 
       const currentChunks = currentJob?.processed_chunks || [];
-      const updatedChunks = [...currentChunks, chunkIndex];
+      // Use Set to prevent duplicates
+      const uniqueChunks = new Set([...currentChunks, chunkIndex]);
+      const updatedChunks = Array.from(uniqueChunks).sort((a, b) => a - b);
 
       const { error: jobError } = await supabase
         .from('ai_processing_jobs')

@@ -1638,6 +1638,43 @@ const ImportAdmin = () => {
                       </Button>
                       <Button
                         onClick={async () => {
+                          if (!confirm('🚀 This will safely reset and restart aerospace AI processing from scratch. Continue?')) {
+                            return;
+                          }
+
+                          try {
+                            toast.info('Resetting aerospace AI processing...');
+                            setImporting('reset-aerospace-ai');
+                            
+                            const { data, error } = await supabase.functions.invoke('reset-aerospace-ai');
+                            
+                            if (error) throw error;
+                            
+                            toast.success('Aerospace AI processing reset and restarted!', {
+                              description: `Job ID: ${data.jobId} | ${data.totalChunks} chunks to process`,
+                              duration: 5000
+                            });
+                            
+                            // Refresh the page to reload state
+                            setTimeout(() => window.location.reload(), 2000);
+                          } catch (error) {
+                            console.error('Error resetting aerospace AI:', error);
+                            toast.error('Failed to reset aerospace AI', {
+                              description: error instanceof Error ? error.message : 'Unknown error'
+                            });
+                          } finally {
+                            setImporting(null);
+                          }
+                        }}
+                        variant="default"
+                        size="sm"
+                        className="bg-blue-600 hover:bg-blue-700"
+                        disabled={importing === 'reset-aerospace-ai'}
+                      >
+                        🔄 {importing === 'reset-aerospace-ai' ? 'Resetting...' : 'Smart Reset & Restart'}
+                      </Button>
+                      <Button
+                        onClick={async () => {
                           if (!confirm('⚠️ This will DELETE ALL AI processing jobs (current and past). This action cannot be undone. Continue?')) {
                             return;
                           }
