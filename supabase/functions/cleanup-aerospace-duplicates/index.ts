@@ -26,25 +26,42 @@ Deno.serve(async (req) => {
 
     console.log(`🧹 Starting aerospace duplicate cleanup (dry run: ${dryRun})`);
 
-    // Step 1: Find duplicate titles using SQL aggregation (much more efficient)
-    const { data: duplicateGroups, error: fetchError } = await supabaseClient
-      .from('articles')
-      .select('title, id, created_at')
-      .eq('vertical_slug', 'aerospace')
-      .order('title', { ascending: true })
-      .order('created_at', { ascending: false });
+    // Step 1: Fetch ALL articles using pagination (Supabase default limit is 1000)
+    let allArticles: Array<{ id: string; title: string; created_at: string }> = [];
+    let page = 0;
+    const pageSize = 1000;
+    let hasMore = true;
 
-    if (fetchError) {
-      console.error('Error fetching articles:', fetchError);
-      throw fetchError;
+    while (hasMore) {
+      const { data: pageData, error: fetchError } = await supabaseClient
+        .from('articles')
+        .select('id, title, created_at')
+        .eq('vertical_slug', 'aerospace')
+        .order('title', { ascending: true })
+        .order('created_at', { ascending: false })
+        .range(page * pageSize, (page + 1) * pageSize - 1);
+
+      if (fetchError) {
+        console.error('Error fetching articles:', fetchError);
+        throw fetchError;
+      }
+
+      if (!pageData || pageData.length === 0) {
+        hasMore = false;
+      } else {
+        allArticles = allArticles.concat(pageData);
+        console.log(`📄 Fetched page ${page + 1}: ${pageData.length} articles (total: ${allArticles.length})`);
+        hasMore = pageData.length === pageSize;
+        page++;
+      }
     }
 
-    console.log(`📊 Fetched ${duplicateGroups?.length || 0} total aerospace articles`);
+    console.log(`📊 Fetched ${allArticles.length} total aerospace articles`);
 
     // Step 2: Group by title to find duplicates
     const titleGroups = new Map<string, Array<{ id: string; created_at: string }>>();
     
-    for (const article of (duplicateGroups || [])) {
+    for (const article of allArticles) {
       if (!titleGroups.has(article.title)) {
         titleGroups.set(article.title, []);
       }
