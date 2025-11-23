@@ -249,6 +249,7 @@ export type Database = {
           display_order: number
           id: string
           link: string
+          main_sector: string | null
           search_url: string | null
           stock_url: string | null
           subtitle: string | null
@@ -268,6 +269,7 @@ export type Database = {
           display_order?: number
           id?: string
           link: string
+          main_sector?: string | null
           search_url?: string | null
           stock_url?: string | null
           subtitle?: string | null
@@ -287,6 +289,7 @@ export type Database = {
           display_order?: number
           id?: string
           link?: string
+          main_sector?: string | null
           search_url?: string | null
           stock_url?: string | null
           subtitle?: string | null

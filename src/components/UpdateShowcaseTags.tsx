@@ -9,19 +9,19 @@ export const UpdateShowcaseTags = () => {
   const { toast } = useToast();
 
   const companyTagUpdates = [
-    { name: 'VSee Health', tags: ['Medical Device', 'AI', 'Telehealth'], type: 'stock', subtitle: 'NAS:VSEE' },
-    { name: 'FAIM', tags: ['AI', 'Blockchain', 'Token'], type: 'token', subtitle: 'AI Powered Fan Engagement' },
-    { name: 'ForexGPT', tags: ['AI', 'Fintech', 'Forex'], type: 'private', subtitle: 'AI Powered Forex Analysis' },
-    { name: 'CUT', tags: ['AI', 'Blockchain', 'Carbon', 'Fintech', 'Token'], type: 'token', subtitle: 'RWA / Carbon Tokenization' },
-    { name: 'DevvStream Corp', tags: ['AI', 'Blockchain', 'Carbon', 'Fintech', 'Token'], type: 'token', subtitle: 'NAS:DEVS' },
-    { name: "Int'l Land Alliance", tags: ['Real Estate'], type: 'stock', subtitle: 'OTCQB:ILAL' },
-    { name: 'SILO Pharma Inc.', tags: ['AI', 'Biotech', 'Psychedelics'], type: 'stock', subtitle: 'NAS:SILO' },
-    { name: "Synbio Int'l", tags: ['AI', 'Medical Device', 'Facial Analysis'], type: 'stock', subtitle: 'OTC:SYIN' },
-    { name: 'Abatis', tags: ['AI', 'Blockchain', 'Cyber', 'Token'], type: 'token', subtitle: 'Defense Grade Cybersecurity' },
-    { name: 'FacialDX', tags: ['AI', 'Facial Analysis'], type: 'private', subtitle: 'AI Powered Facial Analysis' },
-    { name: 'Naoris Protocol', tags: ['AI', 'Blockchain', 'Cyber', 'Token'], type: 'token', subtitle: 'Quantum Resistant Cybersecurity' },
-    { name: 'Karbon-X', tags: ['Carbon'], type: 'stock', subtitle: 'Carbon Credits' },
-    { name: 'Micropolis', tags: ['AI', 'Automotive'], type: 'stock', subtitle: 'AI Autonomous Vehicles' },
+    { name: 'VSee Health', tags: ['Medical Device', 'AI', 'Telehealth'], type: 'stock', subtitle: 'NAS:VSEE', main_sector: 'Telehealth' },
+    { name: 'FAIM', tags: ['AI', 'Blockchain', 'Token'], type: 'token', subtitle: 'AI Powered Fan Engagement', main_sector: 'WEB3' },
+    { name: 'ForexGPT', tags: ['AI', 'Fintech', 'Forex'], type: 'private', subtitle: 'AI Powered Forex Analysis', main_sector: 'AI' },
+    { name: 'CUT', tags: ['AI', 'Blockchain', 'Carbon', 'Fintech', 'Token'], type: 'token', subtitle: 'RWA / Carbon Tokenization', main_sector: 'CARBON' },
+    { name: 'DevvStream Corp', tags: ['AI', 'Blockchain', 'Carbon', 'Fintech', 'Token'], type: 'token', subtitle: 'NAS:DEVS', main_sector: 'CARBON' },
+    { name: "Int'l Land Alliance", tags: ['Real Estate'], type: 'stock', subtitle: 'OTCQB:ILAL', main_sector: 'REAL ESTATE' },
+    { name: 'SILO Pharma Inc.', tags: ['AI', 'Biotech', 'Psychedelics'], type: 'stock', subtitle: 'NAS:SILO', main_sector: 'PSYCHEDELICS' },
+    { name: "Synbio Int'l", tags: ['AI', 'Medical Device', 'Facial Analysis'], type: 'stock', subtitle: 'OTC:SYIN', main_sector: 'AI, FACIAL ANALYSIS' },
+    { name: 'Abatis', tags: ['AI', 'Blockchain', 'Cyber', 'Token'], type: 'token', subtitle: 'Defense Grade Cybersecurity', main_sector: 'CYBERSECURITY' },
+    { name: 'FacialDX', tags: ['AI', 'Facial Analysis'], type: 'private', subtitle: 'AI Powered Facial Analysis', main_sector: 'AI, FACIAL ANALYSIS' },
+    { name: 'Naoris Protocol', tags: ['AI', 'Blockchain', 'Cyber', 'Token'], type: 'token', subtitle: 'Quantum Resistant Cybersecurity', main_sector: 'CYBERSECURITY' },
+    { name: 'Karbon-X', tags: ['Carbon'], type: 'stock', subtitle: 'Carbon Credits', main_sector: 'CARBON' },
+    { name: 'Micropolis', tags: ['AI', 'Automotive'], type: 'stock', subtitle: 'AI Autonomous Vehicles', main_sector: 'ROBOTICS' },
   ];
 
   const handleUpdate = async () => {
@@ -37,7 +37,8 @@ export const UpdateShowcaseTags = () => {
           .update({ 
             tags: company.tags,
             type: company.type,
-            subtitle: company.subtitle
+            subtitle: company.subtitle,
+            main_sector: company.main_sector
           })
           .eq('company_name', company.name);
 
@@ -87,7 +88,7 @@ export const UpdateShowcaseTags = () => {
         <h3 className="text-lg font-semibold">Update Showcase Company Tags</h3>
       </div>
       <p className="text-sm text-muted-foreground mb-4">
-        Update all 13 companies with correct tags, types, and subtexts from the spreadsheet. This will update tags for filtering, set proper company types (stock/private/token), and add descriptive subtexts.
+        Update all 13 companies with correct tags, types, subtexts, and main sectors from the spreadsheet. This will update tags for filtering, set proper company types (stock/private/token), add descriptive subtexts, and assign main sector badges.
       </p>
       <Button 
         onClick={handleUpdate}
