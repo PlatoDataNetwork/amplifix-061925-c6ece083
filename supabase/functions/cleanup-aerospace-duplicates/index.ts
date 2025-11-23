@@ -71,9 +71,9 @@ Deno.serve(async (req) => {
         hasMore = false;
       }
 
-      // Safety valve - stop after 20 pages (20,000 articles)
-      if (offset >= 20000) {
-        console.log('⚠️ Reached safety limit of 20,000 articles');
+      // Safety valve - stop after 150 pages (150,000 articles)
+      if (offset >= 150000) {
+        console.log('⚠️ Reached safety limit of 150,000 articles');
         hasMore = false;
       }
     }
