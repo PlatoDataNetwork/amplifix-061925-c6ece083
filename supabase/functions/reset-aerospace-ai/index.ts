@@ -45,12 +45,13 @@ Deno.serve(async (req) => {
 
     console.log('✅ Deleted all aerospace AI processing jobs');
 
-    // Step 2: Count articles that need processing
+    // Step 2: Count articles that still need AI processing (skip already processed)
     const { count: totalCount, error: countError } = await supabase
       .from('articles')
       .select('*', { count: 'exact', head: true })
       .eq('vertical_slug', 'aerospace')
-      .not('content', 'is', null);
+      .not('content', 'is', null)
+      .or('metadata->>ai_processed.is.null,metadata->>ai_processed.eq.false');
 
     if (countError) throw countError;
 
