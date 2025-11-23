@@ -21,6 +21,14 @@ export const QuickShowcaseUpdates = () => {
 
       if (!cutError) successCount++;
 
+      // Update Naoris Protocol to private
+      const { error: naorisError } = await supabase
+        .from('showcase_companies')
+        .update({ type: 'private' })
+        .eq('company_name', 'Naoris Protocol');
+
+      if (!naorisError) successCount++;
+
       // Add VSee Health if it doesn't exist
       const { data: existing } = await supabase
         .from("showcase_companies")
@@ -55,7 +63,7 @@ export const QuickShowcaseUpdates = () => {
 
       toast({
         title: "Updates Complete!",
-        description: `Successfully updated CUT to private and added VSee Health.`,
+        description: `Updated CUT and Naoris to private, and added VSee Health.`,
       });
 
       // Refresh after a short delay
@@ -79,7 +87,7 @@ export const QuickShowcaseUpdates = () => {
         <h3 className="text-xl font-bold">Quick Updates</h3>
       </div>
       <p className="text-sm text-muted-foreground mb-4">
-        Click to: Update CUT to private company + Add VSee Health to showcase
+        Click to: Update CUT & Naoris to private + Add VSee Health to showcase
       </p>
       <Button 
         onClick={handleQuickUpdate}
@@ -87,7 +95,7 @@ export const QuickShowcaseUpdates = () => {
         className="bg-highlight-blue hover:bg-highlight-blue/90 text-lg px-8 py-6"
         size="lg"
       >
-        {isUpdating ? "Updating..." : "Update CUT & Add VSEE Now"}
+        {isUpdating ? "Updating..." : "Update CUT, Naoris & Add VSEE"}
       </Button>
     </div>
   );
