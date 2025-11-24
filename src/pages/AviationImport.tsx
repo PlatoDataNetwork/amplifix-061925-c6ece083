@@ -398,10 +398,10 @@ export default function AviationImport() {
                 }}
                 disabled={importing}
                 size="lg"
-                variant="outline"
+                className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold"
               >
-                <PlayCircle className="mr-2 h-4 w-4" />
-                Resume
+                <PlayCircle className="mr-2 h-5 w-5" />
+                Resume Import
               </Button>
             </div>
 
