@@ -19,6 +19,7 @@ import { UpdateShowcaseTags } from "@/components/UpdateShowcaseTags";
 import { UpdateCompanyTypes } from "@/components/UpdateCompanyTypes";
 import { LogoGallery } from "@/components/LogoGallery";
 import { AddKedalionButton } from "@/components/AddKedalionButton";
+import { ShowcaseVideoUpload } from "@/components/ShowcaseVideoUpload";
 
 interface ShowcaseCompany {
   id: string;
@@ -417,6 +418,10 @@ const ShowcaseAdmin = () => {
 
           <div className="mb-8">
             <AddKedalionButton />
+          </div>
+
+          <div className="mb-8">
+            <ShowcaseVideoUpload />
           </div>
 
           {showForm && (
