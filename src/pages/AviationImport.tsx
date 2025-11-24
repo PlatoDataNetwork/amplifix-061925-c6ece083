@@ -365,14 +365,14 @@ export default function AviationImport() {
           </CardContent>
         </Card>
 
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+        <Card className="mb-8 border-2 border-green-500">
+          <CardHeader className="bg-green-50 dark:bg-green-950/20">
+            <CardTitle className="flex items-center gap-2 text-green-700 dark:text-green-400">
               <PlayCircle className="h-5 w-5" />
-              Import Control
+              🚀 IMPORT CONTROL - CLICK RESUME BELOW
             </CardTitle>
             <CardDescription>
-              Import articles from platodata.ai/aviation/json/
+              Import articles from platodata.ai/aviation/json/ - Currently at page 170 of 1,491
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
