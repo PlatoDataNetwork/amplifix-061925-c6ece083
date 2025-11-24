@@ -183,7 +183,7 @@ const Showcase = () => {
         link: '/showcase/versatv',
         website: 'https://VersaTV.io',
         search_url:
-          'https://www.bing.com/search?q=Versa+TV+Streaming',
+          'https://www.bing.com/copilotsearch?q=VerzaTV%20Alan%20Mruvka&FORM=CSSCOP',
         thumbnail: '/lovable-uploads/versatv-thumbnail.png',
         type: 'private',
         disabled: false,
