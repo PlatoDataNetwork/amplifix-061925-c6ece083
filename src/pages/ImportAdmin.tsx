@@ -144,6 +144,7 @@ const ImportAdmin = () => {
     platoTotal: null,
     loading: false
   });
+  const [customJsonUrl, setCustomJsonUrl] = useState<string>('https://platodata.ai/aviation/json/');
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
   // Load aerospace article counts - FOR AEROSPACE VERTICAL
@@ -1594,6 +1595,22 @@ const ImportAdmin = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
+                <div className="space-y-2">
+                  <label htmlFor="json-url" className="text-sm font-medium">
+                    JSON Feed URL (optional - for custom imports)
+                  </label>
+                  <Input
+                    id="json-url"
+                    type="url"
+                    placeholder="https://platodata.ai/aviation/json/"
+                    value={customJsonUrl}
+                    onChange={(e) => setCustomJsonUrl(e.target.value)}
+                    className="font-mono text-sm"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Leave as default or enter a custom PlatoData JSON feed URL
+                  </p>
+                </div>
                 <Button
                   onClick={importAndProcessAll}
                   disabled={importing !== null}
