@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import MainHeader from "@/components/MainHeader";
@@ -6,9 +7,27 @@ import { Helmet } from "react-helmet-async";
 import { ExternalLink, Shield, Coins, Lock, TrendingUp, Globe, Mail } from "lucide-react";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { supabase } from "@/integrations/supabase/client";
 
 const KedalionShowcase = () => {
   useGTranslateRefresh(true);
+  const [videoUrl, setVideoUrl] = useState("/lovable-uploads/kedalion-video.mp4");
+
+  useEffect(() => {
+    const fetchVideoUrl = async () => {
+      const { data } = await supabase
+        .from("showcase_companies")
+        .select("video_url")
+        .eq("company_name", "Kedalion")
+        .maybeSingle();
+      
+      if (data?.video_url) {
+        setVideoUrl(data.video_url);
+      }
+    };
+    
+    fetchVideoUrl();
+  }, []);
 
   return (
     <>
@@ -140,12 +159,13 @@ const KedalionShowcase = () => {
               </div>
               <div className="relative w-full max-w-4xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-2xl border border-amber-500/20">
                 <video
+                  key={videoUrl}
                   className="w-full h-full"
                   controls
                   controlsList="nodownload"
                   playsInline
                 >
-                  <source src="/lovable-uploads/kedalion-video.mp4" type="video/mp4" />
+                  <source src={videoUrl} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               </div>
