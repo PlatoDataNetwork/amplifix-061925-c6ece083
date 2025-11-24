@@ -503,7 +503,7 @@ export const AviationImport = ({
             {aviationImportTotals && (
               <div className="p-4 bg-gradient-to-br from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/30">
                 <h4 className="text-sm font-semibold text-green-700 dark:text-green-300 mb-3">
-                  📊 Latest Aviation Import Session
+                  📊 Latest {customVertical.charAt(0).toUpperCase() + customVertical.slice(1)} Import Session
                 </h4>
                 <div className="grid grid-cols-4 gap-3 text-center">
                   <div className="p-3 bg-background/80 rounded-lg border">
