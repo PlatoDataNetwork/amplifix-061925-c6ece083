@@ -24,73 +24,36 @@ export default function AviationAIProcessing() {
         throw new Error("Not authenticated");
       }
 
-      // Get total unprocessed articles count
-      const { count } = await supabase
-        .from("articles")
-        .select("*", { count: "exact", head: true })
-        .eq("vertical_slug", "aviation")
-        .or("metadata->ai_processed.is.null,metadata->ai_processed.eq.false");
+      toast({
+        title: "Starting AI Processing",
+        description: "Processing aviation articles in the background...",
+      });
 
-      if (!count || count === 0) {
-        toast({
-          title: "No Articles to Process",
-          description: "All Aviation articles are already processed",
-        });
-        setIsProcessing(false);
-        return;
-      }
+      const { data, error } = await supabase.functions.invoke("start-ai-processing", {
+        body: { verticalSlug: "aviation" },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
 
-      const totalChunks = Math.ceil(count / chunkSize);
-      let processedChunks = 0;
-
-      for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
-        const { data, error } = await supabase.functions.invoke("format-all-articles", {
-          body: {
-            chunkIndex,
-            chunkSize,
-            verticalSlug: "aviation",
-          },
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        });
-
-        if (error) {
-          console.error(`Error processing chunk ${chunkIndex}:`, error);
-          toast({
-            title: "Processing Error",
-            description: `Failed at chunk ${chunkIndex + 1}/${totalChunks}`,
-            variant: "destructive",
-          });
-          break;
-        }
-
-        processedChunks++;
-        setProgress(Math.round((processedChunks / totalChunks) * 100));
-
-        toast({
-          title: "Chunk Processed",
-          description: `Processed chunk ${processedChunks}/${totalChunks}`,
-        });
-
-        // Wait between chunks to avoid rate limiting
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (error) {
+        throw error;
       }
 
       toast({
-        title: "AI Processing Complete",
-        description: `Processed ${processedChunks} chunks successfully`,
+        title: "AI Processing Started",
+        description: `Processing ${data.totalArticles} articles in ${data.totalChunks} chunks`,
       });
+
+      setIsProcessing(false);
     } catch (error: any) {
       console.error("AI processing error:", error);
       toast({
         title: "Processing Failed",
-        description: error.message || "Failed to process articles",
+        description: error.message || "Failed to start AI processing",
         variant: "destructive",
       });
-    } finally {
       setIsProcessing(false);
-      setProgress(0);
     }
   };
 

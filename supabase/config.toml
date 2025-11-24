@@ -90,3 +90,6 @@ verify_jwt = false
 [functions.update-showcase-data]
 verify_jwt = false
 
+[functions.start-ai-processing]
+verify_jwt = true
+
