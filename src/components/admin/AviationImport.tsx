@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface AviationImportProps {
   importing: string | null;
@@ -103,6 +103,83 @@ export const AviationImport = ({
   onHandleResetAviationAI,
 }: AviationImportProps) => {
   const [aiProcessingJobId, setAiProcessingJobId] = useState<string | null>(null);
+  const [duplicatesCount, setDuplicatesCount] = useState<number>(0);
+  const [cleaningDuplicates, setCleaningDuplicates] = useState(false);
+
+  // Fetch duplicates count
+  const loadDuplicatesCount = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('post_id')
+        .eq('vertical_slug', 'aviation')
+        .not('post_id', 'is', null);
+
+      if (error) throw error;
+
+      // Count duplicates by post_id
+      const postIdCounts = new Map<number, number>();
+      data?.forEach(article => {
+        const count = postIdCounts.get(article.post_id!) || 0;
+        postIdCounts.set(article.post_id!, count + 1);
+      });
+
+      // Count total duplicates (extra copies beyond the first)
+      let totalDuplicates = 0;
+      postIdCounts.forEach(count => {
+        if (count > 1) {
+          totalDuplicates += (count - 1);
+        }
+      });
+
+      setDuplicatesCount(totalDuplicates);
+    } catch (error) {
+      console.error('Error loading duplicates count:', error);
+    }
+  };
+
+  // Clean duplicates
+  const cleanDuplicates = async () => {
+    setCleaningDuplicates(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      toast.info('Cleaning aviation duplicates...');
+
+      const { data, error } = await supabase.functions.invoke('cleanup-aviation-duplicates', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (error) throw error;
+
+      toast.success('Duplicates cleaned!', {
+        description: `Removed ${data.duplicatesRemoved} duplicate articles (found ${data.duplicatesFound} total)`
+      });
+
+      // Reload metrics
+      await loadDuplicatesCount();
+      await onLoadAviationArticleCounts();
+      await onLoadMetrics();
+    } catch (error) {
+      console.error('Error cleaning duplicates:', error);
+      toast.error('Failed to clean duplicates', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setCleaningDuplicates(false);
+    }
+  };
+
+  // Load duplicates on mount and when article counts change
+  useEffect(() => {
+    loadDuplicatesCount();
+  }, [aviationArticleCounts]);
 
   const importAviationFast = async () => {
     onSetImporting('aviation-fast');
@@ -324,9 +401,15 @@ export const AviationImport = ({
             <CardTitle className="text-2xl flex items-center gap-2">
               ✈️ Aviation Fast Import (No AI)
             </CardTitle>
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">Total Articles in DB</p>
-              <p className="text-3xl font-bold">{aviationArticleCounts?.total.toLocaleString() || '0'}</p>
+            <div className="flex gap-6">
+              <div className="text-right">
+                <p className="text-sm text-muted-foreground">Total Articles in DB</p>
+                <p className="text-3xl font-bold">{aviationArticleCounts?.total.toLocaleString() || '0'}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-muted-foreground">Duplicates</p>
+                <p className="text-3xl font-bold text-orange-500">{duplicatesCount.toLocaleString()}</p>
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -426,15 +509,27 @@ export const AviationImport = ({
               {aiProcessingActive ? '⏸️ Stop Processing' : '🚀 Start AI Processing'}
             </Button>
 
-            <Button
-              onClick={onClearAllAviationData}
-              disabled={isClearing || importing !== null}
-              variant="destructive"
-              className="w-full"
-              size="lg"
-            >
-              {isClearing ? 'Clearing...' : '🗑️ Clear All Aviation Data'}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={cleanDuplicates}
+                disabled={cleaningDuplicates || importing !== null || duplicatesCount === 0}
+                variant="outline"
+                className="flex-1"
+                size="lg"
+              >
+                {cleaningDuplicates ? 'Cleaning...' : `🧹 Clean ${duplicatesCount} Duplicates`}
+              </Button>
+              
+              <Button
+                onClick={onClearAllAviationData}
+                disabled={isClearing || importing !== null}
+                variant="destructive"
+                className="flex-1"
+                size="lg"
+              >
+                {isClearing ? 'Clearing...' : '🗑️ Clear All Aviation Data'}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
