@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Brain, CheckCircle, Clock, AlertCircle, TrendingUp, RefreshCw } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { toast } from "sonner";
 
 interface AIProcessingStats {
   totalArticles: number;
@@ -18,6 +19,8 @@ interface ProcessingJob {
   id: string;
   started_at: string;
   status: string;
+  processed_chunks: number[];
+  total_chunks: number;
 }
 
 interface SpeedDataPoint {
@@ -52,7 +55,7 @@ export default function AviationAIProgressDashboard() {
       // Get current processing job
       const { data: jobData, error: jobError } = await supabase
         .from("ai_processing_jobs")
-        .select("id, started_at, status")
+        .select("id, started_at, status, processed_chunks, total_chunks")
         .eq("vertical_slug", "aviation")
         .order("created_at", { ascending: false })
         .limit(1)
@@ -162,6 +165,48 @@ export default function AviationAIProgressDashboard() {
     return () => clearInterval(timer);
   }, [currentJob]);
 
+  const handleResume = async () => {
+    if (!currentJob) return;
+    
+    setIsRefreshing(true);
+    try {
+      const processedChunks = currentJob.processed_chunks || [];
+      const totalChunks = currentJob.total_chunks;
+      
+      // Find the next chunk that hasn't been processed
+      const nextChunk = Array.from({ length: totalChunks }, (_, i) => i)
+        .find(i => !processedChunks.includes(i));
+      
+      if (nextChunk !== undefined) {
+        console.log(`🔄 Resuming from chunk ${nextChunk}`);
+        
+        const { error } = await supabase.functions.invoke('format-all-articles', {
+          body: { 
+            chunkIndex: nextChunk,
+            chunkSize: 50,
+            verticalSlug: 'aviation',
+            jobId: currentJob.id
+          }
+        });
+
+        if (error) {
+          console.error("Failed to resume processing:", error);
+          toast.error("Failed to resume processing");
+        } else {
+          toast.success(`Resumed processing from chunk ${nextChunk}`);
+          setTimeout(() => loadStats(true), 2000);
+        }
+      } else {
+        toast.info("All chunks have been processed");
+      }
+    } catch (error) {
+      console.error("Error resuming processing:", error);
+      toast.error("Error resuming processing");
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   useEffect(() => {
     console.log("🚀 Initializing AviationAIProgressDashboard");
     loadStats();
@@ -218,15 +263,27 @@ export default function AviationAIProgressDashboard() {
               Real-time tracking of AI article formatting and tag extraction
             </CardDescription>
           </div>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => loadStats(true)}
-            disabled={isRefreshing}
-            className="shrink-0"
-          >
-            <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => loadStats(true)}
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+            {stats.unprocessedArticles > 0 && currentJob && (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={handleResume}
+                disabled={isRefreshing}
+              >
+                Resume Processing
+              </Button>
+            )}
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
