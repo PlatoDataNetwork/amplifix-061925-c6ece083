@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
+import { PlayCircle } from "lucide-react";
 
 interface AviationImportProps {
   importing: string | null;
@@ -459,14 +460,32 @@ export const AviationImport = ({
               </p>
             </div>
 
-            <Button
-              onClick={importAviationFast}
-              disabled={importing !== null || !customJsonUrl.trim() || !customVertical.trim()}
-              className="w-full h-14 text-lg bg-blue-600 hover:bg-blue-700"
-              size="lg"
-            >
-              {importing === 'aviation-fast' ? `Importing ${customVertical}...` : 'Start Fast Import (No AI)'}
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                onClick={importAviationFast}
+                disabled={importing !== null || !customJsonUrl.trim() || !customVertical.trim()}
+                className="flex-1 h-14 text-lg bg-blue-600 hover:bg-blue-700"
+                size="lg"
+              >
+                {importing === 'aviation-fast' ? `Importing ${customVertical}...` : 'Start Fast Import (No AI)'}
+              </Button>
+              <Button
+                onClick={async () => {
+                  const { data, error } = await supabase.functions.invoke('auto-resume-imports');
+                  if (error) {
+                    toast.error('Resume failed', { description: error.message });
+                  } else {
+                    toast.success('Import resumed!', { description: data.message });
+                  }
+                }}
+                disabled={importing !== null}
+                className="flex-1 h-14 text-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold"
+                size="lg"
+              >
+                <PlayCircle className="mr-2 h-6 w-6" />
+                🔄 Resume Import
+              </Button>
+            </div>
 
             {importing === 'aviation-fast' && aviationProgress && (
               <div className="space-y-4">
