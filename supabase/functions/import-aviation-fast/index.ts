@@ -69,7 +69,22 @@ async function runBackgroundImport(
         break;
       }
 
-      const articles: AviationArticle[] = await feedResponse.json();
+      const responseData = await feedResponse.json();
+      console.log("Aviation API response type:", typeof responseData, "isArray:", Array.isArray(responseData));
+
+      // Handle different response formats
+      let articles: AviationArticle[];
+      if (Array.isArray(responseData)) {
+        articles = responseData;
+      } else if (responseData && typeof responseData === 'object' && Array.isArray(responseData.articles)) {
+        articles = responseData.articles;
+      } else if (responseData && typeof responseData === 'object' && Array.isArray(responseData.data)) {
+        articles = responseData.data;
+      } else {
+        console.error("Unexpected Aviation API response format:", responseData);
+        totalErrors++;
+        break;
+      }
 
       if (!articles || articles.length === 0) {
         console.log("No more articles found, ending import");
