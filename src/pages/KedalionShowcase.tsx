@@ -171,6 +171,144 @@ const KedalionShowcase = () => {
             </div>
           </section>
 
+          {/* How It Works */}
+          <section className="py-12 md:py-16 px-4">
+            <div className="container mx-auto max-w-6xl">
+              <div className="text-center mb-8 md:mb-12">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+                  How Kedalion Works
+                </h2>
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                  A transparent process from verification to tokenization
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center font-bold text-amber-500">
+                      1
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Resource Verification</h3>
+                      <p className="text-muted-foreground">
+                        Independent geologists verify in-ground gold and silver resources under 43-101 standards, ensuring accuracy and regulatory compliance.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center font-bold text-amber-500">
+                      2
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Blockchain Tokenization</h3>
+                      <p className="text-muted-foreground">
+                        Verified resources are tokenized on-chain, creating a direct digital representation of physical precious metal reserves.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-6">
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center font-bold text-amber-500">
+                      3
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Secure Ownership</h3>
+                      <p className="text-muted-foreground">
+                        Investors gain direct ownership rights to in-ground resources through blockchain-secured tokens, providing transparency and auditability.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center font-bold text-amber-500">
+                      4
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Alpha Stage Access</h3>
+                      <p className="text-muted-foreground">
+                        Early participants gain unique exposure to pre-mining resource opportunities with verifiable asset backing.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Technology & Innovation */}
+          <section className="py-12 md:py-16 px-4 bg-muted/30">
+            <div className="container mx-auto max-w-6xl">
+              <div className="text-center mb-8 md:mb-12">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+                  Technology & Innovation
+                </h2>
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                  Bridging traditional mining with blockchain innovation
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-8">
+                <Card className="bg-transparent border-amber-500/30">
+                  <CardContent className="pt-6">
+                    <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                      <Shield className="w-5 h-5 text-amber-500" />
+                      Regulatory Compliance
+                    </h3>
+                    <ul className="space-y-3 text-muted-foreground">
+                      <li className="flex gap-2">
+                        <span className="text-amber-500 mt-1">•</span>
+                        <span>Full adherence to NI 43-101 mineral resource standards</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-amber-500 mt-1">•</span>
+                        <span>Independent qualified persons verify all resource estimates</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-amber-500 mt-1">•</span>
+                        <span>Regular audits and transparent reporting requirements</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-amber-500 mt-1">•</span>
+                        <span>Geological survey documentation for all tokenized assets</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-transparent border-amber-500/30">
+                  <CardContent className="pt-6">
+                    <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                      <Globe className="w-5 h-5 text-amber-500" />
+                      Blockchain Infrastructure
+                    </h3>
+                    <ul className="space-y-3 text-muted-foreground">
+                      <li className="flex gap-2">
+                        <span className="text-amber-500 mt-1">•</span>
+                        <span>Fully on-chain asset records with immutable ownership history</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-amber-500 mt-1">•</span>
+                        <span>Smart contract automation for transparent transactions</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-amber-500 mt-1">•</span>
+                        <span>Real-time auditing capabilities for all stakeholders</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-amber-500 mt-1">•</span>
+                        <span>Secure custody through decentralized infrastructure</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </section>
+
           {/* Why Choose Kedalion */}
           <section className="py-12 md:py-16 px-4">
             <div className="container mx-auto max-w-6xl">
