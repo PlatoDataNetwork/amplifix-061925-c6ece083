@@ -590,10 +590,10 @@ export const AviationImport = ({
       <Card className="mb-8 border-purple-500/50 bg-gradient-to-br from-purple-500/5 to-purple-500/10">
         <CardHeader>
           <CardTitle className="text-2xl flex items-center gap-2">
-            🤖 Process Existing Aviation Articles with AI
+            🤖 Process Existing {customVertical.charAt(0).toUpperCase() + customVertical.slice(1)} Articles with AI
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Apply AI-powered content formatting and tag extraction to aviation articles.
+            Apply AI-powered content formatting and tag extraction to {customVertical} articles.
           </p>
         </CardHeader>
         <CardContent>
@@ -625,7 +625,7 @@ export const AviationImport = ({
                 className="flex-1"
                 size="lg"
               >
-                {isClearing ? 'Clearing...' : '🗑️ Clear All Aviation Data'}
+                {isClearing ? 'Clearing...' : `🗑️ Clear All ${customVertical.charAt(0).toUpperCase() + customVertical.slice(1)} Data`}
               </Button>
             </div>
           </div>
