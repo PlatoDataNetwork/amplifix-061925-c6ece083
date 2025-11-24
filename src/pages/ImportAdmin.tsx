@@ -1831,44 +1831,9 @@ const ImportAdmin = () => {
             </CardContent>
           </Card>
 
-          {/* Aviation Import Section (with AI Processing) */}
-          <AerospaceImport
-            importing={importing}
-            isClearing={isClearing}
-            aerospaceProgress={aerospaceProgress}
-            aerospaceImportTotals={aerospaceImportTotals}
-            aerospaceArticleCounts={aerospaceArticleCounts}
-            aerospaceStats={aerospaceStats}
-            aiJobStats={aiJobStats}
-            lastAiStatsUpdate={lastAiStatsUpdate}
-            lastCountsUpdate={lastCountsUpdate}
-            autoRestartEnabled={autoRestartEnabled}
-            aiProcessingActive={aiProcessingActive}
-            parallelChunksInProgress={parallelChunksInProgress}
-            progressPercent={progressPercent}
-            progressStatus={progressStatus}
-            totalAiChunks={totalAiChunks}
-            onImportStart={() => {
-              setImporting('aviation-fast');
-              setProgressStatus('Starting FAST import (no AI)...');
-              setProgressPercent(0);
-              if (!importStartTime) setImportStartTime(new Date());
-            }}
-            onSetImporting={setImporting}
-            onSetIsClearing={setIsClearing}
-            onSetAiProcessingActive={setAiProcessingActive}
-            onSetProgressPercent={setProgressPercent}
-            onSetProgressStatus={setProgressStatus}
-            onSetAutoRestartEnabled={setAutoRestartEnabled}
-            onLoadMetrics={loadMetrics}
-            onLoadAerospaceArticleCounts={loadAerospaceArticleCounts}
-            onLoadAerospaceStats={loadAerospaceStats}
-            onLoadAiJobStats={loadAiJobStats}
-            onClearAllAerospaceData={clearAllAerospaceData}
-            onHandleResetAerospaceAI={handleResetAerospaceAI}
-            onImportAerospaceWithAI={importAerospaceWithAI}
-          />
-
+          {/* Generic Import Section - Now supports any vertical via input fields */}
+          {/* <AerospaceImport /> component hidden - using AviationImport as the generic importer */}
+          
           <AviationImport
             importing={importing}
             isClearing={isClearing}
