@@ -104,6 +104,7 @@ const Showcase = () => {
       'Blockwell',
       'StorageBlue',
       'Versa TV',
+      'Kedalion',
     ]);
 
     const normalized = mergedShowcases.map((showcase) => {
@@ -119,7 +120,7 @@ const Showcase = () => {
       }
 
       // Add Token tag to specific companies
-      const tokenCompanies = new Set(['FAIM', 'CUT', 'Naoris Protocol', 'Abatis']);
+      const tokenCompanies = new Set(['FAIM', 'CUT', 'Naoris Protocol', 'Abatis', 'Kedalion']);
       if (tokenCompanies.has(updated.company_name)) {
         if (!Array.isArray(updated.tags)) {
           updated.tags = [];
@@ -202,6 +203,27 @@ const Showcase = () => {
       });
     }
 
+    // Ensure Kedalion appears in the showcase even if not in DB/JSON
+    if (!normalized.some((s) => s.company_name === 'Kedalion')) {
+      normalized.push({
+        company_name: 'Kedalion',
+        ticker: 'Token',
+        subtitle: 'Tokenized In-Ground Precious Metals',
+        description:
+          'Revolutionary platform providing tokenized access to verified in-ground gold and silver before mining begins. 43-101 regulated resources with direct asset ownership.',
+        tags: ['Token', 'Blockchain', 'Precious Metals'],
+        button_text: 'View Showcase',
+        link: '/showcase/kedalion',
+        website: 'https://dev.kedalion.io/',
+        search_url:
+          'https://www.bing.com/search?q=Kedalion+tokenized+gold+silver',
+        thumbnail: '/lovable-uploads/kedalion-icon.png',
+        type: 'private',
+        disabled: false,
+        main_sector: 'FINTECH',
+      });
+    }
+
     return normalized;
   }, [loading, dbShowcases, showcaseData]);
 
@@ -226,6 +248,17 @@ const Showcase = () => {
         icon: 'bg-gradient-to-br from-blue-500/10 to-blue-500/30 border-blue-500/50',
         text: 'text-blue-500',
         button: 'bg-blue-500 hover:bg-blue-500/90 text-white'
+      };
+    }
+    
+    // Special case: Kedalion gets amber/gold theme
+    if (showcase.company_name === 'Kedalion') {
+      return {
+        gradient: 'from-card via-card to-amber-500/5 border-amber-500/20 hover:border-amber-500/40',
+        badge: 'bg-amber-500/15 text-amber-500 border border-amber-500/30',
+        icon: 'bg-gradient-to-br from-amber-500/10 to-amber-500/30 border-amber-500/50',
+        text: 'text-amber-500',
+        button: 'bg-amber-500 hover:bg-amber-600 text-black'
       };
     }
     
