@@ -3,6 +3,12 @@ project_id = "rfkdcmvzvxcsoecoeddi"
 [functions.send-contact-email]
 verify_jwt = false
 
+[functions.fetch-aviation-feed]
+verify_jwt = true
+
+[functions.import-aviation-fast]
+verify_jwt = true
+
 [functions.reformat-single-article]
 verify_jwt = true
 
