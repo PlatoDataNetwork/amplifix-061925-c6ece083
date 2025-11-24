@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import AviationUrlBackfill from "@/components/AviationUrlBackfill";
 import AviationAIProcessing from "@/components/AviationAIProcessing";
 import AviationDuplicateCleanup from "@/components/AviationDuplicateCleanup";
+import AviationAIProgressDashboard from "@/components/AviationAIProgressDashboard";
 
 interface ImportProgress {
   currentPage: number;
@@ -438,6 +439,7 @@ export default function AviationImport() {
         </Card>
 
         <div className="space-y-6 mb-8">
+          <AviationAIProgressDashboard />
           <AviationUrlBackfill />
           <AviationAIProcessing />
           <AviationDuplicateCleanup />
