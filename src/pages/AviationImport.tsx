@@ -172,7 +172,46 @@ export default function AviationImport() {
 
       if (error) throw error;
 
-      setCurrentImportId(data.importId);
+      const importId = data.importId;
+      setCurrentImportId(importId);
+
+      // Set up channel subscription immediately
+      const channel = supabase.channel(`import-progress-${importId}`);
+
+      channel
+        .on("broadcast", { event: "progress" }, ({ payload }) => {
+          console.log("Progress update received:", payload);
+          setProgress(payload as ImportProgress);
+        })
+        .on("broadcast", { event: "complete" }, ({ payload }) => {
+          console.log("Import complete:", payload);
+          const finalProgress = payload as ImportProgress;
+          setImporting(false);
+          setProgress(null);
+          loadStats();
+          loadImportHistory();
+          toast({
+            title: "Import Complete",
+            description: `Imported: ${finalProgress.totalImported}, Skipped: ${finalProgress.totalSkipped}, Errors: ${finalProgress.totalErrors}`,
+          });
+          supabase.removeChannel(channel);
+        })
+        .on("broadcast", { event: "error" }, ({ payload }) => {
+          console.log("Import error:", payload);
+          setImporting(false);
+          setProgress(null);
+          toast({
+            title: "Import Failed",
+            description: payload.error,
+            variant: "destructive",
+          });
+          loadImportHistory();
+          supabase.removeChannel(channel);
+        })
+        .subscribe((status) => {
+          console.log("Channel subscription status:", status);
+        });
+
       toast({
         title: "Import Started",
         description: "Aviation articles are being imported in the background",
