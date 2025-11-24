@@ -74,6 +74,7 @@ interface AerospaceImportProps {
   onHandleResetAerospaceAI: () => Promise<void>;
 }
 
+// This component handles Aviation import and AI processing
 export const AerospaceImport = ({
   importing,
   isClearing,
@@ -107,8 +108,8 @@ export const AerospaceImport = ({
   const [aiProcessingJobId, setAiProcessingJobId] = useState<string | null>(null);
   const [setParallelChunksInProgress] = useState<(value: Set<number>) => void>(() => () => {});
 
-  const importAerospaceFast = async () => {
-    onSetImporting('aerospace-fast');
+  const importAviationFast = async () => {
+    onSetImporting('aviation-fast');
     onSetProgressStatus('Starting FAST import (no AI)...');
     onSetProgressPercent(0);
 
@@ -125,14 +126,14 @@ export const AerospaceImport = ({
         return;
       }
 
-      toast.info('Starting FAST Aerospace import in background...', {
-        description: 'All 9,240 articles will be imported without timing out. Check Import History below for progress.'
+      toast.info('Starting FAST Aviation import in background...', {
+        description: 'All 14,901 articles will be imported without timing out. Check Import History below for progress.'
       });
 
       onSetProgressPercent(10);
       onSetProgressStatus('Launching background import...');
 
-      const { data, error } = await supabase.functions.invoke('import-aerospace-fast', {
+      const { data, error } = await supabase.functions.invoke('import-aviation-fast', {
         headers: {
           Authorization: `Bearer ${session.access_token}`
         }
@@ -140,8 +141,8 @@ export const AerospaceImport = ({
 
       await onLoadMetrics();
     } catch (error) {
-      console.error('Error importing Aerospace:', error);
-      toast.error('Failed to start Aerospace import', {
+      console.error('Error importing Aviation:', error);
+      toast.error('Failed to start Aviation import', {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
       onSetProgressStatus('Error occurred');
@@ -149,7 +150,7 @@ export const AerospaceImport = ({
     }
   };
 
-  const startAerospaceAIProcessing = async () => {
+  const startAviationAIProcessing = async () => {
     if (aiProcessingActive) {
       onSetAiProcessingActive(false);
       toast.info('Auto-resume stopped. Processing will complete current chunks.');
@@ -158,7 +159,7 @@ export const AerospaceImport = ({
 
     try {
       onSetAiProcessingActive(true);
-      onSetImporting('process-aerospace-ai');
+      onSetImporting('process-aviation-ai');
       onSetProgressPercent(0);
       onSetProgressStatus('Initializing...');
 
@@ -168,7 +169,7 @@ export const AerospaceImport = ({
           status: 'failed',
           updated_at: new Date().toISOString()
         })
-        .eq('vertical_slug', 'aerospace')
+        .eq('vertical_slug', 'aviation')
         .neq('status', 'completed');
 
       if (resetError) {
@@ -179,7 +180,7 @@ export const AerospaceImport = ({
       const { count } = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true })
-        .eq('vertical_slug', 'aerospace')
+        .eq('vertical_slug', 'aviation')
         .not('content', 'is', null);
 
       const totalArticles = count || 0;
@@ -189,7 +190,7 @@ export const AerospaceImport = ({
       const { data: newJob, error: createError } = await supabase
         .from('ai_processing_jobs')
         .insert({
-          vertical_slug: 'aerospace',
+          vertical_slug: 'aviation',
           total_chunks: totalChunks,
           status: 'in_progress'
         })
@@ -251,7 +252,7 @@ export const AerospaceImport = ({
           try {
             console.log(`🔄 Starting chunk ${chunkIndex + 1}/${totalChunks}...`);
             const { data, error } = await supabase.functions.invoke('format-all-articles', {
-              body: { chunkIndex, chunkSize, verticalSlug: 'aerospace', jobId }
+              body: { chunkIndex, chunkSize, verticalSlug: 'aviation', jobId }
             });
 
             if (error || !data?.success) {
@@ -309,8 +310,8 @@ export const AerospaceImport = ({
       autoResume();
 
     } catch (error) {
-      console.error('Error processing aerospace articles:', error);
-      toast.error('Failed to process aerospace articles', {
+      console.error('Error processing aviation articles:', error);
+      toast.error('Failed to process aviation articles', {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
       onSetImporting(null);
@@ -321,11 +322,11 @@ export const AerospaceImport = ({
   return (
     <>
       {/* Fast Import Card */}
-      <Card className="mb-8 border-purple-500/50 bg-gradient-to-br from-purple-500/5 to-purple-500/10">
+      <Card className="mb-8 border-blue-500/50 bg-gradient-to-br from-blue-500/5 to-blue-500/10">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-2xl flex items-center gap-2">
-              🚀 Aerospace Fast Import (No AI)
+              ✈️ Aviation Fast Import (No AI)
             </CardTitle>
             <div className="text-right">
               <p className="text-sm text-muted-foreground">Total Articles in DB</p>
@@ -336,15 +337,15 @@ export const AerospaceImport = ({
         <CardContent>
           <div className="space-y-4">
             <Button
-              onClick={importAerospaceFast}
+              onClick={importAviationFast}
               disabled={importing !== null}
-              className="w-full h-14 text-lg bg-purple-600 hover:bg-purple-700"
+              className="w-full h-14 text-lg bg-blue-600 hover:bg-blue-700"
               size="lg"
             >
-              {importing === 'aerospace-fast' ? 'Importing Aerospace...' : 'Import Aerospace (Fast, No AI)'}
+              {importing === 'aviation-fast' ? 'Importing Aviation...' : 'Import Aviation (Fast, No AI)'}
             </Button>
 
-            {importing === 'aerospace-fast' && aerospaceProgress && (
+            {importing === 'aviation-fast' && aerospaceProgress && (
               <div className="space-y-4">
                 <div className="space-y-3 p-4 bg-background rounded-lg border">
                   <div className="flex items-center justify-between">
@@ -412,10 +413,10 @@ export const AerospaceImport = ({
       <Card className="mb-8 border-purple-500/50 bg-gradient-to-br from-purple-500/5 to-purple-500/10">
         <CardHeader>
           <CardTitle className="text-2xl flex items-center gap-2">
-            🤖 Process Existing Aerospace Articles with AI
+            🤖 Process Existing Aviation Articles with AI
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Apply AI-powered content formatting and tag extraction to aerospace articles.
+            Apply AI-powered content formatting and tag extraction to aviation articles.
           </p>
           
           {aiJobStats && (
@@ -478,12 +479,12 @@ export const AerospaceImport = ({
           <div className="space-y-4">
             <div className="flex gap-2">
               <Button
-                onClick={startAerospaceAIProcessing}
-                disabled={importing === 'process-aerospace-ai' && !aiProcessingActive}
+                onClick={startAviationAIProcessing}
+                disabled={importing === 'process-aviation-ai' && !aiProcessingActive}
                 className={`flex-1 h-14 text-lg ${aiProcessingActive ? 'bg-red-600 hover:bg-red-700' : 'bg-purple-600 hover:bg-purple-700'}`}
                 size="lg"
               >
-                {aiProcessingActive ? '⏸ Stop Auto-Resume' : (importing === 'process-aerospace-ai' ? `${progressStatus}` : '🚀 Start Auto-Resume Processing')}
+                {aiProcessingActive ? '⏸ Stop Auto-Resume' : (importing === 'process-aviation-ai' ? `${progressStatus}` : '🚀 Start Auto-Resume Processing')}
               </Button>
               
               <Button
@@ -509,13 +510,13 @@ export const AerospaceImport = ({
                   </>
                 ) : (
                   <>
-                    🗑️ Clear All Data
+                    🗑️ Clear All Aviation Data
                   </>
                 )}
               </Button>
             </div>
 
-            {importing === 'process-aerospace-ai' && (
+            {importing === 'process-aviation-ai' && (
               <div className="space-y-4">
                 <div className="space-y-3 p-4 bg-background rounded-lg border">
                   <div className="flex items-center justify-between">

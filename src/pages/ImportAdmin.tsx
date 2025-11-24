@@ -28,7 +28,6 @@ import {
 import { ImportHistoryTable } from "@/components/ImportHistoryTable";
 import { DuplicateMonitor } from "@/components/DuplicateMonitor";
 import { AerospaceImport } from "@/components/admin/AerospaceImport";
-import { AviationImport } from "@/components/admin/AviationImport";
 
 const ImportAdmin = () => {
   const navigate = useNavigate();
@@ -138,11 +137,11 @@ const ImportAdmin = () => {
   // Load aerospace article counts
   const loadAerospaceArticleCounts = async () => {
     try {
-      // Get total aerospace articles
+      // Get total aviation articles
       const { count: total, error: totalError } = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true })
-        .eq('vertical_slug', 'aerospace')
+        .eq('vertical_slug', 'aviation')
         .not('content', 'is', null);
 
       if (totalError) throw totalError;
@@ -151,7 +150,7 @@ const ImportAdmin = () => {
       const { count: processed, error: processedError } = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true })
-        .eq('vertical_slug', 'aerospace')
+        .eq('vertical_slug', 'aviation')
         .not('content', 'is', null)
         .eq('metadata->>ai_processed', 'true');
 
@@ -222,7 +221,7 @@ const ImportAdmin = () => {
       const { data: job, error } = await supabase
         .from('ai_processing_jobs')
         .select('*')
-        .eq('vertical_slug', 'aerospace')
+        .eq('vertical_slug', 'aviation')
         .order('started_at', { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -284,23 +283,23 @@ const ImportAdmin = () => {
     setAerospaceStats(prev => ({ ...prev, loading: true }));
     
     try {
-      // Get total aerospace articles in DB
+      // Get total aviation articles in DB
       const { count: totalInDb } = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true })
-        .eq('vertical_slug', 'aerospace');
+        .eq('vertical_slug', 'aviation');
       
-      // Get count of aerospace articles missing URLs or with Plato URLs
+      // Get count of aviation articles missing URLs or with Plato URLs
       const { count: missingUrls } = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true })
-        .eq('vertical_slug', 'aerospace')
+        .eq('vertical_slug', 'aviation')
         .or('external_url.is.null,external_url.ilike.%platodata.ai%');
       
       // Try to estimate total from Plato AI (first page to check if we can get count)
       let platoTotal: number | null = null;
       try {
-        const { data: feedData } = await supabase.functions.invoke('fetch-aerospace-feed', {
+        const { data: feedData } = await supabase.functions.invoke('fetch-aviation-feed', {
           body: { page: 1 }
         });
         
@@ -327,17 +326,17 @@ const ImportAdmin = () => {
     }
   };
 
-  // Handle aerospace AI processing reset
+  // Handle aviation AI processing reset
   const handleResetAerospaceAI = async () => {
     try {
-      toast.info('Resetting aerospace AI processing...');
-      setImporting('reset-aerospace-ai');
+      toast.info('Resetting aviation AI processing...');
+      setImporting('reset-aviation-ai');
       
       const { data, error } = await supabase.functions.invoke('reset-aerospace-ai');
       
       if (error) throw error;
       
-      toast.success('Aerospace AI processing reset and restarted!', {
+      toast.success('Aviation AI processing reset and restarted!', {
         description: `Job ID: ${data.jobId} | ${data.totalChunks} chunks to process`,
         duration: 5000
       });
@@ -346,7 +345,7 @@ const ImportAdmin = () => {
       await loadAiJobStats();
       await loadAerospaceArticleCounts();
     } catch (error) {
-      toast.error('Failed to reset aerospace AI processing', {
+      toast.error('Failed to reset aviation AI processing', {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
     } finally {
@@ -370,30 +369,6 @@ const ImportAdmin = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Real-time updates for aerospace articles
-  useEffect(() => {
-    const channel = supabase
-      .channel('aerospace-articles-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'articles',
-          filter: 'vertical_slug=eq.aerospace'
-        },
-        () => {
-          // Reload counts when any aerospace article is updated
-          loadAerospaceArticleCounts();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
   // Real-time updates for aviation articles
   useEffect(() => {
     const channel = supabase
@@ -407,7 +382,8 @@ const ImportAdmin = () => {
           filter: 'vertical_slug=eq.aviation'
         },
         () => {
-          loadAviationArticleCounts();
+          // Reload counts when any aviation article is updated
+          loadAerospaceArticleCounts();
         }
       )
       .subscribe();
@@ -1036,49 +1012,49 @@ const ImportAdmin = () => {
   };
 
   const clearAllAerospaceData = async () => {
-    if (!confirm('⚠️ This will permanently delete ALL Aerospace data including:\n- All articles\n- Import history\n- AI processing jobs\n- Article backups\n\nThis action cannot be undone. Are you sure?')) {
+    if (!confirm('⚠️ This will permanently delete ALL Aviation data including:\n- All articles\n- Import history\n- AI processing jobs\n- Article backups\n\nThis action cannot be undone. Are you sure?')) {
       return;
     }
     
     try {
       setIsClearing(true);
-      toast.info('Clearing all Aerospace data...', {
+      toast.info('Clearing all Aviation data...', {
         description: 'This may take a moment'
       });
       
-      // Delete aerospace articles (this will cascade to article_tags)
+      // Delete aviation articles (this will cascade to article_tags)
       const { error: articlesError } = await supabase
         .from('articles')
         .delete()
-        .eq('vertical_slug', 'aerospace');
+        .eq('vertical_slug', 'aviation');
       
       if (articlesError) throw articlesError;
 
-      // Delete aerospace import history
+      // Delete aviation import history
       const { error: historyError } = await supabase
         .from('import_history')
         .delete()
-        .eq('vertical_slug', 'aerospace');
+        .eq('vertical_slug', 'aviation');
       
       if (historyError) throw historyError;
 
-      // Delete aerospace AI processing jobs
+      // Delete aviation AI processing jobs
       const { error: jobsError } = await supabase
         .from('ai_processing_jobs')
         .delete()
-        .eq('vertical_slug', 'aerospace');
+        .eq('vertical_slug', 'aviation');
       
       if (jobsError) throw jobsError;
 
-      // Delete aerospace article backups
+      // Delete aviation article backups
       const { error: backupsError } = await supabase
         .from('article_backups')
         .delete()
-        .eq('vertical_slug', 'aerospace');
+        .eq('vertical_slug', 'aviation');
       
       if (backupsError) throw backupsError;
 
-      toast.success('All Aerospace data cleared successfully', {
+      toast.success('All Aviation data cleared successfully', {
         description: 'Articles, import history, AI jobs, and backups have been removed.',
         duration: 5000
       });
@@ -1087,8 +1063,8 @@ const ImportAdmin = () => {
       await loadAerospaceArticleCounts();
       await loadAerospaceStats();
     } catch (error) {
-      console.error('Error clearing Aerospace data:', error);
-      toast.error('Failed to clear all Aerospace data', {
+      console.error('Error clearing Aviation data:', error);
+      toast.error('Failed to clear all Aviation data', {
         description: error instanceof Error ? error.message : 'An error occurred'
       });
     } finally {
@@ -1435,23 +1411,7 @@ const ImportAdmin = () => {
             </CardContent>
           </Card>
 
-          {/* Aviation Import Section */}
-          <AviationImport
-            importing={importing}
-            aviationProgress={aviationProgress}
-            aviationImportTotals={aviationImportTotals}
-            aviationArticleCounts={aviationArticleCounts}
-            onImportStart={() => {
-              setImporting('aviation-fast');
-              setProgressStatus('Starting FAST Aviation import (no AI)...');
-              setProgressPercent(0);
-              if (!importStartTime) setImportStartTime(new Date());
-            }}
-            onLoadMetrics={loadMetrics}
-            onLoadAviationArticleCounts={loadAviationArticleCounts}
-          />
-
-          {/* Aerospace Import Section */}
+          {/* Aviation Import Section (with AI Processing) */}
           <AerospaceImport
             importing={importing}
             isClearing={isClearing}
@@ -1469,7 +1429,7 @@ const ImportAdmin = () => {
             progressStatus={progressStatus}
             totalAiChunks={totalAiChunks}
             onImportStart={() => {
-              setImporting('aerospace-fast');
+              setImporting('aviation-fast');
               setProgressStatus('Starting FAST import (no AI)...');
               setProgressPercent(0);
               if (!importStartTime) setImportStartTime(new Date());
