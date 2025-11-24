@@ -217,7 +217,7 @@ const Showcase = () => {
         website: 'https://dev.kedalion.io/',
         search_url:
           'https://www.bing.com/search?q=Kedalion+tokenized+gold+silver',
-        thumbnail: '/lovable-uploads/kedalion-icon.png',
+        thumbnail: '/lovable-uploads/kedalion-thumbnail.png',
         type: 'private',
         disabled: false,
         main_sector: 'FINTECH',
