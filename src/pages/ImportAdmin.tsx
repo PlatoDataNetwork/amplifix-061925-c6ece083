@@ -723,7 +723,10 @@ const ImportAdmin = () => {
           }]);
 
           const { data, error } = await supabase.functions.invoke('import-articles', {
-            body: { vertical: verticalSlug },
+            body: { 
+              vertical: verticalSlug,
+              customJsonUrl: customJsonUrl
+            },
             headers: {
               Authorization: `Bearer ${session.access_token}`
             }

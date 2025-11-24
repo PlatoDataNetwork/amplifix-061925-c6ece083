@@ -20,6 +20,7 @@ interface ImportRequest {
   vertical: string;
   limit?: number;
   offset?: number;
+  customJsonUrl?: string;
 }
 
 interface ImportStats {
@@ -102,7 +103,7 @@ Deno.serve(async (req) => {
     );
 
     // Parse request body
-    const { vertical, limit, offset = 0 }: ImportRequest = await req.json();
+    const { vertical, limit, offset = 0, customJsonUrl }: ImportRequest = await req.json();
 
     if (!vertical) {
       return new Response(
@@ -116,8 +117,8 @@ Deno.serve(async (req) => {
 
     console.log(`Starting import for vertical: ${vertical}, offset: ${offset}`);
 
-    // Fetch articles from PlatoData API
-    const apiUrl = `https://dashboard.platodata.io/json/${vertical}.json`;
+    // Fetch articles from PlatoData API - use custom URL if provided
+    const apiUrl = customJsonUrl || `https://dashboard.platodata.io/json/${vertical}.json`;
     console.log(`Fetching from: ${apiUrl}`);
 
     const response = await fetch(apiUrl);
