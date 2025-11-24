@@ -149,14 +149,26 @@ async function runBackgroundImport(
             continue;
           }
 
+          // Extract title from various formats
+          const title = typeof article.title === 'string' 
+            ? article.title 
+            : article.title?.rendered || '';
+          
+          // Extract content and excerpt
+          const rawContent = typeof article.content === 'string'
+            ? article.content
+            : article.content?.rendered || '';
+          const rawExcerpt = typeof article.excerpt === 'string'
+            ? article.excerpt
+            : article.excerpt?.rendered || '';
+
           // Simple content cleaning (NO AI)
-          const rawContent = article.content || article.excerpt || '';
           const cleanedText = cleanText(rawContent);
-          const excerpt = article.excerpt || cleanedText.substring(0, 300);
+          const excerpt = cleanText(rawExcerpt) || cleanedText.substring(0, 300);
 
           const articleData = {
             post_id: postId,
-            title: article.title,
+            title: title,
             content: cleanedText,
             excerpt: excerpt,
             published_at: article.date || new Date().toISOString(),
