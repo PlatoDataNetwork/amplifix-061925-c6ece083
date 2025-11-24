@@ -1462,10 +1462,28 @@ const ImportAdmin = () => {
       <MainHeader />
       
       <div className="pt-24 container mx-auto py-8 px-4">
-        <div className="max-w-7xl mx-auto">
+          <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-4xl font-bold">Article Import Admin</h1>
             <div className="flex items-center gap-2">
+              {importing && (
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    setImporting(null);
+                    setProgressStatus('');
+                    setProgressPercent(0);
+                    setCurrentVertical('');
+                    setAerospaceProgress(null);
+                    setAviationProgress(null);
+                    setAiProcessingActive(false);
+                    toast.info('Import UI reset - background processes will complete');
+                  }}
+                  className="gap-2"
+                >
+                  ⏹️ Stop/Reset Import
+                </Button>
+              )}
               <Button
                 variant="outline"
                 onClick={() => navigate("/admin/articles/backups")}
