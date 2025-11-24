@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
-import { Plane, PlayCircle, PauseCircle, BarChart3 } from "lucide-react";
+import { Plane, PlayCircle, PauseCircle, BarChart3, AlertCircle, RefreshCw } from "lucide-react";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { useNavigate } from "react-router-dom";
 import AviationUrlBackfill from "@/components/AviationUrlBackfill";
@@ -306,6 +306,64 @@ export default function AviationImport() {
             </CardContent>
           </Card>
         </div>
+
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Live Import Statistics</CardTitle>
+            <CardDescription>Manage import data and fix issues</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-4">
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  await loadStats();
+                  await loadImportHistory();
+                  toast({
+                    title: "Stats Refreshed",
+                    description: "Import statistics have been updated",
+                  });
+                }}
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Reset Stats
+              </Button>
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  try {
+                    const { data: stuckImports } = await supabase
+                      .from('import_history')
+                      .update({ 
+                        status: 'cancelled', 
+                        completed_at: new Date().toISOString() 
+                      })
+                      .eq('vertical_slug', 'aviation')
+                      .eq('status', 'in_progress')
+                      .select();
+
+                    await loadStats();
+                    await loadImportHistory();
+                    
+                    toast({
+                      title: "Fixed Stuck Imports",
+                      description: `Cancelled ${stuckImports?.length || 0} stuck import(s)`,
+                    });
+                  } catch (error) {
+                    toast({
+                      title: "Error",
+                      description: "Failed to fix stuck imports",
+                      variant: "destructive",
+                    });
+                  }
+                }}
+              >
+                <AlertCircle className="h-4 w-4 mr-2" />
+                Fix Stuck
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card className="mb-8">
           <CardHeader>
