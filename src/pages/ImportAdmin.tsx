@@ -724,8 +724,7 @@ const ImportAdmin = () => {
 
           const { data, error } = await supabase.functions.invoke('import-articles', {
             body: { 
-              vertical: verticalSlug,
-              customJsonUrl: customJsonUrl
+              vertical: verticalSlug
             },
             headers: {
               Authorization: `Bearer ${session.access_token}`
@@ -1600,7 +1599,7 @@ const ImportAdmin = () => {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <label htmlFor="json-url" className="text-sm font-medium">
-                    JSON Feed URL (optional - for custom imports)
+                    Custom JSON Feed URL (for single vertical import)
                   </label>
                   <Input
                     id="json-url"
@@ -1611,17 +1610,82 @@ const ImportAdmin = () => {
                     className="font-mono text-sm"
                   />
                   <p className="text-xs text-muted-foreground">
-                    Leave as default or enter a custom PlatoData JSON feed URL
+                    Enter a custom JSON feed URL for importing a specific vertical
                   </p>
                 </div>
-                <Button
-                  onClick={importAndProcessAll}
-                  disabled={importing !== null}
-                  className="w-full h-14 text-lg"
-                  size="lg"
-                >
-                  {importing === 'all-verticals' ? 'Processing...' : 'Import & Process All Articles'}
-                </Button>
+                
+                {customJsonUrl && customJsonUrl !== 'https://platodata.ai/aviation/json/' ? (
+                  <div className="space-y-2">
+                    <Button
+                      onClick={() => {
+                        // Import only from custom URL
+                        const customImport = async () => {
+                          setImporting('custom-url');
+                          setProgressStatus('Starting custom URL import...');
+                          setProgressPercent(0);
+
+                          try {
+                            const { data: { session } } = await supabase.auth.getSession();
+                            if (!session) {
+                              toast.error('Authentication required');
+                              return;
+                            }
+
+                            const { data, error } = await supabase.functions.invoke('import-articles', {
+                              body: { 
+                                vertical: 'custom',
+                                customJsonUrl: customJsonUrl
+                              },
+                              headers: {
+                                Authorization: `Bearer ${session.access_token}`
+                              }
+                            });
+
+                            if (error) throw error;
+
+                            toast.success('Custom URL import completed!', {
+                              description: `Imported ${data?.insertedArticles || 0} articles`
+                            });
+                            
+                            await loadMetrics();
+                          } catch (error) {
+                            console.error('Error importing from custom URL:', error);
+                            toast.error('Failed to import from custom URL', {
+                              description: error instanceof Error ? error.message : 'Unknown error'
+                            });
+                          } finally {
+                            setImporting(null);
+                            setProgressStatus('');
+                            setProgressPercent(0);
+                          }
+                        };
+                        customImport();
+                      }}
+                      disabled={importing !== null}
+                      className="w-full h-14 text-lg"
+                      variant="default"
+                    >
+                      {importing === 'custom-url' ? 'Importing from Custom URL...' : 'Import from Custom URL'}
+                    </Button>
+                    <p className="text-sm text-muted-foreground text-center">
+                      This will only import articles from the custom URL above
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Button
+                      onClick={importAndProcessAll}
+                      disabled={importing !== null}
+                      className="w-full h-14 text-lg"
+                      variant="default"
+                    >
+                      {importing === 'all-verticals' ? 'Importing All Verticals...' : '🚀 Import All Verticals & Process with AI'}
+                    </Button>
+                    <p className="text-sm text-muted-foreground text-center">
+                      This will import articles from all available verticals
+                    </p>
+                  </div>
+                )}
 
                 {importing === 'all-verticals' && (
                   <div className="space-y-4">
