@@ -118,8 +118,19 @@ const Showcase = () => {
         updated.subtitle = updated.subtitle || 'Quantum Resistant Cybersecurity';
       }
 
-      // Remove token-classifying tags from companies we treat as private
-      if (privateNames.has(updated.company_name) && Array.isArray(updated.tags)) {
+      // Add Token tag to specific companies
+      const tokenCompanies = new Set(['FAIM', 'CUT', 'Naoris Protocol', 'Abatis']);
+      if (tokenCompanies.has(updated.company_name)) {
+        if (!Array.isArray(updated.tags)) {
+          updated.tags = [];
+        }
+        if (!updated.tags.includes('Token')) {
+          updated.tags.push('Token');
+        }
+      }
+
+      // Remove token-classifying tags from other private companies (but not the token ones)
+      if (privateNames.has(updated.company_name) && !tokenCompanies.has(updated.company_name) && Array.isArray(updated.tags)) {
         updated.tags = updated.tags.filter(
           (tag: string) => tag !== 'Token' && tag !== 'Cryptocurrency'
         );
