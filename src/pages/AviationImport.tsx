@@ -130,8 +130,16 @@ export default function AviationImport() {
     setProgress(null);
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("Not authenticated");
+      }
+
       const { data, error } = await supabase.functions.invoke("import-aviation-fast", {
         body: {},
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
       });
 
       if (error) throw error;
@@ -157,10 +165,18 @@ export default function AviationImport() {
     setProgress(null);
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("Not authenticated");
+      }
+
       const { data, error } = await supabase.functions.invoke("import-aviation-fast", {
         body: {
           resumeImportId: importId,
           resumeFromPage: lastPage + 1,
+        },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
         },
       });
 
