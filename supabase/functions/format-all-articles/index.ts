@@ -268,175 +268,153 @@ Deno.serve(async (req) => {
 
     console.log(`Found ${articles.length} articles to process`);
 
-    // Process articles one at a time with delays to avoid rate limits
-    let processed = 0;
-    const failed: string[] = [];
+    // Background processing function
+    const processArticles = async () => {
+      let processed = 0;
+      const failed: string[] = [];
 
-    for (let i = 0; i < articles.length; i++) {
-      const article = articles[i];
-      try {
-        console.log(`[${i + 1}/${articles.length}] Formatting article ${article.id}...`);
-        const cleanedText = cleanText(article.content);
-        const formattedContent = await formatArticleWithAI(cleanedText);
+      for (let i = 0; i < articles.length; i++) {
+        const article = articles[i];
+        try {
+          console.log(`[${i + 1}/${articles.length}] Formatting article ${article.id}...`);
+          const cleanedText = cleanText(article.content);
+          const formattedContent = await formatArticleWithAI(cleanedText);
 
-        // Update article content and set ai_processed flag
-        const currentMetadata = article.metadata || {};
-        const { error: updateError } = await supabase
-          .from('articles')
-          .update({
-            content: formattedContent,
-            updated_at: new Date().toISOString(),
-            metadata: {
-              ...currentMetadata,
-              ai_processed: true,
-              ai_processed_at: new Date().toISOString()
-            }
-          })
-          .eq('id', article.id);
-
-        if (updateError) {
-          console.error(`Error updating article ${article.id}:`, updateError);
-          failed.push(article.id);
-        } else {
-          console.log(`Successfully formatted article ${article.id}`);
-          
-          // Extract and store tags
-          try {
-            const tags = extractKeywords(article.content || article.excerpt || '', article.title);
-            console.log(`Extracted ${tags.length} tags for article ${article.id}`);
-            
-            // Delete existing tags first
-            await supabase
-              .from('article_tags')
-              .delete()
-              .eq('article_id', article.id);
-            
-            // Create or get tags and link to article
-            for (const tagName of tags) {
-              const tagSlug = tagName.toLowerCase().replace(/\s+/g, '-');
-              
-              const { data: existingTag } = await supabase
-                .from('tags')
-                .select('id')
-                .eq('slug', tagSlug)
-                .maybeSingle();
-
-              let tagId: string;
-              
-              if (existingTag) {
-                tagId = existingTag.id;
-              } else {
-                const { data: newTag, error: tagError } = await supabase
-                  .from('tags')
-                  .insert({ name: tagName, slug: tagSlug })
-                  .select('id')
-                  .single();
-                
-                if (tagError || !newTag) {
-                  console.error(`Failed to create tag ${tagName}:`, tagError);
-                  continue;
-                }
-                
-                tagId = newTag.id;
+          // Update article content and set ai_processed flag
+          const currentMetadata = article.metadata || {};
+          const { error: updateError } = await supabase
+            .from('articles')
+            .update({
+              content: formattedContent,
+              updated_at: new Date().toISOString(),
+              metadata: {
+                ...currentMetadata,
+                ai_processed: true,
+                ai_processed_at: new Date().toISOString()
               }
+            })
+            .eq('id', article.id);
 
+          if (updateError) {
+            console.error(`Error updating article ${article.id}:`, updateError);
+            failed.push(article.id);
+          } else {
+            console.log(`Successfully formatted article ${article.id}`);
+            
+            // Extract and store tags
+            try {
+              const tags = extractKeywords(article.content || article.excerpt || '', article.title);
+              console.log(`Extracted ${tags.length} tags for article ${article.id}`);
+              
+              // Delete existing tags first
               await supabase
                 .from('article_tags')
-                .insert({ article_id: article.id, tag_id: tagId });
+                .delete()
+                .eq('article_id', article.id);
+              
+              // Create or get tags and link to article
+              for (const tagName of tags) {
+                const tagSlug = tagName.toLowerCase().replace(/\s+/g, '-');
+                
+                const { data: existingTag } = await supabase
+                  .from('tags')
+                  .select('id')
+                  .eq('slug', tagSlug)
+                  .maybeSingle();
+
+                let tagId: string;
+                
+                if (existingTag) {
+                  tagId = existingTag.id;
+                } else {
+                  const { data: newTag, error: tagError } = await supabase
+                    .from('tags')
+                    .insert({ name: tagName, slug: tagSlug })
+                    .select('id')
+                    .single();
+                  
+                  if (tagError || !newTag) {
+                    console.error(`Failed to create tag ${tagName}:`, tagError);
+                    continue;
+                  }
+                  
+                  tagId = newTag.id;
+                }
+
+                await supabase
+                  .from('article_tags')
+                  .insert({ article_id: article.id, tag_id: tagId });
+              }
+            } catch (tagError) {
+              console.error(`Error extracting tags for article ${article.id}:`, tagError);
             }
-          } catch (tagError) {
-            console.error(`Error extracting tags for article ${article.id}:`, tagError);
-            // Don't fail the whole process if tag extraction fails
+            
+            processed++;
           }
-          
-          processed++;
+        } catch (err) {
+          console.error(`Error processing article ${article.id}:`, err);
+          failed.push(article.id);
         }
-      } catch (err) {
-        console.error(`Error processing article ${article.id}:`, err);
-        failed.push(article.id);
+
+        // Add delay between articles to avoid rate limits (2 seconds)
+        if (i < articles.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
       }
 
-      // Add delay between articles to avoid rate limits (2 seconds)
-      if (i < articles.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      }
-    }
+      // Update job tracking if jobId provided
+      if (jobId) {
+        const { data: currentJob } = await supabase
+          .from('ai_processing_jobs')
+          .select('processed_chunks, failed_chunks, total_chunks')
+          .eq('id', jobId)
+          .single();
 
-    // Update job tracking if jobId provided
-    if (jobId) {
-      const { data: currentJob } = await supabase
-        .from('ai_processing_jobs')
-        .select('processed_chunks, failed_chunks, total_chunks')
-        .eq('id', jobId)
-        .single();
-
-      const currentChunks = currentJob?.processed_chunks || [];
-      const failedChunks = currentJob?.failed_chunks || [];
-      const totalChunks = currentJob?.total_chunks || 0;
-      
-      // Use Set to prevent duplicates
-      const uniqueChunks = new Set([...currentChunks, chunkIndex]);
-      const updatedChunks = Array.from(uniqueChunks).sort((a, b) => a - b);
-      
-      // Track failed chunks if we had failures
-      const updatedFailedChunks = failed.length > 0 
-        ? Array.from(new Set([...failedChunks, chunkIndex]))
-        : failedChunks;
-
-      const { error: jobError } = await supabase
-        .from('ai_processing_jobs')
-        .update({
-          processed_chunks: updatedChunks,
-          failed_chunks: updatedFailedChunks,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', jobId);
-
-      if (jobError) {
-        console.error('Error updating job tracking:', jobError);
-      } else {
-        // Auto-continue: Find next unprocessed chunk and trigger it
-        const processedSet = new Set(updatedChunks);
-        const nextChunk = Array.from({ length: totalChunks }, (_, i) => i)
-          .find(i => !processedSet.has(i));
+        const currentChunks = currentJob?.processed_chunks || [];
+        const failedChunks = currentJob?.failed_chunks || [];
+        const totalChunks = currentJob?.total_chunks || 0;
         
-        if (nextChunk !== undefined) {
-          console.log(`Auto-triggering next chunk ${nextChunk}/${totalChunks - 1} (${updatedChunks.length} done, ${updatedFailedChunks.length} failed)`);
-          // Add delay before triggering next chunk to avoid overwhelming the system
-          await new Promise(resolve => setTimeout(resolve, 5000));
-          
-          supabase.functions.invoke('format-all-articles', {
-            body: { 
-              chunkIndex: nextChunk, 
-              chunkSize, 
-              verticalSlug, 
-              jobId 
-            }
-          }).catch(err => {
-            console.error(`Failed to trigger chunk ${nextChunk}:`, err);
-          });
+        // Use Set to prevent duplicates
+        const uniqueChunks = new Set([...currentChunks, chunkIndex]);
+        const updatedChunks = Array.from(uniqueChunks).sort((a, b) => a - b);
+        
+        // Track failed chunks if we had failures
+        const updatedFailedChunks = failed.length > 0 
+          ? Array.from(new Set([...failedChunks, chunkIndex]))
+          : failedChunks;
+
+        const { error: jobError } = await supabase
+          .from('ai_processing_jobs')
+          .update({
+            processed_chunks: updatedChunks,
+            failed_chunks: updatedFailedChunks,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', jobId);
+
+        if (jobError) {
+          console.error('Error updating job tracking:', jobError);
         } else {
-          // All chunks attempted - mark job as complete
-          console.log(`All chunks processed! ${updatedChunks.length}/${totalChunks} completed, ${updatedFailedChunks.length} failed`);
-          await supabase
-            .from('ai_processing_jobs')
-            .update({
-              status: updatedFailedChunks.length > 0 ? 'completed_with_errors' : 'completed',
-              completed_at: new Date().toISOString()
-            })
-            .eq('id', jobId);
+          console.log(`Chunk ${chunkIndex} complete: ${processed}/${articles.length} processed, ${failed.length} failed`);
         }
       }
+    };
+
+    // Start background processing using waitUntil if available
+    const ctx = Deno.env.get('DENO_REGION') ? (globalThis as any).EdgeRuntime : null;
+    if (ctx && ctx.waitUntil) {
+      ctx.waitUntil(processArticles());
+    } else {
+      processArticles().catch(console.error);
     }
 
+    // Return immediately
     return new Response(
       JSON.stringify({ 
         success: true, 
-        processed,
-        failed: failed.length,
-        total: articles.length,
-        failedArticles: failed.length > 0 ? failed : undefined,
-        message: `Processed ${processed}/${articles.length} articles (${failed.length} failed)`
+        message: `Started processing ${articles.length} articles in background`,
+        articlesCount: articles.length,
+        chunkIndex
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
