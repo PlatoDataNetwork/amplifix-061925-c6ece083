@@ -3,13 +3,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
-import { ExternalLink, Shield, Coins, Lock, TrendingUp, Globe, Play, X } from "lucide-react";
+import { ExternalLink, Shield, Coins, Lock, TrendingUp, Globe, Mail } from "lucide-react";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
-import { useState } from "react";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 const KedalionShowcase = () => {
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   useGTranslateRefresh(true);
 
   return (
@@ -102,16 +100,18 @@ const KedalionShowcase = () => {
                     </div>
                   </div>
                   
-                  <div className="flex flex-row gap-3 pt-4">
+                  <div className="flex flex-wrap gap-3 pt-4">
                     <Button asChild size="default" className="gap-2 bg-amber-500 text-black hover:bg-amber-600">
                       <a href="https://dev.kedalion.io/" target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-4 h-4" />
                         Visit Website
                       </a>
                     </Button>
-                    <Button size="default" className="gap-2 bg-amber-500 text-black hover:bg-amber-600" onClick={() => setIsVideoPlaying(true)}>
-                      <Play className="w-4 h-4" />
-                      Watch Video
+                    <Button asChild size="default" className="gap-2 bg-amber-500/10 text-amber-500 border border-amber-500/30 hover:bg-amber-500/20">
+                      <a href="mailto:contact@kedalion.io">
+                        <Mail className="w-4 h-4" />
+                        Contact Kedalion
+                      </a>
                     </Button>
                   </div>
                 </div>
@@ -119,8 +119,32 @@ const KedalionShowcase = () => {
             </div>
           </section>
 
-          {/* Company Overview */}
+          {/* Video Section */}
           <section className="py-12 md:py-16 px-4 bg-muted/30">
+            <div className="container mx-auto max-w-6xl">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+                  See Kedalion in Action
+                </h2>
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                  Learn how tokenized in-ground resources work
+                </p>
+              </div>
+              <div className="relative w-full max-w-4xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-2xl border border-amber-500/20">
+                <video
+                  className="w-full h-full"
+                  controls
+                  controlsList="nodownload"
+                >
+                  <source src="/lovable-uploads/kedalion-video.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          </section>
+
+          {/* Company Overview */}
+          <section className="py-12 md:py-16 px-4">
             <div className="container mx-auto max-w-6xl">
               <div className="text-center mb-8 md:mb-12">
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
@@ -386,34 +410,6 @@ const KedalionShowcase = () => {
 
         <Footer />
       </div>
-
-      {/* Video Modal */}
-      {isVideoPlaying && (
-        <div 
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
-          onClick={() => setIsVideoPlaying(false)}
-        >
-          <div className="relative w-full max-w-5xl aspect-video">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute -top-12 right-0 text-white hover:bg-white/10"
-              onClick={() => setIsVideoPlaying(false)}
-            >
-              <X className="w-6 h-6" />
-            </Button>
-            <video
-              className="w-full h-full rounded-lg"
-              controls
-              autoPlay
-              onClick={(e) => e.stopPropagation()}
-            >
-              <source src="/lovable-uploads/kedalion-video.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </div>
-      )}
     </>
   );
 };
