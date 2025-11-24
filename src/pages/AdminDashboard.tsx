@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainHeader from '@/components/MainHeader';
 import Footer from '@/components/Footer';
-import { Database, Users, FileText, Shield, Activity, Clock, LogOut, Archive, GitCompare, Map, Languages, Briefcase, BarChart3 } from 'lucide-react';
+import { Database, Users, FileText, Shield, Activity, Clock, LogOut, Archive, GitCompare, Map, Languages, Briefcase, BarChart3, Save, RotateCcw } from 'lucide-react';
 
 interface SystemStats {
   totalUsers: number;
@@ -258,6 +258,67 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Featured Backup Management */}
+        <Card className="mb-8 border-2 border-primary/20 bg-gradient-to-br from-amber-500/5 to-yellow-500/5">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-lg bg-gradient-to-br from-yellow-500 to-amber-500">
+                <Archive className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl">Backup & Restore Center</CardTitle>
+                <CardDescription className="text-base">
+                  Protect your data with automatic backups and easy restoration
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Button
+                onClick={() => navigate('/admin/articles/backups')}
+                size="lg"
+                className="h-auto p-6 justify-start gap-4 bg-gradient-to-br from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700"
+              >
+                <div className="p-2 rounded-lg bg-white/20">
+                  <Database className="h-6 w-6 text-white" />
+                </div>
+                <div className="text-left">
+                  <div className="font-bold text-lg">View All Backups</div>
+                  <div className="text-sm text-white/90">
+                    Manage and restore article backups
+                  </div>
+                </div>
+              </Button>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <Button
+                  onClick={() => navigate('/admin/articles/backups')}
+                  variant="outline"
+                  size="lg"
+                  className="h-full flex-col gap-2 bg-background hover:bg-accent"
+                >
+                  <Save className="h-5 w-5 text-amber-500" />
+                  <span className="text-sm font-semibold">Create Backup</span>
+                </Button>
+                <Button
+                  onClick={() => navigate('/admin/articles/backups')}
+                  variant="outline"
+                  size="lg"
+                  className="h-full flex-col gap-2 bg-background hover:bg-accent"
+                >
+                  <RotateCcw className="h-5 w-5 text-amber-500" />
+                  <span className="text-sm font-semibold">Restore Data</span>
+                </Button>
+              </div>
+            </div>
+            <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+              <Shield className="h-4 w-4" />
+              <span>Automatic backups are created before all destructive operations</span>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Quick Actions */}
         <div className="mb-8">
