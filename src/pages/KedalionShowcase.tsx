@@ -100,14 +100,22 @@ const KedalionShowcase = () => {
                     </div>
                   </div>
                   
-                  <div className="flex flex-wrap gap-3 pt-4">
+                  <div className="flex flex-wrap gap-3 pt-4 justify-center">
                     <Button asChild size="default" className="gap-2 bg-amber-500 text-black hover:bg-amber-600">
                       <a href="https://dev.kedalion.io/" target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-4 h-4" />
                         Visit Website
                       </a>
                     </Button>
-                    <Button asChild size="default" className="gap-2 bg-amber-500/10 text-amber-500 border border-amber-500/30 hover:bg-amber-500/20">
+                    <Button 
+                      size="default" 
+                      className="gap-2 bg-amber-500 text-black hover:bg-amber-600"
+                      onClick={() => document.getElementById('video-section')?.scrollIntoView({ behavior: 'smooth' })}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      Watch Video
+                    </Button>
+                    <Button asChild size="default" className="gap-2 bg-amber-500 text-black hover:bg-amber-600">
                       <a href="mailto:contact@kedalion.io">
                         <Mail className="w-4 h-4" />
                         Contact Kedalion
@@ -120,7 +128,7 @@ const KedalionShowcase = () => {
           </section>
 
           {/* Video Section */}
-          <section className="py-12 md:py-16 px-4 bg-muted/30">
+          <section id="video-section" className="py-12 md:py-16 px-4 bg-muted/30">
             <div className="container mx-auto max-w-6xl">
               <div className="text-center mb-8">
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
