@@ -39,13 +39,15 @@ async function runBackgroundImport(
   supabaseClient: any,
   historyId: string,
   userId: string,
+  jsonUrl: string,
+  verticalSlug: string,
   startPage: number = 1,
   maxPages: number = 50 // Process 50 pages per run
 ) {
   const startTime = Date.now();
-  console.log(`🚀 Background import started from page ${startPage}, max ${maxPages} pages`);
+  console.log(`🚀 Background import started for ${verticalSlug} from page ${startPage}, max ${maxPages} pages`);
 
-  const progressChannel = supabaseClient.channel(`aviation-fast-${userId}`, {
+  const progressChannel = supabaseClient.channel(`${verticalSlug}-fast-${userId}`, {
     config: { broadcast: { self: true } }
   });
   
@@ -76,7 +78,7 @@ async function runBackgroundImport(
   let hasMorePages = true;
   const endPage = startPage + maxPages - 1;
 
-  console.log(`🔄 Starting FAST import from page ${startPage} to ${endPage}`);
+  console.log(`🔄 Starting FAST import for ${verticalSlug} from page ${startPage} to ${endPage}`);
 
   await broadcastProgress({
     phase: 'processing',
@@ -85,7 +87,7 @@ async function runBackgroundImport(
     articlesCollected: 0,
     imported: 0,
     skipped: 0,
-    message: 'Starting fast import in background...'
+    message: `Starting ${verticalSlug} fast import in background...`
   });
 
   try {
@@ -93,12 +95,12 @@ async function runBackgroundImport(
       // Check for cancellation
       const { data: shouldCancel } = await supabaseClient
         .rpc('should_cancel_import', {
-          p_vertical_slug: 'aviation',
+          p_vertical_slug: verticalSlug,
           p_started_after: new Date(startTime).toISOString()
         });
 
       if (shouldCancel) {
-        console.log('🛑 Import cancelled by user');
+        console.log(`🛑 ${verticalSlug} import cancelled by user`);
         await broadcastProgress({
           phase: 'cancelled',
           currentPage: currentPage,
@@ -107,7 +109,7 @@ async function runBackgroundImport(
           imported: results.imported,
           skipped: results.skipped,
           errors: results.errors,
-          message: 'Import cancelled by user'
+          message: `${verticalSlug} import cancelled by user`
         });
         
         await supabaseClient
@@ -126,9 +128,11 @@ async function runBackgroundImport(
         return results;
       }
 
-      console.log(`\n📄 Fetching page ${currentPage} (${currentPage - startPage + 1}/${maxPages})...`);
+      console.log(`\n📄 Fetching ${verticalSlug} page ${currentPage} (${currentPage - startPage + 1}/${maxPages})...`);
       
-      const pageUrl = `https://platodata.ai/aviation/json/?page=${currentPage}`;
+      // Support URL with or without trailing slash
+      const baseUrl = jsonUrl.endsWith('/') ? jsonUrl : jsonUrl + '/';
+      const pageUrl = `${baseUrl}?page=${currentPage}`;
       const response = await fetch(pageUrl);
       
       if (!response.ok) {
@@ -208,7 +212,7 @@ async function runBackgroundImport(
             content: cleanedText,
             excerpt: excerpt,
             published_at: article.date || new Date().toISOString(),
-            vertical_slug: 'aviation',
+            vertical_slug: verticalSlug,
             author: 'PlatoData',
             read_time: '3 Min Read',
             image_url: article.metadata?.featuredImage?.[0] || null,
@@ -426,12 +430,12 @@ Deno.serve(async (req) => {
         .eq('id', historyId);
     } else {
       // Create new import history
-      console.log(`Admin ${user.email} starting new FAST import`);
+      console.log(`Admin ${user.email} starting new FAST import for ${verticalSlug}`);
       
       const { data: historyRecord } = await supabaseClient
         .from('import_history')
         .insert({
-          vertical_slug: 'aviation',
+          vertical_slug: verticalSlug,
           status: 'in_progress',
           imported_by: user.id,
           started_at: new Date().toISOString()
@@ -449,10 +453,10 @@ Deno.serve(async (req) => {
     // Start background import using waitUntil (50 pages at a time)
     const ctx = Deno.env.get('DENO_REGION') ? (globalThis as any).EdgeRuntime : null;
     if (ctx && ctx.waitUntil) {
-      ctx.waitUntil(runBackgroundImport(supabaseClient, historyId, user.id, startPage, 50));
+      ctx.waitUntil(runBackgroundImport(supabaseClient, historyId, user.id, jsonUrl, verticalSlug, startPage, 50));
     } else {
       // Fallback for local development
-      runBackgroundImport(supabaseClient, historyId, user.id, startPage, 50).catch(console.error);
+      runBackgroundImport(supabaseClient, historyId, user.id, jsonUrl, verticalSlug, startPage, 50).catch(console.error);
     }
 
     // Return immediately
@@ -460,10 +464,10 @@ Deno.serve(async (req) => {
       JSON.stringify({
         success: true,
         message: resumeFromHistory 
-          ? `Resuming import from page ${startPage} in background.`
-          : 'Import started in background. Processes 50 pages at a time.',
+          ? `Resuming ${verticalSlug} import from page ${startPage} in background.`
+          : `${verticalSlug} import started in background. Processes 50 pages at a time.`,
         historyId: historyId,
-        vertical: 'aviation',
+        vertical: verticalSlug,
         startPage,
         note: 'Click Resume if needed after each batch completes.'
       }),
