@@ -8,7 +8,10 @@ Deno.serve(async (req) => {
 
   try {
     const authHeader = req.headers.get("Authorization");
+    console.log("Auth header present:", !!authHeader);
+    
     if (!authHeader) {
+      console.error("Missing authorization header");
       return new Response(JSON.stringify({ error: "No authorization header" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -26,24 +29,49 @@ Deno.serve(async (req) => {
       error: userError,
     } = await supabaseClient.auth.getUser();
 
+    console.log("User check - error:", userError, "user:", user?.id);
+
     if (userError || !user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      console.error("Auth error:", userError?.message || "No user found");
+      return new Response(JSON.stringify({ 
+        error: "Authentication failed", 
+        details: userError?.message || "No user found" 
+      }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const { data: isAdmin } = await supabaseClient.rpc("has_role", {
+    const { data: isAdmin, error: roleError } = await supabaseClient.rpc("has_role", {
       _user_id: user.id,
       _role: "admin",
     });
 
+    console.log("Role check - isAdmin:", isAdmin, "error:", roleError, "user_id:", user.id);
+
+    if (roleError) {
+      console.error("Role check error:", roleError);
+      return new Response(JSON.stringify({ 
+        error: "Role check failed", 
+        details: roleError.message 
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (!isAdmin) {
-      return new Response(JSON.stringify({ error: "Admin access required" }), {
+      console.error("User is not admin:", user.id, user.email);
+      return new Response(JSON.stringify({ 
+        error: "Admin access required",
+        details: "Your account does not have admin privileges" 
+      }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    console.log("Admin access granted for user:", user.email);
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",

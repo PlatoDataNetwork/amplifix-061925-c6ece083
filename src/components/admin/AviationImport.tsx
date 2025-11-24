@@ -192,12 +192,26 @@ export const AviationImport = ({
 
     setClearingAerospace(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error('Authentication required');
+      // Verify authentication
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        toast.error('Session error', {
+          description: sessionError.message
+        });
         return;
       }
 
+      if (!session) {
+        console.error('No active session found');
+        toast.error('Authentication required', {
+          description: 'Please sign in to perform this action'
+        });
+        return;
+      }
+
+      console.log('Calling clear-aerospace-articles function...');
       toast.info('Deleting all aerospace articles...');
 
       const { data, error } = await supabase.functions.invoke('clear-aerospace-articles', {
@@ -206,7 +220,15 @@ export const AviationImport = ({
         }
       });
 
-      if (error) throw error;
+      console.log('Function response:', { data, error });
+
+      if (error) {
+        console.error('Function error:', error);
+        toast.error('Failed to clear aerospace data', {
+          description: error.message || 'Unknown error'
+        });
+        return;
+      }
 
       toast.success('Aerospace data cleared!', {
         description: `Deleted ${data.deleted} articles`
