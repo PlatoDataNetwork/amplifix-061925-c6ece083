@@ -117,6 +117,24 @@ Deno.serve(async (req) => {
 
     console.log(`Starting import for vertical: ${vertical}, offset: ${offset}`);
 
+    // Create import history record
+    const importStartTime = new Date();
+    const { data: historyData, error: historyError } = await supabaseClient
+      .from('import_history')
+      .insert({
+        vertical_slug: vertical,
+        imported_by: user.id,
+        started_at: importStartTime.toISOString(),
+        status: 'in_progress'
+      })
+      .select()
+      .single();
+
+    if (historyError || !historyData) {
+      console.error('Failed to create import history:', historyError);
+    }
+    const historyId = historyData?.id;
+
     // Fetch articles from PlatoData API - use custom URL if provided
     const apiUrl = customJsonUrl || `https://dashboard.platodata.io/json/${vertical}.json`;
     console.log(`Fetching from: ${apiUrl}`);
@@ -165,6 +183,48 @@ Deno.serve(async (req) => {
 
     // Process articles in batches
     for (let i = 0; i < articles.length; i += BATCH_SIZE) {
+      // Check for cancellation if we have a history ID
+      if (historyId) {
+        const { data: shouldCancel } = await supabaseClient
+          .rpc('should_cancel_import', {
+            p_vertical_slug: vertical,
+            p_started_after: importStartTime.toISOString()
+          });
+
+        if (shouldCancel) {
+          console.log('🛑 Import cancelled by user');
+          
+          if (historyId) {
+            await supabaseClient
+              .from('import_history')
+              .update({
+                status: 'cancelled',
+                completed_at: new Date().toISOString(),
+                imported_count: insertedCount,
+                error_count: errorCount,
+                total_processed: insertedCount + errorCount,
+                duration_ms: Date.now() - startTime
+              })
+              .eq('id', historyId);
+          }
+          
+          return new Response(
+            JSON.stringify({
+              success: false,
+              message: 'Import cancelled by user',
+              vertical,
+              totalArticles: articles.length,
+              insertedArticles: insertedCount,
+              errors: errorCount,
+              cancelled: true
+            }),
+            { 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+            }
+          );
+        }
+      }
+
       const batchNum = Math.floor(i / BATCH_SIZE) + 1;
       const batch = articles.slice(i, i + BATCH_SIZE);
       

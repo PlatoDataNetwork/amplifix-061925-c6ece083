@@ -193,6 +193,7 @@ export type Database = {
       }
       import_history: {
         Row: {
+          cancelled: boolean
           completed_at: string | null
           created_at: string | null
           duration_ms: number | null
@@ -208,6 +209,7 @@ export type Database = {
           vertical_slug: string
         }
         Insert: {
+          cancelled?: boolean
           completed_at?: string | null
           created_at?: string | null
           duration_ms?: number | null
@@ -223,6 +225,7 @@ export type Database = {
           vertical_slug: string
         }
         Update: {
+          cancelled?: boolean
           completed_at?: string | null
           created_at?: string | null
           duration_ms?: number | null
@@ -406,6 +409,10 @@ export type Database = {
           rank: number
           title: string
         }[]
+      }
+      should_cancel_import: {
+        Args: { p_started_after: string; p_vertical_slug: string }
+        Returns: boolean
       }
     }
     Enums: {
