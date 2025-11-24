@@ -27,6 +27,8 @@ const companyUpdates: CompanyUpdate[] = [
   { name: 'Karbon-X', tags: ['Carbon'], type: 'stock', subtitle: 'Carbon Credits', main_sector: 'CARBON' },
   { name: 'Micropolis', tags: ['AI', 'Automotive', 'Robotics'], type: 'stock', subtitle: 'AI Autonomous Vehicles', main_sector: 'ROBOTICS' },
   { name: 'Blockwell', tags: ['AI', 'Blockchain', 'Cyber'], type: 'private', subtitle: 'AI-Powered Blockchain Security', main_sector: 'CYBERSECURITY' },
+  { name: 'StorageBlue', tags: ['Real Estate', 'Investment'], type: 'private', subtitle: 'Real Estate Investment & Management', main_sector: 'REAL ESTATE' },
+  { name: 'Versa TV', tags: ['Media', 'Streaming', 'Entertainment'], type: 'private', subtitle: 'Next-Gen Streaming Platform', main_sector: 'MEDIA' },
 ];
 
 Deno.serve(async (req) => {
@@ -82,6 +84,56 @@ Deno.serve(async (req) => {
             website: 'https://blockwell.ai',
             search_url: 'https://www.bing.com/copilotsearch?q=Blockwell%20Blockchain%20Crypto&FORM=CSSCOP',
             thumbnail: '/lovable-uploads/blockwell-thumbnail.png',
+            button_text: 'View Showcase',
+            disabled: false,
+          })
+          .select();
+
+        if (error) {
+          console.error(`Error inserting ${company.name}:`, error);
+          results.push({ company: company.name, success: false, error: error.message });
+        } else {
+          console.log(`Inserted ${company.name}`);
+          results.push({ company: company.name, success: true, data });
+        }
+      } else if (company.name === 'StorageBlue') {
+        // Insert StorageBlue if it doesn't exist
+        const { data, error } = await supabase
+          .from('showcase_companies')
+          .insert({
+            company_name: company.name,
+            description: 'Leading real estate investment and management company specializing in storage facilities and commercial properties across strategic locations.',
+            tags: company.tags,
+            type: company.type,
+            subtitle: company.subtitle,
+            main_sector: company.main_sector,
+            link: '/showcase/storageblue',
+            website: 'https://storagebluecapital.com',
+            button_text: 'View Showcase',
+            disabled: false,
+          })
+          .select();
+
+        if (error) {
+          console.error(`Error inserting ${company.name}:`, error);
+          results.push({ company: company.name, success: false, error: error.message });
+        } else {
+          console.log(`Inserted ${company.name}`);
+          results.push({ company: company.name, success: true, data });
+        }
+      } else if (company.name === 'Versa TV') {
+        // Insert Versa TV if it doesn't exist
+        const { data, error } = await supabase
+          .from('showcase_companies')
+          .insert({
+            company_name: company.name,
+            description: 'Next-generation media and streaming platform delivering innovative content and entertainment experiences through cutting-edge technology.',
+            tags: company.tags,
+            type: company.type,
+            subtitle: company.subtitle,
+            main_sector: company.main_sector,
+            link: '/showcase/versatv',
+            website: 'https://VersaTV.io',
             button_text: 'View Showcase',
             disabled: false,
           })
