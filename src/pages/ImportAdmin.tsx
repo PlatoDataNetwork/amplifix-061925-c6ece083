@@ -119,6 +119,7 @@ const ImportAdmin = () => {
   const [lastAiStatsUpdate, setLastAiStatsUpdate] = useState<Date | null>(null);
   const [lastAiProgress, setLastAiProgress] = useState<number>(0);
   const [autoRestartEnabled, setAutoRestartEnabled] = useState(true);
+  const [isClearing, setIsClearing] = useState(false);
   const [aerospaceStats, setAerospaceStats] = useState<{
     totalInDb: number;
     missingUrls: number;
@@ -1029,6 +1030,67 @@ const ImportAdmin = () => {
       });
       setProgressStatus('Error occurred');
       setImporting(null);
+    }
+  };
+
+  const clearAllAerospaceData = async () => {
+    if (!confirm('⚠️ This will permanently delete ALL Aerospace data including:\n- All articles\n- Import history\n- AI processing jobs\n- Article backups\n\nThis action cannot be undone. Are you sure?')) {
+      return;
+    }
+    
+    try {
+      setIsClearing(true);
+      toast.info('Clearing all Aerospace data...', {
+        description: 'This may take a moment'
+      });
+      
+      // Delete aerospace articles (this will cascade to article_tags)
+      const { error: articlesError } = await supabase
+        .from('articles')
+        .delete()
+        .eq('vertical_slug', 'aerospace');
+      
+      if (articlesError) throw articlesError;
+
+      // Delete aerospace import history
+      const { error: historyError } = await supabase
+        .from('import_history')
+        .delete()
+        .eq('vertical_slug', 'aerospace');
+      
+      if (historyError) throw historyError;
+
+      // Delete aerospace AI processing jobs
+      const { error: jobsError } = await supabase
+        .from('ai_processing_jobs')
+        .delete()
+        .eq('vertical_slug', 'aerospace');
+      
+      if (jobsError) throw jobsError;
+
+      // Delete aerospace article backups
+      const { error: backupsError } = await supabase
+        .from('article_backups')
+        .delete()
+        .eq('vertical_slug', 'aerospace');
+      
+      if (backupsError) throw backupsError;
+
+      toast.success('All Aerospace data cleared successfully', {
+        description: 'Articles, import history, AI jobs, and backups have been removed.',
+        duration: 5000
+      });
+      
+      await loadMetrics();
+      await loadAerospaceArticleCounts();
+      await loadAerospaceStats();
+    } catch (error) {
+      console.error('Error clearing Aerospace data:', error);
+      toast.error('Failed to clear all Aerospace data', {
+        description: error instanceof Error ? error.message : 'An error occurred'
+      });
+    } finally {
+      setIsClearing(false);
     }
   };
 
@@ -2383,6 +2445,25 @@ const ImportAdmin = () => {
                     size="lg"
                   >
                     🔄 Refresh Stats
+                  </Button>
+                  
+                  <Button
+                    onClick={clearAllAerospaceData}
+                    disabled={isClearing || !aerospaceArticleCounts?.total}
+                    variant="destructive"
+                    className="h-14 px-6"
+                    size="lg"
+                  >
+                    {isClearing ? (
+                      <>
+                        <span className="animate-spin mr-2">⏳</span>
+                        Clearing...
+                      </>
+                    ) : (
+                      <>
+                        🗑️ Clear All Aerospace Data
+                      </>
+                    )}
                   </Button>
                 </div>
 
