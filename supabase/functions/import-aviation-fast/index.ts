@@ -76,6 +76,8 @@ async function runBackgroundImport(
       let articles: AviationArticle[];
       if (Array.isArray(responseData)) {
         articles = responseData;
+      } else if (responseData && typeof responseData === 'object' && Array.isArray(responseData.posts)) {
+        articles = responseData.posts;
       } else if (responseData && typeof responseData === 'object' && Array.isArray(responseData.articles)) {
         articles = responseData.articles;
       } else if (responseData && typeof responseData === 'object' && Array.isArray(responseData.data)) {
