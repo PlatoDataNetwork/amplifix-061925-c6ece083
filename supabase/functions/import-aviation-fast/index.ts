@@ -263,11 +263,13 @@ Deno.serve(async (req) => {
 
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? "",
       {
         global: { headers: { Authorization: authHeader } },
       },
     );
+
+    console.log("Authenticating user...");
 
     const {
       data: { user },
@@ -275,11 +277,14 @@ Deno.serve(async (req) => {
     } = await supabaseClient.auth.getUser();
 
     if (userError || !user) {
+      console.error("Authentication failed:", userError);
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    console.log("User authenticated:", user.email);
 
     const { data: isAdmin, error: roleError } = await supabaseClient.rpc("has_role", {
       _user_id: user.id,
@@ -287,11 +292,14 @@ Deno.serve(async (req) => {
     });
 
     if (roleError || !isAdmin) {
+      console.error("Admin check failed:", roleError, "isAdmin:", isAdmin);
       return new Response(JSON.stringify({ error: "Admin access required" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    console.log("Admin verified");
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
