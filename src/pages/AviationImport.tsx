@@ -376,14 +376,34 @@ export default function AviationImport() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button
-              onClick={startImport}
-              disabled={importing}
-              size="lg"
-              className="w-full"
-            >
-              {importing ? "Import Running..." : "Start New Import"}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={startImport}
+                disabled={importing}
+                size="lg"
+                className="flex-1"
+              >
+                {importing ? "Import Running..." : "Start New Import"}
+              </Button>
+              <Button
+                onClick={async () => {
+                  const { data, error } = await supabase.functions.invoke('auto-resume-imports');
+                  if (error) {
+                    toast({ title: "Resume failed", description: error.message, variant: "destructive" });
+                  } else {
+                    toast({ title: "Import resumed!", description: data.message });
+                    loadStats();
+                    loadImportHistory();
+                  }
+                }}
+                disabled={importing}
+                size="lg"
+                variant="outline"
+              >
+                <PlayCircle className="mr-2 h-4 w-4" />
+                Resume
+              </Button>
+            </div>
 
             {progress && (
               <div className="space-y-3 p-4 bg-muted rounded-lg">
