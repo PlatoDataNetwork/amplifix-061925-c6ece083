@@ -107,7 +107,6 @@ export const AviationImport = ({
   const [cleaningDuplicates, setCleaningDuplicates] = useState(false);
   const [customJsonUrl, setCustomJsonUrl] = useState<string>('https://platodata.ai/aviation/json/');
   const [customVertical, setCustomVertical] = useState<string>('aviation');
-  const [clearingAerospace, setClearingAerospace] = useState(false);
 
   // Fetch duplicates count
   const loadDuplicatesCount = async () => {
@@ -183,69 +182,6 @@ export const AviationImport = ({
   useEffect(() => {
     loadDuplicatesCount();
   }, [aviationArticleCounts]);
-
-  // Clear aerospace data
-  const clearAerospaceData = async () => {
-    if (!confirm('Are you sure you want to delete ALL aerospace articles? This cannot be undone.')) {
-      return;
-    }
-
-    setClearingAerospace(true);
-    try {
-      // Verify authentication
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError) {
-        console.error('Session error:', sessionError);
-        toast.error('Session error', {
-          description: sessionError.message
-        });
-        return;
-      }
-
-      if (!session) {
-        console.error('No active session found');
-        toast.error('Authentication required', {
-          description: 'Please sign in to perform this action'
-        });
-        return;
-      }
-
-      console.log('Calling clear-aerospace-articles function...');
-      toast.info('Deleting all aerospace articles...');
-
-      const { data, error } = await supabase.functions.invoke('clear-aerospace-articles', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
-        }
-      });
-
-      console.log('Function response:', { data, error });
-
-      if (error) {
-        console.error('Function error:', error);
-        toast.error('Failed to clear aerospace data', {
-          description: error.message || 'Unknown error'
-        });
-        return;
-      }
-
-      toast.success('Aerospace data cleared!', {
-        description: `Deleted ${data.deleted} articles`
-      });
-
-      // Reload metrics
-      await onLoadMetrics();
-      await onLoadAviationArticleCounts();
-    } catch (error) {
-      console.error('Error clearing aerospace data:', error);
-      toast.error('Failed to clear aerospace data', {
-        description: error instanceof Error ? error.message : 'Unknown error'
-      });
-    } finally {
-      setClearingAerospace(false);
-    }
-  };
 
   const importAviationFast = async () => {
     if (!customJsonUrl.trim() || !customVertical.trim()) {
@@ -496,18 +432,6 @@ export const AviationImport = ({
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="flex gap-2 mb-2">
-              <Button
-                onClick={clearAerospaceData}
-                disabled={clearingAerospace || importing !== null}
-                variant="outline"
-                size="sm"
-                className="text-orange-600 hover:text-orange-700 border-orange-600"
-              >
-                {clearingAerospace ? 'Clearing...' : '🗑️ Clear Aerospace Data'}
-              </Button>
-            </div>
-
             <div className="space-y-2">
               <label className="text-sm font-medium">JSON Feed URL</label>
               <input
