@@ -14,6 +14,12 @@ interface AIProcessingStats {
   processingRate: number;
 }
 
+interface ProcessingJob {
+  id: string;
+  started_at: string;
+  status: string;
+}
+
 interface SpeedDataPoint {
   time: string;
   articlesPerMinute: number;
@@ -34,6 +40,8 @@ export default function AviationAIProgressDashboard() {
   const [estimatedCompletionTime, setEstimatedCompletionTime] = useState<string | null>(null);
   const [currentSpeed, setCurrentSpeed] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [currentJob, setCurrentJob] = useState<ProcessingJob | null>(null);
+  const [elapsedTime, setElapsedTime] = useState<string>("");
 
   const loadStats = async (isManualRefresh = false) => {
     if (isManualRefresh) {
@@ -41,6 +49,19 @@ export default function AviationAIProgressDashboard() {
     }
     console.log("🔄 Loading AI processing stats...");
     try {
+      // Get current processing job
+      const { data: jobData, error: jobError } = await supabase
+        .from("ai_processing_jobs")
+        .select("id, started_at, status")
+        .eq("vertical_slug", "aviation")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (!jobError && jobData) {
+        setCurrentJob(jobData);
+      }
+
       // Get total count
       const { count: total, error: totalError } = await supabase
         .from("articles")
@@ -112,6 +133,34 @@ export default function AviationAIProgressDashboard() {
       }
     }
   };
+
+  // Calculate elapsed time
+  useEffect(() => {
+    if (!currentJob) return;
+
+    const updateElapsedTime = () => {
+      const startTime = new Date(currentJob.started_at).getTime();
+      const now = Date.now();
+      const diffMs = now - startTime;
+      
+      const hours = Math.floor(diffMs / (1000 * 60 * 60));
+      const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+      
+      if (hours > 0) {
+        setElapsedTime(`${hours}h ${minutes}m ${seconds}s`);
+      } else if (minutes > 0) {
+        setElapsedTime(`${minutes}m ${seconds}s`);
+      } else {
+        setElapsedTime(`${seconds}s`);
+      }
+    };
+
+    updateElapsedTime();
+    const timer = setInterval(updateElapsedTime, 1000);
+
+    return () => clearInterval(timer);
+  }, [currentJob]);
 
   useEffect(() => {
     console.log("🚀 Initializing AviationAIProgressDashboard");
@@ -222,6 +271,31 @@ export default function AviationAIProgressDashboard() {
             </p>
           </div>
         </div>
+
+        {/* Job Info & Status */}
+        {currentJob && (
+          <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm">
+                <Clock className="h-4 w-4 text-primary" />
+                <span className="font-medium">Processing Started:</span>
+                <span className="text-muted-foreground">
+                  {new Date(currentJob.started_at).toLocaleString()}
+                </span>
+              </div>
+              <Badge variant={currentJob.status === "completed" ? "default" : "secondary"}>
+                {currentJob.status}
+              </Badge>
+            </div>
+            {currentJob.status === "in_progress" && (
+              <div className="flex items-center gap-2 text-sm">
+                <Clock className="h-4 w-4 text-blue-600" />
+                <span className="font-medium">Elapsed Time:</span>
+                <span className="text-blue-600 font-mono">{elapsedTime}</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Status Indicator */}
         <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t">
