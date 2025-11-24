@@ -136,10 +136,6 @@ async function processImportBatch(
             continue;
           }
 
-          const rawContent = article.content || article.excerpt || '';
-          const cleanedText = cleanText(rawContent);
-          const excerpt = article.excerpt || cleanedText.substring(0, 300);
-
           // Extract title from various formats
           const title = typeof article.title === 'string' 
             ? article.title 
