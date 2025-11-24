@@ -55,6 +55,7 @@ import ExternalArticle from "./pages/ExternalArticle";
 import VerticalPage from "./pages/VerticalPage";
 import ImportAdmin from "./pages/ImportAdmin";
 import PlatoImport from "./pages/PlatoImport";
+import AviationImport from "./pages/AviationImport";
 import UserManagement from "./pages/UserManagement";
 import AdminDashboard from "./pages/AdminDashboard";
 import ArticleEditor from "./pages/ArticleEditor";
@@ -139,7 +140,8 @@ const App = () => (
           <Route path="/admin/analytics" element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
           <Route path="/admin/security" element={<AdminRoute><SecurityDashboard /></AdminRoute>} />
         <Route path="/admin/import" element={<AdminRoute><ImportAdmin /></AdminRoute>} />
-        <Route path="/admin/plato-import" element={<AdminRoute><PlatoImport /></AdminRoute>} />
+          <Route path="/admin/plato-import" element={<AdminRoute><PlatoImport /></AdminRoute>} />
+          <Route path="/admin/aviation-import" element={<AdminRoute><AviationImport /></AdminRoute>} />
           <Route path="/admin/users" element={<AdminRoute><UserManagement /></AdminRoute>} />
           <Route path="/admin/articles" element={<AdminRoute><ArticleEditor /></AdminRoute>} />
           <Route path="/admin/articles/edit/:id" element={<AdminRoute><ArticleEditor /></AdminRoute>} />
