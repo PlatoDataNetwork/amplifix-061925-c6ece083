@@ -298,6 +298,7 @@ async function runBackgroundImport(
           lastProcessedPage: currentPage - 1,
           nextPage: hasMore ? currentPage : null,
           resumable: hasMore,
+          jsonUrl: jsonUrl,
           note: hasMore
             ? `Processed ${maxPages} pages. Auto-resume will continue from page ${currentPage}.`
             : 'Fast import without AI processing completed'
@@ -358,6 +359,10 @@ Deno.serve(async (req) => {
   const startTime = Date.now();
   const body = await req.json().catch(() => ({}));
   const resumeFromHistory = body.resumeHistoryId;
+  const jsonUrl = body.jsonUrl || 'https://platodata.ai/aviation/json/';
+  const verticalSlug = body.verticalSlug || 'aviation';
+  
+  console.log(`📥 Fast import request - Vertical: ${verticalSlug}, URL: ${jsonUrl}`);
 
   const authHeader = req.headers.get('Authorization');
   if (!authHeader) {
@@ -420,14 +425,19 @@ Deno.serve(async (req) => {
 
       historyId = resumeFromHistory;
       startPage = (existingHistory.metadata as any)?.nextPage || 1;
+      const savedVerticalSlug = existingHistory.vertical_slug;
+      const savedJsonUrl = (existingHistory.metadata as any)?.jsonUrl || jsonUrl;
       
-      console.log(`Admin ${user.email} resuming import from page ${startPage}`);
+      console.log(`Admin ${user.email} resuming ${savedVerticalSlug} import from page ${startPage}`);
 
       // Update status
       await supabaseClient
         .from('import_history')
         .update({ status: 'in_progress' })
         .eq('id', historyId);
+        
+      // Use saved values when resuming
+      return await runBackgroundImport(supabaseClient, historyId, user.id, savedJsonUrl, savedVerticalSlug, startPage, 50);
     } else {
       // Create new import history
       console.log(`Admin ${user.email} starting new FAST import for ${verticalSlug}`);
