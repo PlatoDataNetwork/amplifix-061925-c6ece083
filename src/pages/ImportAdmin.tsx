@@ -110,6 +110,11 @@ const ImportAdmin = () => {
     aiProcessed: number;
     remaining: number;
   } | null>(null);
+  const [aviationArticleCounts, setAviationArticleCounts] = useState<{
+    total: number;
+    aiProcessed: number;
+    remaining: number;
+  } | null>(null);
   const [lastCountsUpdate, setLastCountsUpdate] = useState<Date | null>(null);
   const [lastAiStatsUpdate, setLastAiStatsUpdate] = useState<Date | null>(null);
   const [lastAiProgress, setLastAiProgress] = useState<number>(0);
@@ -169,6 +174,36 @@ const ImportAdmin = () => {
       setLastAiProgress(currentProgress);
     } catch (error) {
       console.error('Error loading aerospace article counts:', error);
+    }
+  };
+
+  // Load aviation article counts
+  const loadAviationArticleCounts = async () => {
+    try {
+      const { count: total, error: totalError } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', 'aviation')
+        .not('content', 'is', null);
+
+      if (totalError) throw totalError;
+
+      const { count: processed, error: processedError } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', 'aviation')
+        .not('content', 'is', null)
+        .eq('metadata->>ai_processed', 'true');
+
+      if (processedError) throw processedError;
+
+      setAviationArticleCounts({
+        total: total || 0,
+        aiProcessed: processed || 0,
+        remaining: (total || 0) - (processed || 0)
+      });
+    } catch (error) {
+      console.error('Error loading aviation article counts:', error);
     }
   };
   
@@ -321,10 +356,12 @@ const ImportAdmin = () => {
     loadAiJobStats();
     loadAerospaceStats();
     loadAerospaceArticleCounts();
+    loadAviationArticleCounts();
     
     const interval = setInterval(() => {
       loadAiJobStats();
       loadAerospaceArticleCounts();
+      loadAviationArticleCounts();
     }, 5000); // Refresh every 5 seconds
 
     return () => clearInterval(interval);
@@ -345,6 +382,29 @@ const ImportAdmin = () => {
         () => {
           // Reload counts when any aerospace article is updated
           loadAerospaceArticleCounts();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // Real-time updates for aviation articles
+  useEffect(() => {
+    const channel = supabase
+      .channel('aviation-articles-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'articles',
+          filter: 'vertical_slug=eq.aviation'
+        },
+        () => {
+          loadAviationArticleCounts();
         }
       )
       .subscribe();
@@ -1337,6 +1397,42 @@ const ImportAdmin = () => {
                   >
                     {importing === 'aviation-fast' ? 'Importing Aviation...' : 'Import Aviation (Fast, No AI)'}
                   </Button>
+                  <Button
+                    onClick={async () => {
+                      if (!confirm('Delete all Aviation articles? This cannot be undone.')) return;
+                      try {
+                        toast.info('Deleting Aviation articles...');
+                        const { data: { session } } = await supabase.auth.getSession();
+                        if (!session) {
+                          toast.error('Authentication required');
+                          return;
+                        }
+                        
+                        const { error } = await supabase
+                          .from('articles')
+                          .delete()
+                          .eq('vertical_slug', 'aviation');
+                        
+                        if (error) throw error;
+                        
+                        await supabase
+                          .from('import_history')
+                          .delete()
+                          .eq('vertical_slug', 'aviation');
+                        
+                        toast.success('Aviation articles cleared');
+                        await loadMetrics();
+                      } catch (error) {
+                        console.error('Clear error:', error);
+                        toast.error('Failed to clear articles');
+                      }
+                    }}
+                    variant="destructive"
+                    className="h-14 px-6"
+                    size="lg"
+                  >
+                    Clear Aviation
+                  </Button>
                 </div>
 
                 {importing === 'aviation-fast' && aviationProgress && (
@@ -1363,6 +1459,25 @@ const ImportAdmin = () => {
                           <p className="text-xs text-muted-foreground mb-1">Skipped</p>
                           <p className="text-2xl font-bold text-yellow-500">{aviationProgress.skipped || 0}</p>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {aviationArticleCounts && (
+                  <div className="p-4 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 rounded-lg border border-blue-500/30">
+                    <div className="grid grid-cols-3 gap-3 text-sm">
+                      <div className="p-3 bg-background/80 rounded border">
+                        <p className="text-xs text-muted-foreground mb-1">Total Aviation</p>
+                        <p className="text-2xl font-bold text-blue-500">{aviationArticleCounts.total}</p>
+                      </div>
+                      <div className="p-3 bg-background/80 rounded border">
+                        <p className="text-xs text-muted-foreground mb-1">AI Processed</p>
+                        <p className="text-2xl font-bold text-green-500">{aviationArticleCounts.aiProcessed}</p>
+                      </div>
+                      <div className="p-3 bg-background/80 rounded border">
+                        <p className="text-xs text-muted-foreground mb-1">Remaining</p>
+                        <p className="text-2xl font-bold text-yellow-500">{aviationArticleCounts.remaining}</p>
                       </div>
                     </div>
                   </div>
