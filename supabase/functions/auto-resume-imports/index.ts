@@ -73,7 +73,15 @@ async function processImportBatch(
     while (hasMorePages && currentPage <= endPage) {
       console.log(`📄 Fetching page ${currentPage} (${currentPage - startPage + 1}/${maxPages})...`);
       
-      const pageUrl = `https://platodata.ai/aerospace/json/?page=${currentPage}`;
+      // Get vertical slug from history
+      const { data: historyData } = await supabaseClient
+        .from('import_history')
+        .select('vertical_slug')
+        .eq('id', historyId)
+        .single();
+      
+      const verticalSlug = historyData?.vertical_slug || 'aerospace';
+      const pageUrl = `https://platodata.ai/${verticalSlug}/json/?page=${currentPage}`;
       const response = await fetch(pageUrl);
       
       if (!response.ok) {
@@ -132,13 +140,29 @@ async function processImportBatch(
           const cleanedText = cleanText(rawContent);
           const excerpt = article.excerpt || cleanedText.substring(0, 300);
 
+          // Extract title from various formats
+          const title = typeof article.title === 'string' 
+            ? article.title 
+            : article.title?.rendered || '';
+          
+          // Extract content and excerpt
+          const rawContent = typeof article.content === 'string'
+            ? article.content
+            : article.content?.rendered || '';
+          const rawExcerpt = typeof article.excerpt === 'string'
+            ? article.excerpt
+            : article.excerpt?.rendered || '';
+
+          const cleanedText = cleanText(rawContent);
+          const excerpt = cleanText(rawExcerpt) || cleanedText.substring(0, 300);
+
           const articleData = {
             post_id: postId,
-            title: article.title,
+            title: title,
             content: cleanedText,
             excerpt: excerpt,
             published_at: article.date || new Date().toISOString(),
-            vertical_slug: 'aerospace',
+            vertical_slug: verticalSlug,
             author: 'PlatoData',
             read_time: '3 Min Read',
             image_url: article.metadata?.featuredImage?.[0] || null,
@@ -253,12 +277,12 @@ Deno.serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Find imports that need resuming
+    // Find imports that need resuming (both aerospace and aviation)
     const { data: pendingImports, error } = await supabaseClient
       .from('import_history')
       .select('*')
       .eq('status', 'partial')
-      .eq('vertical_slug', 'aerospace')
+      .in('vertical_slug', ['aerospace', 'aviation'])
       .order('started_at', { ascending: false })
       .limit(10);
 
