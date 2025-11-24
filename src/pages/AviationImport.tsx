@@ -48,6 +48,7 @@ export default function AviationImport() {
   const [stats, setStats] = useState({
     totalArticles: 0,
     lastImportDate: null as string | null,
+    lastImportSkipped: 0,
   });
 
   useEffect(() => {
@@ -132,10 +133,20 @@ export default function AviationImport() {
       .limit(1)
       .single();
 
+    const { data: lastImport } = await supabase
+      .from('import_history')
+      .select('skipped_count')
+      .eq('vertical_slug', 'aviation')
+      .eq('status', 'completed')
+      .order('completed_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
     if (!error) {
       setStats({
         totalArticles: count || 0,
         lastImportDate: latestArticle?.created_at || null,
+        lastImportSkipped: lastImport?.skipped_count || 0,
       });
     }
   };
@@ -248,7 +259,7 @@ export default function AviationImport() {
           <h1 className="text-4xl font-bold">Aviation Import Dashboard</h1>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -271,6 +282,16 @@ export default function AviationImport() {
                   ? new Date(stats.lastImportDate).toLocaleDateString()
                   : "Never"}
               </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Duplicates Skipped</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-4xl font-bold text-yellow-600">{stats.lastImportSkipped}</p>
+              <p className="text-xs text-muted-foreground mt-1">Last import</p>
             </CardContent>
           </Card>
 
