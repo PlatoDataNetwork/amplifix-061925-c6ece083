@@ -72,6 +72,24 @@ const ImportAdmin = () => {
     lastPage: number | null;
     status: string;
   } | null>(null);
+  const [aviationProgress, setAviationProgress] = useState<{
+    phase: string;
+    currentPage: number;
+    totalPages: number;
+    articlesCollected: number;
+    imported?: number;
+    skipped?: number;
+    errors?: number;
+    percentComplete?: number;
+    message: string;
+  } | null>(null);
+  const [aviationImportTotals, setAviationImportTotals] = useState<{
+    imported: number;
+    skipped: number;
+    totalProcessed: number;
+    lastPage: number | null;
+    status: string;
+  } | null>(null);
   const [aiProcessingActive, setAiProcessingActive] = useState(false);
   const [parallelChunksInProgress, setParallelChunksInProgress] = useState<Set<number>>(new Set());
   const [aiProcessingJobId, setAiProcessingJobId] = useState<string | null>(null);
@@ -872,6 +890,88 @@ const ImportAdmin = () => {
     }
   };
 
+  const importAviationFast = async () => {
+    setImporting('aviation-fast');
+    setProgressStatus('Starting FAST Aviation import (no AI)...');
+    setProgressPercent(0);
+    setAviationProgress(null);
+
+    if (!importStartTime) {
+      setImportStartTime(new Date());
+      setSessionDuration(0);
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('User not found');
+        return;
+      }
+
+      const progressChannel = supabase
+        .channel(`aviation-fast-${user.id}`)
+        .on('broadcast', { event: 'import-progress' }, (payload) => {
+          console.log('📡 Aviation Progress update:', payload);
+          setAviationProgress(payload.payload);
+          
+          if (payload.payload.phase === 'processing') {
+            const rawPercent = 20 + (payload.payload.currentPage / 10);
+            const clampedPercent = Math.max(0, Math.min(99, Math.round(rawPercent)));
+            setProgressPercent(clampedPercent);
+            setProgressStatus(payload.payload.message);
+          } else if (payload.payload.phase === 'complete') {
+            setProgressPercent(100);
+            setProgressStatus('Aviation import complete!');
+            
+            const imported = payload.payload.imported || 0;
+            if (imported > 0) {
+              setSessionArticlesImported(prev => prev + imported);
+            }
+            
+            setTimeout(() => {
+              setImporting(null);
+              supabase.removeChannel(progressChannel);
+            }, 3000);
+          } else if (payload.payload.phase === 'error') {
+            setProgressStatus(`Error: ${payload.payload.message}`);
+            setTimeout(() => {
+              setImporting(null);
+              supabase.removeChannel(progressChannel);
+            }, 5000);
+          }
+        })
+        .subscribe();
+
+      toast.info('Starting FAST Aviation import in background...', {
+        description: 'Aviation articles will be imported using JSON feed. Check Import History below for progress.'
+      });
+
+      setProgressPercent(10);
+      setProgressStatus('Launching background import...');
+
+      const { data, error } = await supabase.functions.invoke('import-aviation-fast', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      await loadMetrics();
+    } catch (error) {
+      console.error('Error importing Aviation:', error);
+      toast.error('Failed to start Aviation import', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+      setProgressStatus('Error occurred');
+      setImporting(null);
+    }
+  };
+
   const importAerospaceWithAI = async () => {
     setImporting('aerospace-ai');
     setProgressStatus('Starting FULL FEED import (all pages)...');
@@ -1205,6 +1305,66 @@ const ImportAdmin = () => {
                         </div>
                       </div>
                     )}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Aviation Bulk Import */}
+          <Card className="mb-8 border-blue-500/50 bg-gradient-to-br from-blue-500/5 to-blue-500/10">
+            <CardHeader>
+              <CardTitle className="text-2xl flex items-center gap-2">
+                ✈️ Aviation FAST Import (No AI)
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Quick import of Aviation articles using JSON feed without AI processing.
+              </p>
+              <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                <p className="text-xs text-blue-700 dark:text-blue-300 font-medium">
+                  🤖 Auto-Resume Enabled: Imports process 50 pages at a time and automatically continue every 2 minutes until complete. No manual intervention needed!
+                </p>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex gap-2">
+                  <Button
+                    onClick={importAviationFast}
+                    disabled={importing !== null}
+                    className="flex-1 h-14 text-lg bg-blue-600 hover:bg-blue-700"
+                    size="lg"
+                  >
+                    {importing === 'aviation-fast' ? 'Importing Aviation...' : 'Import Aviation (Fast, No AI)'}
+                  </Button>
+                </div>
+
+                {importing === 'aviation-fast' && aviationProgress && (
+                  <div className="space-y-4">
+                    <div className="space-y-3 p-4 bg-background rounded-lg border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{progressStatus}</span>
+                        <span className="text-sm text-muted-foreground">{progressPercent}%</span>
+                      </div>
+                      <Progress value={progressPercent} className="h-2" />
+                    </div>
+
+                    <div className="p-4 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-lg border border-blue-500/30">
+                      <div className="grid grid-cols-3 gap-3 text-sm">
+                        <div className="p-3 bg-background/80 rounded border">
+                          <p className="text-xs text-muted-foreground mb-1">Current Page</p>
+                          <p className="text-2xl font-bold text-blue-500">{aviationProgress.currentPage}</p>
+                        </div>
+                        <div className="p-3 bg-background/80 rounded border">
+                          <p className="text-xs text-muted-foreground mb-1">Imported</p>
+                          <p className="text-2xl font-bold text-green-500">{aviationProgress.imported || 0}</p>
+                        </div>
+                        <div className="p-3 bg-background/80 rounded border">
+                          <p className="text-xs text-muted-foreground mb-1">Skipped</p>
+                          <p className="text-2xl font-bold text-yellow-500">{aviationProgress.skipped || 0}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
