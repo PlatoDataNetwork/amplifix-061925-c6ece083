@@ -105,6 +105,8 @@ export const AviationImport = ({
   const [aiProcessingJobId, setAiProcessingJobId] = useState<string | null>(null);
   const [duplicatesCount, setDuplicatesCount] = useState<number>(0);
   const [cleaningDuplicates, setCleaningDuplicates] = useState(false);
+  const [customJsonUrl, setCustomJsonUrl] = useState<string>('https://platodata.ai/aviation/json/');
+  const [customVertical, setCustomVertical] = useState<string>('aviation');
 
   // Fetch duplicates count
   const loadDuplicatesCount = async () => {
@@ -182,8 +184,13 @@ export const AviationImport = ({
   }, [aviationArticleCounts]);
 
   const importAviationFast = async () => {
+    if (!customJsonUrl.trim() || !customVertical.trim()) {
+      toast.error('Please provide both JSON URL and vertical slug');
+      return;
+    }
+
     onSetImporting('aviation-fast');
-    onSetProgressStatus('Starting Aviation FAST import (no AI)...');
+    onSetProgressStatus(`Starting ${customVertical} FAST import (no AI)...`);
     onSetProgressPercent(0);
 
     try {
@@ -199,23 +206,33 @@ export const AviationImport = ({
         return;
       }
 
-      toast.info('Starting Aviation FAST import in background...', {
+      toast.info(`Starting ${customVertical} FAST import in background...`, {
         description: 'All articles will be imported without timing out. Check Import History below for progress.'
       });
 
       onSetProgressPercent(10);
-      onSetProgressStatus('Launching Aviation background import...');
+      onSetProgressStatus(`Launching ${customVertical} background import...`);
 
       const { data, error } = await supabase.functions.invoke('import-aviation-fast', {
         headers: {
           Authorization: `Bearer ${session.access_token}`
+        },
+        body: {
+          jsonUrl: customJsonUrl,
+          verticalSlug: customVertical
         }
+      });
+
+      if (error) throw error;
+
+      toast.success(`${customVertical} import started!`, {
+        description: 'Check Import History table for progress'
       });
 
       await onLoadMetrics();
     } catch (error) {
-      console.error('Error importing Aviation:', error);
-      toast.error('Failed to start Aviation import', {
+      console.error('Error importing:', error);
+      toast.error(`Failed to start ${customVertical} import`, {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
       onSetProgressStatus('Error occurred');
@@ -399,7 +416,7 @@ export const AviationImport = ({
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-2xl flex items-center gap-2">
-              ✈️ Aviation Fast Import (No AI)
+              🚀 Fast Import (No AI)
             </CardTitle>
             <div className="flex gap-6">
               <div className="text-right">
@@ -415,13 +432,37 @@ export const AviationImport = ({
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">JSON Feed URL</label>
+              <input
+                type="text"
+                value={customJsonUrl}
+                onChange={(e) => setCustomJsonUrl(e.target.value)}
+                placeholder="https://platodata.ai/aviation/json/"
+                className="w-full px-3 py-2 border rounded-md bg-background"
+                disabled={importing !== null}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Vertical Slug</label>
+              <input
+                type="text"
+                value={customVertical}
+                onChange={(e) => setCustomVertical(e.target.value)}
+                placeholder="aviation"
+                className="w-full px-3 py-2 border rounded-md bg-background"
+                disabled={importing !== null}
+              />
+            </div>
+
             <Button
               onClick={importAviationFast}
-              disabled={importing !== null}
+              disabled={importing !== null || !customJsonUrl.trim() || !customVertical.trim()}
               className="w-full h-14 text-lg bg-blue-600 hover:bg-blue-700"
               size="lg"
             >
-              {importing === 'aviation-fast' ? 'Importing Aviation...' : 'Import Aviation (Fast, No AI)'}
+              {importing === 'aviation-fast' ? `Importing ${customVertical}...` : 'Start Fast Import (No AI)'}
             </Button>
 
             {importing === 'aviation-fast' && aviationProgress && (
