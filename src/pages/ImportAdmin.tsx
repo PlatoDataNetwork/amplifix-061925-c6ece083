@@ -1469,19 +1469,44 @@ const ImportAdmin = () => {
               {importing && (
                 <Button
                   variant="destructive"
-                  onClick={() => {
-                    setImporting(null);
-                    setProgressStatus('');
-                    setProgressPercent(0);
-                    setCurrentVertical('');
-                    setAerospaceProgress(null);
-                    setAviationProgress(null);
-                    setAiProcessingActive(false);
-                    toast.info('Import UI reset - background processes will complete');
+                  onClick={async () => {
+                    try {
+                      // Mark current imports as cancelled in database
+                      const { error } = await supabase
+                        .from('import_history')
+                        .update({ 
+                          cancelled: true,
+                          status: 'cancelled',
+                          completed_at: new Date().toISOString()
+                        })
+                        .eq('status', 'in_progress');
+
+                      if (error) {
+                        console.error('Error cancelling imports:', error);
+                        toast.error('Failed to cancel imports');
+                      } else {
+                        toast.success('Import cancellation signal sent');
+                      }
+
+                      // Reset UI state
+                      setImporting(null);
+                      setProgressStatus('');
+                      setProgressPercent(0);
+                      setCurrentVertical('');
+                      setAerospaceProgress(null);
+                      setAviationProgress(null);
+                      setAiProcessingActive(false);
+                      
+                      // Reload metrics after a short delay
+                      setTimeout(() => loadMetrics(), 2000);
+                    } catch (err) {
+                      console.error('Error in cancel handler:', err);
+                      toast.error('Failed to cancel imports');
+                    }
                   }}
                   className="gap-2"
                 >
-                  ⏹️ Stop/Reset Import
+                  ⏹️ Cancel Import
                 </Button>
               )}
               <Button

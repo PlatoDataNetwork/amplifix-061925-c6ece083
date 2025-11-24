@@ -90,6 +90,42 @@ async function runBackgroundImport(
 
   try {
     while (hasMorePages && currentPage <= endPage) {
+      // Check for cancellation
+      const { data: shouldCancel } = await supabaseClient
+        .rpc('should_cancel_import', {
+          p_vertical_slug: 'aviation',
+          p_started_after: new Date(startTime).toISOString()
+        });
+
+      if (shouldCancel) {
+        console.log('🛑 Import cancelled by user');
+        await broadcastProgress({
+          phase: 'cancelled',
+          currentPage: currentPage,
+          totalPages: currentPage,
+          articlesCollected: results.totalInFeed,
+          imported: results.imported,
+          skipped: results.skipped,
+          errors: results.errors,
+          message: 'Import cancelled by user'
+        });
+        
+        await supabaseClient
+          .from('import_history')
+          .update({
+            status: 'cancelled',
+            completed_at: new Date().toISOString(),
+            imported_count: results.imported,
+            skipped_count: results.skipped,
+            error_count: results.errors,
+            total_processed: results.totalInFeed,
+            duration_ms: Date.now() - startTime
+          })
+          .eq('id', historyId);
+        
+        return results;
+      }
+
       console.log(`\n📄 Fetching page ${currentPage} (${currentPage - startPage + 1}/${maxPages})...`);
       
       const pageUrl = `https://platodata.ai/aviation/json/?page=${currentPage}`;
