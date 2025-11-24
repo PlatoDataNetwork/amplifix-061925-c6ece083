@@ -75,6 +75,9 @@ verify_jwt = true
 [functions.backfill-aviation-urls]
 verify_jwt = true
 
+[functions.cleanup-aviation-duplicates]
+verify_jwt = true
+
 [functions.cleanup-aerospace-duplicates]
 verify_jwt = true
 
