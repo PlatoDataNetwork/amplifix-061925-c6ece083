@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Brain, CheckCircle, Clock, AlertCircle, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Brain, CheckCircle, Clock, AlertCircle, TrendingUp, RefreshCw } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 interface AIProcessingStats {
@@ -32,8 +33,12 @@ export default function AviationAIProgressDashboard() {
   const [previousProcessed, setPreviousProcessed] = useState(0);
   const [estimatedCompletionTime, setEstimatedCompletionTime] = useState<string | null>(null);
   const [currentSpeed, setCurrentSpeed] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const loadStats = async () => {
+  const loadStats = async (isManualRefresh = false) => {
+    if (isManualRefresh) {
+      setIsRefreshing(true);
+    }
     console.log("🔄 Loading AI processing stats...");
     try {
       // Get total count
@@ -101,6 +106,10 @@ export default function AviationAIProgressDashboard() {
     } catch (error) {
       console.error("Error loading AI processing stats:", error);
       setIsLoading(false);
+    } finally {
+      if (isManualRefresh) {
+        setIsRefreshing(false);
+      }
     }
   };
 
@@ -150,13 +159,26 @@ export default function AviationAIProgressDashboard() {
   return (
     <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Brain className="h-6 w-6 text-primary" />
-          AI Processing Progress - Aviation
-        </CardTitle>
-        <CardDescription>
-          Real-time tracking of AI article formatting and tag extraction
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <Brain className="h-6 w-6 text-primary" />
+              AI Processing Progress - Aviation
+            </CardTitle>
+            <CardDescription>
+              Real-time tracking of AI article formatting and tag extraction
+            </CardDescription>
+          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => loadStats(true)}
+            disabled={isRefreshing}
+            className="shrink-0"
+          >
+            <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Progress Bar */}
