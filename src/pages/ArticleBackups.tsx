@@ -30,34 +30,63 @@ const ArticleBackups = () => {
 
   const loadBackups = async () => {
     try {
-      const { data, error } = await (supabase as any)
+      // Get distinct backup names with their metadata
+      const { data: distinctBackups, error: distinctError } = await supabase
         .from('article_backups')
         .select('backup_name, backup_description, created_at')
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error("Error loading backups:", error);
-        throw error;
+      if (distinctError) {
+        console.error("Error loading backups:", distinctError);
+        throw distinctError;
       }
 
-      // Group by backup_name and count articles
-      const backupMap = new Map<string, Backup>();
+      if (!distinctBackups || distinctBackups.length === 0) {
+        setBackups([]);
+        setIsLoading(false);
+        return;
+      }
+
+      // Group by backup_name to get unique backups
+      const backupMap = new Map<string, { backup_description: string | null, created_at: string }>();
       
-      data?.forEach((item: any) => {
-        const existing = backupMap.get(item.backup_name);
-        if (existing) {
-          existing.article_count++;
-        } else {
+      distinctBackups.forEach((item: any) => {
+        if (!backupMap.has(item.backup_name)) {
           backupMap.set(item.backup_name, {
-            backup_name: item.backup_name,
             backup_description: item.backup_description,
-            created_at: item.created_at,
-            article_count: 1
+            created_at: item.created_at
           });
         }
       });
 
-      setBackups(Array.from(backupMap.values()));
+      // Now get the count for each backup
+      const backupsWithCounts = await Promise.all(
+        Array.from(backupMap.entries()).map(async ([backupName, metadata]) => {
+          const { count, error: countError } = await supabase
+            .from('article_backups')
+            .select('*', { count: 'exact', head: true })
+            .eq('backup_name', backupName);
+
+          if (countError) {
+            console.error(`Error counting backup ${backupName}:`, countError);
+            return null;
+          }
+
+          return {
+            backup_name: backupName,
+            backup_description: metadata.backup_description,
+            created_at: metadata.created_at,
+            article_count: count || 0
+          };
+        })
+      );
+
+      // Filter out any null results and sort by creation date
+      const validBackups = backupsWithCounts
+        .filter((b): b is Backup => b !== null)
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+      setBackups(validBackups);
     } catch (error) {
       console.error("Error loading backups:", error);
       toast.error("Failed to load backups");
@@ -140,7 +169,8 @@ const ArticleBackups = () => {
   const handleCreateBackup = async () => {
     if (!confirm(
       "Create a full backup of ALL articles?\n\n" +
-      "This will save the current state of all articles in the database."
+      "This will save the current state of all articles in the database.\n" +
+      "This may take several minutes for large datasets."
     )) {
       return;
     }
@@ -148,27 +178,56 @@ const ArticleBackups = () => {
     setIsCreatingBackup(true);
 
     try {
-      toast.info("Creating full backup of all articles...");
-
-      // Get all articles
-      const { data: articles, error: fetchError } = await supabase
+      // First, get the total count
+      const { count: totalCount, error: countError } = await supabase
         .from('articles')
-        .select('*');
+        .select('*', { count: 'exact', head: true });
 
-      if (fetchError) throw fetchError;
+      if (countError) throw countError;
 
-      if (!articles || articles.length === 0) {
+      if (!totalCount || totalCount === 0) {
         toast.error("No articles found to backup");
+        setIsCreatingBackup(false);
         return;
       }
+
+      toast.info(`Starting backup of ${totalCount.toLocaleString()} articles...`, {
+        duration: 5000
+      });
+
+      // Fetch all articles in batches (Supabase default limit is 1000)
+      const batchSize = 1000;
+      let allArticles: any[] = [];
+      let fetchedCount = 0;
+
+      for (let offset = 0; offset < totalCount; offset += batchSize) {
+        const { data: batch, error: fetchError } = await supabase
+          .from('articles')
+          .select('*')
+          .range(offset, offset + batchSize - 1);
+
+        if (fetchError) throw fetchError;
+
+        if (batch) {
+          allArticles = allArticles.concat(batch);
+          fetchedCount += batch.length;
+          
+          toast.info(`Fetching articles: ${fetchedCount.toLocaleString()} / ${totalCount.toLocaleString()}`, {
+            duration: 1000,
+            id: 'fetch-progress'
+          });
+        }
+      }
+
+      toast.success(`Fetched ${allArticles.length.toLocaleString()} articles. Starting backup...`);
 
       // Create backup name with timestamp
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const backupName = `manual-backup-${timestamp}`;
-      const backupDescription = `Manual full backup created on ${new Date().toLocaleString()}`;
+      const backupDescription = `Manual full backup of ${allArticles.length.toLocaleString()} articles created on ${new Date().toLocaleString()}`;
 
       // Prepare backup records
-      const backups = articles.map(article => ({
+      const backups = allArticles.map(article => ({
         article_id: article.id,
         title: article.title,
         content: article.content,
@@ -184,21 +243,38 @@ const ArticleBackups = () => {
       }));
 
       // Insert in chunks to avoid timeout
-      const chunkSize = 1000;
-      for (let i = 0; i < backups.length; i += chunkSize) {
-        const chunk = backups.slice(i, i + chunkSize);
+      const insertChunkSize = 1000;
+      let insertedCount = 0;
+      
+      for (let i = 0; i < backups.length; i += insertChunkSize) {
+        const chunk = backups.slice(i, i + insertChunkSize);
         const { error: insertError } = await supabase
           .from('article_backups')
           .insert(chunk);
 
-        if (insertError) throw insertError;
+        if (insertError) {
+          console.error("Insert error at chunk", i, insertError);
+          throw insertError;
+        }
+
+        insertedCount += chunk.length;
+        toast.info(`Backing up: ${insertedCount.toLocaleString()} / ${backups.length.toLocaleString()}`, {
+          duration: 1000,
+          id: 'insert-progress'
+        });
       }
 
-      toast.success(`Successfully backed up ${articles.length} articles!`);
+      toast.success(`✅ Successfully backed up ${allArticles.length.toLocaleString()} articles!`, {
+        description: `Backup: ${backupName}`,
+        duration: 10000
+      });
+      
       await loadBackups(); // Refresh the list
     } catch (error) {
       console.error("Error creating backup:", error);
-      toast.error("Failed to create backup");
+      toast.error("Failed to create backup", {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
     } finally {
       setIsCreatingBackup(false);
     }
