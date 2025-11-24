@@ -9,6 +9,13 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, Loader2, Database, Trash2, RotateCcw, AlertCircle, Save } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Backup {
   backup_name: string;
@@ -23,10 +30,30 @@ const ArticleBackups = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [processingBackup, setProcessingBackup] = useState<string | null>(null);
   const [isCreatingBackup, setIsCreatingBackup] = useState(false);
+  const [selectedVertical, setSelectedVertical] = useState<string>("");
+  const [verticals, setVerticals] = useState<Array<{ slug: string; count: number }>>([]);
 
   useEffect(() => {
     loadBackups();
+    loadVerticals();
   }, []);
+
+  const loadVerticals = async () => {
+    try {
+      const { data, error } = await supabase.rpc('get_vertical_article_counts');
+      
+      if (error) throw error;
+      
+      if (data) {
+        setVerticals(data.map((v: any) => ({ 
+          slug: v.vertical_slug, 
+          count: v.article_count 
+        })));
+      }
+    } catch (error) {
+      console.error("Error loading verticals:", error);
+    }
+  };
 
   const loadBackups = async () => {
     try {
@@ -166,10 +193,13 @@ const ArticleBackups = () => {
     }
   };
 
-  const handleCreateBackup = async () => {
+  const handleCreateBackup = async (verticalSlug?: string) => {
+    const isVerticalBackup = !!verticalSlug;
+    const backupType = isVerticalBackup ? `${verticalSlug}` : "ALL";
+    
     if (!confirm(
-      "Create a full backup of ALL articles?\n\n" +
-      "This will save the current state of all articles in the database.\n" +
+      `Create a ${isVerticalBackup ? 'vertical-specific' : 'full'} backup of ${backupType} articles?\n\n` +
+      "This will save the current state of " + (isVerticalBackup ? `all ${verticalSlug} articles` : "all articles in the database") + ".\n" +
       "This may take several minutes for large datasets."
     )) {
       return;
@@ -178,20 +208,27 @@ const ArticleBackups = () => {
     setIsCreatingBackup(true);
 
     try {
-      // First, get the total count
-      const { count: totalCount, error: countError } = await supabase
+      // Build query based on whether it's a vertical-specific backup
+      let query = supabase
         .from('articles')
         .select('*', { count: 'exact', head: true });
+      
+      if (isVerticalBackup) {
+        query = query.eq('vertical_slug', verticalSlug);
+      }
+
+      // First, get the total count
+      const { count: totalCount, error: countError } = await query;
 
       if (countError) throw countError;
 
       if (!totalCount || totalCount === 0) {
-        toast.error("No articles found to backup");
+        toast.error(`No ${isVerticalBackup ? verticalSlug : ''} articles found to backup`);
         setIsCreatingBackup(false);
         return;
       }
 
-      toast.info(`Starting backup of ${totalCount.toLocaleString()} articles...`, {
+      toast.info(`Starting backup of ${totalCount.toLocaleString()} ${isVerticalBackup ? verticalSlug : ''} articles...`, {
         duration: 5000
       });
 
@@ -201,10 +238,16 @@ const ArticleBackups = () => {
       let fetchedCount = 0;
 
       for (let offset = 0; offset < totalCount; offset += batchSize) {
-        const { data: batch, error: fetchError } = await supabase
+        let fetchQuery = supabase
           .from('articles')
           .select('*')
           .range(offset, offset + batchSize - 1);
+        
+        if (isVerticalBackup) {
+          fetchQuery = fetchQuery.eq('vertical_slug', verticalSlug);
+        }
+
+        const { data: batch, error: fetchError } = await fetchQuery;
 
         if (fetchError) throw fetchError;
 
@@ -223,8 +266,12 @@ const ArticleBackups = () => {
 
       // Create backup name with timestamp
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-      const backupName = `manual-backup-${timestamp}`;
-      const backupDescription = `Manual full backup of ${allArticles.length.toLocaleString()} articles created on ${new Date().toLocaleString()}`;
+      const backupName = isVerticalBackup 
+        ? `${verticalSlug}-backup-${timestamp}`
+        : `full-backup-${timestamp}`;
+      const backupDescription = isVerticalBackup
+        ? `${verticalSlug.toUpperCase()} vertical backup of ${allArticles.length.toLocaleString()} articles created on ${new Date().toLocaleString()}`
+        : `Full backup of ${allArticles.length.toLocaleString()} articles created on ${new Date().toLocaleString()}`;
 
       // Prepare backup records
       const backups = allArticles.map(article => ({
@@ -264,7 +311,7 @@ const ArticleBackups = () => {
         });
       }
 
-      toast.success(`✅ Successfully backed up ${allArticles.length.toLocaleString()} articles!`, {
+      toast.success(`✅ Successfully backed up ${allArticles.length.toLocaleString()} ${isVerticalBackup ? verticalSlug : ''} articles!`, {
         description: `Backup: ${backupName}`,
         duration: 10000
       });
@@ -299,19 +346,81 @@ const ArticleBackups = () => {
               </Button>
               <h1 className="text-3xl font-bold">Article Backups</h1>
             </div>
-            <Button
-              onClick={handleCreateBackup}
-              disabled={isCreatingBackup}
-              className="gap-2"
-            >
-              {isCreatingBackup ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Save className="h-4 w-4" />
-              )}
-              Create Full Backup Now
-            </Button>
           </div>
+
+          {/* Backup Creation Section */}
+          <Card className="mb-6 border-2 border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Save className="h-5 w-5" />
+                Create New Backup
+              </CardTitle>
+              <CardDescription>
+                Create a full system backup or backup a specific vertical
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Full Backup */}
+              <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-lg border border-blue-500/20">
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg mb-1">Full System Backup</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Backup all articles from all verticals (~97,000 articles)
+                  </p>
+                </div>
+                <Button
+                  onClick={() => handleCreateBackup()}
+                  disabled={isCreatingBackup}
+                  size="lg"
+                  className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                >
+                  {isCreatingBackup ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Database className="h-4 w-4" />
+                  )}
+                  Backup All
+                </Button>
+              </div>
+
+              {/* Vertical-Specific Backup */}
+              <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-lg border border-amber-500/20">
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg mb-1">Vertical-Specific Backup</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Backup articles from a single vertical (aerospace, aviation, etc.)
+                  </p>
+                  <div className="mt-3">
+                    <Select value={selectedVertical} onValueChange={setSelectedVertical}>
+                      <SelectTrigger className="w-[300px]">
+                        <SelectValue placeholder="Select a vertical to backup..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {verticals.map((vertical) => (
+                          <SelectItem key={vertical.slug} value={vertical.slug}>
+                            {vertical.slug} ({vertical.count.toLocaleString()} articles)
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <Button
+                  onClick={() => selectedVertical && handleCreateBackup(selectedVertical)}
+                  disabled={isCreatingBackup || !selectedVertical}
+                  size="lg"
+                  className="gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+                >
+                  {isCreatingBackup ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4" />
+                  )}
+                  Backup Vertical
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Info Alert */}
           <Alert className="mb-6">
