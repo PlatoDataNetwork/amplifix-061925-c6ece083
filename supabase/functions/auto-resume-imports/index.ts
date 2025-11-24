@@ -264,6 +264,18 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Auto-resume temporarily disabled for AI processing
+  console.log('🤖 Auto-resume called but disabled - AI processing in progress');
+  return new Response(
+    JSON.stringify({ 
+      success: true, 
+      message: 'Auto-resume temporarily disabled for AI processing',
+      resumedCount: 0 
+    }),
+    { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+  );
+
+  /* DISABLED CODE - Uncomment to re-enable auto-resume
   console.log('🤖 Auto-resume cron job triggered');
 
   try {
@@ -345,4 +357,5 @@ Deno.serve(async (req) => {
       }
     );
   }
+  */ // END DISABLED CODE
 });
