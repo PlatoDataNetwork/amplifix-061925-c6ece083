@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, ArrowUpDown, Search } from "lucide-react";
+import { Users, ArrowUpDown, Search, Database } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -1373,6 +1373,14 @@ const ImportAdmin = () => {
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-4xl font-bold">Article Import Admin</h1>
             <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={() => navigate("/admin/articles/backups")}
+                className="gap-2"
+              >
+                <Database className="h-4 w-4" />
+                View Backups & Restore
+              </Button>
               <Button 
                 onClick={() => navigate('/admin/plato-import')}
                 variant="default"

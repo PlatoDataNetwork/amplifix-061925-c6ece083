@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowLeft, Loader2, Database, Trash2, RotateCcw, AlertCircle } from "lucide-react";
+import { ArrowLeft, Loader2, Database, Trash2, RotateCcw, AlertCircle, Save } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 
@@ -22,6 +22,7 @@ const ArticleBackups = () => {
   const [backups, setBackups] = useState<Backup[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [processingBackup, setProcessingBackup] = useState<string | null>(null);
+  const [isCreatingBackup, setIsCreatingBackup] = useState(false);
 
   useEffect(() => {
     loadBackups();
@@ -100,6 +101,12 @@ const ArticleBackups = () => {
   };
 
   const handleDelete = async (backupName: string) => {
+    // Prevent deletion of automatic safety backups
+    if (backupName.startsWith('pre-clear-') || backupName.startsWith('safety-backup-')) {
+      toast.error("Cannot delete automatic safety backups. These are protected to prevent data loss.");
+      return;
+    }
+
     if (!confirm(
       `Are you sure you want to delete the backup "${backupName}"?\n\n` +
       "This action cannot be undone."
@@ -130,6 +137,73 @@ const ArticleBackups = () => {
     }
   };
 
+  const handleCreateBackup = async () => {
+    if (!confirm(
+      "Create a full backup of ALL articles?\n\n" +
+      "This will save the current state of all articles in the database."
+    )) {
+      return;
+    }
+
+    setIsCreatingBackup(true);
+
+    try {
+      toast.info("Creating full backup of all articles...");
+
+      // Get all articles
+      const { data: articles, error: fetchError } = await supabase
+        .from('articles')
+        .select('*');
+
+      if (fetchError) throw fetchError;
+
+      if (!articles || articles.length === 0) {
+        toast.error("No articles found to backup");
+        return;
+      }
+
+      // Create backup name with timestamp
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const backupName = `manual-backup-${timestamp}`;
+      const backupDescription = `Manual full backup created on ${new Date().toLocaleString()}`;
+
+      // Prepare backup records
+      const backups = articles.map(article => ({
+        article_id: article.id,
+        title: article.title,
+        content: article.content,
+        excerpt: article.excerpt,
+        author: article.author,
+        published_at: article.published_at,
+        image_url: article.image_url,
+        vertical_slug: article.vertical_slug,
+        post_id: article.post_id,
+        metadata: article.metadata,
+        backup_name: backupName,
+        backup_description: backupDescription,
+      }));
+
+      // Insert in chunks to avoid timeout
+      const chunkSize = 1000;
+      for (let i = 0; i < backups.length; i += chunkSize) {
+        const chunk = backups.slice(i, i + chunkSize);
+        const { error: insertError } = await supabase
+          .from('article_backups')
+          .insert(chunk);
+
+        if (insertError) throw insertError;
+      }
+
+      toast.success(`Successfully backed up ${articles.length} articles!`);
+      await loadBackups(); // Refresh the list
+    } catch (error) {
+      console.error("Error creating backup:", error);
+      toast.error("Failed to create backup");
+    } finally {
+      setIsCreatingBackup(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <MainHeader />
@@ -137,23 +211,38 @@ const ArticleBackups = () => {
       <div className="container mx-auto px-4 pt-24 pb-12">
         <div className="max-w-5xl mx-auto">
           {/* Header */}
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="outline"
+                onClick={() => navigate("/admin/import")}
+                className="gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Import
+              </Button>
+              <h1 className="text-3xl font-bold">Article Backups</h1>
+            </div>
             <Button
-              variant="outline"
-              onClick={() => navigate("/admin/articles/format")}
+              onClick={handleCreateBackup}
+              disabled={isCreatingBackup}
               className="gap-2"
             >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Formatter
+              {isCreatingBackup ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Save className="h-4 w-4" />
+              )}
+              Create Full Backup Now
             </Button>
-            <h1 className="text-3xl font-bold">Article Backups</h1>
           </div>
 
           {/* Info Alert */}
           <Alert className="mb-6">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Backups are created automatically before bulk operations. You can restore articles from any backup or delete old backups to free up space.
+              <strong>Automatic backups</strong> are created before destructive operations (prefixed with "pre-clear-" or "safety-backup-") and cannot be deleted to prevent data loss. 
+              <strong>Manual backups</strong> can be created anytime and deleted when no longer needed.
             </AlertDescription>
           </Alert>
 
@@ -216,8 +305,17 @@ const ArticleBackups = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => handleDelete(backup.backup_name)}
-                          disabled={processingBackup === backup.backup_name}
+                          disabled={
+                            processingBackup === backup.backup_name ||
+                            backup.backup_name.startsWith('pre-clear-') ||
+                            backup.backup_name.startsWith('safety-backup-')
+                          }
                           className="gap-2 text-destructive hover:text-destructive"
+                          title={
+                            backup.backup_name.startsWith('pre-clear-') || backup.backup_name.startsWith('safety-backup-')
+                              ? 'Automatic safety backups cannot be deleted'
+                              : 'Delete this backup'
+                          }
                         >
                           <Trash2 className="h-4 w-4" />
                           Delete
