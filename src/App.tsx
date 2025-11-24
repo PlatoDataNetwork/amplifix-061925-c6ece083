@@ -30,6 +30,8 @@ import AbatisShowcase from "./pages/AbatisShowcase";
 import FacialDXShowcase from "./pages/FacialDXShowcase";
 import ForexGPTShowcase from "./pages/ForexGPTShowcase";
 import BlockwellShowcase from "./pages/BlockwellShowcase";
+import StorageBlueShowcase from "./pages/StorageBlueShowcase";
+import VersaTVShowcase from "./pages/VersaTVShowcase";
 import Showcase from "./pages/Showcase";
 import Solutions from "./pages/Solutions";
 import PublicCompanies from "./pages/PublicCompanies";
@@ -178,6 +180,8 @@ const App = () => (
               <Route path="/:lang/showcase/abatis" element={<AbatisShowcase />} />
               <Route path="/:lang/showcase/forex-gpt" element={<ForexGPTShowcase />} />
               <Route path="/:lang/showcase/blockwell" element={<BlockwellShowcase />} />
+              <Route path="/:lang/showcase/storageblue" element={<StorageBlueShowcase />} />
+              <Route path="/:lang/showcase/versatv" element={<VersaTVShowcase />} />
               <Route path="/:lang/showcase/vsee-health" element={<VseeHealthShowcase />} />
               <Route path="/:lang/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/:lang/solutions/private-companies" element={<PrivateCompanies />} />
