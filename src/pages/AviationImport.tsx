@@ -10,6 +10,8 @@ import Footer from "@/components/Footer";
 import { Plane, PlayCircle, PauseCircle, BarChart3 } from "lucide-react";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { useNavigate } from "react-router-dom";
+import AviationUrlBackfill from "@/components/AviationUrlBackfill";
+import AviationAIProcessing from "@/components/AviationAIProcessing";
 
 interface ImportProgress {
   currentPage: number;
@@ -290,6 +292,11 @@ export default function AviationImport() {
             )}
           </CardContent>
         </Card>
+
+        <div className="space-y-6 mb-8">
+          <AviationUrlBackfill />
+          <AviationAIProcessing />
+        </div>
 
         <Card>
           <CardHeader>
