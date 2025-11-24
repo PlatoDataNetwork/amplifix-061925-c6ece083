@@ -28,14 +28,14 @@ const KedalionShowcase = () => {
           content="Own tokenized access to verified in-ground gold and silver before mining begins. Fully on-chain and auditable." 
         />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="/lovable-uploads/kedalion-icon.png" />
+        <meta property="og:image" content="/lovable-uploads/kedalion-logo-white.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Kedalion - Tokenized In-Ground Gold & Silver" />
         <meta 
           name="twitter:description" 
           content="Own tokenized access to verified in-ground gold and silver before mining begins." 
         />
-        <link rel="preload" as="image" href="/lovable-uploads/kedalion-icon.png" />
+        <link rel="preload" as="image" href="/lovable-uploads/kedalion-logo-white.png" />
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-amber-500/5">
@@ -50,9 +50,9 @@ const KedalionShowcase = () => {
                 <div className="space-y-4 md:space-y-6">
                   <div className="inline-block">
                     <img 
-                      src="/lovable-uploads/kedalion-icon.png" 
+                      src="/lovable-uploads/kedalion-logo-white.png" 
                       alt="Kedalion Logo" 
-                      className="h-24 md:h-32 w-auto"
+                      className="h-16 md:h-20 w-auto"
                     />
                   </div>
                   <div>
