@@ -207,6 +207,17 @@ const Showcase = () => {
       };
     }
     
+    // Special case: StorageBlue gets blue theme
+    if (showcase.company_name === 'StorageBlue') {
+      return {
+        gradient: 'from-card via-card to-blue-500/5 border-blue-500/20 hover:border-blue-500/40',
+        badge: 'bg-blue-500/15 text-blue-500 border border-blue-500/30',
+        icon: 'bg-gradient-to-br from-blue-500/10 to-blue-500/30 border-blue-500/50',
+        text: 'text-blue-500',
+        button: 'bg-blue-500 hover:bg-blue-500/90 text-white'
+      };
+    }
+    
     // Priority: Carbon > AI > default
     if (showcase.tags && Array.isArray(showcase.tags)) {
       if (showcase.tags.includes('Carbon')) {
