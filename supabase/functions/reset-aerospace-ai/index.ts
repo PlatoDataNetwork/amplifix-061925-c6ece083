@@ -30,32 +30,32 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('🔧 Starting aerospace AI processing reset...');
+    console.log('🔧 Starting aviation AI processing reset...');
 
-    // Step 1: Delete all aerospace AI processing jobs
+    // Step 1: Delete all aviation AI processing jobs
     const { error: deleteJobsError } = await supabase
       .from('ai_processing_jobs')
       .delete()
-      .eq('vertical_slug', 'aerospace');
+      .eq('vertical_slug', 'aviation');
 
     if (deleteJobsError) {
       console.error('Error deleting jobs:', deleteJobsError);
       throw deleteJobsError;
     }
 
-    console.log('✅ Deleted all aerospace AI processing jobs');
+    console.log('✅ Deleted all aviation AI processing jobs');
 
     // Step 2: Count articles that still need AI processing (skip already processed)
     const { count: totalCount, error: countError } = await supabase
       .from('articles')
       .select('*', { count: 'exact', head: true })
-      .eq('vertical_slug', 'aerospace')
+      .eq('vertical_slug', 'aviation')
       .not('content', 'is', null)
       .or('metadata->>ai_processed.is.null,metadata->>ai_processed.eq.false');
 
     if (countError) throw countError;
 
-    console.log(`📊 Found ${totalCount} aerospace articles to process`);
+    console.log(`📊 Found ${totalCount} aviation articles to process`);
 
     // Step 3: Create a new processing job
     const chunkSize = 50;
@@ -64,7 +64,7 @@ Deno.serve(async (req) => {
     const { data: newJob, error: createJobError } = await supabase
       .from('ai_processing_jobs')
       .insert({
-        vertical_slug: 'aerospace',
+        vertical_slug: 'aviation',
         status: 'in_progress',
         total_chunks: totalChunks,
         processed_chunks: [],
@@ -92,7 +92,7 @@ Deno.serve(async (req) => {
         body: { 
           chunkIndex: i, 
           chunkSize, 
-          verticalSlug: 'aerospace', 
+          verticalSlug: 'aviation', 
           jobId: newJob.id 
         }
       });
@@ -109,7 +109,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        message: 'Aerospace AI processing reset and restarted',
+        message: 'Aviation AI processing reset and restarted',
         jobId: newJob.id,
         totalArticles: totalCount,
         totalChunks: totalChunks,
