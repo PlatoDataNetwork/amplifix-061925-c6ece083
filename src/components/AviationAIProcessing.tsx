@@ -50,6 +50,9 @@ export default function AviationAIProcessing() {
             chunkSize,
             verticalSlug: "aviation",
           },
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
         });
 
         if (error) {
@@ -126,6 +129,9 @@ export default function AviationAIProcessing() {
         try {
           await supabase.functions.invoke("extract-article-tags", {
             body: { articleId: article.id },
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+            },
           });
           processed++;
         } catch (error) {
