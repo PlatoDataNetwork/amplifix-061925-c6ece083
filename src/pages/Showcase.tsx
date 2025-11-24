@@ -102,6 +102,8 @@ const Showcase = () => {
       'FacialDX',
       'Abatis',
       'Blockwell',
+      'StorageBlue',
+      'Versa TV',
     ]);
 
     const normalized = mergedShowcases.map((showcase) => {
@@ -144,6 +146,48 @@ const Showcase = () => {
         type: 'private',
         disabled: false,
         main_sector: 'CYBERSECURITY',
+      });
+    }
+
+    // Ensure StorageBlue appears in the showcase even if not in DB/JSON
+    if (!normalized.some((s) => s.company_name === 'StorageBlue')) {
+      normalized.push({
+        company_name: 'StorageBlue',
+        ticker: 'Private',
+        subtitle: 'Real Estate Investment & Management',
+        description:
+          'Leading real estate investment and management company specializing in storage facilities and commercial properties across strategic locations.',
+        tags: ['Real Estate', 'Investment'],
+        button_text: 'View Showcase',
+        link: '/showcase/storageblue',
+        website: 'https://storagebluecapital.com',
+        search_url:
+          'https://www.bing.com/search?q=StorageBlue+Real+Estate',
+        thumbnail: '/lovable-uploads/storageblue-thumbnail.png',
+        type: 'private',
+        disabled: false,
+        main_sector: 'REAL ESTATE',
+      });
+    }
+
+    // Ensure Versa TV appears in the showcase even if not in DB/JSON
+    if (!normalized.some((s) => s.company_name === 'Versa TV')) {
+      normalized.push({
+        company_name: 'Versa TV',
+        ticker: 'Private',
+        subtitle: 'Next-Generation Streaming Platform',
+        description:
+          'Next-generation media and streaming platform delivering innovative content and entertainment experiences through cutting-edge technology.',
+        tags: ['Media', 'Streaming', 'Entertainment'],
+        button_text: 'View Showcase',
+        link: '/showcase/versatv',
+        website: 'https://VersaTV.io',
+        search_url:
+          'https://www.bing.com/search?q=Versa+TV+Streaming',
+        thumbnail: '/lovable-uploads/versatv-thumbnail.png',
+        type: 'private',
+        disabled: false,
+        main_sector: 'MEDIA',
       });
     }
 
