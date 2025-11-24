@@ -83,14 +83,71 @@ const Showcase = () => {
   // Merge database data with JSON data, adding any JSON items not in database
   const allShowcases = useMemo(() => {
     const jsonShowcases = showcaseData?.showcase.showcases || [];
+    let mergedShowcases: any[];
     
     if (!loading && dbShowcases.length > 0) {
-      const dbCompanyNames = new Set(dbShowcases.map(s => s.company_name));
-      const jsonOnlyShowcases = jsonShowcases.filter(s => !dbCompanyNames.has(s.company_name));
-      return [...dbShowcases, ...jsonOnlyShowcases];
+      const dbCompanyNames = new Set(dbShowcases.map((s) => s.company_name));
+      const jsonOnlyShowcases = jsonShowcases.filter((s) => !dbCompanyNames.has(s.company_name));
+      mergedShowcases = [...dbShowcases, ...jsonOnlyShowcases];
+    } else {
+      mergedShowcases = jsonShowcases;
     }
-    
-    return jsonShowcases;
+
+    // Hard-code certain companies as private and ensure Naoris subtitle + Blockwell entry
+    const privateNames = new Set([
+      'FAIM',
+      'ForexGPT',
+      'CUT',
+      'Naoris Protocol',
+      'FacialDX',
+      'Abatis',
+      'Blockwell',
+    ]);
+
+    const normalized = mergedShowcases.map((showcase) => {
+      const updated = { ...showcase };
+
+      if (privateNames.has(updated.company_name)) {
+        updated.type = 'private';
+      }
+
+      // Prefer descriptive subtitle for Naoris
+      if (updated.company_name === 'Naoris Protocol') {
+        updated.subtitle = updated.subtitle || 'Quantum Resistant Cybersecurity';
+      }
+
+      // Remove token-classifying tags from companies we treat as private
+      if (privateNames.has(updated.company_name) && Array.isArray(updated.tags)) {
+        updated.tags = updated.tags.filter(
+          (tag: string) => tag !== 'Token' && tag !== 'Cryptocurrency'
+        );
+      }
+
+      return updated;
+    });
+
+    // Ensure Blockwell appears in the showcase even if not in DB/JSON
+    if (!normalized.some((s) => s.company_name === 'Blockwell')) {
+      normalized.push({
+        company_name: 'Blockwell',
+        ticker: 'Private',
+        subtitle: 'AI-Powered Blockchain Security',
+        description:
+          'Pioneering blockchain technology company specializing in AI-powered cybersecurity solutions and decentralized systems for the next generation of digital infrastructure.',
+        tags: ['AI', 'Blockchain', 'Cyber'],
+        button_text: 'View Showcase',
+        link: '/showcase/blockwell',
+        website: 'https://blockwell.ai',
+        search_url:
+          'https://www.bing.com/copilotsearch?q=Blockwell%20Blockchain%20Crypto&FORM=CSSCOP',
+        thumbnail: '/lovable-uploads/blockwell-thumbnail.png',
+        type: 'private',
+        disabled: false,
+        main_sector: 'CYBERSECURITY',
+      });
+    }
+
+    return normalized;
   }, [loading, dbShowcases, showcaseData]);
 
   // Determine color theme based on tags and company name
@@ -363,9 +420,7 @@ const Showcase = () => {
                         }`}>
                           {showcase.company_name === 'FAIM'
                             ? 'AI Powered Fan Engagement'
-                            : showcase.type === 'token'
-                              ? (showcase.subtitle || showcase.ticker)
-                              : (showcase.ticker || showcase.subtitle)}
+                            : (showcase.subtitle || showcase.ticker)}
                         </p>
                        {showcase.tags && showcase.tags.length > 0 && (
                          <div className="flex flex-wrap gap-1.5 mt-2">

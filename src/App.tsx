@@ -177,6 +177,7 @@ const App = () => (
               <Route path="/:lang/showcase/fynn-ai" element={<FynnAIShowcase />} />
               <Route path="/:lang/showcase/abatis" element={<AbatisShowcase />} />
               <Route path="/:lang/showcase/forex-gpt" element={<ForexGPTShowcase />} />
+              <Route path="/:lang/showcase/blockwell" element={<BlockwellShowcase />} />
               <Route path="/:lang/showcase/vsee-health" element={<VseeHealthShowcase />} />
               <Route path="/:lang/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/:lang/solutions/private-companies" element={<PrivateCompanies />} />
