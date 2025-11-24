@@ -120,6 +120,8 @@ const App = () => (
               <Route path="/showcase/abatis" element={<AbatisShowcase />} />
               <Route path="/showcase/forex-gpt" element={<ForexGPTShowcase />} />
               <Route path="/showcase/blockwell" element={<BlockwellShowcase />} />
+              <Route path="/showcase/storageblue" element={<StorageBlueShowcase />} />
+              <Route path="/showcase/versatv" element={<VersaTVShowcase />} />
               <Route path="/showcase/vsee-health" element={<VseeHealthShowcase />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
