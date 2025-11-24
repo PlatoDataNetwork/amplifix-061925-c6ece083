@@ -25,6 +25,7 @@ export default function AviationUrlBackfill() {
     skipped: number;
     errors: number;
   } | null>(null);
+  const [onStatsRefresh, setOnStatsRefresh] = useState<(() => void) | null>(null);
 
   const startBackfill = async () => {
     setIsRunning(true);
@@ -53,20 +54,21 @@ export default function AviationUrlBackfill() {
         .on("broadcast", { event: "progress" }, ({ payload }) => {
           setProgress(payload as ProgressUpdate);
         })
-        .on("broadcast", { event: "complete" }, ({ payload }) => {
-          const finalProgress = payload as ProgressUpdate;
-          setResult({
-            updated: finalProgress.updated,
-            skipped: finalProgress.skipped,
-            errors: finalProgress.errors,
-          });
-          setIsRunning(false);
-          setProgress(null);
-          toast({
-            title: "Backfill Complete",
-            description: `Updated: ${finalProgress.updated}, Skipped: ${finalProgress.skipped}, Errors: ${finalProgress.errors}`,
-          });
-        })
+      .on("broadcast", { event: "complete" }, ({ payload }) => {
+        const finalProgress = payload as ProgressUpdate;
+        setResult({
+          updated: finalProgress.updated,
+          skipped: finalProgress.skipped,
+          errors: finalProgress.errors,
+        });
+        setIsRunning(false);
+        setProgress(null);
+        if (onStatsRefresh) onStatsRefresh(); // Call parent refresh callback
+        toast({
+          title: "Backfill Complete",
+          description: `Updated: ${finalProgress.updated}, Skipped: ${finalProgress.skipped}, Errors: ${finalProgress.errors}`,
+        });
+      })
         .subscribe();
 
       toast({

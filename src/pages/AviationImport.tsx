@@ -59,6 +59,27 @@ export default function AviationImport() {
   useEffect(() => {
     loadStats();
     loadImportHistory();
+    
+    // Set up realtime subscription for article inserts
+    const channel = supabase
+      .channel('aviation-articles-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'articles',
+          filter: 'vertical_slug=eq.aviation'
+        },
+        () => {
+          loadStats(); // Refresh stats when new articles are added
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -98,16 +119,23 @@ export default function AviationImport() {
   }, [currentImportId]);
 
   const loadStats = async () => {
-    const { data: articles } = await supabase
+    const { count, error } = await supabase
       .from("articles")
-      .select("id, created_at")
-      .eq("vertical_slug", "aviation")
-      .order("created_at", { ascending: false });
+      .select("*", { count: "exact", head: true })
+      .eq("vertical_slug", "aviation");
 
-    if (articles) {
+    const { data: latestArticle } = await supabase
+      .from("articles")
+      .select("created_at")
+      .eq("vertical_slug", "aviation")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (!error) {
       setStats({
-        totalArticles: articles.length,
-        lastImportDate: articles[0]?.created_at || null,
+        totalArticles: count || 0,
+        lastImportDate: latestArticle?.created_at || null,
       });
     }
   };
