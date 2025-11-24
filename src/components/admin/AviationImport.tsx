@@ -1,16 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Input } from "@/components/ui/input";
-import { Loader2, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useState } from "react";
 
-interface AerospaceImportProps {
+interface AviationImportProps {
   importing: string | null;
   isClearing: boolean;
-  aerospaceProgress: {
+  aviationProgress: {
     phase: string;
     currentPage: number;
     totalPages: number;
@@ -22,19 +20,19 @@ interface AerospaceImportProps {
     percentComplete?: number;
     message: string;
   } | null;
-  aerospaceImportTotals: {
+  aviationImportTotals: {
     imported: number;
     skipped: number;
     totalProcessed: number;
     lastPage: number | null;
     status: string;
   } | null;
-  aerospaceArticleCounts: {
+  aviationArticleCounts: {
     total: number;
     aiProcessed: number;
     remaining: number;
   } | null;
-  aerospaceStats: {
+  aviationStats: {
     totalInDb: number;
     missingUrls: number;
     platoTotal: number | null;
@@ -67,21 +65,20 @@ interface AerospaceImportProps {
   onSetProgressStatus: (value: string) => void;
   onSetAutoRestartEnabled: (value: boolean) => void;
   onLoadMetrics: () => Promise<void>;
-  onLoadAerospaceArticleCounts: () => Promise<void>;
-  onLoadAerospaceStats: () => Promise<void>;
+  onLoadAviationArticleCounts: () => Promise<void>;
+  onLoadAviationStats: () => Promise<void>;
   onLoadAiJobStats: () => Promise<void>;
-  onClearAllAerospaceData: () => Promise<void>;
-  onHandleResetAerospaceAI: () => Promise<void>;
+  onClearAllAviationData: () => Promise<void>;
+  onHandleResetAviationAI: () => Promise<void>;
 }
 
-// This component handles AEROSPACE import and AI processing (NOT Aviation)
-export const AerospaceImport = ({
+export const AviationImport = ({
   importing,
   isClearing,
-  aerospaceProgress,
-  aerospaceImportTotals,
-  aerospaceArticleCounts,
-  aerospaceStats,
+  aviationProgress,
+  aviationImportTotals,
+  aviationArticleCounts,
+  aviationStats,
   aiJobStats,
   lastAiStatsUpdate,
   lastCountsUpdate,
@@ -99,18 +96,17 @@ export const AerospaceImport = ({
   onSetProgressStatus,
   onSetAutoRestartEnabled,
   onLoadMetrics,
-  onLoadAerospaceArticleCounts,
-  onLoadAerospaceStats,
+  onLoadAviationArticleCounts,
+  onLoadAviationStats,
   onLoadAiJobStats,
-  onClearAllAerospaceData,
-  onHandleResetAerospaceAI,
-}: AerospaceImportProps) => {
+  onClearAllAviationData,
+  onHandleResetAviationAI,
+}: AviationImportProps) => {
   const [aiProcessingJobId, setAiProcessingJobId] = useState<string | null>(null);
-  const [setParallelChunksInProgress] = useState<(value: Set<number>) => void>(() => () => {});
 
-  const importAerospaceFast = async () => {
-    onSetImporting('aerospace-fast');
-    onSetProgressStatus('Starting Aerospace FAST import (no AI)...');
+  const importAviationFast = async () => {
+    onSetImporting('aviation-fast');
+    onSetProgressStatus('Starting Aviation FAST import (no AI)...');
     onSetProgressPercent(0);
 
     try {
@@ -126,14 +122,14 @@ export const AerospaceImport = ({
         return;
       }
 
-      toast.info('Starting FAST Aerospace import in background...', {
+      toast.info('Starting Aviation FAST import in background...', {
         description: 'All articles will be imported without timing out. Check Import History below for progress.'
       });
 
       onSetProgressPercent(10);
-      onSetProgressStatus('Launching Aerospace background import...');
+      onSetProgressStatus('Launching Aviation background import...');
 
-      const { data, error } = await supabase.functions.invoke('import-aerospace-fast', {
+      const { data, error } = await supabase.functions.invoke('import-aviation-fast', {
         headers: {
           Authorization: `Bearer ${session.access_token}`
         }
@@ -141,8 +137,8 @@ export const AerospaceImport = ({
 
       await onLoadMetrics();
     } catch (error) {
-      console.error('Error importing Aerospace:', error);
-      toast.error('Failed to start Aerospace import', {
+      console.error('Error importing Aviation:', error);
+      toast.error('Failed to start Aviation import', {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
       onSetProgressStatus('Error occurred');
@@ -150,7 +146,7 @@ export const AerospaceImport = ({
     }
   };
 
-  const startAerospaceAIProcessing = async () => {
+  const startAviationAIProcessing = async () => {
     if (aiProcessingActive) {
       onSetAiProcessingActive(false);
       toast.info('Auto-resume stopped. Processing will complete current chunks.');
@@ -159,9 +155,9 @@ export const AerospaceImport = ({
 
     try {
       onSetAiProcessingActive(true);
-      onSetImporting('process-aerospace-ai');
+      onSetImporting('process-aviation-ai');
       onSetProgressPercent(0);
-      onSetProgressStatus('Initializing Aerospace AI processing...');
+      onSetProgressStatus('Initializing Aviation AI processing...');
 
       const { error: resetError } = await supabase
         .from('ai_processing_jobs')
@@ -169,7 +165,7 @@ export const AerospaceImport = ({
           status: 'failed',
           updated_at: new Date().toISOString()
         })
-        .eq('vertical_slug', 'aerospace')
+        .eq('vertical_slug', 'aviation')
         .neq('status', 'completed');
 
       if (resetError) {
@@ -180,7 +176,7 @@ export const AerospaceImport = ({
       const { count } = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true })
-        .eq('vertical_slug', 'aerospace')
+        .eq('vertical_slug', 'aviation')
         .not('content', 'is', null);
 
       const totalArticles = count || 0;
@@ -190,7 +186,7 @@ export const AerospaceImport = ({
       const { data: newJob, error: createError } = await supabase
         .from('ai_processing_jobs')
         .insert({
-          vertical_slug: 'aerospace',
+          vertical_slug: 'aviation',
           total_chunks: totalChunks,
           status: 'in_progress'
         })
@@ -203,7 +199,7 @@ export const AerospaceImport = ({
 
       const jobId = newJob.id as string;
 
-      toast.info('Starting Aerospace AI processing from scratch', {
+      toast.info('Starting Aviation AI processing from scratch', {
         description: `${totalChunks} chunks × ${chunkSize} articles with 5× parallel processing`
       });
 
@@ -242,7 +238,7 @@ export const AerospaceImport = ({
 
           onSetProgressPercent(100);
           onSetProgressStatus('Complete!');
-          toast.success(`Aerospace AI processing complete!`, {
+          toast.success(`Aviation AI processing complete!`, {
             description: `Processed all ${totalArticles} articles!`
           });
           return false;
@@ -250,20 +246,20 @@ export const AerospaceImport = ({
 
         const promises = unprocessedChunks.map(async (chunkIndex) => {
           try {
-            console.log(`🔄 Starting Aerospace chunk ${chunkIndex + 1}/${totalChunks}...`);
+            console.log(`🔄 Starting Aviation chunk ${chunkIndex + 1}/${totalChunks}...`);
             const { data, error } = await supabase.functions.invoke('format-all-articles', {
-              body: { chunkIndex, chunkSize, verticalSlug: 'aerospace', jobId }
+              body: { chunkIndex, chunkSize, verticalSlug: 'aviation', jobId }
             });
 
             if (error || !data?.success) {
-              console.error(`❌ Aerospace chunk ${chunkIndex} failed:`, error || data);
+              console.error(`❌ Aviation chunk ${chunkIndex} failed:`, error || data);
               return { chunkIndex, success: false };
             }
 
-            console.log(`✅ Aerospace chunk ${chunkIndex + 1}/${totalChunks} complete`);
+            console.log(`✅ Aviation chunk ${chunkIndex + 1}/${totalChunks} complete`);
             return { chunkIndex, success: true };
           } catch (err) {
-            console.error(`❌ Chunk ${chunkIndex} error:`, err);
+            console.error(`❌ Aviation chunk ${chunkIndex} error:`, err);
             return { chunkIndex, success: false };
           }
         });
@@ -310,8 +306,8 @@ export const AerospaceImport = ({
       autoResume();
 
     } catch (error) {
-      console.error('Error processing aerospace articles:', error);
-      toast.error('Failed to process aerospace articles', {
+      console.error('Error processing aviation articles:', error);
+      toast.error('Failed to process aviation articles', {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
       onSetImporting(null);
@@ -326,81 +322,81 @@ export const AerospaceImport = ({
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-2xl flex items-center gap-2">
-              🚀 Aerospace Fast Import (No AI)
+              ✈️ Aviation Fast Import (No AI)
             </CardTitle>
             <div className="text-right">
               <p className="text-sm text-muted-foreground">Total Articles in DB</p>
-              <p className="text-3xl font-bold">{aerospaceArticleCounts?.total.toLocaleString() || '0'}</p>
+              <p className="text-3xl font-bold">{aviationArticleCounts?.total.toLocaleString() || '0'}</p>
             </div>
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <Button
-              onClick={importAerospaceFast}
+              onClick={importAviationFast}
               disabled={importing !== null}
               className="w-full h-14 text-lg bg-blue-600 hover:bg-blue-700"
               size="lg"
             >
-              {importing === 'aerospace-fast' ? 'Importing Aerospace...' : 'Import Aerospace (Fast, No AI)'}
+              {importing === 'aviation-fast' ? 'Importing Aviation...' : 'Import Aviation (Fast, No AI)'}
             </Button>
 
-            {importing === 'aerospace-fast' && aerospaceProgress && (
+            {importing === 'aviation-fast' && aviationProgress && (
               <div className="space-y-4">
                 <div className="space-y-3 p-4 bg-background rounded-lg border">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">{aerospaceProgress.message}</span>
+                    <span className="text-sm font-medium">{aviationProgress.message}</span>
                     <span className="text-sm text-muted-foreground">
-                      Page {aerospaceProgress.currentPage} / {aerospaceProgress.totalPages}
+                      Page {aviationProgress.currentPage} / {aviationProgress.totalPages}
                     </span>
                   </div>
                   <Progress 
-                    value={aerospaceProgress.percentComplete || 0} 
+                    value={aviationProgress.percentComplete || 0} 
                     className="h-2" 
                   />
                   <div className="grid grid-cols-4 gap-2 text-center text-xs">
                     <div>
                       <p className="text-muted-foreground">Collected</p>
-                      <p className="font-bold">{aerospaceProgress.articlesCollected}</p>
+                      <p className="font-bold">{aviationProgress.articlesCollected}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Imported</p>
-                      <p className="font-bold text-green-600">{aerospaceProgress.imported || 0}</p>
+                      <p className="font-bold text-green-600">{aviationProgress.imported || 0}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Skipped</p>
-                      <p className="font-bold text-yellow-600">{aerospaceProgress.skipped || 0}</p>
+                      <p className="font-bold text-yellow-600">{aviationProgress.skipped || 0}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Errors</p>
-                      <p className="font-bold text-red-600">{aerospaceProgress.errors || 0}</p>
+                      <p className="font-bold text-red-600">{aviationProgress.errors || 0}</p>
                     </div>
                   </div>
                 </div>
               </div>
             )}
 
-            {aerospaceImportTotals && (
+            {aviationImportTotals && (
               <div className="p-4 bg-gradient-to-br from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/30">
                 <h4 className="text-sm font-semibold text-green-700 dark:text-green-300 mb-3">
-                  📊 Latest Aerospace Import Session
+                  📊 Latest Aviation Import Session
                 </h4>
                 <div className="grid grid-cols-4 gap-3 text-center">
                   <div className="p-3 bg-background/80 rounded-lg border">
                     <p className="text-xs text-muted-foreground mb-1">Status</p>
-                    <p className="text-sm font-bold capitalize">{aerospaceImportTotals.status}</p>
+                    <p className="text-sm font-bold capitalize">{aviationImportTotals.status}</p>
                   </div>
                   <div className="p-3 bg-background/80 rounded-lg border">
                     <p className="text-xs text-muted-foreground mb-1">Imported</p>
-                    <p className="text-sm font-bold text-green-600">{aerospaceImportTotals.imported.toLocaleString()}</p>
+                    <p className="text-sm font-bold text-green-600">{aviationImportTotals.imported.toLocaleString()}</p>
                   </div>
                   <div className="p-3 bg-background/80 rounded-lg border">
                     <p className="text-xs text-muted-foreground mb-1">Skipped</p>
-                    <p className="text-sm font-bold text-yellow-600">{aerospaceImportTotals.skipped.toLocaleString()}</p>
+                    <p className="text-sm font-bold text-yellow-600">{aviationImportTotals.skipped.toLocaleString()}</p>
                   </div>
                   <div className="p-3 bg-background/80 rounded-lg border">
                     <p className="text-xs text-muted-foreground mb-1">Total Processed</p>
-                    <p className="text-sm font-bold">{aerospaceImportTotals.totalProcessed.toLocaleString()}</p>
+                    <p className="text-sm font-bold">{aviationImportTotals.totalProcessed.toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -413,120 +409,32 @@ export const AerospaceImport = ({
       <Card className="mb-8 border-purple-500/50 bg-gradient-to-br from-purple-500/5 to-purple-500/10">
         <CardHeader>
           <CardTitle className="text-2xl flex items-center gap-2">
-            🤖 Process Existing Aerospace Articles with AI
+            🤖 Process Existing Aviation Articles with AI
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Apply AI-powered content formatting and tag extraction to aerospace articles.
+            Apply AI-powered content formatting and tag extraction to aviation articles.
           </p>
-          
-          {aiJobStats && (
-            <div className="mt-4 p-4 bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/30 rounded-lg">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="text-sm font-semibold text-purple-700 dark:text-purple-300">📊 Current AI Processing Job</h4>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={onLoadAiJobStats}
-                  className="h-6 px-2 text-xs"
-                >
-                  ↻ Refresh
-                </Button>
-              </div>
-              
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
-                <div className="p-3 bg-background/80 rounded-lg border">
-                  <p className="text-xs text-muted-foreground mb-1">Progress</p>
-                  <p className="text-2xl font-bold text-purple-500">
-                    {aerospaceArticleCounts && aerospaceArticleCounts.total > 0
-                      ? Math.round((aerospaceArticleCounts.aiProcessed / aerospaceArticleCounts.total) * 100)
-                      : aiJobStats.progressPercent}%
-                  </p>
-                </div>
-                
-                <div className="p-3 bg-background/80 rounded-lg border">
-                  <p className="text-xs text-muted-foreground mb-1">Articles Processed</p>
-                  <p className="text-2xl font-bold text-green-500">
-                    {(aerospaceArticleCounts
-                      ? aerospaceArticleCounts.aiProcessed
-                      : aiJobStats.articlesProcessed
-                    ).toLocaleString()}
-                  </p>
-                </div>
-                
-                <div className="p-3 bg-background/80 rounded-lg border">
-                  <p className="text-xs text-muted-foreground mb-1">Failed Chunks</p>
-                  <p className="text-2xl font-bold text-red-500">{aiJobStats.failedChunks}</p>
-                </div>
-                
-                <div className="p-3 bg-background/80 rounded-lg border">
-                  <p className="text-xs text-muted-foreground mb-1">Time Remaining</p>
-                  <p className="text-2xl font-bold text-blue-500">
-                    {aiJobStats.estimatedTimeRemaining || 'Done'}
-                  </p>
-                </div>
-              </div>
-              
-              <Progress
-                value={aerospaceArticleCounts && aerospaceArticleCounts.total > 0
-                  ? Math.round((aerospaceArticleCounts.aiProcessed / aerospaceArticleCounts.total) * 100)
-                  : aiJobStats.progressPercent}
-                className="h-2"
-              />
-            </div>
-          )}
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="flex gap-2">
-               <Button
-                onClick={startAerospaceAIProcessing}
-                disabled={importing === 'process-aerospace-ai' && !aiProcessingActive}
-                className={`flex-1 h-14 text-lg ${aiProcessingActive ? 'bg-red-600 hover:bg-red-700' : 'bg-purple-600 hover:bg-purple-700'}`}
-                size="lg"
-              >
-                {aiProcessingActive ? '⏸ Stop Auto-Resume' : (importing === 'process-aerospace-ai' ? `${progressStatus}` : '🚀 Start Auto-Resume Processing')}
-              </Button>
-              
-              <Button
-                onClick={onLoadAiJobStats}
-                variant="outline"
-                className="h-14 px-6"
-                size="lg"
-              >
-                🔄 Refresh Stats
-              </Button>
-              
-              <Button
-                onClick={onClearAllAerospaceData}
-                disabled={isClearing || !aerospaceArticleCounts?.total}
-                variant="destructive"
-                className="h-14 px-6"
-                size="lg"
-              >
-                {isClearing ? (
-                  <>
-                    <span className="animate-spin mr-2">⏳</span>
-                    Clearing...
-                  </>
-                ) : (
-                  <>
-                    🗑️ Clear All Aerospace Data
-                  </>
-                )}
-              </Button>
-            </div>
+            <Button
+              onClick={startAviationAIProcessing}
+              disabled={importing !== null && importing !== 'process-aviation-ai'}
+              className="w-full h-14 text-lg bg-purple-600 hover:bg-purple-700"
+              size="lg"
+            >
+              {aiProcessingActive ? '⏸️ Stop Processing' : '🚀 Start AI Processing'}
+            </Button>
 
-            {importing === 'process-aerospace-ai' && (
-              <div className="space-y-4">
-                <div className="space-y-3 p-4 bg-background rounded-lg border">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">{progressStatus}</span>
-                    <span className="text-sm text-muted-foreground">{progressPercent}%</span>
-                  </div>
-                  <Progress value={progressPercent} className="h-2" />
-                </div>
-              </div>
-            )}
+            <Button
+              onClick={onClearAllAviationData}
+              disabled={isClearing || importing !== null}
+              variant="destructive"
+              className="w-full"
+              size="lg"
+            >
+              {isClearing ? 'Clearing...' : '🗑️ Clear All Aviation Data'}
+            </Button>
           </div>
         </CardContent>
       </Card>

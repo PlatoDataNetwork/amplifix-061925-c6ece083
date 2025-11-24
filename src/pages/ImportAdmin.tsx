@@ -28,6 +28,7 @@ import {
 import { ImportHistoryTable } from "@/components/ImportHistoryTable";
 import { DuplicateMonitor } from "@/components/DuplicateMonitor";
 import { AerospaceImport } from "@/components/admin/AerospaceImport";
+import { AviationImport } from "@/components/admin/AviationImport";
 
 const ImportAdmin = () => {
   const navigate = useNavigate();
@@ -132,16 +133,27 @@ const ImportAdmin = () => {
     platoTotal: null,
     loading: false
   });
+  const [aviationStats, setAviationStats] = useState<{
+    totalInDb: number;
+    missingUrls: number;
+    platoTotal: number | null;
+    loading: boolean;
+  }>({
+    totalInDb: 0,
+    missingUrls: 0,
+    platoTotal: null,
+    loading: false
+  });
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
-  // Load aerospace article counts
+  // Load aerospace article counts - FOR AEROSPACE VERTICAL
   const loadAerospaceArticleCounts = async () => {
     try {
-      // Get total aviation articles
+      // Get total aerospace articles
       const { count: total, error: totalError } = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true })
-        .eq('vertical_slug', 'aviation')
+        .eq('vertical_slug', 'aerospace')
         .not('content', 'is', null);
 
       if (totalError) throw totalError;
@@ -150,7 +162,7 @@ const ImportAdmin = () => {
       const { count: processed, error: processedError } = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true })
-        .eq('vertical_slug', 'aviation')
+        .eq('vertical_slug', 'aerospace')
         .not('content', 'is', null)
         .eq('metadata->>ai_processed', 'true');
 
@@ -168,8 +180,8 @@ const ImportAdmin = () => {
       if (autoRestartEnabled && lastAiProgress === currentProgress && currentProgress < (total || 0)) {
         const timeSinceLastUpdate = lastCountsUpdate ? (new Date().getTime() - lastCountsUpdate.getTime()) / 1000 / 60 : 0;
         if (timeSinceLastUpdate > 10) {
-          console.log('🔄 AI processing stalled, auto-restarting...');
-          toast.info('AI processing stalled, restarting automatically...');
+          console.log('🔄 Aerospace AI processing stalled, auto-restarting...');
+          toast.info('Aerospace AI processing stalled, restarting automatically...');
           await handleResetAerospaceAI();
         }
       }
@@ -179,7 +191,7 @@ const ImportAdmin = () => {
     }
   };
 
-  // Load aviation article counts
+  // Load aviation article counts - FOR AVIATION VERTICAL
   const loadAviationArticleCounts = async () => {
     try {
       const { count: total, error: totalError } = await supabase
@@ -190,7 +202,7 @@ const ImportAdmin = () => {
 
       if (totalError) throw totalError;
 
-      const { count: processed, error: processedError } = await supabase
+      const { count: processed, error: processedError} = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true })
         .eq('vertical_slug', 'aviation')
@@ -1012,17 +1024,152 @@ const ImportAdmin = () => {
   };
 
   const clearAllAerospaceData = async () => {
-    if (!confirm('⚠️ This will permanently delete ALL Aviation data including:\n- All articles\n- Import history\n- AI processing jobs\n- Article backups\n\nThis action cannot be undone. Are you sure?')) {
+    if (!confirm('⚠️ WARNING: This will delete ALL Aerospace data.\n\n✅ BACKUP WILL BE CREATED FIRST\n\nDeleting:\n- All aerospace articles\n- Import history\n- AI processing jobs\n\n❌ BACKUPS WILL BE PRESERVED\n\nContinue?')) {
       return;
     }
     
     try {
       setIsClearing(true);
-      toast.info('Clearing all Aviation data...', {
-        description: 'This may take a moment'
+      const backupName = `aerospace_backup_${new Date().toISOString()}`;
+      
+      toast.info('Step 1/2: Creating backup...', {
+        description: 'Backing up all aerospace articles'
       });
       
-      // Delete aviation articles (this will cascade to article_tags)
+      // STEP 1: Create backup FIRST
+      const { data: articlesToBackup, error: fetchError } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('vertical_slug', 'aerospace');
+      
+      if (fetchError) throw fetchError;
+      
+      if (articlesToBackup && articlesToBackup.length > 0) {
+        const backupRecords = articlesToBackup.map(article => ({
+          article_id: article.id,
+          post_id: article.post_id,
+          title: article.title,
+          content: article.content,
+          excerpt: article.excerpt,
+          author: article.author,
+          image_url: article.image_url,
+          vertical_slug: article.vertical_slug,
+          published_at: article.published_at,
+          metadata: article.metadata,
+          backup_name: backupName,
+          backup_description: `Automatic backup before clearing aerospace data at ${new Date().toLocaleString()}`
+        }));
+        
+        const { error: backupError } = await supabase
+          .from('article_backups')
+          .insert(backupRecords);
+        
+        if (backupError) throw backupError;
+        
+        toast.success(`✅ Backup created: ${articlesToBackup.length} articles saved`, {
+          description: `Backup name: ${backupName}`
+        });
+      }
+      
+      toast.info('Step 2/2: Clearing aerospace data...', {
+        description: 'Deleting articles and metadata (backups preserved)'
+      });
+      
+      // STEP 2: Delete aerospace articles (backups are preserved!)
+      const { error: articlesError } = await supabase
+        .from('articles')
+        .delete()
+        .eq('vertical_slug', 'aerospace');
+      
+      if (articlesError) throw articlesError;
+
+      // Delete aerospace import history
+      const { error: historyError } = await supabase
+        .from('import_history')
+        .delete()
+        .eq('vertical_slug', 'aerospace');
+      
+      if (historyError) throw historyError;
+
+      // Delete aerospace AI processing jobs
+      const { error: jobsError } = await supabase
+        .from('ai_processing_jobs')
+        .delete()
+        .eq('vertical_slug', 'aerospace');
+      
+      if (jobsError) throw jobsError;
+
+      toast.success('All Aerospace data cleared successfully', {
+        description: `✅ Backup preserved: ${backupName}\n✅ ${articlesToBackup?.length || 0} articles can be restored`,
+        duration: 10000
+      });
+      
+      await loadMetrics();
+      await loadAerospaceArticleCounts();
+      await loadAerospaceStats();
+    } catch (error) {
+      console.error('Error clearing Aerospace data:', error);
+      toast.error('Failed to clear Aerospace data', {
+        description: error instanceof Error ? error.message : 'An error occurred'
+      });
+    } finally {
+      setIsClearing(false);
+    }
+  };
+
+  const clearAllAviationData = async () => {
+    if (!confirm('⚠️ WARNING: This will delete ALL Aviation data.\n\n✅ BACKUP WILL BE CREATED FIRST\n\nDeleting:\n- All aviation articles\n- Import history\n- AI processing jobs\n\n❌ BACKUPS WILL BE PRESERVED\n\nContinue?')) {
+      return;
+    }
+    
+    try {
+      setIsClearing(true);
+      const backupName = `aviation_backup_${new Date().toISOString()}`;
+      
+      toast.info('Step 1/2: Creating backup...', {
+        description: 'Backing up all aviation articles'
+      });
+      
+      // STEP 1: Create backup FIRST
+      const { data: articlesToBackup, error: fetchError } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('vertical_slug', 'aviation');
+      
+      if (fetchError) throw fetchError;
+      
+      if (articlesToBackup && articlesToBackup.length > 0) {
+        const backupRecords = articlesToBackup.map(article => ({
+          article_id: article.id,
+          post_id: article.post_id,
+          title: article.title,
+          content: article.content,
+          excerpt: article.excerpt,
+          author: article.author,
+          image_url: article.image_url,
+          vertical_slug: article.vertical_slug,
+          published_at: article.published_at,
+          metadata: article.metadata,
+          backup_name: backupName,
+          backup_description: `Automatic backup before clearing aviation data at ${new Date().toLocaleString()}`
+        }));
+        
+        const { error: backupError } = await supabase
+          .from('article_backups')
+          .insert(backupRecords);
+        
+        if (backupError) throw backupError;
+        
+        toast.success(`✅ Backup created: ${articlesToBackup.length} articles saved`, {
+          description: `Backup name: ${backupName}`
+        });
+      }
+      
+      toast.info('Step 2/2: Clearing aviation data...', {
+        description: 'Deleting articles and metadata (backups preserved)'
+      });
+      
+      // STEP 2: Delete aviation articles (backups are preserved!)
       const { error: articlesError } = await supabase
         .from('articles')
         .delete()
@@ -1046,25 +1193,16 @@ const ImportAdmin = () => {
       
       if (jobsError) throw jobsError;
 
-      // Delete aviation article backups
-      const { error: backupsError } = await supabase
-        .from('article_backups')
-        .delete()
-        .eq('vertical_slug', 'aviation');
-      
-      if (backupsError) throw backupsError;
-
       toast.success('All Aviation data cleared successfully', {
-        description: 'Articles, import history, AI jobs, and backups have been removed.',
-        duration: 5000
+        description: `✅ Backup preserved: ${backupName}\n✅ ${articlesToBackup?.length || 0} articles can be restored`,
+        duration: 10000
       });
       
       await loadMetrics();
-      await loadAerospaceArticleCounts();
-      await loadAerospaceStats();
+      await loadAviationArticleCounts();
     } catch (error) {
       console.error('Error clearing Aviation data:', error);
-      toast.error('Failed to clear all Aviation data', {
+      toast.error('Failed to clear Aviation data', {
         description: error instanceof Error ? error.message : 'An error occurred'
       });
     } finally {
