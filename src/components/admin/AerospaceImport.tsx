@@ -72,6 +72,7 @@ interface AerospaceImportProps {
   onLoadAiJobStats: () => Promise<void>;
   onClearAllAerospaceData: () => Promise<void>;
   onHandleResetAerospaceAI: () => Promise<void>;
+  onImportAerospaceWithAI: () => Promise<void>;
 }
 
 // This component handles AEROSPACE import and AI processing (NOT Aviation)
@@ -104,6 +105,7 @@ export const AerospaceImport = ({
   onLoadAiJobStats,
   onClearAllAerospaceData,
   onHandleResetAerospaceAI,
+  onImportAerospaceWithAI,
 }: AerospaceImportProps) => {
   const [aiProcessingJobId, setAiProcessingJobId] = useState<string | null>(null);
   const [setParallelChunksInProgress] = useState<(value: Set<number>) => void>(() => () => {});
@@ -336,14 +338,24 @@ export const AerospaceImport = ({
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <Button
-              onClick={importAerospaceFast}
-              disabled={importing !== null}
-              className="w-full h-14 text-lg bg-blue-600 hover:bg-blue-700"
-              size="lg"
-            >
-              {importing === 'aerospace-fast' ? 'Importing Aerospace...' : 'Import Aerospace (Fast, No AI)'}
-            </Button>
+            <div className="flex gap-4">
+              <Button
+                onClick={importAerospaceFast}
+                disabled={importing !== null}
+                className="flex-1 h-14 text-lg bg-blue-600 hover:bg-blue-700"
+                size="lg"
+              >
+                {importing === 'aerospace-fast' ? 'Importing...' : 'Fast Import (No AI)'}
+              </Button>
+              <Button
+                onClick={onImportAerospaceWithAI}
+                disabled={importing !== null}
+                className="flex-1 h-14 text-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                size="lg"
+              >
+                {importing === 'aerospace-ai' ? 'Importing with AI...' : '🤖 Import with AI + Formatting'}
+              </Button>
+            </div>
 
             {importing === 'aerospace-fast' && aerospaceProgress && (
               <div className="space-y-4">

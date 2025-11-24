@@ -290,16 +290,16 @@ const ImportAdmin = () => {
     }
   };
 
-  // Load aerospace stats
+  // Load aerospace stats - FOR AEROSPACE VERTICAL
   const loadAerospaceStats = async () => {
     setAerospaceStats(prev => ({ ...prev, loading: true }));
     
     try {
-      // Get total aviation articles in DB
+      // Get total aerospace articles in DB
       const { count: totalInDb } = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true })
-        .eq('vertical_slug', 'aviation');
+        .eq('vertical_slug', 'aerospace');
       
       // Get count of aviation articles missing URLs or with Plato URLs
       const { count: missingUrls } = await supabase
@@ -338,13 +338,70 @@ const ImportAdmin = () => {
     }
   };
 
-  // Handle aviation AI processing reset
+  // Load aviation stats - FOR AVIATION VERTICAL
+  const loadAviationStats = async () => {
+    setAviationStats(prev => ({ ...prev, loading: true }));
+    
+    try {
+      // Get total aviation articles in DB
+      const { count: totalInDb } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', 'aviation');
+      
+      // Get articles missing external URLs  
+      const { count: missingUrls } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', 'aviation')
+        .or('external_url.is.null,external_url.eq.');
+
+      setAviationStats({
+        totalInDb: totalInDb || 0,
+        missingUrls: missingUrls || 0,
+        platoTotal: null,
+        loading: false
+      });
+    } catch (error) {
+      console.error('Error loading aviation stats:', error);
+      setAviationStats(prev => ({ ...prev, loading: false }));
+    }
+  };
+
+  // Handle aerospace AI processing reset
   const handleResetAerospaceAI = async () => {
+    try {
+      toast.info('Resetting aerospace AI processing...');
+      setImporting('reset-aerospace-ai');
+      
+      const { data, error } = await supabase.functions.invoke('reset-aerospace-ai');
+      
+      if (error) throw error;
+      
+      toast.success('Aerospace AI processing reset and restarted!', {
+        description: `Job ID: ${data.jobId} | ${data.totalChunks} chunks to process`,
+        duration: 5000
+      });
+      
+      // Refresh stats
+      await loadAiJobStats();
+      await loadAerospaceArticleCounts();
+    } catch (error) {
+      toast.error('Failed to reset aerospace AI processing', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setImporting(null);
+    }
+  };
+
+  // Handle aviation AI processing reset
+  const handleResetAviationAI = async () => {
     try {
       toast.info('Resetting aviation AI processing...');
       setImporting('reset-aviation-ai');
       
-      const { data, error } = await supabase.functions.invoke('reset-aerospace-ai');
+      const { data, error } = await supabase.functions.invoke('reset-aviation-ai');
       
       if (error) throw error;
       
@@ -355,7 +412,7 @@ const ImportAdmin = () => {
       
       // Refresh stats
       await loadAiJobStats();
-      await loadAerospaceArticleCounts();
+      await loadAviationArticleCounts();
     } catch (error) {
       toast.error('Failed to reset aviation AI processing', {
         description: error instanceof Error ? error.message : 'Unknown error'
@@ -365,7 +422,7 @@ const ImportAdmin = () => {
     }
   };
 
-  // Load AI job stats on mount and set up auto-refresh
+  // Load aerospace stats on mount and set up auto-refresh
   useEffect(() => {
     loadAiJobStats();
     loadAerospaceStats();
@@ -1584,6 +1641,43 @@ const ImportAdmin = () => {
             onLoadAiJobStats={loadAiJobStats}
             onClearAllAerospaceData={clearAllAerospaceData}
             onHandleResetAerospaceAI={handleResetAerospaceAI}
+            onImportAerospaceWithAI={importAerospaceWithAI}
+          />
+
+          <AviationImport
+            importing={importing}
+            isClearing={isClearing}
+            aviationProgress={aviationProgress}
+            aviationImportTotals={aviationImportTotals}
+            aviationArticleCounts={aviationArticleCounts}
+            aviationStats={aviationStats}
+            aiJobStats={aiJobStats}
+            lastAiStatsUpdate={lastAiStatsUpdate}
+            lastCountsUpdate={lastCountsUpdate}
+            autoRestartEnabled={autoRestartEnabled}
+            aiProcessingActive={aiProcessingActive}
+            parallelChunksInProgress={parallelChunksInProgress}
+            progressPercent={progressPercent}
+            progressStatus={progressStatus}
+            totalAiChunks={totalAiChunks}
+            onImportStart={() => {
+              setImporting('aviation-fast');
+              setProgressStatus('Starting Aviation import...');
+              setProgressPercent(0);
+              if (!importStartTime) setImportStartTime(new Date());
+            }}
+            onSetImporting={setImporting}
+            onSetIsClearing={setIsClearing}
+            onSetAiProcessingActive={setAiProcessingActive}
+            onSetProgressPercent={setProgressPercent}
+            onSetProgressStatus={setProgressStatus}
+            onSetAutoRestartEnabled={setAutoRestartEnabled}
+            onLoadMetrics={loadMetrics}
+            onLoadAviationArticleCounts={loadAviationArticleCounts}
+            onLoadAviationStats={loadAviationStats}
+            onLoadAiJobStats={loadAiJobStats}
+            onClearAllAviationData={clearAllAviationData}
+            onHandleResetAviationAI={handleResetAviationAI}
           />
 
           {/* Test Import Single Vertical Section */}
