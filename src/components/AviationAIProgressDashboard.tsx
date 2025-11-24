@@ -34,19 +34,32 @@ export default function AviationAIProgressDashboard() {
   const [currentSpeed, setCurrentSpeed] = useState(0);
 
   const loadStats = async () => {
+    console.log("🔄 Loading AI processing stats...");
     try {
       // Get total count
-      const { count: total } = await supabase
+      const { count: total, error: totalError } = await supabase
         .from("articles")
         .select("*", { count: "exact", head: true })
         .eq("vertical_slug", "aviation");
 
+      if (totalError) {
+        console.error("❌ Error fetching total:", totalError);
+        throw totalError;
+      }
+
       // Get processed count
-      const { count: processed } = await supabase
+      const { count: processed, error: processedError } = await supabase
         .from("articles")
         .select("*", { count: "exact", head: true })
         .eq("vertical_slug", "aviation")
         .eq("metadata->>ai_processed", "true");
+
+      if (processedError) {
+        console.error("❌ Error fetching processed:", processedError);
+        throw processedError;
+      }
+
+      console.log("📊 Stats loaded - Total:", total, "Processed:", processed);
 
       const totalArticles = total || 0;
       const processedArticles = processed || 0;
@@ -92,6 +105,7 @@ export default function AviationAIProgressDashboard() {
   };
 
   useEffect(() => {
+    console.log("🚀 Initializing AviationAIProgressDashboard");
     loadStats();
 
     // Set up real-time subscription for article updates
@@ -106,19 +120,26 @@ export default function AviationAIProgressDashboard() {
           filter: "vertical_slug=eq.aviation",
         },
         (payload) => {
-          console.log("Article updated:", payload);
+          console.log("📡 Article updated:", payload.new.id);
           // Check if this is an AI processing update
           if (payload.new?.metadata?.ai_processed === true) {
+            console.log("✅ AI processed update detected, reloading stats");
             loadStats();
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log("📡 Realtime subscription status:", status);
+      });
 
-    // Refresh stats every 30 seconds as backup
-    const interval = setInterval(loadStats, 30000);
+    // Refresh stats every 10 seconds for active monitoring
+    const interval = setInterval(() => {
+      console.log("⏰ Auto-refresh stats");
+      loadStats();
+    }, 10000);
 
     return () => {
+      console.log("🔌 Cleaning up AviationAIProgressDashboard");
       supabase.removeChannel(channel);
       clearInterval(interval);
     };
