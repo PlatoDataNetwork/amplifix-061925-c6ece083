@@ -29,6 +29,7 @@ import { ImportHistoryTable } from "@/components/ImportHistoryTable";
 import { DuplicateMonitor } from "@/components/DuplicateMonitor";
 import { AerospaceImport } from "@/components/admin/AerospaceImport";
 import { AviationImport } from "@/components/admin/AviationImport";
+import AviationAIProgressDashboard from "@/components/AviationAIProgressDashboard";
 
 const ImportAdmin = () => {
   const navigate = useNavigate();
@@ -1833,6 +1834,9 @@ const ImportAdmin = () => {
 
           {/* Generic Import Section - Now supports any vertical via input fields */}
           {/* <AerospaceImport /> component hidden - using AviationImport as the generic importer */}
+          
+          {/* AI Processing Progress Dashboard */}
+          <AviationAIProgressDashboard />
           
           <AviationImport
             importing={importing}
