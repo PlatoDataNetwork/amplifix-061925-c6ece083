@@ -1087,22 +1087,56 @@ const ImportAdmin = () => {
     
     try {
       setIsClearing(true);
-      const backupName = `aerospace_backup_${new Date().toISOString()}`;
+      const backupName = `pre-clear-aerospace-${new Date().toISOString()}`;
       
-      toast.info('Step 1/2: Creating backup...', {
-        description: 'Backing up all aerospace articles'
+      toast.info('Step 1/3: Counting articles...', {
+        description: 'Checking how many aerospace articles to backup'
       });
       
-      // STEP 1: Create backup FIRST
-      const { data: articlesToBackup, error: fetchError } = await supabase
+      // Get count first
+      const { count: totalCount, error: countError } = await supabase
         .from('articles')
-        .select('*')
+        .select('*', { count: 'exact', head: true })
         .eq('vertical_slug', 'aerospace');
       
-      if (fetchError) throw fetchError;
+      if (countError) throw countError;
       
-      if (articlesToBackup && articlesToBackup.length > 0) {
-        const backupRecords = articlesToBackup.map(article => ({
+      if (!totalCount || totalCount === 0) {
+        toast.info('No aerospace articles found to backup');
+        setIsClearing(false);
+        return;
+      }
+      
+      toast.info(`Step 2/3: Backing up ${totalCount.toLocaleString()} articles...`, {
+        description: 'This may take a few minutes',
+        duration: 5000
+      });
+      
+      // STEP 1: Fetch ALL articles in batches
+      const batchSize = 1000;
+      let allArticles: any[] = [];
+      
+      for (let offset = 0; offset < totalCount; offset += batchSize) {
+        const { data: batch, error: fetchError } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('vertical_slug', 'aerospace')
+          .range(offset, offset + batchSize - 1);
+        
+        if (fetchError) throw fetchError;
+        
+        if (batch) {
+          allArticles = allArticles.concat(batch);
+          toast.info(`Backing up: ${allArticles.length.toLocaleString()} / ${totalCount.toLocaleString()}`, {
+            duration: 1000,
+            id: 'aerospace-backup-progress'
+          });
+        }
+      }
+      
+      // STEP 2: Create backup
+      if (allArticles.length > 0) {
+        const backupRecords = allArticles.map(article => ({
           article_id: article.id,
           post_id: article.post_id,
           title: article.title,
@@ -1114,25 +1148,36 @@ const ImportAdmin = () => {
           published_at: article.published_at,
           metadata: article.metadata,
           backup_name: backupName,
-          backup_description: `Automatic backup before clearing aerospace data at ${new Date().toLocaleString()}`
+          backup_description: `Automatic safety backup of ${allArticles.length.toLocaleString()} aerospace articles before clearing data at ${new Date().toLocaleString()}`
         }));
         
-        const { error: backupError } = await supabase
-          .from('article_backups')
-          .insert(backupRecords);
+        // Insert in chunks
+        const insertChunkSize = 1000;
+        for (let i = 0; i < backupRecords.length; i += insertChunkSize) {
+          const chunk = backupRecords.slice(i, i + insertChunkSize);
+          const { error: backupError } = await supabase
+            .from('article_backups')
+            .insert(chunk);
+          
+          if (backupError) throw backupError;
+          
+          toast.info(`Saving backup: ${Math.min(i + insertChunkSize, backupRecords.length).toLocaleString()} / ${backupRecords.length.toLocaleString()}`, {
+            duration: 1000,
+            id: 'aerospace-backup-insert'
+          });
+        }
         
-        if (backupError) throw backupError;
-        
-        toast.success(`✅ Backup created: ${articlesToBackup.length} articles saved`, {
-          description: `Backup name: ${backupName}`
+        toast.success(`✅ Backup created: ${allArticles.length.toLocaleString()} articles saved`, {
+          description: `Backup name: ${backupName}`,
+          duration: 5000
         });
       }
       
-      toast.info('Step 2/2: Clearing aerospace data...', {
+      toast.info('Step 3/3: Clearing aerospace data...', {
         description: 'Deleting articles and metadata (backups preserved)'
       });
       
-      // STEP 2: Delete aerospace articles (backups are preserved!)
+      // STEP 3: Delete aerospace articles (backups are preserved!)
       const { error: articlesError } = await supabase
         .from('articles')
         .delete()
@@ -1157,7 +1202,7 @@ const ImportAdmin = () => {
       if (jobsError) throw jobsError;
 
       toast.success('All Aerospace data cleared successfully', {
-        description: `✅ Backup preserved: ${backupName}\n✅ ${articlesToBackup?.length || 0} articles can be restored`,
+        description: `✅ Backup preserved: ${backupName}\n✅ ${allArticles.length.toLocaleString()} articles can be restored`,
         duration: 10000
       });
       
@@ -1181,22 +1226,56 @@ const ImportAdmin = () => {
     
     try {
       setIsClearing(true);
-      const backupName = `aviation_backup_${new Date().toISOString()}`;
+      const backupName = `pre-clear-aviation-${new Date().toISOString()}`;
       
-      toast.info('Step 1/2: Creating backup...', {
-        description: 'Backing up all aviation articles'
+      toast.info('Step 1/3: Counting articles...', {
+        description: 'Checking how many aviation articles to backup'
       });
       
-      // STEP 1: Create backup FIRST
-      const { data: articlesToBackup, error: fetchError } = await supabase
+      // Get count first
+      const { count: totalCount, error: countError } = await supabase
         .from('articles')
-        .select('*')
+        .select('*', { count: 'exact', head: true })
         .eq('vertical_slug', 'aviation');
       
-      if (fetchError) throw fetchError;
+      if (countError) throw countError;
       
-      if (articlesToBackup && articlesToBackup.length > 0) {
-        const backupRecords = articlesToBackup.map(article => ({
+      if (!totalCount || totalCount === 0) {
+        toast.info('No aviation articles found to backup');
+        setIsClearing(false);
+        return;
+      }
+      
+      toast.info(`Step 2/3: Backing up ${totalCount.toLocaleString()} articles...`, {
+        description: 'This may take a few minutes',
+        duration: 5000
+      });
+      
+      // STEP 1: Fetch ALL articles in batches
+      const batchSize = 1000;
+      let allArticles: any[] = [];
+      
+      for (let offset = 0; offset < totalCount; offset += batchSize) {
+        const { data: batch, error: fetchError } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('vertical_slug', 'aviation')
+          .range(offset, offset + batchSize - 1);
+        
+        if (fetchError) throw fetchError;
+        
+        if (batch) {
+          allArticles = allArticles.concat(batch);
+          toast.info(`Backing up: ${allArticles.length.toLocaleString()} / ${totalCount.toLocaleString()}`, {
+            duration: 1000,
+            id: 'aviation-backup-progress'
+          });
+        }
+      }
+      
+      // STEP 2: Create backup
+      if (allArticles.length > 0) {
+        const backupRecords = allArticles.map(article => ({
           article_id: article.id,
           post_id: article.post_id,
           title: article.title,
@@ -1208,25 +1287,36 @@ const ImportAdmin = () => {
           published_at: article.published_at,
           metadata: article.metadata,
           backup_name: backupName,
-          backup_description: `Automatic backup before clearing aviation data at ${new Date().toLocaleString()}`
+          backup_description: `Automatic safety backup of ${allArticles.length.toLocaleString()} aviation articles before clearing data at ${new Date().toLocaleString()}`
         }));
         
-        const { error: backupError } = await supabase
-          .from('article_backups')
-          .insert(backupRecords);
+        // Insert in chunks
+        const insertChunkSize = 1000;
+        for (let i = 0; i < backupRecords.length; i += insertChunkSize) {
+          const chunk = backupRecords.slice(i, i + insertChunkSize);
+          const { error: backupError } = await supabase
+            .from('article_backups')
+            .insert(chunk);
+          
+          if (backupError) throw backupError;
+          
+          toast.info(`Saving backup: ${Math.min(i + insertChunkSize, backupRecords.length).toLocaleString()} / ${backupRecords.length.toLocaleString()}`, {
+            duration: 1000,
+            id: 'aviation-backup-insert'
+          });
+        }
         
-        if (backupError) throw backupError;
-        
-        toast.success(`✅ Backup created: ${articlesToBackup.length} articles saved`, {
-          description: `Backup name: ${backupName}`
+        toast.success(`✅ Backup created: ${allArticles.length.toLocaleString()} articles saved`, {
+          description: `Backup name: ${backupName}`,
+          duration: 5000
         });
       }
       
-      toast.info('Step 2/2: Clearing aviation data...', {
+      toast.info('Step 3/3: Clearing aviation data...', {
         description: 'Deleting articles and metadata (backups preserved)'
       });
       
-      // STEP 2: Delete aviation articles (backups are preserved!)
+      // STEP 3: Delete aviation articles (backups are preserved!)
       const { error: articlesError } = await supabase
         .from('articles')
         .delete()
@@ -1251,7 +1341,7 @@ const ImportAdmin = () => {
       if (jobsError) throw jobsError;
 
       toast.success('All Aviation data cleared successfully', {
-        description: `✅ Backup preserved: ${backupName}\n✅ ${articlesToBackup?.length || 0} articles can be restored`,
+        description: `✅ Backup preserved: ${backupName}\n✅ ${allArticles.length.toLocaleString()} articles can be restored`,
         duration: 10000
       });
       
