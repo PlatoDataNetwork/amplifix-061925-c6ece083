@@ -12,13 +12,11 @@ interface DuplicateStats {
 }
 
 interface DuplicateMonitorProps {
-  threshold?: number;
   autoRefresh?: boolean;
   refreshInterval?: number;
 }
 
 export const DuplicateMonitor = ({ 
-  threshold = 100, 
   autoRefresh = true,
   refreshInterval = 30000 // 30 seconds
 }: DuplicateMonitorProps) => {
@@ -94,21 +92,12 @@ export const DuplicateMonitor = ({
     };
   }, []);
 
-  // Alert when threshold exceeded
-  useEffect(() => {
-    if (stats && stats.totalDuplicates > threshold && stats.totalDuplicates > 0) {
-      toast.warning(`Duplicate threshold exceeded: ${stats.totalDuplicates} duplicates found`, {
-        duration: 5000,
-      });
-    }
-  }, [stats?.totalDuplicates, threshold]);
-
-  const isOverThreshold = stats && stats.totalDuplicates > threshold;
-  const statusColor = stats?.totalDuplicates === 0 ? 'text-green-500' : isOverThreshold ? 'text-red-500' : 'text-yellow-500';
+  const hasDuplicates = stats && stats.totalDuplicates > 0;
+  const statusColor = stats?.totalDuplicates === 0 ? 'text-green-500' : 'text-yellow-500';
   const statusIcon = stats?.totalDuplicates === 0 ? <CheckCircle className="h-5 w-5" /> : <AlertTriangle className="h-5 w-5" />;
 
   return (
-    <Card className={isOverThreshold ? 'border-red-500 border-2' : ''}>
+    <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base font-medium">Duplicate Monitor</CardTitle>
@@ -129,8 +118,8 @@ export const DuplicateMonitor = ({
               <span className={statusColor}>{statusIcon}</span>
               <span className="text-sm font-medium">Status</span>
             </div>
-            <Badge variant={stats?.totalDuplicates === 0 ? 'default' : isOverThreshold ? 'destructive' : 'secondary'}>
-              {loading ? 'Checking...' : stats?.totalDuplicates === 0 ? 'Clean' : isOverThreshold ? 'Alert' : 'Warning'}
+            <Badge variant={stats?.totalDuplicates === 0 ? 'default' : 'secondary'}>
+              {loading ? 'Checking...' : stats?.totalDuplicates === 0 ? 'Clean' : 'Has Duplicates'}
             </Badge>
           </div>
 
@@ -145,35 +134,10 @@ export const DuplicateMonitor = ({
             </div>
           </div>
 
-          <div className="space-y-1">
-            <p className="text-xs text-muted-foreground">Threshold</p>
-            <div className="flex items-center gap-2">
-              <div className="flex-1 bg-muted rounded-full h-2">
-                <div
-                  className={`h-2 rounded-full transition-all ${
-                    stats?.totalDuplicates === 0 ? 'bg-green-500' : isOverThreshold ? 'bg-red-500' : 'bg-yellow-500'
-                  }`}
-                  style={{
-                    width: `${Math.min(100, ((stats?.totalDuplicates ?? 0) / threshold) * 100)}%`
-                  }}
-                />
-              </div>
-              <span className="text-xs font-medium">{threshold}</span>
-            </div>
-          </div>
-
           {lastChecked && (
             <p className="text-xs text-muted-foreground">
               Last checked: {lastChecked.toLocaleTimeString()}
             </p>
-          )}
-
-          {isOverThreshold && (
-            <div className="pt-2 border-t">
-              <p className="text-xs text-red-500 font-medium">
-                ⚠️ Action required: {stats.totalDuplicates} duplicates exceed threshold of {threshold}
-              </p>
-            </div>
           )}
         </div>
       </CardContent>

@@ -1572,7 +1572,7 @@ const ImportAdmin = () => {
               </CardContent>
             </Card>
 
-            <DuplicateMonitor threshold={50} autoRefresh={true} refreshInterval={60000} />
+            <DuplicateMonitor autoRefresh={true} refreshInterval={60000} />
           </div>
 
           {/* Real-time Stats Banner - Always Visible */}
