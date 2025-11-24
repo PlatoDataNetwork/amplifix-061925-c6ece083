@@ -32,6 +32,7 @@ import ForexGPTShowcase from "./pages/ForexGPTShowcase";
 import BlockwellShowcase from "./pages/BlockwellShowcase";
 import StorageBlueShowcase from "./pages/StorageBlueShowcase";
 import VersaTVShowcase from "./pages/VersaTVShowcase";
+import KedalionShowcase from "./pages/KedalionShowcase";
 import Showcase from "./pages/Showcase";
 import Solutions from "./pages/Solutions";
 import PublicCompanies from "./pages/PublicCompanies";
@@ -123,6 +124,7 @@ const App = () => (
               <Route path="/showcase/storageblue" element={<StorageBlueShowcase />} />
               <Route path="/showcase/versatv" element={<VersaTVShowcase />} />
               <Route path="/showcase/vsee-health" element={<VseeHealthShowcase />} />
+              <Route path="/showcase/kedalion" element={<KedalionShowcase />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/solutions/ipo-preparation" element={<IPOPreparation />} />
@@ -185,6 +187,7 @@ const App = () => (
               <Route path="/:lang/showcase/storageblue" element={<StorageBlueShowcase />} />
               <Route path="/:lang/showcase/versatv" element={<VersaTVShowcase />} />
               <Route path="/:lang/showcase/vsee-health" element={<VseeHealthShowcase />} />
+              <Route path="/:lang/showcase/kedalion" element={<KedalionShowcase />} />
               <Route path="/:lang/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/:lang/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/:lang/solutions/ipo-preparation" element={<IPOPreparation />} />
