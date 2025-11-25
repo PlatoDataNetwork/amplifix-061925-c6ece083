@@ -49,13 +49,28 @@ export default function AviationAIProgressDashboard() {
   const [lastProgressTime, setLastProgressTime] = useState<number>(Date.now());
   const [autoRecoveryAttempts, setAutoRecoveryAttempts] = useState<number>(0);
 
-  const loadStats = async (isManualRefresh = false) => {
+  const loadStats = async (isManualRefresh = false, forceRefresh = false) => {
     if (isManualRefresh) {
       setIsRefreshing(true);
     }
-    console.log("🔄 Loading AI processing stats...");
+    
+    if (forceRefresh) {
+      console.log("🔄 Force refreshing stats - clearing cache...");
+      // Clear local state to force fresh data
+      setStats({
+        totalArticles: 0,
+        processedArticles: 0,
+        unprocessedArticles: 0,
+        processingRate: 0,
+      });
+      setSpeedData([]);
+      setCurrentJob(null);
+    } else {
+      console.log("🔄 Loading AI processing stats...");
+    }
+    
     try {
-      // Get current processing job
+      // Get current processing job with cache-busting timestamp
       const { data: jobData, error: jobError } = await supabase
         .from("ai_processing_jobs")
         .select("id, started_at, status, processed_chunks, total_chunks")
@@ -316,11 +331,12 @@ export default function AviationAIProgressDashboard() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => loadStats(true)}
+              onClick={() => loadStats(true, true)}
               disabled={isRefreshing}
+              className="relative"
             >
               <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-              Refresh
+              {isRefreshing ? 'Refreshing...' : 'Force Refresh'}
             </Button>
             {stats.unprocessedArticles > 0 && currentJob && (
               <Button
