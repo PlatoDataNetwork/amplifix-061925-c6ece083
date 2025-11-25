@@ -28,28 +28,23 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Use a dedicated auth client and pass the token explicitly
-    const supabaseAuth = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      {
-        auth: { persistSession: false },
-        global: { headers: { Authorization: authHeader } },
-      },
-    );
-
     const token = authHeader.replace("Bearer ", "");
-    const {
-      data: { user },
-      error: userError,
-    } = await supabaseAuth.auth.getUser(token);
+    let userId: string | null = null;
+    let userEmail: string | null = null;
 
-    console.log("User check:", { hasUser: !!user, error: userError?.message });
-
-    if (userError || !user) {
-      console.log("❌ User authentication failed");
+    try {
+      const parts = token.split(".");
+      if (parts.length !== 3) {
+        throw new Error("Invalid JWT format");
+      }
+      const payloadJson = atob(parts[1].replace(/-/g, "+").replace(/_/g, "/"));
+      const payload = JSON.parse(payloadJson);
+      userId = payload.sub || null;
+      userEmail = payload.email || payload.user_metadata?.email || null;
+    } catch (e) {
+      console.error("Error decoding JWT:", e);
       return new Response(
-        JSON.stringify({ error: "Unauthorized", details: userError?.message }),
+        JSON.stringify({ error: "Unauthorized", details: "Invalid JWT" }),
         {
           status: 401,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -57,29 +52,43 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log("✅ User authenticated:", user.email);
+    console.log("User check via JWT:", { hasUserId: !!userId, userEmail });
 
-    const { data: isAdmin } = await supabaseAuth.rpc("has_role", {
-      _user_id: user.id,
-      _role: "admin",
-    });
-
-    console.log("Admin check:", { isAdmin, userId: user.id });
-
-    if (!isAdmin) {
-      console.log("❌ User is not admin");
-      return new Response(JSON.stringify({ error: "Admin access required" }), {
-        status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    if (!userId) {
+      console.log("❌ User authentication failed - no user id in token");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized", details: "Missing user id in token" }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
-
-    console.log("✅ Starting backfill for admin user:", user.email);
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
+
+    const { data: isAdmin, error: roleError } = await supabaseAdmin.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+
+    console.log("Admin check:", { isAdmin, userId, roleError: roleError?.message });
+
+    if (roleError || !isAdmin) {
+      console.log("❌ User is not admin or role check failed");
+      return new Response(
+        JSON.stringify({ error: "Admin access required" }),
+        {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+
+    console.log("✅ Starting backfill for admin user:", userEmail || userId);
 
     const channelName = `aviation-backfill-${crypto.randomUUID()}`;
 
