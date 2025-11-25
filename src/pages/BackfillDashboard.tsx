@@ -53,11 +53,19 @@ export default function BackfillDashboard() {
         .from('import_history')
         .select('*')
         .eq('metadata->>type', 'url_backfill')
-        .order('started_at', { ascending: false })
-        .limit(20);
+        .order('started_at', { ascending: false });
 
       if (error) throw error;
-      setJobs(data || []);
+      
+      // Group by vertical_slug and keep only the most recent job per vertical
+      const jobsByVertical = (data || []).reduce((acc, job) => {
+        if (!acc[job.vertical_slug] || new Date(job.started_at) > new Date(acc[job.vertical_slug].started_at)) {
+          acc[job.vertical_slug] = job;
+        }
+        return acc;
+      }, {} as Record<string, BackfillJob>);
+      
+      setJobs(Object.values(jobsByVertical));
     } catch (error) {
       console.error('Error fetching jobs:', error);
     } finally {
@@ -315,6 +323,49 @@ export default function BackfillDashboard() {
     }
   };
 
+  const cleanupStuckJobs = async () => {
+    try {
+      const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+      
+      const { data: stuckJobs } = await supabase
+        .from('import_history')
+        .select('id')
+        .eq('metadata->>type', 'url_backfill')
+        .eq('status', 'in_progress')
+        .lt('started_at', tenMinutesAgo);
+
+      if (stuckJobs && stuckJobs.length > 0) {
+        for (const job of stuckJobs) {
+          await supabase
+            .from('import_history')
+            .update({ 
+              status: 'completed',
+              completed_at: new Date().toISOString()
+            })
+            .eq('id', job.id);
+        }
+        
+        toast({
+          title: "Cleanup Complete",
+          description: `Marked ${stuckJobs.length} stuck job(s) as completed`,
+        });
+        
+        fetchJobs();
+      } else {
+        toast({
+          title: "No Stuck Jobs",
+          description: "All jobs are up to date",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Cleanup Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const getStatusBadge = (job: BackfillJob) => {
     if (job.cancelled) {
       return <Badge variant="secondary">Cancelled</Badge>;
@@ -351,13 +402,18 @@ export default function BackfillDashboard() {
         <div>
           <h1 className="text-3xl font-bold">Backfill Dashboard</h1>
           <p className="text-muted-foreground mt-1">
-            Monitor and manage URL backfill jobs across all verticals
+            Monitor and manage URL backfill jobs (showing latest job per vertical)
           </p>
         </div>
-        <Button onClick={fetchJobs} variant="outline" size="sm">
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={cleanupStuckJobs} variant="outline" size="sm">
+            Clean Up Stuck Jobs
+          </Button>
+          <Button onClick={fetchJobs} variant="outline" size="sm">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -537,20 +593,26 @@ export default function BackfillDashboard() {
                   <CardContent>
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                       <div className="space-y-1">
-                        <p className="text-muted-foreground">Processed</p>
-                        <p className="text-lg font-semibold">{job.total_processed.toLocaleString()}</p>
+                        <p className="text-muted-foreground">Last Offset</p>
+                        <p className="text-lg font-semibold">{lastOffset.toLocaleString()}</p>
                       </div>
                       <div className="space-y-1">
                         <p className="text-muted-foreground">Updated</p>
-                        <p className="text-lg font-semibold text-green-600">{job.imported_count.toLocaleString()}</p>
+                        <p className="text-lg font-semibold text-green-600">
+                          {job.imported_count > 0 ? job.imported_count.toLocaleString() : 'In Progress'}
+                        </p>
                       </div>
                       <div className="space-y-1">
                         <p className="text-muted-foreground">Skipped</p>
-                        <p className="text-lg font-semibold text-yellow-600">{job.skipped_count.toLocaleString()}</p>
+                        <p className="text-lg font-semibold text-yellow-600">
+                          {job.skipped_count > 0 ? job.skipped_count.toLocaleString() : '-'}
+                        </p>
                       </div>
                       <div className="space-y-1">
                         <p className="text-muted-foreground">Errors</p>
-                        <p className="text-lg font-semibold text-red-600">{job.error_count.toLocaleString()}</p>
+                        <p className="text-lg font-semibold text-red-600">
+                          {job.error_count > 0 ? job.error_count.toLocaleString() : '-'}
+                        </p>
                       </div>
                       <div className="space-y-1">
                         <p className="text-muted-foreground">Duration</p>
