@@ -67,6 +67,23 @@ export default function BackfillDashboard() {
 
   const startBackfill = async (verticalSlug: string) => {
     try {
+      // Check if any backfill is currently running
+      const { data: runningJobs } = await supabase
+        .from('import_history')
+        .select('*')
+        .eq('status', 'in_progress')
+        .eq('metadata->>type', 'url_backfill')
+        .limit(1);
+
+      if (runningJobs && runningJobs.length > 0) {
+        toast({
+          title: "Backfill Already Running",
+          description: `Cannot start ${verticalSlug} backfill while another backfill is in progress`,
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         throw new Error("Not authenticated");
@@ -278,6 +295,7 @@ export default function BackfillDashboard() {
               onClick={() => startBackfill('aviation')} 
               className="w-full"
               variant="outline"
+              disabled={Object.keys(liveProgress).length > 0}
             >
               Aviation
             </Button>
@@ -285,6 +303,7 @@ export default function BackfillDashboard() {
               onClick={() => startBackfill('aerospace')} 
               className="w-full"
               variant="outline"
+              disabled={Object.keys(liveProgress).length > 0}
             >
               Aerospace
             </Button>
