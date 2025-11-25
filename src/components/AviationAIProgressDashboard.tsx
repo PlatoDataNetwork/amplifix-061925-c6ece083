@@ -45,6 +45,9 @@ export default function AviationAIProgressDashboard() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [currentJob, setCurrentJob] = useState<ProcessingJob | null>(null);
   const [elapsedTime, setElapsedTime] = useState<string>("");
+  const [lastProcessedCount, setLastProcessedCount] = useState<number>(0);
+  const [lastProgressTime, setLastProgressTime] = useState<number>(Date.now());
+  const [autoRecoveryAttempts, setAutoRecoveryAttempts] = useState<number>(0);
 
   const loadStats = async (isManualRefresh = false) => {
     if (isManualRefresh) {
@@ -124,6 +127,14 @@ export default function AviationAIProgressDashboard() {
         unprocessedArticles,
         processingRate: totalArticles > 0 ? (processedArticles / totalArticles) * 100 : 0,
       });
+      
+      // Track progress for stall detection
+      if (processedArticles > lastProcessedCount) {
+        setLastProcessedCount(processedArticles);
+        setLastProgressTime(Date.now());
+        setAutoRecoveryAttempts(0); // Reset attempts on successful progress
+      }
+      
       setPreviousProcessed(processedArticles);
       setLastUpdateTime(new Date());
       setIsLoading(false);
@@ -165,7 +176,29 @@ export default function AviationAIProgressDashboard() {
     return () => clearInterval(timer);
   }, [currentJob]);
 
-  const handleResume = async () => {
+  // Auto-detect stalls and recover
+  useEffect(() => {
+    if (!currentJob || currentJob.status !== 'in_progress' || stats.unprocessedArticles === 0) {
+      return;
+    }
+
+    const checkInterval = setInterval(() => {
+      const timeSinceLastProgress = Date.now() - lastProgressTime;
+      const STALL_THRESHOLD = 30000; // 30 seconds without progress
+      const MAX_AUTO_RECOVERY_ATTEMPTS = 3;
+
+      if (timeSinceLastProgress > STALL_THRESHOLD && autoRecoveryAttempts < MAX_AUTO_RECOVERY_ATTEMPTS) {
+        console.log(`Processing stalled for ${timeSinceLastProgress}ms, attempting auto-recovery #${autoRecoveryAttempts + 1}`);
+        toast.info('Processing appears stalled, attempting auto-recovery...');
+        setAutoRecoveryAttempts(prev => prev + 1);
+        handleResume(true); // Auto-recovery mode
+      }
+    }, 10000); // Check every 10 seconds
+
+    return () => clearInterval(checkInterval);
+  }, [currentJob, stats.unprocessedArticles, lastProgressTime, autoRecoveryAttempts]);
+
+  const handleResume = async (autoRecovery = false) => {
     if (!currentJob) return;
     
     setIsRefreshing(true);
@@ -191,9 +224,16 @@ export default function AviationAIProgressDashboard() {
 
         if (error) {
           console.error("Failed to resume processing:", error);
-          toast.error("Failed to resume processing");
+          if (!autoRecovery) {
+            toast.error("Failed to resume processing");
+          }
         } else {
-          toast.success(`Resumed processing from chunk ${nextChunk}`);
+          if (autoRecovery) {
+            toast.success('Auto-recovery successful, processing resumed');
+          } else {
+            toast.success(`Resumed processing from chunk ${nextChunk}`);
+          }
+          setLastProgressTime(Date.now()); // Reset progress timer
           setTimeout(() => loadStats(true), 2000);
         }
       } else {
@@ -201,7 +241,9 @@ export default function AviationAIProgressDashboard() {
       }
     } catch (error) {
       console.error("Error resuming processing:", error);
-      toast.error("Error resuming processing");
+      if (!autoRecovery) {
+        toast.error("Error resuming processing");
+      }
     } finally {
       setIsRefreshing(false);
     }
@@ -277,7 +319,7 @@ export default function AviationAIProgressDashboard() {
               <Button
                 variant="default"
                 size="sm"
-                onClick={handleResume}
+                onClick={() => handleResume(false)}
                 disabled={isRefreshing}
               >
                 Resume Processing
