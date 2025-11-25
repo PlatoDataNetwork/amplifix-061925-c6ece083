@@ -97,7 +97,11 @@ Deno.serve(async (req) => {
       let skipped = 0;
       let errors = 0;
 
-      console.log("Starting Aviation URL backfill");
+      console.log("Starting Aviation URL backfill with batch processing");
+
+      const BATCH_SIZE = 100;
+      const BATCH_DELAY_MS = 2000; // 2 second delay between batches
+      const ARTICLE_DELAY_MS = 300; // 300ms delay between articles
 
       const { data: articles, error: fetchError } = await supabaseAdmin
         .from("articles")
@@ -112,94 +116,115 @@ Deno.serve(async (req) => {
       }
 
       if (!articles || articles.length === 0) {
-        console.log("No Aviation articles found");
+        console.log("No Aviation articles found to backfill");
         return { updated: 0, skipped: 0, errors: 0 };
       }
 
-      console.log(`Found ${articles.length} Aviation articles to process`);
-
       const totalArticles = articles.length;
+      const totalBatches = Math.ceil(totalArticles / BATCH_SIZE);
+      console.log(`Found ${totalArticles} Aviation articles to process in ${totalBatches} batches`);
 
-      for (let i = 0; i < articles.length; i++) {
-        const article = articles[i];
+      // Process articles in batches
+      for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
+        const batchStart = batchIndex * BATCH_SIZE;
+        const batchEnd = Math.min(batchStart + BATCH_SIZE, totalArticles);
+        const batch = articles.slice(batchStart, batchEnd);
 
-        try {
-          await supabaseAdmin.channel(channelName).send({
-            type: "broadcast",
-            event: "progress",
-            payload: {
-              phase: "processing",
-              currentArticle: i + 1,
-              totalArticles,
-              updated,
-              skipped,
-              errors,
-              percentage: Math.round(((i + 1) / totalArticles) * 100),
-            } satisfies ProgressUpdate,
-          });
+        console.log(`Processing batch ${batchIndex + 1}/${totalBatches} (articles ${batchStart + 1}-${batchEnd})`);
 
-          if (article.external_url && article.external_url.trim() !== "") {
-            console.log(`Article ${article.id} already has external_url, skipping`);
-            skipped++;
-            continue;
-          }
+        for (let i = 0; i < batch.length; i++) {
+          const article = batch[i];
+          const overallIndex = batchStart + i;
 
-          if (!article.post_id) {
-            console.log(`Article ${article.id} has no post_id, skipping`);
-            skipped++;
-            continue;
-          }
+          try {
+            // Send progress update
+            await supabaseAdmin.channel(channelName).send({
+              type: "broadcast",
+              event: "progress",
+              payload: {
+                phase: "processing",
+                currentArticle: overallIndex + 1,
+                totalArticles,
+                updated,
+                skipped,
+                errors,
+                percentage: Math.round(((overallIndex + 1) / totalArticles) * 100),
+              } satisfies ProgressUpdate,
+            });
 
-          const aviationUrl = `https://platodata.ai/aviation/json/?p=${article.post_id}`;
-          console.log(`Fetching Aviation article from: ${aviationUrl}`);
+            // Skip if already has external_url (shouldn't happen with the query filter, but double-check)
+            if (article.external_url && article.external_url.trim() !== "") {
+              console.log(`Article ${article.id} already has external_url, skipping`);
+              skipped++;
+              continue;
+            }
 
-          const response = await fetch(aviationUrl);
+            // Skip if no post_id
+            if (!article.post_id) {
+              console.log(`Article ${article.id} has no post_id, skipping`);
+              skipped++;
+              continue;
+            }
 
-          if (!response.ok) {
-            console.error(`Failed to fetch article ${article.post_id}: ${response.status}`);
+            // Fetch article data from Aviation API
+            const aviationUrl = `https://platodata.ai/aviation/json/?p=${article.post_id}`;
+            const response = await fetch(aviationUrl);
+
+            if (!response.ok) {
+              console.error(`Failed to fetch article ${article.post_id}: ${response.status}`);
+              errors++;
+              continue;
+            }
+
+            const data = await response.json();
+
+            if (!Array.isArray(data) || data.length === 0) {
+              console.error(`No data returned for article ${article.post_id}`);
+              errors++;
+              continue;
+            }
+
+            const articleData = data[0];
+            const sourceUrl = articleData?.link;
+
+            if (!sourceUrl || sourceUrl.trim() === "") {
+              console.error(`No source URL found for article ${article.post_id}`);
+              errors++;
+              continue;
+            }
+
+            // Update article with source URL
+            const { error: updateError } = await supabaseAdmin
+              .from("articles")
+              .update({ external_url: sourceUrl })
+              .eq("id", article.id);
+
+            if (updateError) {
+              console.error(`Error updating article ${article.id}:`, updateError);
+              errors++;
+            } else {
+              updated++;
+              if (updated % 10 === 0) {
+                console.log(`Progress: ${updated} articles updated so far`);
+              }
+            }
+
+            // Small delay between articles
+            await new Promise((resolve) => setTimeout(resolve, ARTICLE_DELAY_MS));
+          } catch (error) {
+            console.error(`Error processing article ${article.id}:`, error);
             errors++;
-            continue;
           }
+        }
 
-          const data = await response.json();
-
-          if (!Array.isArray(data) || data.length === 0) {
-            console.error(`No data returned for article ${article.post_id}`);
-            errors++;
-            continue;
-          }
-
-          const articleData = data[0];
-          const sourceUrl = articleData?.link;
-
-          if (!sourceUrl || sourceUrl.trim() === "") {
-            console.error(`No source URL found for article ${article.post_id}`);
-            errors++;
-            continue;
-          }
-
-          console.log(`Updating article ${article.id} with source URL: ${sourceUrl}`);
-
-          const { error: updateError } = await supabaseAdmin
-            .from("articles")
-            .update({ external_url: sourceUrl })
-            .eq("id", article.id);
-
-          if (updateError) {
-            console.error(`Error updating article ${article.id}:`, updateError);
-            errors++;
-          } else {
-            updated++;
-            console.log(`Successfully updated article ${article.id}`);
-          }
-
-          await new Promise((resolve) => setTimeout(resolve, 500));
-        } catch (error) {
-          console.error(`Error processing article ${article.id}:`, error);
-          errors++;
+        // Delay between batches (except for the last batch)
+        if (batchIndex < totalBatches - 1) {
+          console.log(`Batch ${batchIndex + 1} complete. Waiting ${BATCH_DELAY_MS}ms before next batch...`);
+          await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
         }
       }
 
+      // Send completion event
       await supabaseAdmin.channel(channelName).send({
         type: "broadcast",
         event: "complete",
@@ -214,7 +239,13 @@ Deno.serve(async (req) => {
         } satisfies ProgressUpdate,
       });
 
-      console.log("Aviation URL backfill complete", { updated, skipped, errors });
+      console.log("Aviation URL backfill complete", { 
+        totalArticles,
+        updated, 
+        skipped, 
+        errors,
+        successRate: `${((updated / totalArticles) * 100).toFixed(2)}%`
+      });
 
       return { updated, skipped, errors };
     }
