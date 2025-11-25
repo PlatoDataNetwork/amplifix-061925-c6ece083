@@ -494,7 +494,7 @@ export default function BackfillDashboard() {
           .from('import_history')
           .update({ 
             cancelled: true,
-            status: 'cancelled',
+            status: 'completed',
             completed_at: new Date().toISOString()
           })
           .eq('vertical_slug', 'aviation')
