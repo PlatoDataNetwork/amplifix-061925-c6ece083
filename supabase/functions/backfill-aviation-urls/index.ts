@@ -250,16 +250,27 @@ Deno.serve(async (req) => {
           const absoluteIndex = resumeFromOffset + overallIndex;
 
           try {
-            // Update last processed offset in metadata
+            // Update metadata with last processed offset
+            const updateData: any = {
+              metadata: { 
+                type: "url_backfill",
+                resumeFromOffset,
+                lastProcessedOffset: absoluteIndex
+              }
+            };
+
+            // Every 50 articles, also update the counts so progress is visible
+            if ((absoluteIndex + 1) % 50 === 0) {
+              updateData.imported_count = updated;
+              updateData.skipped_count = skipped;
+              updateData.error_count = errors;
+              updateData.total_processed = updated + skipped + errors;
+              console.log(`💾 Saving progress checkpoint: ${updated} updated, ${skipped} skipped, ${errors} errors`);
+            }
+
             await supabaseAdmin
               .from("import_history")
-              .update({
-                metadata: { 
-                  type: "url_backfill",
-                  resumeFromOffset,
-                  lastProcessedOffset: absoluteIndex
-                }
-              })
+              .update(updateData)
               .eq("id", importId);
 
             // Send progress update
