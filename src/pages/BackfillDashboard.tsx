@@ -189,6 +189,7 @@ export default function BackfillDashboard() {
         .from('import_history')
         .select('*')
         .eq('status', 'in_progress')
+        .eq('cancelled', false)
         .eq('metadata->>type', 'url_backfill')
         .limit(1);
 
@@ -302,6 +303,7 @@ export default function BackfillDashboard() {
         .from('import_history')
         .select('*')
         .eq('status', 'in_progress')
+        .eq('cancelled', false)
         .eq('metadata->>type', 'url_backfill')
         .limit(1);
 
@@ -416,6 +418,13 @@ export default function BackfillDashboard() {
         .eq('id', jobId);
 
       if (error) throw error;
+
+      // Immediately remove from live progress so the UI reflects the cancellation
+      setLiveProgress((prev) => {
+        const updated = { ...prev };
+        delete updated[jobId];
+        return updated;
+      });
 
       toast({
         title: "Cancellation Requested",
