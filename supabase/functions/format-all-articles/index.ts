@@ -268,97 +268,126 @@ Deno.serve(async (req) => {
 
     console.log(`Found ${articles.length} articles to process`);
 
-    // Background processing function
+    // Background processing function with parallel batching
     const processArticles = async () => {
       let processed = 0;
       const failed: string[] = [];
+      const PARALLEL_BATCH_SIZE = 5; // Process 5 articles simultaneously
 
-      for (let i = 0; i < articles.length; i++) {
-        const article = articles[i];
-        try {
-          console.log(`[${i + 1}/${articles.length}] Formatting article ${article.id}...`);
-          const cleanedText = cleanText(article.content);
-          const formattedContent = await formatArticleWithAI(cleanedText);
+      // Split articles into batches
+      const batches = [];
+      for (let i = 0; i < articles.length; i += PARALLEL_BATCH_SIZE) {
+        batches.push(articles.slice(i, i + PARALLEL_BATCH_SIZE));
+      }
 
-          // Update article content and set ai_processed flag
-          const currentMetadata = article.metadata || {};
-          const { error: updateError } = await supabase
-            .from('articles')
-            .update({
-              content: formattedContent,
-              updated_at: new Date().toISOString(),
-              metadata: {
-                ...currentMetadata,
-                ai_processed: true,
-                ai_processed_at: new Date().toISOString()
-              }
-            })
-            .eq('id', article.id);
+      console.log(`Processing ${articles.length} articles in ${batches.length} parallel batches of ${PARALLEL_BATCH_SIZE}`);
 
-          if (updateError) {
-            console.error(`Error updating article ${article.id}:`, updateError);
-            failed.push(article.id);
-          } else {
-            console.log(`Successfully formatted article ${article.id}`);
-            
-            // Extract and store tags
+      for (let batchIdx = 0; batchIdx < batches.length; batchIdx++) {
+        const batch = batches[batchIdx];
+        console.log(`[Batch ${batchIdx + 1}/${batches.length}] Processing ${batch.length} articles in parallel...`);
+
+        // Process all articles in this batch simultaneously
+        const batchResults = await Promise.allSettled(
+          batch.map(async (article, idx) => {
+            const articleNum = batchIdx * PARALLEL_BATCH_SIZE + idx + 1;
             try {
-              const tags = extractKeywords(article.content || article.excerpt || '', article.title);
-              console.log(`Extracted ${tags.length} tags for article ${article.id}`);
-              
-              // Delete existing tags first
-              await supabase
-                .from('article_tags')
-                .delete()
-                .eq('article_id', article.id);
-              
-              // Create or get tags and link to article
-              for (const tagName of tags) {
-                const tagSlug = tagName.toLowerCase().replace(/\s+/g, '-');
-                
-                const { data: existingTag } = await supabase
-                  .from('tags')
-                  .select('id')
-                  .eq('slug', tagSlug)
-                  .maybeSingle();
+              console.log(`[${articleNum}/${articles.length}] Formatting article ${article.id}...`);
+              const cleanedText = cleanText(article.content);
+              const formattedContent = await formatArticleWithAI(cleanedText);
 
-                let tagId: string;
-                
-                if (existingTag) {
-                  tagId = existingTag.id;
-                } else {
-                  const { data: newTag, error: tagError } = await supabase
-                    .from('tags')
-                    .insert({ name: tagName, slug: tagSlug })
-                    .select('id')
-                    .single();
-                  
-                  if (tagError || !newTag) {
-                    console.error(`Failed to create tag ${tagName}:`, tagError);
-                    continue;
+              // Update article content and set ai_processed flag
+              const currentMetadata = article.metadata || {};
+              const { error: updateError } = await supabase
+                .from('articles')
+                .update({
+                  content: formattedContent,
+                  updated_at: new Date().toISOString(),
+                  metadata: {
+                    ...currentMetadata,
+                    ai_processed: true,
+                    ai_processed_at: new Date().toISOString()
                   }
-                  
-                  tagId = newTag.id;
-                }
+                })
+                .eq('id', article.id);
 
+              if (updateError) {
+                console.error(`Error updating article ${article.id}:`, updateError);
+                return { success: false, articleId: article.id };
+              }
+
+              console.log(`Successfully formatted article ${article.id}`);
+
+              // Extract and store tags
+              try {
+                const tags = extractKeywords(article.content || article.excerpt || '', article.title);
+                console.log(`Extracted ${tags.length} tags for article ${article.id}`);
+
+                // Delete existing tags first
                 await supabase
                   .from('article_tags')
-                  .insert({ article_id: article.id, tag_id: tagId });
-              }
-            } catch (tagError) {
-              console.error(`Error extracting tags for article ${article.id}:`, tagError);
-            }
-            
-            processed++;
-          }
-        } catch (err) {
-          console.error(`Error processing article ${article.id}:`, err);
-          failed.push(article.id);
-        }
+                  .delete()
+                  .eq('article_id', article.id);
 
-        // Add delay between articles to avoid rate limits (2 seconds)
-        if (i < articles.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
+                // Create or get tags and link to article
+                for (const tagName of tags) {
+                  const tagSlug = tagName.toLowerCase().replace(/\s+/g, '-');
+
+                  const { data: existingTag } = await supabase
+                    .from('tags')
+                    .select('id')
+                    .eq('slug', tagSlug)
+                    .maybeSingle();
+
+                  let tagId: string;
+
+                  if (existingTag) {
+                    tagId = existingTag.id;
+                  } else {
+                    const { data: newTag, error: tagError } = await supabase
+                      .from('tags')
+                      .insert({ name: tagName, slug: tagSlug })
+                      .select('id')
+                      .single();
+
+                    if (tagError || !newTag) {
+                      console.error(`Failed to create tag ${tagName}:`, tagError);
+                      continue;
+                    }
+
+                    tagId = newTag.id;
+                  }
+
+                  await supabase
+                    .from('article_tags')
+                    .insert({ article_id: article.id, tag_id: tagId });
+                }
+              } catch (tagError) {
+                console.error(`Error extracting tags for article ${article.id}:`, tagError);
+              }
+
+              return { success: true, articleId: article.id };
+            } catch (err) {
+              console.error(`Error processing article ${article.id}:`, err);
+              return { success: false, articleId: article.id };
+            }
+          })
+        );
+
+        // Count successes and failures
+        batchResults.forEach((result) => {
+          if (result.status === 'fulfilled' && result.value.success) {
+            processed++;
+          } else {
+            const articleId = result.status === 'fulfilled' ? result.value.articleId : 'unknown';
+            failed.push(articleId);
+          }
+        });
+
+        console.log(`Batch ${batchIdx + 1} complete: ${processed} total processed, ${failed.length} total failed`);
+
+        // Small delay between batches to avoid overwhelming the API
+        if (batchIdx < batches.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 500));
         }
       }
 
