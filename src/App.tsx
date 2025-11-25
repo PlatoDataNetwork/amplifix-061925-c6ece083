@@ -74,6 +74,7 @@ import ShowcaseAdmin from "./pages/ShowcaseAdmin";
 import SecurityDashboard from "./pages/SecurityDashboard";
 import JsonTester from "./pages/JsonTester";
 import AdminAnalytics from "./pages/AdminAnalytics";
+import AIProcessingControl from "./pages/AIProcessingControl";
 
 const queryClient = new QueryClient();
 
@@ -139,6 +140,7 @@ const App = () => (
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           <Route path="/admin/analytics" element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
           <Route path="/admin/security" element={<AdminRoute><SecurityDashboard /></AdminRoute>} />
+          <Route path="/admin/ai-processing" element={<AdminRoute><AIProcessingControl /></AdminRoute>} />
         <Route path="/admin/import" element={<AdminRoute><ImportAdmin /></AdminRoute>} />
           <Route path="/admin/plato-import" element={<AdminRoute><PlatoImport /></AdminRoute>} />
           <Route path="/admin/aviation-import" element={<AdminRoute><AviationImport /></AdminRoute>} />
