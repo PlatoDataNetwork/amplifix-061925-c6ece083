@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { RefreshCw, Play, Square, Clock, Activity } from "lucide-react";
+import { RefreshCw, Play, Square, Clock, Activity, LinkIcon } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 interface BackfillJob {
@@ -42,10 +42,20 @@ export default function BackfillDashboard() {
   const [loading, setLoading] = useState(true);
   const [isRealtimeConnected, setIsRealtimeConnected] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [missingUrlStats, setMissingUrlStats] = useState<Array<{
+    vertical_slug: string;
+    total_articles: number;
+    missing_urls: number;
+    percentage_missing: number;
+  }>>([]);
 
   useEffect(() => {
     fetchJobs();
-    const interval = setInterval(fetchJobs, 30000); // Refresh every 30 seconds as fallback
+    fetchMissingUrlStats();
+    const interval = setInterval(() => {
+      fetchJobs();
+      fetchMissingUrlStats();
+    }, 30000); // Refresh every 30 seconds as fallback
     return () => clearInterval(interval);
   }, []);
 
@@ -134,6 +144,41 @@ export default function BackfillDashboard() {
       console.error('Error fetching jobs:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchMissingUrlStats = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('vertical_slug, external_url');
+
+      if (error) throw error;
+
+      // Group by vertical and calculate stats
+      const stats = (data || []).reduce((acc, article) => {
+        const vertical = article.vertical_slug;
+        if (!acc[vertical]) {
+          acc[vertical] = { total: 0, missing: 0 };
+        }
+        acc[vertical].total++;
+        if (!article.external_url) {
+          acc[vertical].missing++;
+        }
+        return acc;
+      }, {} as Record<string, { total: number; missing: number }>);
+
+      // Convert to array format
+      const statsArray = Object.entries(stats).map(([vertical_slug, counts]) => ({
+        vertical_slug,
+        total_articles: counts.total,
+        missing_urls: counts.missing,
+        percentage_missing: Math.round((counts.missing / counts.total) * 100)
+      })).sort((a, b) => b.missing_urls - a.missing_urls);
+
+      setMissingUrlStats(statsArray);
+    } catch (error) {
+      console.error('Error fetching missing URL stats:', error);
     }
   };
 
@@ -498,7 +543,7 @@ export default function BackfillDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -546,6 +591,39 @@ export default function BackfillDashboard() {
             <p className="text-sm text-muted-foreground">
               {Object.keys(liveProgress).length === 0 ? "No active jobs" : "jobs running"}
             </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <LinkIcon className="h-5 w-5" />
+              Missing URLs Report
+            </CardTitle>
+            <CardDescription>
+              Articles without source URLs
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {missingUrlStats.length > 0 ? (
+              <div className="space-y-3">
+                {missingUrlStats.map(stat => (
+                  <div key={stat.vertical_slug} className="flex items-center justify-between text-sm">
+                    <div className="flex flex-col">
+                      <span className="font-medium capitalize">{stat.vertical_slug}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {stat.missing_urls.toLocaleString()} / {stat.total_articles.toLocaleString()}
+                      </span>
+                    </div>
+                    <Badge variant={stat.percentage_missing > 50 ? "destructive" : stat.percentage_missing > 0 ? "secondary" : "default"}>
+                      {stat.percentage_missing}% missing
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">Loading statistics...</p>
+            )}
           </CardContent>
         </Card>
       </div>
