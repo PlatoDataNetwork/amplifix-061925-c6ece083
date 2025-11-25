@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -176,29 +176,8 @@ export default function AviationAIProgressDashboard() {
     return () => clearInterval(timer);
   }, [currentJob]);
 
-  // Auto-detect stalls and recover
-  useEffect(() => {
-    if (!currentJob || currentJob.status !== 'in_progress' || stats.unprocessedArticles === 0) {
-      return;
-    }
-
-    const checkInterval = setInterval(() => {
-      const timeSinceLastProgress = Date.now() - lastProgressTime;
-      const STALL_THRESHOLD = 30000; // 30 seconds without progress
-      const MAX_AUTO_RECOVERY_ATTEMPTS = 3;
-
-      if (timeSinceLastProgress > STALL_THRESHOLD && autoRecoveryAttempts < MAX_AUTO_RECOVERY_ATTEMPTS) {
-        console.log(`Processing stalled for ${timeSinceLastProgress}ms, attempting auto-recovery #${autoRecoveryAttempts + 1}`);
-        toast.info('Processing appears stalled, attempting auto-recovery...');
-        setAutoRecoveryAttempts(prev => prev + 1);
-        handleResume(true); // Auto-recovery mode
-      }
-    }, 10000); // Check every 10 seconds
-
-    return () => clearInterval(checkInterval);
-  }, [currentJob, stats.unprocessedArticles, lastProgressTime, autoRecoveryAttempts]);
-
-  const handleResume = async (autoRecovery = false) => {
+  // Handle resuming processing
+  const handleResume = useCallback(async (autoRecovery = false) => {
     if (!currentJob) return;
     
     setIsRefreshing(true);
@@ -211,7 +190,7 @@ export default function AviationAIProgressDashboard() {
         .find(i => !processedChunks.includes(i));
       
       if (nextChunk !== undefined) {
-        console.log(`🔄 Resuming from chunk ${nextChunk}`);
+        console.log(`🔄 Resuming from chunk ${nextChunk}${autoRecovery ? ' (auto-recovery)' : ''}`);
         
         const { error } = await supabase.functions.invoke('format-all-articles', {
           body: { 
@@ -247,7 +226,35 @@ export default function AviationAIProgressDashboard() {
     } finally {
       setIsRefreshing(false);
     }
-  };
+  }, [currentJob]);
+
+  // Auto-detect stalls and recover
+  useEffect(() => {
+    if (!currentJob || currentJob.status !== 'in_progress' || stats.unprocessedArticles === 0) {
+      return;
+    }
+
+    console.log('🔍 Starting stall detection monitor');
+    const checkInterval = setInterval(() => {
+      const timeSinceLastProgress = Date.now() - lastProgressTime;
+      const STALL_THRESHOLD = 30000; // 30 seconds without progress
+      const MAX_AUTO_RECOVERY_ATTEMPTS = 3;
+
+      console.log(`⏱️ Time since last progress: ${timeSinceLastProgress}ms, attempts: ${autoRecoveryAttempts}`);
+
+      if (timeSinceLastProgress > STALL_THRESHOLD && autoRecoveryAttempts < MAX_AUTO_RECOVERY_ATTEMPTS) {
+        console.log(`⚠️ Processing stalled for ${timeSinceLastProgress}ms, attempting auto-recovery #${autoRecoveryAttempts + 1}`);
+        toast.info(`Processing stalled, attempting auto-recovery (${autoRecoveryAttempts + 1}/${MAX_AUTO_RECOVERY_ATTEMPTS})...`);
+        setAutoRecoveryAttempts(prev => prev + 1);
+        handleResume(true); // Auto-recovery mode
+      }
+    }, 10000); // Check every 10 seconds
+
+    return () => {
+      console.log('🛑 Stopping stall detection monitor');
+      clearInterval(checkInterval);
+    };
+  }, [currentJob, stats.unprocessedArticles, lastProgressTime, autoRecoveryAttempts, handleResume]);
 
   useEffect(() => {
     console.log("🚀 Initializing AviationAIProgressDashboard");
