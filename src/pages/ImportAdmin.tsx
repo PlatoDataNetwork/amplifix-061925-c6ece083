@@ -29,6 +29,7 @@ import { DuplicateMonitor } from "@/components/DuplicateMonitor";
 import { AerospaceImport } from "@/components/admin/AerospaceImport";
 import { AviationImport } from "@/components/admin/AviationImport";
 import AviationAIProgressDashboard from "@/components/AviationAIProgressDashboard";
+import AviationUrlBackfill from "@/components/AviationUrlBackfill";
 
 const ImportAdmin = () => {
   const navigate = useNavigate();
@@ -2085,6 +2086,8 @@ const ImportAdmin = () => {
               )}
             </CardContent>
           </Card>
+
+          <AviationUrlBackfill />
 
           <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-6">
             <h3 className="text-lg font-semibold mb-2">Note:</h3>
