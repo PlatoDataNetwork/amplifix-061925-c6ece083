@@ -4,10 +4,9 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
-import { Plane, PlayCircle, PauseCircle, BarChart3, AlertCircle, RefreshCw } from "lucide-react";
+import { Plane, PlayCircle, BarChart3, AlertCircle, RefreshCw } from "lucide-react";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { useNavigate } from "react-router-dom";
 import AviationUrlBackfill from "@/components/AviationUrlBackfill";
@@ -23,20 +22,6 @@ interface ImportProgress {
   articlesInPage: number;
 }
 
-interface ImportHistory {
-  id: string;
-  vertical_slug: string;
-  status: string;
-  imported_count: number;
-  skipped_count: number;
-  error_count: number;
-  total_processed: number;
-  duration_ms: number | null;
-  started_at: string;
-  completed_at: string | null;
-  metadata: any;
-}
-
 export default function AviationImport() {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -44,7 +29,6 @@ export default function AviationImport() {
   
   const [importing, setImporting] = useState(false);
   const [progress, setProgress] = useState<ImportProgress | null>(null);
-  const [importHistory, setImportHistory] = useState<ImportHistory[]>([]);
   const [currentImportId, setCurrentImportId] = useState<string | null>(null);
   const [stats, setStats] = useState({
     totalArticles: 0,
@@ -60,7 +44,6 @@ export default function AviationImport() {
 
   useEffect(() => {
     loadStats();
-    loadImportHistory();
     
     // Set up realtime subscription for article inserts
     const channel = supabase
@@ -101,7 +84,6 @@ export default function AviationImport() {
           description: `Imported: ${payload.totalImported}, Skipped: ${payload.totalSkipped}, Errors: ${payload.totalErrors}`,
         });
         loadStats();
-        loadImportHistory();
       })
       .on("broadcast", { event: "error" }, ({ payload }) => {
         setImporting(false);
@@ -111,7 +93,6 @@ export default function AviationImport() {
           description: payload.error,
           variant: "destructive",
         });
-        loadImportHistory();
       })
       .subscribe();
 
@@ -149,19 +130,6 @@ export default function AviationImport() {
         lastImportDate: latestArticle?.created_at || null,
         lastImportSkipped: lastImport?.skipped_count || 0,
       });
-    }
-  };
-
-  const loadImportHistory = async () => {
-    const { data } = await supabase
-      .from("import_history")
-      .select("*")
-      .eq("vertical_slug", "aviation")
-      .order("started_at", { ascending: false })
-      .limit(10);
-
-    if (data) {
-      setImportHistory(data);
     }
   };
 
@@ -238,15 +206,6 @@ export default function AviationImport() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-      completed: "default",
-      in_progress: "secondary",
-      failed: "destructive",
-    };
-    return <Badge variant={variants[status] || "outline"}>{status}</Badge>;
-  };
-
   if (adminLoading) {
     return null;
   }
@@ -319,7 +278,6 @@ export default function AviationImport() {
                 variant="outline"
                 onClick={async () => {
                   await loadStats();
-                  await loadImportHistory();
                   toast({
                     title: "Stats Refreshed",
                     description: "Import statistics have been updated",
@@ -344,7 +302,6 @@ export default function AviationImport() {
                       .select();
 
                     await loadStats();
-                    await loadImportHistory();
                     
                     toast({
                       title: "Fixed Stuck Imports",
@@ -394,7 +351,6 @@ export default function AviationImport() {
                   } else {
                     toast({ title: "Import resumed!", description: data.message });
                     loadStats();
-                    loadImportHistory();
                   }
                 }}
                 disabled={importing}
@@ -444,65 +400,6 @@ export default function AviationImport() {
           <AviationAIProcessing />
           <AviationDuplicateCleanup />
         </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Import History</CardTitle>
-            <CardDescription>Recent import operations</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {importHistory.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">
-                  No import history yet
-                </p>
-              ) : (
-                importHistory.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
-                  >
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        {getStatusBadge(item.status)}
-                        <span className="text-sm text-muted-foreground">
-                          {new Date(item.started_at).toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="flex gap-4 text-sm">
-                        <span className="text-green-600">
-                          ✓ {item.imported_count}
-                        </span>
-                        <span className="text-yellow-600">
-                          ⊘ {item.skipped_count}
-                        </span>
-                        <span className="text-red-600">✗ {item.error_count}</span>
-                      </div>
-                      {item.duration_ms && (
-                        <span className="text-xs text-muted-foreground">
-                          Duration: {(item.duration_ms / 1000).toFixed(1)}s
-                        </span>
-                      )}
-                    </div>
-                    {item.status === "failed" && item.metadata?.current_page && (
-                      <Button
-                        onClick={() =>
-                          resumeImport(item.id, item.metadata.current_page)
-                        }
-                        disabled={importing}
-                        size="sm"
-                        variant="outline"
-                      >
-                        <PauseCircle className="h-4 w-4 mr-2" />
-                        Resume from page {item.metadata.current_page + 1}
-                      </Button>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
       </main>
       <Footer />
     </div>
