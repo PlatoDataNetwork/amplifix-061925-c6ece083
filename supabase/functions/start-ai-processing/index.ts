@@ -119,8 +119,8 @@ Deno.serve(async (req) => {
               .eq('id', job.id);
           }
 
-          // Small delay between chunks
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          // Longer delay between chunks to prevent overwhelming the system
+          await new Promise(resolve => setTimeout(resolve, 5000));
         } catch (error) {
           console.error(`❌ Error processing chunk ${chunkIndex}:`, error);
         }
