@@ -878,87 +878,6 @@ const ImportAdmin = () => {
     }
   };
 
-  const importAviationFast = async () => {
-    setImporting('aviation-fast');
-    setProgressStatus('Starting FAST Aviation import (no AI)...');
-    setProgressPercent(0);
-    setAviationProgress(null);
-
-    if (!importStartTime) {
-      setImportStartTime(new Date());
-      setSessionDuration(0);
-    }
-
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error('Authentication required');
-        return;
-      }
-
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error('User not found');
-        return;
-      }
-
-      const progressChannel = supabase
-        .channel(`aviation-fast-${user.id}`)
-        .on('broadcast', { event: 'import-progress' }, (payload) => {
-          console.log('📡 Aviation Progress update:', payload);
-          setAviationProgress(payload.payload);
-          
-          if (payload.payload.phase === 'processing') {
-            const rawPercent = 20 + (payload.payload.currentPage / 10);
-            const clampedPercent = Math.max(0, Math.min(99, Math.round(rawPercent)));
-            setProgressPercent(clampedPercent);
-            setProgressStatus(payload.payload.message);
-          } else if (payload.payload.phase === 'complete') {
-            setProgressPercent(100);
-            setProgressStatus('Aviation import complete!');
-            
-            const imported = payload.payload.imported || 0;
-            if (imported > 0) {
-              setSessionArticlesImported(prev => prev + imported);
-            }
-            
-            setTimeout(() => {
-              setImporting(null);
-              supabase.removeChannel(progressChannel);
-            }, 3000);
-          } else if (payload.payload.phase === 'error') {
-            setProgressStatus(`Error: ${payload.payload.message}`);
-            setTimeout(() => {
-              setImporting(null);
-              supabase.removeChannel(progressChannel);
-            }, 5000);
-          }
-        })
-        .subscribe();
-
-      toast.info('Starting FAST Aviation import in background...', {
-        description: 'Aviation articles will be imported using JSON feed. Check Import History below for progress.'
-      });
-
-      setProgressPercent(10);
-      setProgressStatus('Launching background import...');
-
-      const { data, error } = await supabase.functions.invoke('import-aviation-fast', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
-        }
-      });
-
-      await loadMetrics();
-    } catch (error) {
-      console.error('Error importing Aviation:', error);
-      toast.error('Failed to start Aviation import', {
-        description: error instanceof Error ? error.message : 'Unknown error'
-      });
-      setProgressStatus('Error occurred');
-      setImporting(null);
-    }
-  };
 
   const clearAllAerospaceData = async () => {
     if (!confirm('⚠️ WARNING: This will delete ALL Aerospace data.\n\n✅ BACKUP WILL BE CREATED FIRST\n\nDeleting:\n- All aerospace articles\n- Import history\n- AI processing jobs\n\n❌ BACKUPS WILL BE PRESERVED\n\nContinue?')) {
@@ -1226,7 +1145,6 @@ const ImportAdmin = () => {
       });
       
       await loadMetrics();
-      await loadAviationArticleCounts();
     } catch (error) {
       console.error('Error clearing Aviation data:', error);
       toast.error('Failed to clear Aviation data', {
@@ -1523,95 +1441,17 @@ const ImportAdmin = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="space-y-2">
-                  <label htmlFor="json-url" className="text-sm font-medium">
-                    Custom JSON Feed URL (for single vertical import)
-                  </label>
-                  <Input
-                    id="json-url"
-                    type="url"
-                    placeholder="https://platodata.ai/aviation/json/"
-                    value={customJsonUrl}
-                    onChange={(e) => setCustomJsonUrl(e.target.value)}
-                    className="font-mono text-sm"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Enter a custom JSON feed URL for importing a specific vertical
-                  </p>
-                </div>
-                
-                {customJsonUrl && customJsonUrl !== 'https://platodata.ai/aviation/json/' ? (
-                  <div className="space-y-2">
-                    <Button
-                      onClick={() => {
-                        // Import only from custom URL
-                        const customImport = async () => {
-                          setImporting('custom-url');
-                          setProgressStatus('Starting custom URL import...');
-                          setProgressPercent(0);
-
-                          try {
-                            const { data: { session } } = await supabase.auth.getSession();
-                            if (!session) {
-                              toast.error('Authentication required');
-                              return;
-                            }
-
-                            const { data, error } = await supabase.functions.invoke('import-articles', {
-                              body: { 
-                                vertical: 'custom',
-                                customJsonUrl: customJsonUrl
-                              },
-                              headers: {
-                                Authorization: `Bearer ${session.access_token}`
-                              }
-                            });
-
-                            if (error) throw error;
-
-                            toast.success('Custom URL import completed!', {
-                              description: `Imported ${data?.insertedArticles || 0} articles`
-                            });
-                            
-                            await loadMetrics();
-                          } catch (error) {
-                            console.error('Error importing from custom URL:', error);
-                            toast.error('Failed to import from custom URL', {
-                              description: error instanceof Error ? error.message : 'Unknown error'
-                            });
-                          } finally {
-                            setImporting(null);
-                            setProgressStatus('');
-                            setProgressPercent(0);
-                          }
-                        };
-                        customImport();
-                      }}
-                      disabled={importing !== null}
-                      className="w-full h-14 text-lg"
-                      variant="default"
-                    >
-                      {importing === 'custom-url' ? 'Importing from Custom URL...' : 'Import from Custom URL'}
-                    </Button>
-                    <p className="text-sm text-muted-foreground text-center">
-                      This will only import articles from the custom URL above
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <Button
-                      onClick={importAndProcessAll}
-                      disabled={importing !== null}
-                      className="w-full h-14 text-lg"
-                      variant="default"
-                    >
-                      {importing === 'all-verticals' ? 'Importing All Verticals...' : '🚀 Import All Verticals & Process with AI'}
-                    </Button>
-                    <p className="text-sm text-muted-foreground text-center">
-                      This will import articles from all available verticals
-                    </p>
-                  </div>
-                )}
+                <Button
+                  onClick={importAndProcessAll}
+                  disabled={importing !== null}
+                  className="w-full h-14 text-lg"
+                  variant="default"
+                >
+                  {importing === 'all-verticals' ? 'Importing All Verticals...' : '🚀 Import All Verticals & Process with AI'}
+                </Button>
+                <p className="text-sm text-muted-foreground text-center">
+                  This will import articles from all available verticals
+                </p>
 
                 {importing === 'all-verticals' && (
                   <div className="space-y-4">
