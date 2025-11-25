@@ -191,12 +191,46 @@ export default function AviationAIProgressDashboard() {
     return () => clearInterval(timer);
   }, [currentJob]);
 
-  // Handle resuming processing
+  // Handle resuming processing or starting a new job when needed
   const handleResume = useCallback(async (autoRecovery = false) => {
-    if (!currentJob) return;
-    
+    // If everything is already processed, nothing to do
+    if (stats.unprocessedArticles <= 0) {
+      if (!autoRecovery) {
+        toast.info("All aviation articles are already AI processed.");
+      }
+      return;
+    }
+
     setIsRefreshing(true);
     try {
+      // If there is no in-progress job, start a fresh AI job to pick up remaining articles
+      if (!currentJob || currentJob.status !== 'in_progress') {
+        if (!autoRecovery) {
+          console.log("🚀 Starting new AI processing job for aviation");
+        }
+
+        const { data, error } = await supabase.functions.invoke('start-ai-processing', {
+          body: { verticalSlug: 'aviation' },
+        });
+
+        if (error) {
+          console.error("Failed to start AI processing job:", error);
+          if (!autoRecovery) {
+            toast.error("Failed to start a new AI processing job");
+          }
+          return;
+        }
+
+        if (!autoRecovery) {
+          toast.success("Started a new AI processing job for remaining articles");
+        }
+
+        // Give the job a moment to enqueue and then refresh stats
+        setTimeout(() => loadStats(true, true), 2000);
+        return;
+      }
+      
+      // Existing logic: resume a currently in-progress job from the next unprocessed chunk
       const processedChunks = currentJob.processed_chunks || [];
       const totalChunks = currentJob.total_chunks;
       
@@ -231,17 +265,19 @@ export default function AviationAIProgressDashboard() {
           setTimeout(() => loadStats(true), 2000);
         }
       } else {
-        toast.info("All chunks have been processed");
+        if (!autoRecovery) {
+          toast.info("All chunks in the current job have been processed");
+        }
       }
     } catch (error) {
-      console.error("Error resuming processing:", error);
+      console.error("Error resuming or starting processing:", error);
       if (!autoRecovery) {
-        toast.error("Error resuming processing");
+        toast.error("Error resuming or starting processing");
       }
     } finally {
       setIsRefreshing(false);
     }
-  }, [currentJob]);
+  }, [currentJob, stats.unprocessedArticles]);
 
   // Auto-detect stalls and recover
   useEffect(() => {
