@@ -248,7 +248,7 @@ export default function AviationAIProgressDashboard() {
         setAutoRecoveryAttempts(prev => prev + 1);
         handleResume(true); // Auto-recovery mode
       }
-    }, 10000); // Check every 10 seconds
+    }, 5000); // Check every 5 seconds (faster stall detection)
 
     return () => {
       console.log('🛑 Stopping stall detection monitor');
