@@ -17,6 +17,10 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const body = await req.json().catch(() => ({}));
+    const resumeFromOffset = body.resumeFromOffset || 0;
+    console.log(`Resume from offset: ${resumeFromOffset}`);
+
     const authHeader = req.headers.get("Authorization");
     console.log("Auth header received:", authHeader ? "Yes" : "No");
     
@@ -105,7 +109,11 @@ Deno.serve(async (req) => {
         error_count: 0,
         total_processed: 0,
         cancelled: false,
-        metadata: { type: "url_backfill" }
+        metadata: { 
+          type: "url_backfill",
+          resumeFromOffset,
+          lastProcessedOffset: resumeFromOffset
+        }
       })
       .select()
       .single();
@@ -181,8 +189,15 @@ Deno.serve(async (req) => {
       }
 
       const totalArticles = allArticles.length;
-      const totalBatches = Math.ceil(totalArticles / BATCH_SIZE);
-      console.log(`Found ${totalArticles} Aviation articles to process in ${totalBatches} batches`);
+      
+      // Skip to resume offset if provided
+      if (resumeFromOffset > 0 && resumeFromOffset < totalArticles) {
+        console.log(`Resuming from offset ${resumeFromOffset}, skipping first ${resumeFromOffset} articles`);
+        allArticles = allArticles.slice(resumeFromOffset);
+      }
+      
+      const totalBatches = Math.ceil(allArticles.length / BATCH_SIZE);
+      console.log(`Found ${totalArticles} total Aviation articles, processing ${allArticles.length} articles in ${totalBatches} batches`);
 
       // Process articles in batches
       for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
@@ -232,20 +247,33 @@ Deno.serve(async (req) => {
         for (let i = 0; i < batch.length; i++) {
           const article = batch[i];
           const overallIndex = batchStart + i;
+          const absoluteIndex = resumeFromOffset + overallIndex;
 
           try {
+            // Update last processed offset in metadata
+            await supabaseAdmin
+              .from("import_history")
+              .update({
+                metadata: { 
+                  type: "url_backfill",
+                  resumeFromOffset,
+                  lastProcessedOffset: absoluteIndex
+                }
+              })
+              .eq("id", importId);
+
             // Send progress update
             await supabaseAdmin.channel(channelName).send({
               type: "broadcast",
               event: "progress",
               payload: {
                 phase: "processing",
-                currentArticle: overallIndex + 1,
+                currentArticle: absoluteIndex + 1,
                 totalArticles,
                 updated,
                 skipped,
                 errors,
-                percentage: Math.round(((overallIndex + 1) / totalArticles) * 100),
+                percentage: Math.round(((absoluteIndex + 1) / totalArticles) * 100),
               } satisfies ProgressUpdate,
             });
 
