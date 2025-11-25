@@ -237,7 +237,7 @@ export default function AviationAIProgressDashboard() {
     console.log('🔍 Starting stall detection monitor');
     const checkInterval = setInterval(() => {
       const timeSinceLastProgress = Date.now() - lastProgressTime;
-      const STALL_THRESHOLD = 30000; // 30 seconds without progress
+      const STALL_THRESHOLD = 20000; // 20 seconds without progress
       const MAX_AUTO_RECOVERY_ATTEMPTS = 3;
 
       console.log(`⏱️ Time since last progress: ${timeSinceLastProgress}ms, attempts: ${autoRecoveryAttempts}`);
