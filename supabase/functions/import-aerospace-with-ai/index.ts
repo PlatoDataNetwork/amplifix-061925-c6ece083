@@ -297,6 +297,7 @@ Deno.serve(async (req) => {
     // Loop through all pages and process immediately
     let currentPage = 1;
     let hasMorePages = true;
+    let consecutiveEmptyPages = 0;
 
     console.log('🔄 Starting paginated import with immediate processing from https://platodata.ai/aerospace/json/');
 
@@ -311,7 +312,7 @@ Deno.serve(async (req) => {
       message: 'Starting import...'
     });
 
-    while (hasMorePages && currentPage <= 200) { // Max 200 pages safety limit
+    while (hasMorePages && currentPage <= 1000) { // Max 1000 pages to capture ~10k articles
       console.log(`\n📄 Fetching and processing page ${currentPage}...`);
       
       // Fetch page
@@ -342,12 +343,24 @@ Deno.serve(async (req) => {
 
       console.log(`✓ Page ${currentPage}: Found ${pageArticles.length} articles`);
 
-      // Check if this is the last page (0 articles)
+      // Check for consecutive empty pages (feed has gaps, so check 3 in a row)
       if (pageArticles.length === 0) {
-        console.log(`\n🏁 Reached last page (page ${currentPage} has 0 articles)`);
-        hasMorePages = false;
-        break;
+        consecutiveEmptyPages++;
+        console.log(`⚠ Empty page ${currentPage} (${consecutiveEmptyPages} consecutive)`);
+        
+        if (consecutiveEmptyPages >= 3) {
+          console.log(`\n🏁 Reached end of feed (3 consecutive empty pages at ${currentPage})`);
+          hasMorePages = false;
+          break;
+        }
+        
+        // Skip processing but continue to next page
+        currentPage++;
+        continue;
       }
+      
+      // Reset consecutive empty counter when we find articles
+      consecutiveEmptyPages = 0;
 
       results.totalPages = currentPage;
       results.totalInFeed += pageArticles.length;
