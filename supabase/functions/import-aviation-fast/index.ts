@@ -206,8 +206,8 @@ async function runBackgroundImport(
           const cleanedText = cleanText(rawContent);
           const excerpt = cleanText(rawExcerpt) || cleanedText.substring(0, 300);
 
-           // Do not import source links per user request
-           const externalUrl = null;
+           // Include source link
+           const externalUrl = article.metadata?.sourceLink?.[0] || null;
 
           const articleData = {
             post_id: postId,
