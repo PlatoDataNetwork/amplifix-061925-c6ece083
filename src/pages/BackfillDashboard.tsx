@@ -124,19 +124,12 @@ export default function BackfillDashboard() {
         .from('import_history')
         .select('*')
         .eq('metadata->>type', 'url_backfill')
-        .order('started_at', { ascending: false });
+        .order('started_at', { ascending: false })
+        .limit(20); // Show last 20 backfill jobs
 
       if (error) throw error;
       
-      // Group by vertical_slug and keep only the most recent job per vertical
-      const jobsByVertical = (data || []).reduce((acc, job) => {
-        if (!acc[job.vertical_slug] || new Date(job.started_at) > new Date(acc[job.vertical_slug].started_at)) {
-          acc[job.vertical_slug] = job;
-        }
-        return acc;
-      }, {} as Record<string, BackfillJob>);
-      
-      setJobs(Object.values(jobsByVertical));
+      setJobs(data || []);
     } catch (error) {
       console.error('Error fetching jobs:', error);
     } finally {
@@ -486,7 +479,7 @@ export default function BackfillDashboard() {
             )}
           </div>
           <p className="text-muted-foreground mt-1">
-            Monitor and manage URL backfill jobs (showing latest job per vertical)
+            Monitor and manage URL backfill jobs (showing last 20 jobs)
             {lastUpdate && (
               <span className="text-xs ml-2">
                 • Last update: {formatDistanceToNow(lastUpdate, { addSuffix: true })}
