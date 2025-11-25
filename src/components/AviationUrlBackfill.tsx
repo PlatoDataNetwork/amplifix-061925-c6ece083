@@ -30,8 +30,34 @@ export default function AviationUrlBackfill() {
   const [result, setResult] = useState<BackfillResult | null>(null);
   const [importId, setImportId] = useState<string | null>(null);
   const [onStatsRefresh, setOnStatsRefresh] = useState<(() => void) | null>(null);
+  const [lastIncompleteImport, setLastIncompleteImport] = useState<any>(null);
 
-  const startBackfill = async () => {
+  // Check for incomplete imports on mount
+  useEffect(() => {
+    checkForIncompleteImport();
+  }, []);
+
+  const checkForIncompleteImport = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('import_history')
+        .select('*')
+        .eq('vertical_slug', 'aviation')
+        .in('status', ['in_progress', 'cancelled'])
+        .order('started_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (!error && data) {
+        setLastIncompleteImport(data);
+      }
+    } catch (error) {
+      // No incomplete imports found
+      setLastIncompleteImport(null);
+    }
+  };
+
+  const startBackfill = async (resumeFromOffset: number = 0) => {
     setIsRunning(true);
     setProgress(null);
     setResult(null);
@@ -46,6 +72,7 @@ export default function AviationUrlBackfill() {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
+        body: resumeFromOffset > 0 ? { resumeFromOffset } : undefined,
       });
 
       if (error) {
@@ -73,6 +100,7 @@ export default function AviationUrlBackfill() {
           setIsRunning(false);
           setProgress(null);
           setImportId(null);
+          setLastIncompleteImport(null);
           if (onStatsRefresh) onStatsRefresh();
           toast({
             title: "Backfill Complete",
@@ -90,6 +118,7 @@ export default function AviationUrlBackfill() {
           setIsRunning(false);
           setProgress(null);
           setImportId(null);
+          checkForIncompleteImport(); // Refresh incomplete import after cancellation
           if (onStatsRefresh) onStatsRefresh();
           toast({
             title: "Backfill Cancelled",
@@ -155,6 +184,18 @@ export default function AviationUrlBackfill() {
     }
   };
 
+  const resumeBackfill = async () => {
+    if (!lastIncompleteImport) return;
+    
+    const lastOffset = lastIncompleteImport.metadata?.lastProcessedOffset || 0;
+    toast({
+      title: "Resuming Backfill",
+      description: `Resuming from article ${lastOffset + 1}`,
+    });
+    
+    await startBackfill(lastOffset + 1); // Resume from next article
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -167,13 +208,36 @@ export default function AviationUrlBackfill() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {lastIncompleteImport && !isRunning && (
+          <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800 space-y-2">
+            <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium">
+              Incomplete backfill found from {new Date(lastIncompleteImport.started_at).toLocaleString()}
+            </p>
+            <p className="text-xs text-yellow-700 dark:text-yellow-300">
+              Progress: {lastIncompleteImport.imported_count} updated, {lastIncompleteImport.skipped_count} skipped, {lastIncompleteImport.error_count} errors
+            </p>
+            <p className="text-xs text-yellow-700 dark:text-yellow-300">
+              Last processed: Article {(lastIncompleteImport.metadata?.lastProcessedOffset || 0) + 1}
+            </p>
+          </div>
+        )}
+        
         <div className="flex gap-2">
+          {lastIncompleteImport && !isRunning && (
+            <Button
+              onClick={resumeBackfill}
+              variant="secondary"
+              className="flex-1"
+            >
+              Resume from Article {(lastIncompleteImport.metadata?.lastProcessedOffset || 0) + 1}
+            </Button>
+          )}
           <Button
-            onClick={startBackfill}
+            onClick={() => startBackfill(0)}
             disabled={isRunning}
             className="flex-1"
           >
-            {isRunning ? "Backfill Running..." : "Start URL Backfill"}
+            {isRunning ? "Backfill Running..." : "Start New Backfill"}
           </Button>
           {isRunning && (
             <Button
