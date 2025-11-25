@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainHeader from '@/components/MainHeader';
 import Footer from '@/components/Footer';
-import { Database, Users, FileText, Shield, Activity, Clock, LogOut, Archive, GitCompare, Map, Languages, Briefcase, BarChart3, Save, RotateCcw } from 'lucide-react';
+import { Database, Users, FileText, Shield, Activity, Clock, LogOut, Archive, GitCompare, Map, Languages, Briefcase, BarChart3, Save, RotateCcw, Brain } from 'lucide-react';
 
 interface SystemStats {
   totalUsers: number;
@@ -74,6 +74,13 @@ const AdminDashboard = () => {
   }, []);
 
   const quickActions = [
+    {
+      title: 'AI Processing Control',
+      description: 'Manage AI article formatting and processing jobs',
+      icon: Brain,
+      action: () => navigate('/admin/ai-processing'),
+      color: 'from-cyan-500 to-blue-500'
+    },
     {
       title: 'Analytics',
       description: 'View Google Analytics insights and metrics',
