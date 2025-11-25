@@ -284,11 +284,11 @@ export default function AviationAIProgressDashboard() {
         console.log("📡 Realtime subscription status:", status);
       });
 
-    // Refresh stats every 10 seconds for active monitoring
+    // Refresh stats every 3 seconds for active monitoring (faster updates)
     const interval = setInterval(() => {
       console.log("⏰ Auto-refresh stats");
       loadStats();
-    }, 10000);
+    }, 3000);
 
     return () => {
       console.log("🔌 Cleaning up AviationAIProgressDashboard");
