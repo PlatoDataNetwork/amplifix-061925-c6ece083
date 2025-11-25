@@ -258,15 +258,24 @@ export const ImportHistoryTable = () => {
             <TableBody>
               {history.map((record) => {
                 const progress = calculateProgress(record);
-                const isRunning = record.status === 'in_progress';
-                const isResumable = record.status === 'partial' && ((record.metadata as any)?.nextPage || (record.metadata as any)?.resumable);
+                const metadata = record.metadata as any;
+                const isEffectivelyCompleted =
+                  record.status === 'in_progress' &&
+                  metadata?.currentPage &&
+                  metadata?.totalPages &&
+                  metadata.currentPage >= metadata.totalPages;
+                const isRunning = record.status === 'in_progress' && !isEffectivelyCompleted;
+                const isResumable =
+                  record.status === 'partial' &&
+                  (metadata?.nextPage || metadata?.resumable);
+                const displayStatus = isEffectivelyCompleted ? 'completed' : record.status;
                 
                 return (
                   <TableRow key={record.id} className={isRunning ? "bg-muted/30" : ""}>
                     <TableCell className="font-medium">
                       {record.vertical_slug}
                     </TableCell>
-                    <TableCell>{getStatusBadge(record.status, record.metadata)}</TableCell>
+                    <TableCell>{getStatusBadge(displayStatus, record.metadata)}</TableCell>
                     <TableCell className="text-right text-green-600 font-semibold">
                       {record.imported_count.toLocaleString()}
                     </TableCell>
@@ -293,9 +302,9 @@ export const ImportHistoryTable = () => {
                         </div>
                       ) : (
                         <span className="text-sm text-muted-foreground">
-                          {record.status === 'completed' ? '100%' : 
-                           record.status === 'failed' ? 'Failed' : 
-                           record.status === 'partial' ? `${progress}%` : '-'}
+                          {displayStatus === 'completed' ? '100%' : 
+                           displayStatus === 'failed' ? 'Failed' : 
+                           displayStatus === 'partial' ? `${progress}%` : '-'}
                         </span>
                       )}
                     </TableCell>
