@@ -272,7 +272,7 @@ Deno.serve(async (req) => {
     const processArticles = async () => {
       let processed = 0;
       const failed: string[] = [];
-      const PARALLEL_BATCH_SIZE = 5; // Process 5 articles simultaneously
+      const PARALLEL_BATCH_SIZE = 10; // Process 10 articles simultaneously
 
       // Split articles into batches
       const batches = [];
