@@ -44,7 +44,10 @@ export default function AviationUrlBackfill() {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Backfill invocation error:", error);
+        throw new Error(error.message || "Failed to start backfill");
+      }
 
       const channelName = data.channelName;
 
@@ -77,9 +80,19 @@ export default function AviationUrlBackfill() {
       });
     } catch (error: any) {
       console.error("Backfill error:", error);
+      
+      let errorMessage = error.message || "Failed to start backfill";
+      
+      // Provide helpful error messages
+      if (error.message?.includes("Unauthorized") || error.message?.includes("401")) {
+        errorMessage = "You need to be logged in as an admin to run this backfill";
+      } else if (error.message?.includes("Admin access required") || error.message?.includes("403")) {
+        errorMessage = "You need admin privileges to run this backfill";
+      }
+      
       toast({
         title: "Backfill Failed",
-        description: error.message || "Failed to start backfill",
+        description: errorMessage,
         variant: "destructive",
       });
       setIsRunning(false);
