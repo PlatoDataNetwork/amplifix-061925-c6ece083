@@ -140,7 +140,7 @@ export default function BackfillDashboard() {
     }
   };
 
-  const startBackfill = async (verticalSlug: string) => {
+  const startBackfill = async (verticalSlug: string, maxArticles: number = 100) => {
     try {
       // Check if any backfill is currently running
       const { data: runningJobs } = await supabase
@@ -170,6 +170,7 @@ export default function BackfillDashboard() {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
+        body: { maxArticles, autoResume: true },
       });
 
       if (error) throw error;
@@ -255,7 +256,7 @@ export default function BackfillDashboard() {
 
       toast({
         title: "Backfill Started",
-        description: `${verticalSlug} backfill is running`,
+        description: `${verticalSlug} backfill processing ${maxArticles} articles per batch (auto-resuming)`,
       });
 
       fetchJobs();
@@ -479,7 +480,7 @@ export default function BackfillDashboard() {
 
   const resetAviationAndStart = async () => {
     try {
-      // Step 1: Cancel and complete all aviation backfill jobs
+      // Cancel all in-progress aviation jobs
       const { data: aviationJobs, error: fetchError } = await supabase
         .from('import_history')
         .select('id')
@@ -489,7 +490,6 @@ export default function BackfillDashboard() {
       if (fetchError) throw fetchError;
 
       if (aviationJobs && aviationJobs.length > 0) {
-        // Mark all as cancelled and completed
         const { error: updateError } = await supabase
           .from('import_history')
           .update({ 
@@ -502,7 +502,6 @@ export default function BackfillDashboard() {
 
         if (updateError) throw updateError;
 
-        // Clear live progress for aviation jobs
         setLiveProgress(prev => {
           const updated = { ...prev };
           aviationJobs.forEach(job => delete updated[job.id]);
@@ -514,21 +513,19 @@ export default function BackfillDashboard() {
           description: `Cancelled ${aviationJobs.length} aviation job(s)`,
         });
 
-        // Wait a moment for the database to update
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
 
-      // Step 2: Refresh the jobs list
       await fetchJobs();
 
-      // Step 3: Start a fresh aviation backfill
+      // Start fresh with auto-resuming chunked processing
       toast({
-        title: "Starting Fresh Backfill",
-        description: "Initiating new Aviation URL backfill from the beginning",
+        title: "Starting Chunked Backfill",
+        description: "Processing 100 articles per batch with auto-resume",
       });
 
       await new Promise(resolve => setTimeout(resolve, 500));
-      await startBackfill('aviation');
+      await startBackfill('aviation', 100);
 
     } catch (error: any) {
       console.error('Error resetting aviation backfill:', error);
@@ -584,15 +581,25 @@ export default function BackfillDashboard() {
   };
 
   const getStatusBadge = (job: BackfillJob) => {
+    const isPartial = job.metadata?.partialCompletion === true;
+    const moreRemaining = job.metadata?.moreRemaining || 0;
+    
     if (job.cancelled) {
       return <Badge variant="secondary">Cancelled</Badge>;
     }
 
     switch (job.status) {
       case 'completed':
+        if (isPartial) {
+          return (
+            <div className="flex items-center gap-2">
+              <Badge variant="default" className="bg-blue-600">Partial ({moreRemaining} left)</Badge>
+            </div>
+          );
+        }
         return <Badge variant="default" className="bg-green-600">Completed</Badge>;
       case 'in_progress':
-        return <Badge variant="default" className="bg-blue-600">In Progress</Badge>;
+        return <Badge variant="default" className="bg-blue-600 animate-pulse">In Progress</Badge>;
       case 'failed':
         return <Badge variant="destructive">Failed</Badge>;
       default:
@@ -632,7 +639,7 @@ export default function BackfillDashboard() {
             )}
           </div>
           <p className="text-muted-foreground mt-1">
-            Monitor and manage URL backfill jobs (showing last 20 jobs)
+            Monitor and manage URL backfill jobs • Processes 100 articles per batch with auto-resume
             {lastUpdate && (
               <span className="text-xs ml-2">
                 • Last update: {formatDistanceToNow(lastUpdate, { addSuffix: true })}
@@ -683,20 +690,20 @@ export default function BackfillDashboard() {
           </CardHeader>
           <CardContent className="space-y-2">
             <Button 
-              onClick={() => startBackfill('aviation')} 
+              onClick={() => startBackfill('aviation', 100)} 
               className="w-full"
               variant="outline"
               disabled={Object.keys(liveProgress).length > 0}
             >
-              Aviation
+              Aviation (100/batch)
             </Button>
             <Button 
-              onClick={() => startBackfill('aerospace')} 
+              onClick={() => startBackfill('aerospace', 100)} 
               className="w-full"
               variant="outline"
               disabled={Object.keys(liveProgress).length > 0}
             >
-              Aerospace
+              Aerospace (100/batch)
             </Button>
           </CardContent>
         </Card>
@@ -814,7 +821,9 @@ export default function BackfillDashboard() {
             {jobs.map((job) => {
               const isLive = liveProgress[job.id];
               const canResume = (job.status === 'in_progress' || job.cancelled) && !isLive;
-              const lastOffset = job.metadata?.lastProcessedOffset || 0;
+              const isPartial = job.metadata?.partialCompletion === true;
+              const moreRemaining = job.metadata?.moreRemaining || 0;
+              const articlesProcessed = job.metadata?.articlesProcessed || 0;
 
               return (
                 <Card key={job.id} className={isLive ? "opacity-50" : ""}>
@@ -832,14 +841,14 @@ export default function BackfillDashboard() {
                           {job.completed_at && ` • Completed ${formatDistanceToNow(new Date(job.completed_at), { addSuffix: true })}`}
                         </CardDescription>
                       </div>
-                      {canResume && (
+                      {canResume && !isPartial && (
                         <Button
                           onClick={() => resumeBackfill(job)}
                           variant="secondary"
                           size="sm"
                         >
                           <RefreshCw className="h-4 w-4 mr-2" />
-                          Resume from {lastOffset + 1}
+                          Resume Manually
                         </Button>
                       )}
                     </div>
@@ -847,8 +856,8 @@ export default function BackfillDashboard() {
                   <CardContent>
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                       <div className="space-y-1">
-                        <p className="text-muted-foreground">Last Offset</p>
-                        <p className="text-lg font-semibold">{lastOffset.toLocaleString()}</p>
+                        <p className="text-muted-foreground">Processed</p>
+                        <p className="text-lg font-semibold">{articlesProcessed.toLocaleString()}</p>
                       </div>
                       <div className="space-y-1">
                         <p className="text-muted-foreground">Updated</p>
@@ -883,10 +892,20 @@ export default function BackfillDashboard() {
                       </div>
                     </div>
 
+                    {isPartial && job.status === 'completed' && (
+                      <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <p className="text-sm text-blue-800 dark:text-blue-200 font-medium">
+                          ✓ Partial completion: Processed {articlesProcessed} articles
+                        </p>
+                        <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                          {moreRemaining > 0 ? `${moreRemaining.toLocaleString()} articles remaining - next batch will auto-start` : 'All articles processed!'}
+                        </p>
+                      </div>
+                    )}
                     {canResume && (
                       <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
                         <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                          This job can be resumed from article {lastOffset + 1}
+                          This job can be manually resumed if needed
                         </p>
                       </div>
                     )}

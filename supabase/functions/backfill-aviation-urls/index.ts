@@ -19,7 +19,9 @@ Deno.serve(async (req) => {
   try {
     const body = await req.json().catch(() => ({}));
     const resumeFromOffset = body.resumeFromOffset || 0;
-    console.log(`Resume from offset: ${resumeFromOffset}`);
+    const maxArticles = body.maxArticles || 100; // Process 100 articles per run
+    const autoResume = body.autoResume !== false; // Auto-resume by default
+    console.log(`Processing max ${maxArticles} articles, starting from offset: ${resumeFromOffset}, auto-resume: ${autoResume}`);
 
     const authHeader = req.headers.get("Authorization");
     console.log("Auth header received:", authHeader ? "Yes" : "No");
@@ -161,10 +163,9 @@ Deno.serve(async (req) => {
 
       console.log("Starting Aviation URL backfill with batch processing");
 
-      const BATCH_SIZE = 100;
-      const BATCH_DELAY_MS = 2000; // 2 second delay between batches
-      const ARTICLE_DELAY_MS = 300; // 300ms delay between articles
-      const PAGE_SIZE = 1000; // Number of rows to fetch from DB per page (PostgREST max rows)
+      const BATCH_SIZE = 20;
+      const BATCH_DELAY_MS = 1000; // 1 second delay between batches
+      const ARTICLE_DELAY_MS = 200; // 200ms delay between articles
 
       type ArticleRecord = {
         id: string;
@@ -172,65 +173,49 @@ Deno.serve(async (req) => {
         external_url: string | null;
       };
 
-      let allArticles: ArticleRecord[] = [];
-      let offset = 0;
+      // Fetch only the number of articles we want to process in this run
+      const { data: allArticles, error: fetchError, count } = await supabaseAdmin
+        .from("articles")
+        .select("id, post_id, external_url", { count: "exact" })
+        .eq("vertical_slug", "aviation")
+        .is("external_url", null)
+        .order("created_at", { ascending: false })
+        .range(0, maxArticles - 1);
 
-      console.log("Fetching Aviation articles in pages from Supabase");
-
-      while (true) {
-        const { data, error, count } = await supabaseAdmin
-          .from("articles")
-          .select("id, post_id, external_url", { count: "exact" })
-          .eq("vertical_slug", "aviation")
-          .is("external_url", null)
-          .order("created_at", { ascending: false })
-          .range(offset, offset + PAGE_SIZE - 1);
-
-        if (error) {
-          console.error("Error fetching articles page:", { offset, error });
-          throw error;
-        }
-
-        if (!data || data.length === 0) {
-          break;
-        }
-
-        allArticles = allArticles.concat(data as ArticleRecord[]);
-
-        console.log(
-          `Fetched page starting at offset ${offset}, got ${data.length} articles (total so far: ${allArticles.length}${
-            typeof count === "number" ? ` of ~${count}` : ""
-          })`,
-        );
-
-        if (data.length < PAGE_SIZE) {
-          // Last page reached
-          break;
-        }
-
-        offset += PAGE_SIZE;
+      if (fetchError) {
+        console.error("Error fetching articles:", fetchError);
+        throw fetchError;
       }
 
-      if (allArticles.length === 0) {
-        console.log("No Aviation articles found to backfill");
-        return { updated: 0, skipped: 0, errors: 0 };
+      const totalRemaining = count || 0;
+      console.log(`Fetched ${allArticles?.length || 0} articles to process (${totalRemaining} total remaining)`);
+
+      if (!allArticles || allArticles.length === 0) {
+        console.log("✅ No more Aviation articles to backfill - all done!");
+        await supabaseAdmin
+          .from("import_history")
+          .update({
+            status: "completed",
+            completed_at: new Date().toISOString(),
+            duration_ms: Date.now() - new Date(startedAt).getTime(),
+            metadata: { 
+              type: "url_backfill",
+              completed: true,
+              message: "All articles processed"
+            }
+          })
+          .eq("id", importId);
+        return { updated: 0, skipped: 0, errors: 0, allDone: true };
       }
 
-      const totalArticles = allArticles.length;
-      
-      // Skip to resume offset if provided
-      if (resumeFromOffset > 0 && resumeFromOffset < totalArticles) {
-        console.log(`Resuming from offset ${resumeFromOffset}, skipping first ${resumeFromOffset} articles`);
-        allArticles = allArticles.slice(resumeFromOffset);
-      }
-      
-      const totalBatches = Math.ceil(allArticles.length / BATCH_SIZE);
-      console.log(`Found ${totalArticles} total Aviation articles, processing ${allArticles.length} articles in ${totalBatches} batches`);
+      const articlesToProcess = allArticles.length;
+      const totalBatches = Math.ceil(articlesToProcess / BATCH_SIZE);
+      console.log(`Processing ${articlesToProcess} articles in ${totalBatches} batches (${totalRemaining} remaining total)`);
 
       // Process articles in batches
       for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
         const batchStart = batchIndex * BATCH_SIZE;
-        const batchEnd = Math.min(batchStart + BATCH_SIZE, totalArticles);
+        const batchEnd = Math.min(batchStart + BATCH_SIZE, articlesToProcess);
         const batch = allArticles.slice(batchStart, batchEnd);
 
         console.log(`Processing batch ${batchIndex + 1}/${totalBatches} (articles ${batchStart + 1}-${batchEnd})`);
@@ -261,11 +246,11 @@ Deno.serve(async (req) => {
             payload: {
               phase: "cancelled",
               currentArticle: overallIndex,
-              totalArticles,
+              totalArticles: articlesToProcess,
               updated,
               skipped,
               errors,
-              percentage: Math.round((overallIndex / totalArticles) * 100),
+              percentage: Math.round((overallIndex / articlesToProcess) * 100),
             } satisfies ProgressUpdate,
           });
 
@@ -275,31 +260,27 @@ Deno.serve(async (req) => {
         for (let i = 0; i < batch.length; i++) {
           const article = batch[i];
           const overallIndex = batchStart + i;
-          const absoluteIndex = resumeFromOffset + overallIndex;
 
           try {
-            // Update metadata with last processed offset
-            const updateData: any = {
-              metadata: { 
-                type: "url_backfill",
-                resumeFromOffset,
-                lastProcessedOffset: absoluteIndex
-              }
-            };
-
-            // Every 50 articles, also update the counts so progress is visible
-            if ((absoluteIndex + 1) % 50 === 0) {
-              updateData.imported_count = updated;
-              updateData.skipped_count = skipped;
-              updateData.error_count = errors;
-              updateData.total_processed = updated + skipped + errors;
-              console.log(`💾 Saving progress checkpoint: ${updated} updated, ${skipped} skipped, ${errors} errors`);
+            // Update progress periodically
+            if ((overallIndex + 1) % 10 === 0) {
+              await supabaseAdmin
+                .from("import_history")
+                .update({
+                  imported_count: updated,
+                  skipped_count: skipped,
+                  error_count: errors,
+                  total_processed: updated + skipped + errors,
+                  metadata: { 
+                    type: "url_backfill",
+                    maxArticles,
+                    articlesProcessed: overallIndex + 1,
+                    articlesToProcess,
+                    totalRemaining
+                  }
+                })
+                .eq("id", importId);
             }
-
-            await supabaseAdmin
-              .from("import_history")
-              .update(updateData)
-              .eq("id", importId);
 
             // Send progress update
             await supabaseAdmin.channel(channelName).send({
@@ -307,12 +288,12 @@ Deno.serve(async (req) => {
               event: "progress",
               payload: {
                 phase: "processing",
-                currentArticle: absoluteIndex + 1,
-                totalArticles,
+                currentArticle: overallIndex + 1,
+                totalArticles: articlesToProcess,
                 updated,
                 skipped,
                 errors,
-                percentage: Math.round(((absoluteIndex + 1) / totalArticles) * 100),
+                percentage: Math.round(((overallIndex + 1) / articlesToProcess) * 100),
               } satisfies ProgressUpdate,
             });
 
@@ -412,7 +393,8 @@ Deno.serve(async (req) => {
         }
       }
 
-      // Update import history on completion
+      // Mark this chunk as completed
+      const moreRemaining = totalRemaining - articlesToProcess;
       await supabaseAdmin
         .from("import_history")
         .update({
@@ -422,18 +404,25 @@ Deno.serve(async (req) => {
           skipped_count: skipped,
           error_count: errors,
           total_processed: updated + skipped + errors,
-          duration_ms: Date.now() - new Date(startedAt).getTime()
+          duration_ms: Date.now() - new Date(startedAt).getTime(),
+          metadata: { 
+            type: "url_backfill",
+            maxArticles,
+            articlesProcessed: articlesToProcess,
+            moreRemaining,
+            partialCompletion: moreRemaining > 0
+          }
         })
         .eq("id", importId);
 
-      // Send completion event
+      // Send completion event for this chunk
       await supabaseAdmin.channel(channelName).send({
         type: "broadcast",
         event: "complete",
         payload: {
           phase: "complete",
-          currentArticle: totalArticles,
-          totalArticles,
+          currentArticle: articlesToProcess,
+          totalArticles: articlesToProcess,
           updated,
           skipped,
           errors,
@@ -441,15 +430,44 @@ Deno.serve(async (req) => {
         } satisfies ProgressUpdate,
       });
 
-      console.log("Aviation URL backfill complete", { 
-        totalArticles,
+      console.log("Aviation URL backfill chunk complete", { 
+        articlesProcessed: articlesToProcess,
         updated, 
         skipped, 
         errors,
-        successRate: `${((updated / totalArticles) * 100).toFixed(2)}%`
+        moreRemaining,
+        successRate: articlesToProcess > 0 ? `${((updated / articlesToProcess) * 100).toFixed(2)}%` : "0%"
       });
 
-      return { updated, skipped, errors };
+      // If there are more articles and auto-resume is enabled, trigger next run
+      if (moreRemaining > 0 && autoResume) {
+        console.log(`🔄 Auto-resuming: ${moreRemaining} articles remaining`);
+        
+        // Wait a bit before triggering next run
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Trigger next run
+        try {
+          const { error: invokeError } = await supabaseAdmin.functions.invoke(
+            "backfill-aviation-urls",
+            {
+              body: { maxArticles, autoResume: true },
+            }
+          );
+          
+          if (invokeError) {
+            console.error("Error triggering next run:", invokeError);
+          } else {
+            console.log("✅ Next run triggered successfully");
+          }
+        } catch (err) {
+          console.error("Failed to trigger next run:", err);
+        }
+      } else if (moreRemaining === 0) {
+        console.log("🎉 All aviation articles have been processed!");
+      }
+
+      return { updated, skipped, errors, moreRemaining };
     }
 
     if (typeof req.waitUntil === "function") {
