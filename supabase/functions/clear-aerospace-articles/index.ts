@@ -1,6 +1,18 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { corsHeaders } from "../_shared/cors.ts";
 
+function getUserIdFromToken(token: string): string | null {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return null;
+    const payload = JSON.parse(atob(parts[1]));
+    return typeof payload.sub === "string" ? payload.sub : null;
+  } catch (e) {
+    console.error("Failed to decode JWT:", e);
+    return null;
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -23,43 +35,33 @@ Deno.serve(async (req) => {
     const token = authHeader.replace('Bearer ', '');
     console.log("Token extracted, length:", token.length);
 
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { 
-        global: { 
-          headers: { Authorization: authHeader } 
-        },
-        auth: {
-          persistSession: false
-        }
-      }
-    );
+    const userId = getUserIdFromToken(token);
+    console.log("Decoded user id from token:", userId);
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabaseClient.auth.getUser(token);
-
-    console.log("User check - error:", userError, "user:", user?.id);
-
-    if (userError || !user) {
-      console.error("Auth error:", userError?.message || "No user found");
+    if (!userId) {
+      console.error("Failed to extract user id from token");
       return new Response(JSON.stringify({ 
         error: "Authentication failed", 
-        details: userError?.message || "Auth session missing!" 
+        details: "Invalid or malformed access token" 
       }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const { data: isAdmin, error: roleError } = await supabaseClient.rpc("has_role", {
-      _user_id: user.id,
+    // Use service role client for role check + deletions
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
+
+    const { data: isAdmin, error: roleError } = await supabaseAdmin.rpc("has_role", {
+      _user_id: userId,
       _role: "admin",
     });
 
-    console.log("Role check - isAdmin:", isAdmin, "error:", roleError, "user_id:", user.id);
+    console.log("Role check - isAdmin:", isAdmin, "error:", roleError, "user_id:", userId);
 
     if (roleError) {
       console.error("Role check error:", roleError);
@@ -73,7 +75,7 @@ Deno.serve(async (req) => {
     }
 
     if (!isAdmin) {
-      console.error("User is not admin:", user.id, user.email);
+      console.error("User is not admin:", userId);
       return new Response(JSON.stringify({ 
         error: "Admin access required",
         details: "Your account does not have admin privileges" 
@@ -83,12 +85,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    console.log("Admin access granted for user:", user.email);
-
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
+    console.log("Admin access granted for user:", userId);
 
     console.log("Starting to delete all aerospace articles");
 
