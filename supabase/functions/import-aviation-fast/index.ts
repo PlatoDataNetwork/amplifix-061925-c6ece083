@@ -206,6 +206,12 @@ async function runBackgroundImport(
           const cleanedText = cleanText(rawContent);
           const excerpt = cleanText(rawExcerpt) || cleanedText.substring(0, 300);
 
+          // Extract external URL from multiple possible sources
+          const externalUrl = article.metadata?.sourceLink?.[0] 
+            || article.link 
+            || article.external_url 
+            || null;
+
           const articleData = {
             post_id: postId,
             title: title,
@@ -216,7 +222,7 @@ async function runBackgroundImport(
             author: 'PlatoData',
             read_time: '3 Min Read',
             image_url: article.metadata?.featuredImage?.[0] || null,
-            external_url: article.metadata?.sourceLink?.[0] || null,
+            external_url: externalUrl,
             metadata: article.metadata || {},
           };
 
