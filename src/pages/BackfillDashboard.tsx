@@ -441,6 +441,54 @@ export default function BackfillDashboard() {
     }
   };
 
+  const cancelAllBackfills = async () => {
+    try {
+      // Find all in-progress URL backfill jobs
+      const { data: activeJobs, error: fetchError } = await supabase
+        .from('import_history')
+        .select('id')
+        .eq('status', 'in_progress')
+        .eq('cancelled', false)
+        .eq('metadata->>type', 'url_backfill');
+
+      if (fetchError) throw fetchError;
+
+      if (!activeJobs || activeJobs.length === 0) {
+        toast({
+          title: "No Active Jobs",
+          description: "There are no running backfill jobs to cancel",
+        });
+        return;
+      }
+
+      // Cancel all active jobs
+      const { error } = await supabase
+        .from('import_history')
+        .update({ cancelled: true })
+        .eq('status', 'in_progress')
+        .eq('cancelled', false)
+        .eq('metadata->>type', 'url_backfill');
+
+      if (error) throw error;
+
+      // Clear all live progress
+      setLiveProgress({});
+
+      toast({
+        title: "All Jobs Cancelled",
+        description: `Cancelled ${activeJobs.length} running backfill job(s)`,
+      });
+
+      setTimeout(fetchJobs, 1000);
+    } catch (error: any) {
+      toast({
+        title: "Cancel All Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const cleanupStuckJobs = async () => {
     try {
       const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
@@ -542,6 +590,16 @@ export default function BackfillDashboard() {
           </p>
         </div>
         <div className="flex gap-2">
+          {Object.keys(liveProgress).length > 0 && (
+            <Button 
+              onClick={cancelAllBackfills} 
+              variant="destructive" 
+              size="sm"
+            >
+              <Square className="h-4 w-4 mr-2" />
+              Cancel All ({Object.keys(liveProgress).length})
+            </Button>
+          )}
           <Button onClick={cleanupStuckJobs} variant="outline" size="sm">
             Clean Up Stuck Jobs
           </Button>
