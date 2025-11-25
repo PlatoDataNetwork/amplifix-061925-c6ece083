@@ -224,6 +224,45 @@ export const AviationImport = ({
     loadDuplicatesCount();
   }, [aviationArticleCounts]);
 
+  // Import from single JSON file
+  const importSingleFileJson = async () => {
+    if (!customJsonUrl.trim() || !customVertical.trim()) {
+      toast.error('Please provide both JSON URL and vertical slug');
+      return;
+    }
+
+    onSetImporting('single-file-json');
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Authentication required');
+        onSetImporting(null);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('import-single-file-json', {
+        body: { 
+          jsonUrl: customJsonUrl,
+          verticalSlug: customVertical
+        },
+        headers: { Authorization: `Bearer ${session.access_token}` }
+      });
+
+      if (error) throw error;
+
+      toast.success('Single-file import started!', {
+        description: `Processing ${customVertical} data in background`
+      });
+
+    } catch (error) {
+      console.error('Error starting single-file import:', error);
+      toast.error('Failed to start import', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+      onSetImporting(null);
+    }
+  };
+
   const importAviationFast = async () => {
     if (!customJsonUrl.trim() || !customVertical.trim()) {
       toast.error('Please provide both JSON URL and vertical slug');
@@ -501,32 +540,41 @@ export const AviationImport = ({
             </div>
 
             <div className="space-y-3">
-              <div className="flex gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 <Button
                   onClick={importAviationFast}
                   disabled={importing !== null || !customJsonUrl.trim() || !customVertical.trim()}
-                  className="flex-1 h-14 text-lg bg-blue-600 hover:bg-blue-700"
+                  className="h-14 text-lg bg-blue-600 hover:bg-blue-700"
                   size="lg"
                 >
-                  {importing === 'aviation-fast' ? `Importing ${customVertical}...` : 'Start Fast Import (No AI)'}
+                  {importing === 'aviation-fast' ? `Importing...` : '📄 Paginated Import'}
                 </Button>
                 <Button
-                  onClick={async () => {
-                    const { data, error } = await supabase.functions.invoke('auto-resume-imports');
-                    if (error) {
-                      toast.error('Resume failed', { description: error.message });
-                    } else {
-                      toast.success('Import resumed!', { description: data.message });
-                    }
-                  }}
-                  disabled={importing !== null}
-                  className="flex-1 h-14 text-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold"
+                  onClick={importSingleFileJson}
+                  disabled={importing !== null || !customJsonUrl.trim() || !customVertical.trim()}
+                  className="h-14 text-lg bg-indigo-600 hover:bg-indigo-700"
                   size="lg"
                 >
-                  <PlayCircle className="mr-2 h-6 w-6" />
-                  🔄 Resume Import
+                  {importing === 'single-file-json' ? `Importing...` : '📦 Single-File Import'}
                 </Button>
               </div>
+              
+              <Button
+                onClick={async () => {
+                  const { data, error } = await supabase.functions.invoke('auto-resume-imports');
+                  if (error) {
+                    toast.error('Resume failed', { description: error.message });
+                  } else {
+                    toast.success('Import resumed!', { description: data.message });
+                  }
+                }}
+                disabled={importing !== null}
+                className="w-full h-12 text-base bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold"
+                size="lg"
+              >
+                <PlayCircle className="mr-2 h-5 w-5" />
+                🔄 Resume Import
+              </Button>
               
               <Button
                 onClick={clearAllAviationArticles}
@@ -537,9 +585,17 @@ export const AviationImport = ({
               >
                 {clearingArticles ? 'Clearing...' : `🗑️ Clear All ${aviationArticleCounts?.total.toLocaleString() || 0} Articles Before Import`}
               </Button>
+              
+              <div className="p-3 bg-muted/50 rounded-lg border text-sm text-muted-foreground">
+                <p className="font-medium mb-1">📋 Import Types:</p>
+                <ul className="space-y-1 text-xs">
+                  <li><strong>Paginated:</strong> For APIs with ?page=1, ?page=2, etc.</li>
+                  <li><strong>Single-File:</strong> For JSON files containing all articles at once</li>
+                </ul>
+              </div>
             </div>
 
-            {importing === 'aviation-fast' && aviationProgress && (
+            {(importing === 'aviation-fast' || importing === 'single-file-json') && aviationProgress && (
               <div className="space-y-4">
                 <div className="space-y-3 p-4 bg-background rounded-lg border">
                   <div className="flex items-center justify-between">
