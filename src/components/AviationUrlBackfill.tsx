@@ -61,6 +61,7 @@ export default function AviationUrlBackfill() {
     setIsRunning(true);
     setProgress(null);
     setResult(null);
+    setLastIncompleteImport(null);
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -187,10 +188,7 @@ export default function AviationUrlBackfill() {
   const resumeBackfill = async () => {
     let resumeOffset = 0;
     
-    if (lastIncompleteImport) {
-      const metadata = lastIncompleteImport.metadata as any;
-      resumeOffset = (metadata?.lastProcessedOffset || 0) + 1;
-    } else if (importId) {
+    if (importId) {
       // If currently running, fetch the latest offset from the current import
       try {
         const { data } = await supabase
@@ -206,6 +204,9 @@ export default function AviationUrlBackfill() {
       } catch (error) {
         console.error('Error fetching current progress:', error);
       }
+    } else if (lastIncompleteImport) {
+      const metadata = lastIncompleteImport.metadata as any;
+      resumeOffset = (metadata?.lastProcessedOffset || 0) + 1;
     }
     
     toast({
