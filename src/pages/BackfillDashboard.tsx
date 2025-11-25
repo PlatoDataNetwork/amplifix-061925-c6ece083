@@ -477,6 +477,69 @@ export default function BackfillDashboard() {
     }
   };
 
+  const resetAviationAndStart = async () => {
+    try {
+      // Step 1: Cancel and complete all aviation backfill jobs
+      const { data: aviationJobs, error: fetchError } = await supabase
+        .from('import_history')
+        .select('id')
+        .eq('vertical_slug', 'aviation')
+        .eq('status', 'in_progress');
+
+      if (fetchError) throw fetchError;
+
+      if (aviationJobs && aviationJobs.length > 0) {
+        // Mark all as cancelled and completed
+        const { error: updateError } = await supabase
+          .from('import_history')
+          .update({ 
+            cancelled: true,
+            status: 'cancelled',
+            completed_at: new Date().toISOString()
+          })
+          .eq('vertical_slug', 'aviation')
+          .eq('status', 'in_progress');
+
+        if (updateError) throw updateError;
+
+        // Clear live progress for aviation jobs
+        setLiveProgress(prev => {
+          const updated = { ...prev };
+          aviationJobs.forEach(job => delete updated[job.id]);
+          return updated;
+        });
+
+        toast({
+          title: "Aviation Jobs Cleared",
+          description: `Cancelled ${aviationJobs.length} aviation job(s)`,
+        });
+
+        // Wait a moment for the database to update
+        await new Promise(resolve => setTimeout(resolve, 1500));
+      }
+
+      // Step 2: Refresh the jobs list
+      await fetchJobs();
+
+      // Step 3: Start a fresh aviation backfill
+      toast({
+        title: "Starting Fresh Backfill",
+        description: "Initiating new Aviation URL backfill from the beginning",
+      });
+
+      await new Promise(resolve => setTimeout(resolve, 500));
+      await startBackfill('aviation');
+
+    } catch (error: any) {
+      console.error('Error resetting aviation backfill:', error);
+      toast({
+        title: "Reset Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const cleanupStuckJobs = async () => {
     try {
       const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
@@ -578,6 +641,15 @@ export default function BackfillDashboard() {
           </p>
         </div>
         <div className="flex gap-2">
+          <Button 
+            onClick={resetAviationAndStart} 
+            variant="default" 
+            size="sm"
+            className="bg-blue-600 hover:bg-blue-700"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Reset & Start Aviation
+          </Button>
           {Object.keys(liveProgress).length > 0 && (
             <Button 
               onClick={cancelAllBackfills} 
