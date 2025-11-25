@@ -206,8 +206,24 @@ async function runBackgroundImport(
           const cleanedText = cleanText(rawContent);
           const excerpt = cleanText(rawExcerpt) || cleanedText.substring(0, 300);
 
-          // Include source link
-          const externalUrl = article.metadata?.sourceLink?.[0] || null;
+          // Extract actual source URL (not PlatoData URL)
+          let externalUrl = null;
+          
+          // Check multiple possible source URL locations
+          const possibleUrls = [
+            article.metadata?.sourceLink?.[0],
+            article.source_url,
+            article.link,
+            article.url
+          ].filter(url => url && typeof url === 'string');
+          
+          // Find first URL that is NOT a platodata.ai URL
+          for (const url of possibleUrls) {
+            if (url && !url.includes('platodata.ai') && !url.includes('platodata.io')) {
+              externalUrl = url;
+              break;
+            }
+          }
 
           const articleData = {
             post_id: postId,
