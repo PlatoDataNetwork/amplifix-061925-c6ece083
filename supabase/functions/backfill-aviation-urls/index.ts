@@ -103,6 +103,7 @@ Deno.serve(async (req) => {
         .from("articles")
         .select("id, post_id, external_url")
         .eq("vertical_slug", "aviation")
+        .is("external_url", null)
         .order("created_at", { ascending: false });
 
       if (fetchError) {
