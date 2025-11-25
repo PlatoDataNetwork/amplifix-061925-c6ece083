@@ -94,6 +94,33 @@ Deno.serve(async (req) => {
 
     console.log("✅ Starting backfill for admin user:", userEmail || userId);
 
+    // Check if there's already a backfill running for this vertical
+    const { data: existingJobs, error: checkError } = await supabaseAdmin
+      .from("import_history")
+      .select("id, started_at")
+      .eq("vertical_slug", "aviation")
+      .eq("status", "in_progress")
+      .eq("metadata->>type", "url_backfill")
+      .limit(1);
+
+    if (checkError) {
+      console.error("Error checking for existing jobs:", checkError);
+    }
+
+    if (existingJobs && existingJobs.length > 0) {
+      console.log("⚠️ Aviation backfill already in progress, rejecting duplicate request");
+      return new Response(
+        JSON.stringify({ 
+          error: "Backfill already in progress",
+          details: "An aviation backfill job is already running. Please wait for it to complete or cancel it first."
+        }),
+        {
+          status: 409, // Conflict
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
     const channelName = `aviation-backfill-${crypto.randomUUID()}`;
     const startedAt = new Date().toISOString();
 
