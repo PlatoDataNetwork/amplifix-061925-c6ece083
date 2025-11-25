@@ -43,8 +43,65 @@ export default function BackfillDashboard() {
 
   useEffect(() => {
     fetchJobs();
-    const interval = setInterval(fetchJobs, 10000); // Refresh every 10 seconds
+    const interval = setInterval(fetchJobs, 30000); // Refresh every 30 seconds as fallback
     return () => clearInterval(interval);
+  }, []);
+
+  // Realtime subscription for live updates
+  useEffect(() => {
+    const channel = supabase
+      .channel('import-history-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'import_history',
+          filter: 'metadata->>type=eq.url_backfill'
+        },
+        (payload) => {
+          console.log('📡 Realtime update:', payload);
+          const updatedJob = payload.new as BackfillJob;
+          
+          setJobs(prevJobs => {
+            // Find and update the job for this vertical
+            const jobIndex = prevJobs.findIndex(j => j.vertical_slug === updatedJob.vertical_slug);
+            
+            if (jobIndex !== -1) {
+              // Update existing job
+              const newJobs = [...prevJobs];
+              newJobs[jobIndex] = updatedJob;
+              return newJobs;
+            } else {
+              // Add new job
+              return [...prevJobs, updatedJob];
+            }
+          });
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'import_history',
+          filter: 'metadata->>type=eq.url_backfill'
+        },
+        (payload) => {
+          console.log('📡 New backfill job started:', payload);
+          const newJob = payload.new as BackfillJob;
+          setJobs(prevJobs => {
+            // Replace job for this vertical or add if not exists
+            const filtered = prevJobs.filter(j => j.vertical_slug !== newJob.vertical_slug);
+            return [...filtered, newJob];
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchJobs = async () => {
