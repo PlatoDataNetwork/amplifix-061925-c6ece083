@@ -62,8 +62,14 @@ export default function AviationImport() {
       )
       .subscribe();
 
+    // Periodic refresh every 3 seconds during imports
+    const refreshInterval = setInterval(() => {
+      loadStats();
+    }, 3000);
+
     return () => {
       supabase.removeChannel(channel);
+      clearInterval(refreshInterval);
     };
   }, []);
 
