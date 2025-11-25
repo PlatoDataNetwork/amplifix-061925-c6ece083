@@ -91,6 +91,32 @@ Deno.serve(async (req) => {
     console.log("✅ Starting backfill for admin user:", userEmail || userId);
 
     const channelName = `aviation-backfill-${crypto.randomUUID()}`;
+    const startedAt = new Date().toISOString();
+
+    // Create import history record
+    const { data: importRecord, error: importError } = await supabaseAdmin
+      .from("import_history")
+      .insert({
+        vertical_slug: "aviation",
+        status: "in_progress",
+        started_at: startedAt,
+        imported_count: 0,
+        skipped_count: 0,
+        error_count: 0,
+        total_processed: 0,
+        cancelled: false,
+        metadata: { type: "url_backfill" }
+      })
+      .select()
+      .single();
+
+    if (importError || !importRecord) {
+      console.error("Failed to create import history record:", importError);
+      throw new Error("Failed to initialize backfill tracking");
+    }
+
+    const importId = importRecord.id;
+    console.log("Created import history record:", importId);
 
     async function runBackfill() {
       let updated = 0;
@@ -165,6 +191,43 @@ Deno.serve(async (req) => {
         const batch = allArticles.slice(batchStart, batchEnd);
 
         console.log(`Processing batch ${batchIndex + 1}/${totalBatches} (articles ${batchStart + 1}-${batchEnd})`);
+
+        // Check for cancellation at the start of each batch
+        const { data: shouldCancel } = await supabaseAdmin.rpc("should_cancel_import", {
+          p_vertical_slug: "aviation",
+          p_started_after: startedAt
+        });
+
+        if (shouldCancel) {
+          console.log("❌ Backfill cancelled by user");
+          await supabaseAdmin
+            .from("import_history")
+            .update({
+              status: "cancelled",
+              completed_at: new Date().toISOString(),
+              imported_count: updated,
+              skipped_count: skipped,
+              error_count: errors,
+              total_processed: updated + skipped + errors
+            })
+            .eq("id", importId);
+
+          await supabaseAdmin.channel(channelName).send({
+            type: "broadcast",
+            event: "cancelled",
+            payload: {
+              phase: "cancelled",
+              currentArticle: overallIndex,
+              totalArticles,
+              updated,
+              skipped,
+              errors,
+              percentage: Math.round((overallIndex / totalArticles) * 100),
+            } satisfies ProgressUpdate,
+          });
+
+          return { updated, skipped, errors, cancelled: true };
+        }
 
         for (let i = 0; i < batch.length; i++) {
           const article = batch[i];
@@ -276,6 +339,20 @@ Deno.serve(async (req) => {
         }
       }
 
+      // Update import history on completion
+      await supabaseAdmin
+        .from("import_history")
+        .update({
+          status: "completed",
+          completed_at: new Date().toISOString(),
+          imported_count: updated,
+          skipped_count: skipped,
+          error_count: errors,
+          total_processed: updated + skipped + errors,
+          duration_ms: Date.now() - new Date(startedAt).getTime()
+        })
+        .eq("id", importId);
+
       // Send completion event
       await supabaseAdmin.channel(channelName).send({
         type: "broadcast",
@@ -313,6 +390,7 @@ Deno.serve(async (req) => {
         success: true,
         message: "Aviation URL backfill started",
         channelName,
+        importId,
       }),
       {
         status: 200,

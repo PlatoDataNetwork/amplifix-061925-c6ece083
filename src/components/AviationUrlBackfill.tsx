@@ -16,15 +16,19 @@ interface ProgressUpdate {
   percentage: number;
 }
 
+interface BackfillResult {
+  updated: number;
+  skipped: number;
+  errors: number;
+  cancelled?: boolean;
+}
+
 export default function AviationUrlBackfill() {
   const { toast } = useToast();
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState<ProgressUpdate | null>(null);
-  const [result, setResult] = useState<{
-    updated: number;
-    skipped: number;
-    errors: number;
-  } | null>(null);
+  const [result, setResult] = useState<BackfillResult | null>(null);
+  const [importId, setImportId] = useState<string | null>(null);
   const [onStatsRefresh, setOnStatsRefresh] = useState<(() => void) | null>(null);
 
   const startBackfill = async () => {
@@ -50,6 +54,8 @@ export default function AviationUrlBackfill() {
       }
 
       const channelName = data.channelName;
+      const newImportId = data.importId;
+      setImportId(newImportId);
 
       const channel = supabase.channel(channelName);
 
@@ -57,21 +63,39 @@ export default function AviationUrlBackfill() {
         .on("broadcast", { event: "progress" }, ({ payload }) => {
           setProgress(payload as ProgressUpdate);
         })
-      .on("broadcast", { event: "complete" }, ({ payload }) => {
-        const finalProgress = payload as ProgressUpdate;
-        setResult({
-          updated: finalProgress.updated,
-          skipped: finalProgress.skipped,
-          errors: finalProgress.errors,
-        });
-        setIsRunning(false);
-        setProgress(null);
-        if (onStatsRefresh) onStatsRefresh(); // Call parent refresh callback
-        toast({
-          title: "Backfill Complete",
-          description: `Updated: ${finalProgress.updated}, Skipped: ${finalProgress.skipped}, Errors: ${finalProgress.errors}`,
-        });
-      })
+        .on("broadcast", { event: "complete" }, ({ payload }) => {
+          const finalProgress = payload as ProgressUpdate;
+          setResult({
+            updated: finalProgress.updated,
+            skipped: finalProgress.skipped,
+            errors: finalProgress.errors,
+          });
+          setIsRunning(false);
+          setProgress(null);
+          setImportId(null);
+          if (onStatsRefresh) onStatsRefresh();
+          toast({
+            title: "Backfill Complete",
+            description: `Updated: ${finalProgress.updated}, Skipped: ${finalProgress.skipped}, Errors: ${finalProgress.errors}`,
+          });
+        })
+        .on("broadcast", { event: "cancelled" }, ({ payload }) => {
+          const cancelledProgress = payload as ProgressUpdate;
+          setResult({
+            updated: cancelledProgress.updated,
+            skipped: cancelledProgress.skipped,
+            errors: cancelledProgress.errors,
+            cancelled: true,
+          });
+          setIsRunning(false);
+          setProgress(null);
+          setImportId(null);
+          if (onStatsRefresh) onStatsRefresh();
+          toast({
+            title: "Backfill Cancelled",
+            description: `Partial results - Updated: ${cancelledProgress.updated}, Skipped: ${cancelledProgress.skipped}, Errors: ${cancelledProgress.errors}`,
+          });
+        })
         .subscribe();
 
       toast({
@@ -99,6 +123,38 @@ export default function AviationUrlBackfill() {
     }
   };
 
+  const cancelBackfill = async () => {
+    if (!importId) return;
+
+    try {
+      const { error } = await supabase
+        .from('import_history')
+        .update({ cancelled: true })
+        .eq('id', importId);
+
+      if (error) {
+        console.error('Error cancelling backfill:', error);
+        toast({
+          title: "Cancel Failed",
+          description: "Failed to cancel backfill",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Cancellation Requested",
+          description: "The backfill will stop after the current batch completes",
+        });
+      }
+    } catch (error) {
+      console.error('Error cancelling backfill:', error);
+      toast({
+        title: "Cancel Failed",
+        description: "Failed to cancel backfill",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -111,13 +167,23 @@ export default function AviationUrlBackfill() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Button
-          onClick={startBackfill}
-          disabled={isRunning}
-          className="w-full"
-        >
-          {isRunning ? "Backfill Running..." : "Start URL Backfill"}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={startBackfill}
+            disabled={isRunning}
+            className="flex-1"
+          >
+            {isRunning ? "Backfill Running..." : "Start URL Backfill"}
+          </Button>
+          {isRunning && (
+            <Button
+              onClick={cancelBackfill}
+              variant="destructive"
+            >
+              Cancel
+            </Button>
+          )}
+        </div>
 
         {progress && (
           <div className="space-y-3 p-4 bg-muted rounded-lg">
@@ -147,11 +213,23 @@ export default function AviationUrlBackfill() {
         )}
 
         {result && (
-          <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-            <h4 className="font-semibold mb-2 text-green-800 dark:text-green-200">
-              Backfill Complete
+          <div className={`p-4 rounded-lg border ${
+            result.cancelled 
+              ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800' 
+              : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+          }`}>
+            <h4 className={`font-semibold mb-2 ${
+              result.cancelled 
+                ? 'text-yellow-800 dark:text-yellow-200' 
+                : 'text-green-800 dark:text-green-200'
+            }`}>
+              {result.cancelled ? 'Backfill Cancelled - Partial Results' : 'Backfill Complete'}
             </h4>
-            <div className="space-y-1 text-sm text-green-700 dark:text-green-300">
+            <div className={`space-y-1 text-sm ${
+              result.cancelled 
+                ? 'text-yellow-700 dark:text-yellow-300' 
+                : 'text-green-700 dark:text-green-300'
+            }`}>
               <p>✓ Updated: {result.updated}</p>
               <p>⊘ Skipped: {result.skipped}</p>
               <p>✗ Errors: {result.errors}</p>
