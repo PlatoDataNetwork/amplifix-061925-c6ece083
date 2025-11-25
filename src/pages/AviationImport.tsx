@@ -396,10 +396,11 @@ export default function AviationImport() {
 
         <div className="space-y-6 mb-8">
           <AviationAIProgressDashboard />
-          <AviationUrlBackfill />
           <AviationAIProcessing />
           <AviationDuplicateCleanup />
         </div>
+
+        <AviationUrlBackfill />
       </main>
       <Footer />
     </div>
