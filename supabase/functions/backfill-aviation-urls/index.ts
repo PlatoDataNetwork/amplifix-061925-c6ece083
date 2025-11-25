@@ -18,7 +18,10 @@ Deno.serve(async (req) => {
 
   try {
     const authHeader = req.headers.get("Authorization");
+    console.log("Auth header received:", authHeader ? "Yes" : "No");
+    
     if (!authHeader) {
+      console.log("❌ No authorization header");
       return new Response(JSON.stringify({ error: "No authorization header" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -36,24 +39,34 @@ Deno.serve(async (req) => {
       error: userError,
     } = await supabaseClient.auth.getUser();
 
+    console.log("User check:", { hasUser: !!user, error: userError?.message });
+
     if (userError || !user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      console.log("❌ User authentication failed");
+      return new Response(JSON.stringify({ error: "Unauthorized", details: userError?.message }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    console.log("✅ User authenticated:", user.email);
 
     const { data: isAdmin } = await supabaseClient.rpc("has_role", {
       _user_id: user.id,
       _role: "admin",
     });
 
+    console.log("Admin check:", { isAdmin, userId: user.id });
+
     if (!isAdmin) {
+      console.log("❌ User is not admin");
       return new Response(JSON.stringify({ error: "Admin access required" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    console.log("✅ Starting backfill for admin user:", user.email);
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
