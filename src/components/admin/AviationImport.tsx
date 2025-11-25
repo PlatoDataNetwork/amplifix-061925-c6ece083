@@ -275,7 +275,7 @@ export const AviationImport = ({
         .not('content', 'is', null);
 
       const totalArticles = count || 0;
-      const chunkSize = 50;
+      const chunkSize = 100;
       const totalChunks = Math.max(1, Math.ceil(totalArticles / chunkSize));
 
       const { data: newJob, error: createError } = await supabase
