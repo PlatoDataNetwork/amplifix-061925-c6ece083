@@ -24,11 +24,9 @@ serve(async (req: Request): Promise<Response> => {
       // No body is fine, default page is 1
     }
 
-    const url = `https://platodata.ai/aviation/json/?page=${encodeURIComponent(
-      String(page),
-    )}`;
+    const url = `https://dashboard.platodata.io/json/aviation.json`;
 
-    console.log("Fetching aviation feed", { url });
+    console.log("Fetching aviation feed", { url, requestedPage: page });
 
     const upstreamResponse = await fetch(url);
 
