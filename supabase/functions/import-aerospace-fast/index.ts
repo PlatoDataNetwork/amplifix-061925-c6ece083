@@ -42,7 +42,7 @@ async function runBackgroundImport(
   jsonUrl: string,
   verticalSlug: string,
   startPage: number = 1,
-  maxPages: number = 200 // Process 200 pages per run
+  maxPages: number = 1000 // Process up to 1000 pages per run (increased for full feed coverage)
 ) {
   const startTime = Date.now();
   console.log(`🚀 Background import started for ${verticalSlug} from page ${startPage}, max ${maxPages} pages`);
@@ -456,7 +456,7 @@ Deno.serve(async (req) => {
         .eq('id', historyId);
         
       // Use saved values when resuming
-      return await runBackgroundImport(supabaseClient, historyId, user.id, savedJsonUrl, savedVerticalSlug, startPage, 200);
+      return await runBackgroundImport(supabaseClient, historyId, user.id, savedJsonUrl, savedVerticalSlug, startPage, 1000);
     } else {
       // Create new import history
       console.log(`Admin ${user.email} starting new FAST import for ${verticalSlug}`);
@@ -479,13 +479,13 @@ Deno.serve(async (req) => {
       throw new Error('Failed to create import history record');
     }
 
-    // Start background import using waitUntil (200 pages at a time)
+    // Start background import using waitUntil (up to 1000 pages at a time)
     const ctx = Deno.env.get('DENO_REGION') ? (globalThis as any).EdgeRuntime : null;
     if (ctx && ctx.waitUntil) {
-      ctx.waitUntil(runBackgroundImport(supabaseClient, historyId, user.id, jsonUrl, verticalSlug, startPage, 200));
+      ctx.waitUntil(runBackgroundImport(supabaseClient, historyId, user.id, jsonUrl, verticalSlug, startPage, 1000));
     } else {
       // Fallback for local development
-      runBackgroundImport(supabaseClient, historyId, user.id, jsonUrl, verticalSlug, startPage, 200).catch(console.error);
+      runBackgroundImport(supabaseClient, historyId, user.id, jsonUrl, verticalSlug, startPage, 1000).catch(console.error);
     }
 
     // Return immediately
@@ -494,7 +494,7 @@ Deno.serve(async (req) => {
         success: true,
         message: resumeFromHistory 
           ? `Resuming ${verticalSlug} import from page ${startPage} in background.`
-          : `${verticalSlug} import started in background. Processes 200 pages at a time.`,
+          : `${verticalSlug} import started in background. Processes up to 1000 pages per run.`,
         historyId: historyId,
         vertical: verticalSlug,
         startPage,
