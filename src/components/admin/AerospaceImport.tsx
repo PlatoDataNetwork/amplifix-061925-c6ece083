@@ -136,6 +136,10 @@ export const AerospaceImport = ({
       onSetProgressStatus('Launching Aerospace background import...');
 
       const { data, error } = await supabase.functions.invoke('import-aerospace-fast', {
+        body: {
+          jsonUrl: 'https://platodata.ai/aerospace/json/',
+          verticalSlug: 'aerospace'
+        },
         headers: {
           Authorization: `Bearer ${session.access_token}`
         }
