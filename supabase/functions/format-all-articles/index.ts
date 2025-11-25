@@ -225,6 +225,15 @@ Deno.serve(async (req) => {
     return new Response('ok', { headers: corsHeaders });
   }
 
+  // AI processing temporarily disabled to stabilize the system
+  return new Response(
+    JSON.stringify({
+      success: false,
+      message: 'AI article formatting is temporarily disabled',
+    }),
+    { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+  );
+
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
