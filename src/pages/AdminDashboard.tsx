@@ -103,6 +103,13 @@ const AdminDashboard = () => {
       color: 'from-purple-500 to-pink-500'
     },
     {
+      title: 'Backfill Dashboard',
+      description: 'Monitor and resume URL backfill jobs',
+      icon: RotateCcw,
+      action: () => navigate('/admin/backfill'),
+      color: 'from-blue-500 to-indigo-500'
+    },
+    {
       title: 'Article Editor',
       description: 'Edit and update article content',
       icon: FileText,
