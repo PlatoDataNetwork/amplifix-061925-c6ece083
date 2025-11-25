@@ -40,6 +40,8 @@ export default function BackfillDashboard() {
   const [jobs, setJobs] = useState<BackfillJob[]>([]);
   const [liveProgress, setLiveProgress] = useState<Record<string, LiveProgress>>({});
   const [loading, setLoading] = useState(true);
+  const [isRealtimeConnected, setIsRealtimeConnected] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
   useEffect(() => {
     fetchJobs();
@@ -62,6 +64,7 @@ export default function BackfillDashboard() {
         (payload) => {
           console.log('📡 Realtime update:', payload);
           const updatedJob = payload.new as BackfillJob;
+          setLastUpdate(new Date());
           
           setJobs(prevJobs => {
             // Find and update the job for this vertical
@@ -90,6 +93,8 @@ export default function BackfillDashboard() {
         (payload) => {
           console.log('📡 New backfill job started:', payload);
           const newJob = payload.new as BackfillJob;
+          setLastUpdate(new Date());
+          
           setJobs(prevJobs => {
             // Replace job for this vertical or add if not exists
             const filtered = prevJobs.filter(j => j.vertical_slug !== newJob.vertical_slug);
@@ -97,10 +102,19 @@ export default function BackfillDashboard() {
           });
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          setIsRealtimeConnected(true);
+          console.log('✅ Realtime connection established');
+        } else if (status === 'CLOSED') {
+          setIsRealtimeConnected(false);
+          console.log('❌ Realtime connection closed');
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);
+      setIsRealtimeConnected(false);
     };
   }, []);
 
@@ -457,9 +471,27 @@ export default function BackfillDashboard() {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Backfill Dashboard</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold">Backfill Dashboard</h1>
+            {isRealtimeConnected && (
+              <Badge variant="default" className="bg-green-600 animate-pulse">
+                <Activity className="h-3 w-3 mr-1" />
+                Live
+              </Badge>
+            )}
+            {!isRealtimeConnected && (
+              <Badge variant="secondary">
+                Offline
+              </Badge>
+            )}
+          </div>
           <p className="text-muted-foreground mt-1">
             Monitor and manage URL backfill jobs (showing latest job per vertical)
+            {lastUpdate && (
+              <span className="text-xs ml-2">
+                • Last update: {formatDistanceToNow(lastUpdate, { addSuffix: true })}
+              </span>
+            )}
           </p>
         </div>
         <div className="flex gap-2">
