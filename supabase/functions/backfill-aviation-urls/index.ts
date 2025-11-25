@@ -299,14 +299,19 @@ Deno.serve(async (req) => {
               continue;
             }
 
-            if (!Array.isArray(data) || data.length === 0) {
-              console.error(`No data returned for article ${article.post_id}`);
-              errors++;
-              continue;
+            // Extract source URL from the response
+            let sourceUrl: string | null = null;
+            
+            if (data?.posts && Array.isArray(data.posts) && data.posts.length > 0) {
+              // Response structure: { posts: [{ source: "..." }] }
+              sourceUrl = data.posts[0]?.source;
+            } else if (Array.isArray(data) && data.length > 0) {
+              // Response structure: [{ source: "..." }]
+              sourceUrl = data[0]?.source;
+            } else if (data?.source) {
+              // Response structure: { source: "..." }
+              sourceUrl = data.source;
             }
-
-            const articleData = data[0];
-            const sourceUrl = articleData?.link;
 
             if (!sourceUrl || sourceUrl.trim() === "") {
               console.error(`No source URL found for article ${article.post_id}`);
