@@ -102,25 +102,59 @@ Deno.serve(async (req) => {
       const BATCH_SIZE = 100;
       const BATCH_DELAY_MS = 2000; // 2 second delay between batches
       const ARTICLE_DELAY_MS = 300; // 300ms delay between articles
+      const PAGE_SIZE = 1000; // Number of rows to fetch from DB per page (PostgREST max rows)
 
-      const { data: articles, error: fetchError } = await supabaseAdmin
-        .from("articles")
-        .select("id, post_id, external_url")
-        .eq("vertical_slug", "aviation")
-        .is("external_url", null)
-        .order("created_at", { ascending: false });
+      type ArticleRecord = {
+        id: string;
+        post_id: number | null;
+        external_url: string | null;
+      };
 
-      if (fetchError) {
-        console.error("Error fetching articles:", fetchError);
-        throw fetchError;
+      let allArticles: ArticleRecord[] = [];
+      let offset = 0;
+
+      console.log("Fetching Aviation articles in pages from Supabase");
+
+      while (true) {
+        const { data, error, count } = await supabaseAdmin
+          .from("articles")
+          .select("id, post_id, external_url", { count: "exact" })
+          .eq("vertical_slug", "aviation")
+          .is("external_url", null)
+          .order("created_at", { ascending: false })
+          .range(offset, offset + PAGE_SIZE - 1);
+
+        if (error) {
+          console.error("Error fetching articles page:", { offset, error });
+          throw error;
+        }
+
+        if (!data || data.length === 0) {
+          break;
+        }
+
+        allArticles = allArticles.concat(data as ArticleRecord[]);
+
+        console.log(
+          `Fetched page starting at offset ${offset}, got ${data.length} articles (total so far: ${allArticles.length}${
+            typeof count === "number" ? ` of ~${count}` : ""
+          })`,
+        );
+
+        if (data.length < PAGE_SIZE) {
+          // Last page reached
+          break;
+        }
+
+        offset += PAGE_SIZE;
       }
 
-      if (!articles || articles.length === 0) {
+      if (allArticles.length === 0) {
         console.log("No Aviation articles found to backfill");
         return { updated: 0, skipped: 0, errors: 0 };
       }
 
-      const totalArticles = articles.length;
+      const totalArticles = allArticles.length;
       const totalBatches = Math.ceil(totalArticles / BATCH_SIZE);
       console.log(`Found ${totalArticles} Aviation articles to process in ${totalBatches} batches`);
 
@@ -128,7 +162,7 @@ Deno.serve(async (req) => {
       for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
         const batchStart = batchIndex * BATCH_SIZE;
         const batchEnd = Math.min(batchStart + BATCH_SIZE, totalArticles);
-        const batch = articles.slice(batchStart, batchEnd);
+        const batch = allArticles.slice(batchStart, batchEnd);
 
         console.log(`Processing batch ${batchIndex + 1}/${totalBatches} (articles ${batchStart + 1}-${batchEnd})`);
 
@@ -176,7 +210,25 @@ Deno.serve(async (req) => {
               continue;
             }
 
-            const data = await response.json();
+            const contentType = response.headers.get("content-type") || "";
+            let data: any;
+
+            try {
+              if (contentType.includes("application/json")) {
+                data = await response.json();
+              } else {
+                const text = await response.text();
+                console.error(
+                  `Non-JSON response for article ${article.post_id}. Content-Type: ${contentType}. Preview: ${text.slice(0, 200)}`,
+                );
+                errors++;
+                continue;
+              }
+            } catch (parseError) {
+              console.error(`Failed to parse JSON for article ${article.post_id}:`, parseError);
+              errors++;
+              continue;
+            }
 
             if (!Array.isArray(data) || data.length === 0) {
               console.error(`No data returned for article ${article.post_id}`);
