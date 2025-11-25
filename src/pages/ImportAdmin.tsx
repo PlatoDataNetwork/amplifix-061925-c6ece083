@@ -978,11 +978,25 @@ const ImportAdmin = () => {
       });
       
       // STEP 3: Delete aerospace articles using edge function (handles RLS)
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error('You must be logged in to clear aerospace data');
+      }
+
       const { data: clearResult, error: clearError } = await supabase.functions.invoke(
-        'clear-aerospace-articles'
+        'clear-aerospace-articles',
+        {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`
+          }
+        }
       );
       
-      if (clearError) throw clearError;
+      if (clearError) {
+        console.error('Clear function error:', clearError);
+        throw clearError;
+      }
       
       if (!clearResult?.success) {
         throw new Error(clearResult?.error || 'Failed to clear aerospace data');
