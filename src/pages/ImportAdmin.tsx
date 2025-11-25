@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/table";
 import { DuplicateMonitor } from "@/components/DuplicateMonitor";
 import { AerospaceImport } from "@/components/admin/AerospaceImport";
+import { AerospaceStatsDashboard } from "@/components/AerospaceStatsDashboard";
 
 const ImportAdmin = () => {
   const navigate = useNavigate();
@@ -1556,6 +1557,9 @@ const ImportAdmin = () => {
 
           {/* Generic Import Section - Now supports any vertical via input fields */}
           {/* <AerospaceImport /> component hidden - using AviationImport as the generic importer */}
+          
+          {/* Aerospace Statistics Dashboard */}
+          <AerospaceStatsDashboard />
           
           {/* Aerospace Import Section */}
           <AerospaceImport
