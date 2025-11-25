@@ -28,30 +28,38 @@ Deno.serve(async (req) => {
       });
     }
 
-    const supabaseClient = createClient(
+    // Use a dedicated auth client and pass the token explicitly
+    const supabaseAuth = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: authHeader } } }
+      {
+        auth: { persistSession: false },
+        global: { headers: { Authorization: authHeader } },
+      },
     );
 
+    const token = authHeader.replace("Bearer ", "");
     const {
       data: { user },
       error: userError,
-    } = await supabaseClient.auth.getUser();
+    } = await supabaseAuth.auth.getUser(token);
 
     console.log("User check:", { hasUser: !!user, error: userError?.message });
 
     if (userError || !user) {
       console.log("❌ User authentication failed");
-      return new Response(JSON.stringify({ error: "Unauthorized", details: userError?.message }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ error: "Unauthorized", details: userError?.message }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
 
     console.log("✅ User authenticated:", user.email);
 
-    const { data: isAdmin } = await supabaseClient.rpc("has_role", {
+    const { data: isAdmin } = await supabaseAuth.rpc("has_role", {
       _user_id: user.id,
       _role: "admin",
     });
