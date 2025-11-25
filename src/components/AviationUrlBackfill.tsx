@@ -185,15 +185,35 @@ export default function AviationUrlBackfill() {
   };
 
   const resumeBackfill = async () => {
-    if (!lastIncompleteImport) return;
+    let resumeOffset = 0;
     
-    const lastOffset = lastIncompleteImport.metadata?.lastProcessedOffset || 0;
+    if (lastIncompleteImport) {
+      const metadata = lastIncompleteImport.metadata as any;
+      resumeOffset = (metadata?.lastProcessedOffset || 0) + 1;
+    } else if (importId) {
+      // If currently running, fetch the latest offset from the current import
+      try {
+        const { data } = await supabase
+          .from('import_history')
+          .select('metadata')
+          .eq('id', importId)
+          .single();
+        
+        const metadata = data?.metadata as any;
+        if (metadata?.lastProcessedOffset !== undefined) {
+          resumeOffset = metadata.lastProcessedOffset + 1;
+        }
+      } catch (error) {
+        console.error('Error fetching current progress:', error);
+      }
+    }
+    
     toast({
       title: "Resuming Backfill",
-      description: `Resuming from article ${lastOffset + 1}`,
+      description: `Resuming from article ${resumeOffset}`,
     });
     
-    await startBackfill(lastOffset + 1); // Resume from next article
+    await startBackfill(resumeOffset);
   };
 
   return (
@@ -217,7 +237,7 @@ export default function AviationUrlBackfill() {
               Progress: {lastIncompleteImport.imported_count} updated, {lastIncompleteImport.skipped_count} skipped, {lastIncompleteImport.error_count} errors
             </p>
             <p className="text-xs text-yellow-700 dark:text-yellow-300">
-              Last processed: Article {(lastIncompleteImport.metadata?.lastProcessedOffset || 0) + 1}
+              Last processed: Article {((lastIncompleteImport.metadata as any)?.lastProcessedOffset || 0) + 1}
             </p>
           </div>
         )}
@@ -229,7 +249,7 @@ export default function AviationUrlBackfill() {
               variant="secondary"
               className="flex-1"
             >
-              Resume from Article {(lastIncompleteImport.metadata?.lastProcessedOffset || 0) + 1}
+              Resume from Article {((lastIncompleteImport.metadata as any)?.lastProcessedOffset || 0) + 1}
             </Button>
           )}
           <Button
@@ -240,12 +260,21 @@ export default function AviationUrlBackfill() {
             {isRunning ? "Backfill Running..." : "Start New Backfill"}
           </Button>
           {isRunning && (
-            <Button
-              onClick={cancelBackfill}
-              variant="destructive"
-            >
-              Cancel
-            </Button>
+            <>
+              <Button
+                onClick={resumeBackfill}
+                variant="secondary"
+                title="Resume from last processed article (use if stuck)"
+              >
+                Resume
+              </Button>
+              <Button
+                onClick={cancelBackfill}
+                variant="destructive"
+              >
+                Cancel
+              </Button>
+            </>
           )}
         </div>
 
