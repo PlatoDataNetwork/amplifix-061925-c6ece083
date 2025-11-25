@@ -27,9 +27,6 @@ import {
 } from "@/components/ui/table";
 import { DuplicateMonitor } from "@/components/DuplicateMonitor";
 import { AerospaceImport } from "@/components/admin/AerospaceImport";
-import { AviationImport } from "@/components/admin/AviationImport";
-import AviationAIProgressDashboard from "@/components/AviationAIProgressDashboard";
-import AviationUrlBackfill from "@/components/AviationUrlBackfill";
 
 const ImportAdmin = () => {
   const navigate = useNavigate();
@@ -75,24 +72,6 @@ const ImportAdmin = () => {
     lastPage: number | null;
     status: string;
   } | null>(null);
-  const [aviationProgress, setAviationProgress] = useState<{
-    phase: string;
-    currentPage: number;
-    totalPages: number;
-    articlesCollected: number;
-    imported?: number;
-    skipped?: number;
-    errors?: number;
-    percentComplete?: number;
-    message: string;
-  } | null>(null);
-  const [aviationImportTotals, setAviationImportTotals] = useState<{
-    imported: number;
-    skipped: number;
-    totalProcessed: number;
-    lastPage: number | null;
-    status: string;
-  } | null>(null);
   const [aiProcessingActive, setAiProcessingActive] = useState(false);
   const [parallelChunksInProgress, setParallelChunksInProgress] = useState<Set<number>>(new Set());
   const [aiProcessingJobId, setAiProcessingJobId] = useState<string | null>(null);
@@ -113,11 +92,6 @@ const ImportAdmin = () => {
     aiProcessed: number;
     remaining: number;
   } | null>(null);
-  const [aviationArticleCounts, setAviationArticleCounts] = useState<{
-    total: number;
-    aiProcessed: number;
-    remaining: number;
-  } | null>(null);
   const [lastCountsUpdate, setLastCountsUpdate] = useState<Date | null>(null);
   const [lastAiStatsUpdate, setLastAiStatsUpdate] = useState<Date | null>(null);
   const [lastAiProgress, setLastAiProgress] = useState<number>(0);
@@ -134,18 +108,6 @@ const ImportAdmin = () => {
     platoTotal: null,
     loading: false
   });
-  const [aviationStats, setAviationStats] = useState<{
-    totalInDb: number;
-    missingUrls: number;
-    platoTotal: number | null;
-    loading: boolean;
-  }>({
-    totalInDb: 0,
-    missingUrls: 0,
-    platoTotal: null,
-    loading: false
-  });
-  const [customJsonUrl, setCustomJsonUrl] = useState<string>('https://platodata.ai/aviation/json/');
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
   // Load aerospace article counts - FOR AEROSPACE VERTICAL
@@ -193,35 +155,6 @@ const ImportAdmin = () => {
     }
   };
 
-  // Load aviation article counts - FOR AVIATION VERTICAL
-  const loadAviationArticleCounts = async () => {
-    try {
-      const { count: total, error: totalError } = await supabase
-        .from('articles')
-        .select('*', { count: 'exact', head: true })
-        .eq('vertical_slug', 'aviation')
-        .not('content', 'is', null);
-
-      if (totalError) throw totalError;
-
-      const { count: processed, error: processedError} = await supabase
-        .from('articles')
-        .select('*', { count: 'exact', head: true })
-        .eq('vertical_slug', 'aviation')
-        .not('content', 'is', null)
-        .eq('metadata->>ai_processed', 'true');
-
-      if (processedError) throw processedError;
-
-      setAviationArticleCounts({
-        total: total || 0,
-        aiProcessed: processed || 0,
-        remaining: (total || 0) - (processed || 0)
-      });
-    } catch (error) {
-      console.error('Error loading aviation article counts:', error);
-    }
-  };
   
   // Derived import rate (articles per second)
   const importRate =
@@ -340,35 +273,6 @@ const ImportAdmin = () => {
     }
   };
 
-  // Load aviation stats - FOR AVIATION VERTICAL
-  const loadAviationStats = async () => {
-    setAviationStats(prev => ({ ...prev, loading: true }));
-    
-    try {
-      // Get total aviation articles in DB
-      const { count: totalInDb } = await supabase
-        .from('articles')
-        .select('*', { count: 'exact', head: true })
-        .eq('vertical_slug', 'aviation');
-      
-      // Get articles missing external URLs  
-      const { count: missingUrls } = await supabase
-        .from('articles')
-        .select('*', { count: 'exact', head: true })
-        .eq('vertical_slug', 'aviation')
-        .or('external_url.is.null,external_url.eq.');
-
-      setAviationStats({
-        totalInDb: totalInDb || 0,
-        missingUrls: missingUrls || 0,
-        platoTotal: null,
-        loading: false
-      });
-    } catch (error) {
-      console.error('Error loading aviation stats:', error);
-      setAviationStats(prev => ({ ...prev, loading: false }));
-    }
-  };
 
   // Handle aerospace AI processing reset
   const handleResetAerospaceAI = async () => {
@@ -397,63 +301,35 @@ const ImportAdmin = () => {
     }
   };
 
-  // Handle aviation AI processing reset
-  const handleResetAviationAI = async () => {
-    try {
-      toast.info('Resetting aviation AI processing...');
-      setImporting('reset-aviation-ai');
-      
-      const { data, error } = await supabase.functions.invoke('reset-aviation-ai');
-      
-      if (error) throw error;
-      
-      toast.success('Aviation AI processing reset and restarted!', {
-        description: `Job ID: ${data.jobId} | ${data.totalChunks} chunks to process`,
-        duration: 5000
-      });
-      
-      // Refresh stats
-      await loadAiJobStats();
-      await loadAviationArticleCounts();
-    } catch (error) {
-      toast.error('Failed to reset aviation AI processing', {
-        description: error instanceof Error ? error.message : 'Unknown error'
-      });
-    } finally {
-      setImporting(null);
-    }
-  };
 
   // Load aerospace stats on mount and set up auto-refresh
   useEffect(() => {
     loadAiJobStats();
     loadAerospaceStats();
     loadAerospaceArticleCounts();
-    loadAviationArticleCounts();
     
     const interval = setInterval(() => {
       loadAiJobStats();
       loadAerospaceArticleCounts();
-      loadAviationArticleCounts();
     }, 5000); // Refresh every 5 seconds
 
     return () => clearInterval(interval);
   }, []);
 
-  // Real-time updates for aviation articles
+  // Real-time updates for aerospace articles
   useEffect(() => {
     const channel = supabase
-      .channel('aviation-articles-changes')
+      .channel('aerospace-articles-changes')
       .on(
         'postgres_changes',
         {
           event: 'UPDATE',
           schema: 'public',
           table: 'articles',
-          filter: 'vertical_slug=eq.aviation'
+          filter: 'vertical_slug=eq.aerospace'
         },
         () => {
-          // Reload counts when any aviation article is updated
+          // Reload counts when any aerospace article is updated
           loadAerospaceArticleCounts();
         }
       )
@@ -1502,7 +1378,6 @@ const ImportAdmin = () => {
                       setProgressPercent(0);
                       setCurrentVertical('');
                       setAerospaceProgress(null);
-                      setAviationProgress(null);
                       setAiProcessingActive(false);
                       
                       // Reload metrics after a short delay
@@ -1842,16 +1717,14 @@ const ImportAdmin = () => {
           {/* Generic Import Section - Now supports any vertical via input fields */}
           {/* <AerospaceImport /> component hidden - using AviationImport as the generic importer */}
           
-          {/* AI Processing Progress Dashboard */}
-          <AviationAIProgressDashboard />
-          
-          <AviationImport
+          {/* Aerospace Import Section */}
+          <AerospaceImport
             importing={importing}
             isClearing={isClearing}
-            aviationProgress={aviationProgress}
-            aviationImportTotals={aviationImportTotals}
-            aviationArticleCounts={aviationArticleCounts}
-            aviationStats={aviationStats}
+            aerospaceProgress={aerospaceProgress}
+            aerospaceImportTotals={aerospaceImportTotals}
+            aerospaceArticleCounts={aerospaceArticleCounts}
+            aerospaceStats={aerospaceStats}
             aiJobStats={aiJobStats}
             lastAiStatsUpdate={lastAiStatsUpdate}
             lastCountsUpdate={lastCountsUpdate}
@@ -1862,8 +1735,8 @@ const ImportAdmin = () => {
             progressStatus={progressStatus}
             totalAiChunks={totalAiChunks}
             onImportStart={() => {
-              setImporting('aviation-fast');
-              setProgressStatus('Starting Aviation import...');
+              setImporting('aerospace-fast');
+              setProgressStatus('Starting Aerospace import...');
               setProgressPercent(0);
               if (!importStartTime) setImportStartTime(new Date());
             }}
@@ -1874,11 +1747,12 @@ const ImportAdmin = () => {
             onSetProgressStatus={setProgressStatus}
             onSetAutoRestartEnabled={setAutoRestartEnabled}
             onLoadMetrics={loadMetrics}
-            onLoadAviationArticleCounts={loadAviationArticleCounts}
-            onLoadAviationStats={loadAviationStats}
+            onLoadAerospaceArticleCounts={loadAerospaceArticleCounts}
+            onLoadAerospaceStats={loadAerospaceStats}
             onLoadAiJobStats={loadAiJobStats}
-            onClearAllAviationData={clearAllAviationData}
-            onHandleResetAviationAI={handleResetAviationAI}
+            onClearAllAerospaceData={clearAllAerospaceData}
+            onHandleResetAerospaceAI={handleResetAerospaceAI}
+            onImportAerospaceWithAI={importAerospaceWithAI}
           />
 
           {/* Test Import Single Vertical Section */}
@@ -2093,8 +1967,6 @@ const ImportAdmin = () => {
               )}
             </CardContent>
           </Card>
-
-          <AviationUrlBackfill />
 
           <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-6">
             <h3 className="text-lg font-semibold mb-2">Note:</h3>
