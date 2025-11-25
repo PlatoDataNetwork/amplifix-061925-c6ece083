@@ -272,7 +272,7 @@ Deno.serve(async (req) => {
     const processArticles = async () => {
       let processed = 0;
       const failed: string[] = [];
-      const PARALLEL_BATCH_SIZE = 10; // Process 10 articles simultaneously
+      const PARALLEL_BATCH_SIZE = 3; // Process 3 articles simultaneously to avoid overwhelming API
 
       // Split articles into batches
       const batches = [];
@@ -385,9 +385,9 @@ Deno.serve(async (req) => {
 
         console.log(`Batch ${batchIdx + 1} complete: ${processed} total processed, ${failed.length} total failed`);
 
-        // Small delay between batches to avoid overwhelming the API
+        // Longer delay between batches to avoid overwhelming the API
         if (batchIdx < batches.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise(resolve => setTimeout(resolve, 2000));
         }
       }
 
