@@ -36,6 +36,7 @@ export default function AviationImport() {
     imported: number;
     skipped: number;
     totalInFeed: number;
+    startedAt?: string;
   } | null>(null);
   const [stats, setStats] = useState({
     totalArticles: 0,
@@ -150,7 +151,7 @@ export default function AviationImport() {
   const loadLiveProgress = async () => {
     const { data: activeImport } = await supabase
       .from('import_history')
-      .select('imported_count, skipped_count, total_processed, metadata')
+      .select('imported_count, skipped_count, total_processed, metadata, started_at')
       .eq('vertical_slug', 'aviation')
       .eq('status', 'in_progress')
       .order('started_at', { ascending: false })
@@ -165,6 +166,7 @@ export default function AviationImport() {
         imported: activeImport.imported_count || 0,
         skipped: activeImport.skipped_count || 0,
         totalInFeed: metadata?.totalInFeed || 0,
+        startedAt: activeImport.started_at,
       });
       setImporting(true);
     } else {
@@ -173,6 +175,47 @@ export default function AviationImport() {
         setImporting(false);
       }
     }
+  };
+
+  const calculateETA = () => {
+    if (!liveProgress || !liveProgress.startedAt || liveProgress.currentPage === 0) {
+      return null;
+    }
+
+    const startTime = new Date(liveProgress.startedAt).getTime();
+    const currentTime = Date.now();
+    const elapsedMinutes = (currentTime - startTime) / 1000 / 60;
+    
+    if (elapsedMinutes < 0.1) return null; // Too early to estimate
+
+    const pagesPerMinute = liveProgress.currentPage / elapsedMinutes;
+    const remainingPages = (liveProgress.totalPages || 0) - liveProgress.currentPage;
+    
+    if (remainingPages <= 0 || pagesPerMinute === 0) return null;
+
+    const remainingMinutes = remainingPages / pagesPerMinute;
+    
+    return {
+      pagesPerMinute: pagesPerMinute.toFixed(1),
+      remainingMinutes: Math.ceil(remainingMinutes),
+      formattedETA: formatETA(remainingMinutes)
+    };
+  };
+
+  const formatETA = (minutes: number) => {
+    if (minutes < 1) return "< 1 min";
+    if (minutes < 60) return `${Math.ceil(minutes)} min`;
+    
+    const hours = Math.floor(minutes / 60);
+    const mins = Math.ceil(minutes % 60);
+    
+    if (hours < 24) {
+      return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+    }
+    
+    const days = Math.floor(hours / 24);
+    const remainingHours = hours % 24;
+    return remainingHours > 0 ? `${days}d ${remainingHours}h` : `${days}d`;
   };
 
   const startImport = async () => {
@@ -322,7 +365,23 @@ export default function AviationImport() {
                       />
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-2 text-xs">
+                    {(() => {
+                      const eta = calculateETA();
+                      return eta && (
+                        <div className="pt-2 border-t">
+                          <div className="flex justify-between items-center text-sm">
+                            <span className="text-muted-foreground">Speed</span>
+                            <span className="font-medium">{eta.pagesPerMinute} pages/min</span>
+                          </div>
+                          <div className="flex justify-between items-center text-sm mt-1">
+                            <span className="text-muted-foreground">ETA</span>
+                            <span className="font-bold text-blue-600">{eta.formattedETA}</span>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                    
+                    <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t">
                       <div>
                         <p className="text-muted-foreground">Imported</p>
                         <p className="font-bold text-green-600">{liveProgress.imported}</p>
