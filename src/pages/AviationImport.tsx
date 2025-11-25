@@ -30,6 +30,13 @@ export default function AviationImport() {
   const [importing, setImporting] = useState(false);
   const [progress, setProgress] = useState<ImportProgress | null>(null);
   const [currentImportId, setCurrentImportId] = useState<string | null>(null);
+  const [liveProgress, setLiveProgress] = useState<{
+    currentPage: number;
+    totalPages: number;
+    imported: number;
+    skipped: number;
+    totalInFeed: number;
+  } | null>(null);
   const [stats, setStats] = useState({
     totalArticles: 0,
     lastImportDate: null as string | null,
@@ -65,6 +72,7 @@ export default function AviationImport() {
     // Periodic refresh every 3 seconds during imports
     const refreshInterval = setInterval(() => {
       loadStats();
+      loadLiveProgress();
     }, 3000);
 
     return () => {
@@ -136,6 +144,34 @@ export default function AviationImport() {
         lastImportDate: latestArticle?.created_at || null,
         lastImportSkipped: lastImport?.skipped_count || 0,
       });
+    }
+  };
+
+  const loadLiveProgress = async () => {
+    const { data: activeImport } = await supabase
+      .from('import_history')
+      .select('imported_count, skipped_count, total_processed, metadata')
+      .eq('vertical_slug', 'aviation')
+      .eq('status', 'in_progress')
+      .order('started_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (activeImport) {
+      const metadata = activeImport.metadata as any;
+      setLiveProgress({
+        currentPage: metadata?.currentPage || 0,
+        totalPages: metadata?.totalPages || 0,
+        imported: activeImport.imported_count || 0,
+        skipped: activeImport.skipped_count || 0,
+        totalInFeed: metadata?.totalInFeed || 0,
+      });
+      setImporting(true);
+    } else {
+      setLiveProgress(null);
+      if (importing) {
+        setImporting(false);
+      }
     }
   };
 
@@ -266,9 +302,39 @@ export default function AviationImport() {
               <CardTitle>Import Status</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-lg font-semibold">
-                {importing ? "Running" : "Idle"}
-              </p>
+              <div className="space-y-3">
+                <p className="text-lg font-semibold">
+                  {importing ? "Running" : "Idle"}
+                </p>
+                
+                {liveProgress && importing && (
+                  <>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Page Progress</span>
+                        <span className="font-medium">
+                          {liveProgress.currentPage} / {liveProgress.totalPages || '?'}
+                        </span>
+                      </div>
+                      <Progress 
+                        value={liveProgress.totalPages > 0 ? (liveProgress.currentPage / liveProgress.totalPages) * 100 : 0} 
+                        className="h-2"
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <p className="text-muted-foreground">Imported</p>
+                        <p className="font-bold text-green-600">{liveProgress.imported}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Skipped</p>
+                        <p className="font-bold text-yellow-600">{liveProgress.skipped}</p>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
