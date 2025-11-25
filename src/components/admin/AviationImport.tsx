@@ -106,6 +106,7 @@ export const AviationImport = ({
   const [aiProcessingJobId, setAiProcessingJobId] = useState<string | null>(null);
   const [duplicatesCount, setDuplicatesCount] = useState<number>(0);
   const [cleaningDuplicates, setCleaningDuplicates] = useState(false);
+  const [clearingArticles, setClearingArticles] = useState(false);
   const [customJsonUrl, setCustomJsonUrl] = useState<string>('https://platodata.ai/aviation/json/');
   const [customVertical, setCustomVertical] = useState<string>('aviation');
 
@@ -138,6 +139,45 @@ export const AviationImport = ({
       setDuplicatesCount(totalDuplicates);
     } catch (error) {
       console.error('Error loading duplicates count:', error);
+    }
+  };
+
+  // Clear all aviation articles
+  const clearAllAviationArticles = async () => {
+    if (!confirm('⚠️ This will DELETE ALL aviation articles from the database. Are you sure?')) {
+      return;
+    }
+
+    setClearingArticles(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('clear-aviation-articles', {
+        headers: { Authorization: `Bearer ${session.access_token}` }
+      });
+
+      if (error) throw error;
+
+      toast.success('All aviation articles cleared', {
+        description: `Deleted ${data.deletedCount} articles`
+      });
+
+      // Refresh counts
+      await onLoadAviationArticleCounts();
+      await onLoadAviationStats();
+      await loadDuplicatesCount();
+
+    } catch (error) {
+      console.error('Error clearing articles:', error);
+      toast.error('Failed to clear articles', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setClearingArticles(false);
     }
   };
 
@@ -460,30 +500,42 @@ export const AviationImport = ({
               </p>
             </div>
 
-            <div className="flex gap-3">
+            <div className="space-y-3">
+              <div className="flex gap-3">
+                <Button
+                  onClick={importAviationFast}
+                  disabled={importing !== null || !customJsonUrl.trim() || !customVertical.trim()}
+                  className="flex-1 h-14 text-lg bg-blue-600 hover:bg-blue-700"
+                  size="lg"
+                >
+                  {importing === 'aviation-fast' ? `Importing ${customVertical}...` : 'Start Fast Import (No AI)'}
+                </Button>
+                <Button
+                  onClick={async () => {
+                    const { data, error } = await supabase.functions.invoke('auto-resume-imports');
+                    if (error) {
+                      toast.error('Resume failed', { description: error.message });
+                    } else {
+                      toast.success('Import resumed!', { description: data.message });
+                    }
+                  }}
+                  disabled={importing !== null}
+                  className="flex-1 h-14 text-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold"
+                  size="lg"
+                >
+                  <PlayCircle className="mr-2 h-6 w-6" />
+                  🔄 Resume Import
+                </Button>
+              </div>
+              
               <Button
-                onClick={importAviationFast}
-                disabled={importing !== null || !customJsonUrl.trim() || !customVertical.trim()}
-                className="flex-1 h-14 text-lg bg-blue-600 hover:bg-blue-700"
+                onClick={clearAllAviationArticles}
+                disabled={clearingArticles || importing !== null || (aviationArticleCounts?.total || 0) === 0}
+                variant="outline"
+                className="w-full border-red-500/50 text-red-600 hover:bg-red-500/10 hover:text-red-700"
                 size="lg"
               >
-                {importing === 'aviation-fast' ? `Importing ${customVertical}...` : 'Start Fast Import (No AI)'}
-              </Button>
-              <Button
-                onClick={async () => {
-                  const { data, error } = await supabase.functions.invoke('auto-resume-imports');
-                  if (error) {
-                    toast.error('Resume failed', { description: error.message });
-                  } else {
-                    toast.success('Import resumed!', { description: data.message });
-                  }
-                }}
-                disabled={importing !== null}
-                className="flex-1 h-14 text-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold"
-                size="lg"
-              >
-                <PlayCircle className="mr-2 h-6 w-6" />
-                🔄 Resume Import
+                {clearingArticles ? 'Clearing...' : `🗑️ Clear All ${aviationArticleCounts?.total.toLocaleString() || 0} Articles Before Import`}
               </Button>
             </div>
 
