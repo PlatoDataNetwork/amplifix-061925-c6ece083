@@ -33,6 +33,7 @@ interface ImportHistory {
 export const ImportHistoryTable = () => {
   const [history, setHistory] = useState<ImportHistory[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fixing, setFixing] = useState(false);
 
   const loadHistory = async () => {
     console.log('📜 Loading import history...');
@@ -101,6 +102,41 @@ export const ImportHistoryTable = () => {
     } catch (error) {
       console.error('Resume error:', error);
       toast.error('Failed to resume import');
+    }
+  };
+
+  const handleFixStuckImports = async () => {
+    try {
+      setFixing(true);
+      toast.info("Checking for stuck imports...");
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('fix-stuck-imports', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) throw error;
+
+      const fixedCount = (data as any)?.fixed?.length ?? (data as any)?.fixed ?? 0;
+      toast.success((data as any)?.message || 'Checked for stuck imports', {
+        description: fixedCount
+          ? `${fixedCount} import${fixedCount === 1 ? '' : 's'} updated`
+          : undefined,
+      });
+    } catch (error) {
+      console.error('Fix stuck imports error:', error);
+      toast.error('Failed to fix stuck imports', {
+        description: error instanceof Error ? error.message : 'Unknown error',
+      });
+    } finally {
+      setFixing(false);
     }
   };
 
@@ -184,13 +220,23 @@ export const ImportHistoryTable = () => {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <CardTitle className="flex items-center gap-2">
           📜 Import History
           <Badge variant="outline" className="ml-auto">
             {history.length} records
           </Badge>
         </CardTitle>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleFixStuckImports}
+          disabled={fixing}
+          className="mt-2 sm:mt-0"
+        >
+          {fixing && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
+          Fix stuck imports
+        </Button>
       </CardHeader>
       <CardContent>
         <div className="rounded-md border overflow-x-auto">
