@@ -39,13 +39,15 @@ async function runBackgroundImport(
   supabaseClient: any,
   historyId: string,
   userId: string,
+  jsonUrl: string,
+  verticalSlug: string,
   startPage: number = 1,
-  maxPages: number = 50 // Process 50 pages per run
+  maxPages: number = 200 // Process 200 pages per run
 ) {
   const startTime = Date.now();
-  console.log(`🚀 Background import started from page ${startPage}, max ${maxPages} pages`);
+  console.log(`🚀 Background import started for ${verticalSlug} from page ${startPage}, max ${maxPages} pages`);
 
-  const progressChannel = supabaseClient.channel(`aerospace-fast-${userId}`, {
+  const progressChannel = supabaseClient.channel(`${verticalSlug}-fast-${userId}`, {
     config: { broadcast: { self: true } }
   });
   
@@ -76,7 +78,7 @@ async function runBackgroundImport(
   let hasMorePages = true;
   const endPage = startPage + maxPages - 1;
 
-  console.log(`🔄 Starting FAST import from page ${startPage} to ${endPage}`);
+  console.log(`🔄 Starting FAST import for ${verticalSlug} from page ${startPage} to ${endPage}`);
 
   await broadcastProgress({
     phase: 'processing',
@@ -85,14 +87,52 @@ async function runBackgroundImport(
     articlesCollected: 0,
     imported: 0,
     skipped: 0,
-    message: 'Starting fast import in background...'
+    message: `Starting ${verticalSlug} fast import in background...`
   });
 
   try {
     while (hasMorePages && currentPage <= endPage) {
-      console.log(`\n📄 Fetching page ${currentPage} (${currentPage - startPage + 1}/${maxPages})...`);
+      // Check for cancellation
+      const { data: shouldCancel } = await supabaseClient
+        .rpc('should_cancel_import', {
+          p_vertical_slug: verticalSlug,
+          p_started_after: new Date(startTime).toISOString()
+        });
+
+      if (shouldCancel) {
+        console.log(`🛑 ${verticalSlug} import cancelled by user`);
+        await broadcastProgress({
+          phase: 'cancelled',
+          currentPage: currentPage,
+          totalPages: currentPage,
+          articlesCollected: results.totalInFeed,
+          imported: results.imported,
+          skipped: results.skipped,
+          errors: results.errors,
+          message: `${verticalSlug} import cancelled by user`
+        });
+        
+        await supabaseClient
+          .from('import_history')
+          .update({
+            status: 'cancelled',
+            completed_at: new Date().toISOString(),
+            imported_count: results.imported,
+            skipped_count: results.skipped,
+            error_count: results.errors,
+            total_processed: results.totalInFeed,
+            duration_ms: Date.now() - startTime
+          })
+          .eq('id', historyId);
+        
+        return results;
+      }
+
+      console.log(`\n📄 Fetching ${verticalSlug} page ${currentPage} (${currentPage - startPage + 1}/${maxPages})...`);
       
-      const pageUrl = `https://platodata.ai/aerospace/json/?page=${currentPage}`;
+      // Support URL with or without trailing slash
+      const baseUrl = jsonUrl.endsWith('/') ? jsonUrl : jsonUrl + '/';
+      const pageUrl = `${baseUrl}?page=${currentPage}`;
       const response = await fetch(pageUrl);
       
       if (!response.ok) {
@@ -149,22 +189,37 @@ async function runBackgroundImport(
             continue;
           }
 
+          // Extract title from various formats
+          const title = typeof article.title === 'string' 
+            ? article.title 
+            : article.title?.rendered || '';
+          
+          // Extract content and excerpt
+          const rawContent = typeof article.content === 'string'
+            ? article.content
+            : article.content?.rendered || '';
+          const rawExcerpt = typeof article.excerpt === 'string'
+            ? article.excerpt
+            : article.excerpt?.rendered || '';
+
           // Simple content cleaning (NO AI)
-          const rawContent = article.content || article.excerpt || '';
           const cleanedText = cleanText(rawContent);
-          const excerpt = article.excerpt || cleanedText.substring(0, 300);
+          const excerpt = cleanText(rawExcerpt) || cleanedText.substring(0, 300);
+
+          // Include source link
+          const externalUrl = article.metadata?.sourceLink?.[0] || null;
 
           const articleData = {
             post_id: postId,
-            title: article.title,
+            title: title,
             content: cleanedText,
             excerpt: excerpt,
             published_at: article.date || new Date().toISOString(),
-            vertical_slug: 'aerospace',
+            vertical_slug: verticalSlug,
             author: 'PlatoData',
             read_time: '3 Min Read',
             image_url: article.metadata?.featuredImage?.[0] || null,
-            external_url: article.metadata?.sourceLink?.[0] || null,
+            external_url: externalUrl,
             metadata: article.metadata || {},
           };
 
@@ -246,6 +301,7 @@ async function runBackgroundImport(
           lastProcessedPage: currentPage - 1,
           nextPage: hasMore ? currentPage : null,
           resumable: hasMore,
+          jsonUrl: jsonUrl,
           note: hasMore
             ? `Processed ${maxPages} pages. Auto-resume will continue from page ${currentPage}.`
             : 'Fast import without AI processing completed'
@@ -267,7 +323,7 @@ async function runBackgroundImport(
         : 'Import complete!'
     });
 
-    console.log(hasMore ? '\n⏸️ Batch complete, marked as partial (resumable)' : '\n✅ Aerospace FAST import completed:', results);
+    console.log(hasMore ? '\n⏸️ Batch complete, marked as partial (resumable)' : '\n✅ ${verticalSlug} FAST import completed:', results);
 
   } catch (error) {
     console.error('Background import error:', error);
@@ -306,6 +362,10 @@ Deno.serve(async (req) => {
   const startTime = Date.now();
   const body = await req.json().catch(() => ({}));
   const resumeFromHistory = body.resumeHistoryId;
+  const jsonUrl = body.jsonUrl || 'https://platodata.ai/aerospace/json/';
+  const verticalSlug = body.verticalSlug || 'aerospace';
+  
+  console.log(`📥 Fast import request - Vertical: ${verticalSlug}, URL: ${jsonUrl}`);
 
   const authHeader = req.headers.get('Authorization');
   if (!authHeader) {
@@ -368,22 +428,27 @@ Deno.serve(async (req) => {
 
       historyId = resumeFromHistory;
       startPage = (existingHistory.metadata as any)?.nextPage || 1;
+      const savedVerticalSlug = existingHistory.vertical_slug;
+      const savedJsonUrl = (existingHistory.metadata as any)?.jsonUrl || jsonUrl;
       
-      console.log(`Admin ${user.email} resuming import from page ${startPage}`);
+      console.log(`Admin ${user.email} resuming ${savedVerticalSlug} import from page ${startPage}`);
 
       // Update status
       await supabaseClient
         .from('import_history')
         .update({ status: 'in_progress' })
         .eq('id', historyId);
+        
+      // Use saved values when resuming
+      return await runBackgroundImport(supabaseClient, historyId, user.id, savedJsonUrl, savedVerticalSlug, startPage, 200);
     } else {
       // Create new import history
-      console.log(`Admin ${user.email} starting new FAST import`);
+      console.log(`Admin ${user.email} starting new FAST import for ${verticalSlug}`);
       
       const { data: historyRecord } = await supabaseClient
         .from('import_history')
         .insert({
-          vertical_slug: 'aerospace',
+          vertical_slug: verticalSlug,
           status: 'in_progress',
           imported_by: user.id,
           started_at: new Date().toISOString()
@@ -398,13 +463,13 @@ Deno.serve(async (req) => {
       throw new Error('Failed to create import history record');
     }
 
-    // Start background import using waitUntil (50 pages at a time)
+    // Start background import using waitUntil (200 pages at a time)
     const ctx = Deno.env.get('DENO_REGION') ? (globalThis as any).EdgeRuntime : null;
     if (ctx && ctx.waitUntil) {
-      ctx.waitUntil(runBackgroundImport(supabaseClient, historyId, user.id, startPage, 50));
+      ctx.waitUntil(runBackgroundImport(supabaseClient, historyId, user.id, jsonUrl, verticalSlug, startPage, 200));
     } else {
       // Fallback for local development
-      runBackgroundImport(supabaseClient, historyId, user.id, startPage, 50).catch(console.error);
+      runBackgroundImport(supabaseClient, historyId, user.id, jsonUrl, verticalSlug, startPage, 200).catch(console.error);
     }
 
     // Return immediately
@@ -412,10 +477,10 @@ Deno.serve(async (req) => {
       JSON.stringify({
         success: true,
         message: resumeFromHistory 
-          ? `Resuming import from page ${startPage} in background.`
-          : 'Import started in background. Processes 50 pages at a time.',
+          ? `Resuming ${verticalSlug} import from page ${startPage} in background.`
+          : `${verticalSlug} import started in background. Processes 200 pages at a time.`,
         historyId: historyId,
-        vertical: 'aerospace',
+        vertical: verticalSlug,
         startPage,
         note: 'Click Resume if needed after each batch completes.'
       }),
