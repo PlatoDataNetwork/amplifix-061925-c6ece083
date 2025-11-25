@@ -93,3 +93,6 @@ verify_jwt = false
 [functions.start-ai-processing]
 verify_jwt = true
 
+[functions.stop-ai-processing]
+verify_jwt = true
+
