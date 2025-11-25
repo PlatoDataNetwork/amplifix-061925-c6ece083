@@ -141,6 +141,7 @@ const App = () => (
           <Route path="/admin/analytics" element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
           <Route path="/admin/security" element={<AdminRoute><SecurityDashboard /></AdminRoute>} />
           <Route path="/admin/backfill" element={<AdminRoute><BackfillDashboard /></AdminRoute>} />
+          <Route path="/import_history" element={<AdminRoute><BackfillDashboard /></AdminRoute>} />
         <Route path="/admin/import" element={<AdminRoute><ImportAdmin /></AdminRoute>} />
           <Route path="/admin/plato-import" element={<AdminRoute><PlatoImport /></AdminRoute>} />
           <Route path="/admin/aviation-import" element={<AdminRoute><AviationImport /></AdminRoute>} />
