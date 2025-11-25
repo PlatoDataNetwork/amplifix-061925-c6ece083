@@ -16,6 +16,68 @@ interface AerospaceArticle {
   };
 }
 
+// Extract source URL from Plato article HTML content
+function extractSourceUrlFromContent(content: string): string | null {
+  if (!content) return null;
+
+  // Find all href attributes in the HTML
+  const linkPattern = /<a[^>]+href=["']([^"']+)["'][^>]*>/gi;
+  const matches = [...content.matchAll(linkPattern)];
+
+  if (matches.length === 0) return null;
+
+  for (const match of matches) {
+    let href = match[1];
+
+    // Clean up common encoding artifacts from the JSON feed
+    href = href
+      .replace(/\\\"/g, "")
+      .replace(/\%22/g, "")
+      .replace(/\\\\\//g, "/")
+      .replace(/\\\//g, "/");
+
+    // Look for an inner non-Plato URL inside the href
+    const innerMatch = href.match(/https?:\/\/(?!platodata\.ai)[^"']+/i);
+    if (!innerMatch) {
+      continue;
+    }
+
+    let url = innerMatch[0];
+
+    // Normalize excessive slashes that sometimes appear in the JSON
+    url = url.replace(/([^:])\/{2,}/g, "$1/");
+
+    // Preferred news domains (for prioritization, not strict filtering)
+    const preferredDomains = [
+      "spacenews.com",
+      "spaceflightnow.com",
+      "nasa.gov",
+      "esa.int",
+      "space.com",
+      "arstechnica.com",
+      "reuters.com",
+      "bloomberg.com",
+      "cnbc.com",
+      "theverge.com",
+      "techcrunch.com",
+      "spaceref.com",
+    ];
+
+    const hasPreferredDomain = preferredDomains.some((domain) =>
+      url.includes(domain)
+    );
+
+    if (hasPreferredDomain) {
+      return url;
+    }
+
+    // Fallback: return the first non-Plato external URL we find
+    return url;
+  }
+
+  return null;
+}
+
 // Text cleaning utility
 function cleanText(text?: string | null): string {
   if (!text) return "";
@@ -334,9 +396,30 @@ Deno.serve(async (req) => {
           // Extract keywords
           const keywords = extractKeywords(cleanedText, article.title);
 
+          // Extract source URL from Plato JSON
+          let externalUrl: string | null = null;
+          try {
+            const feedUrl = `https://platodata.ai/aerospace/json/?post_id=${postId}`;
+            const response = await fetch(feedUrl);
+
+            if (response.ok) {
+              const json = await response.json();
+              const rawPlatoContent = json?.posts?.[0]?.content as string | undefined;
+              if (rawPlatoContent) {
+                externalUrl = extractSourceUrlFromContent(rawPlatoContent);
+                if (externalUrl) {
+                  console.log(`  ✓ Extracted source URL: ${externalUrl}`);
+                } else {
+                  console.log(`  ⚠ No source URL found in Plato JSON for post ${postId}`);
+                }
+              }
+            }
+          } catch (err) {
+            console.error(`  ⚠ Failed to fetch Plato JSON for post ${postId}:`, err);
+          }
+
           // Prepare article data
           const imageUrl = article.metadata?.featuredImage?.[0] || null;
-          const externalUrl = article.metadata?.sourceLink?.[0] || null;
           const excerpt = article.excerpt || cleanedText.substring(0, 300);
 
           const articleData = {
