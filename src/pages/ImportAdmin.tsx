@@ -28,6 +28,7 @@ import {
 import { DuplicateMonitor } from "@/components/DuplicateMonitor";
 import { AerospaceImport } from "@/components/admin/AerospaceImport";
 import { AerospaceStatsDashboard } from "@/components/AerospaceStatsDashboard";
+import { ImportHistoryTable } from "@/components/ImportHistoryTable";
 
 const ImportAdmin = () => {
   const navigate = useNavigate();
@@ -1599,6 +1600,9 @@ const ImportAdmin = () => {
             onHandleResetAerospaceAI={handleResetAerospaceAI}
             onImportAerospaceWithAI={importAerospaceWithAI}
           />
+
+          {/* Import History Table */}
+          <ImportHistoryTable />
 
           {/* Test Import Single Vertical Section */}
           <Card className="mb-8 border-blue-500/50">
