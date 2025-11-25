@@ -263,15 +263,10 @@ Deno.serve(async (req) => {
               continue;
             }
 
-            // Fetch article data from Aviation API using POST
-            const aviationUrl = `https://platodata.ai/aviation/json/`;
-            const response = await fetch(aviationUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ p: article.post_id }),
-            });
+            // Fetch article data from Aviation API using GET with post_id parameter
+            const aviationUrl = `https://platodata.ai/aviation/json/?post_id=${article.post_id}`;
+            console.log(`Fetching Aviation article from: ${aviationUrl}`);
+            const response = await fetch(aviationUrl);
 
             if (!response.ok) {
               console.error(`Failed to fetch article ${article.post_id}: ${response.status}`);
