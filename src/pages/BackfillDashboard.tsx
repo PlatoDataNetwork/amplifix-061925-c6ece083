@@ -180,6 +180,23 @@ export default function BackfillDashboard() {
 
   const resumeBackfill = async (job: BackfillJob) => {
     try {
+      // Check if any backfill is currently running
+      const { data: runningJobs } = await supabase
+        .from('import_history')
+        .select('*')
+        .eq('status', 'in_progress')
+        .eq('metadata->>type', 'url_backfill')
+        .limit(1);
+
+      if (runningJobs && runningJobs.length > 0 && runningJobs[0].id !== job.id) {
+        toast({
+          title: "Backfill Already Running",
+          description: `Cannot resume while another backfill is in progress`,
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
 
@@ -194,6 +211,70 @@ export default function BackfillDashboard() {
       });
 
       if (error) throw error;
+
+      const { channelName, importId } = data;
+
+      // Subscribe to progress updates
+      const channel = supabase.channel(channelName);
+      
+      channel
+        .on("broadcast", { event: "progress" }, ({ payload }) => {
+          const startTime = liveProgress[importId]?.startTime || Date.now();
+          const elapsed = (Date.now() - startTime) / 1000;
+          const articlesPerSecond = payload.currentArticle / elapsed;
+          const remainingArticles = payload.totalArticles - payload.currentArticle;
+          const estimatedSecondsRemaining = articlesPerSecond > 0 
+            ? remainingArticles / articlesPerSecond 
+            : 0;
+
+          setLiveProgress(prev => ({
+            ...prev,
+            [importId]: {
+              ...payload,
+              startTime,
+              articlesPerSecond,
+              estimatedSecondsRemaining,
+            }
+          }));
+        })
+        .on("broadcast", { event: "complete" }, () => {
+          setLiveProgress(prev => {
+            const updated = { ...prev };
+            delete updated[importId];
+            return updated;
+          });
+          fetchJobs();
+          toast({
+            title: "Backfill Complete",
+            description: `${job.vertical_slug} backfill completed successfully`,
+          });
+        })
+        .on("broadcast", { event: "cancelled" }, () => {
+          setLiveProgress(prev => {
+            const updated = { ...prev };
+            delete updated[importId];
+            return updated;
+          });
+          fetchJobs();
+          toast({
+            title: "Backfill Cancelled",
+            description: `${job.vertical_slug} backfill was cancelled`,
+          });
+        })
+        .subscribe();
+
+      setLiveProgress(prev => ({
+        ...prev,
+        [importId]: {
+          currentArticle: lastOffset,
+          totalArticles: 0,
+          updated: 0,
+          skipped: 0,
+          errors: 0,
+          percentage: 0,
+          startTime: Date.now(),
+        }
+      }));
 
       toast({
         title: "Backfill Resumed",
