@@ -100,6 +100,7 @@ Deno.serve(async (req) => {
       .select("id, started_at")
       .eq("vertical_slug", "aviation")
       .eq("status", "in_progress")
+      .eq("cancelled", false)
       .eq("metadata->>type", "url_backfill")
       .limit(1);
 
