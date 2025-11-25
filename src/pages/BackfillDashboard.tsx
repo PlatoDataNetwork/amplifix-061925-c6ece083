@@ -599,19 +599,22 @@ export default function BackfillDashboard() {
                       <div className="space-y-1">
                         <p className="text-muted-foreground">Updated</p>
                         <p className="text-lg font-semibold text-green-600">
-                          {job.imported_count > 0 ? job.imported_count.toLocaleString() : 'In Progress'}
+                          {job.imported_count > 0 ? job.imported_count.toLocaleString() : 
+                           job.status === 'in_progress' ? 'Processing...' : '0'}
                         </p>
                       </div>
                       <div className="space-y-1">
                         <p className="text-muted-foreground">Skipped</p>
                         <p className="text-lg font-semibold text-yellow-600">
-                          {job.skipped_count > 0 ? job.skipped_count.toLocaleString() : '-'}
+                          {job.skipped_count > 0 ? job.skipped_count.toLocaleString() : 
+                           job.status === 'in_progress' ? '-' : '0'}
                         </p>
                       </div>
                       <div className="space-y-1">
                         <p className="text-muted-foreground">Errors</p>
                         <p className="text-lg font-semibold text-red-600">
-                          {job.error_count > 0 ? job.error_count.toLocaleString() : '-'}
+                          {job.error_count > 0 ? job.error_count.toLocaleString() : 
+                           job.status === 'in_progress' ? '-' : '0'}
                         </p>
                       </div>
                       <div className="space-y-1">
