@@ -977,32 +977,19 @@ const ImportAdmin = () => {
         description: 'Deleting articles and metadata (backups preserved)'
       });
       
-      // STEP 3: Delete aerospace articles (backups are preserved!)
-      const { error: articlesError } = await supabase
-        .from('articles')
-        .delete()
-        .eq('vertical_slug', 'aerospace');
+      // STEP 3: Delete aerospace articles using edge function (handles RLS)
+      const { data: clearResult, error: clearError } = await supabase.functions.invoke(
+        'clear-aerospace-articles'
+      );
       
-      if (articlesError) throw articlesError;
-
-      // Delete aerospace import history
-      const { error: historyError } = await supabase
-        .from('import_history')
-        .delete()
-        .eq('vertical_slug', 'aerospace');
+      if (clearError) throw clearError;
       
-      if (historyError) throw historyError;
-
-      // Delete aerospace AI processing jobs
-      const { error: jobsError } = await supabase
-        .from('ai_processing_jobs')
-        .delete()
-        .eq('vertical_slug', 'aerospace');
-      
-      if (jobsError) throw jobsError;
+      if (!clearResult?.success) {
+        throw new Error(clearResult?.error || 'Failed to clear aerospace data');
+      }
 
       toast.success('All Aerospace data cleared successfully', {
-        description: `✅ Backup preserved: ${backupName}\n✅ ${allArticles.length.toLocaleString()} articles can be restored`,
+        description: `✅ Backup preserved: ${backupName}\n✅ ${allArticles.length.toLocaleString()} articles can be restored\n✅ ${clearResult.deleted || 0} articles deleted`,
         duration: 10000
       });
       

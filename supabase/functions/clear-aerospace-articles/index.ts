@@ -134,10 +134,33 @@ Deno.serve(async (req) => {
 
     console.log(`Successfully deleted ${articleCount} aerospace articles`);
 
+    // Also clear AI processing jobs and import history
+    const { error: jobsError } = await supabaseAdmin
+      .from("ai_processing_jobs")
+      .delete()
+      .eq("vertical_slug", "aerospace");
+
+    if (jobsError) {
+      console.error("Error deleting AI jobs:", jobsError);
+    } else {
+      console.log("✓ Deleted AI processing jobs");
+    }
+
+    const { error: historyError } = await supabaseAdmin
+      .from("import_history")
+      .delete()
+      .eq("vertical_slug", "aerospace");
+
+    if (historyError) {
+      console.error("Error deleting import history:", historyError);
+    } else {
+      console.log("✓ Deleted import history");
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
-        message: `Deleted ${articleCount} aerospace articles`,
+        message: `Deleted ${articleCount} aerospace articles and cleared processing history`,
         deleted: articleCount,
       }),
       {
