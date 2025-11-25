@@ -31,6 +31,7 @@ interface LiveProgress {
   errors: number;
   percentage: number;
   startTime: number;
+  startOffset: number;
   articlesPerSecond?: number;
   estimatedSecondsRemaining?: number;
 }
@@ -181,18 +182,32 @@ export default function BackfillDashboard() {
       channel
         .on("broadcast", { event: "progress" }, ({ payload }) => {
           const startTime = liveProgress[importId]?.startTime || Date.now();
+          const startOffset = liveProgress[importId]?.startOffset || 0;
           const elapsed = (Date.now() - startTime) / 1000;
-          const articlesPerSecond = payload.currentArticle / elapsed;
+          
+          // Calculate articles processed since this job started
+          const articlesProcessed = Math.max(0, payload.currentArticle - startOffset);
+          const articlesPerSecond = elapsed > 0 ? articlesProcessed / elapsed : 0;
           const remainingArticles = payload.totalArticles - payload.currentArticle;
           const estimatedSecondsRemaining = articlesPerSecond > 0 
             ? remainingArticles / articlesPerSecond 
             : 0;
+
+          console.log('ETA Calculation:', {
+            currentArticle: payload.currentArticle,
+            startOffset,
+            articlesProcessed,
+            elapsed: elapsed.toFixed(1),
+            articlesPerSecond: articlesPerSecond.toFixed(2),
+            estimatedSecondsRemaining: estimatedSecondsRemaining.toFixed(0)
+          });
 
           setLiveProgress(prev => ({
             ...prev,
             [importId]: {
               ...payload,
               startTime,
+              startOffset,
               articlesPerSecond,
               estimatedSecondsRemaining,
             }
@@ -234,6 +249,7 @@ export default function BackfillDashboard() {
           errors: 0,
           percentage: 0,
           startTime: Date.now(),
+          startOffset: 0,
         }
       }));
 
@@ -296,18 +312,32 @@ export default function BackfillDashboard() {
       channel
         .on("broadcast", { event: "progress" }, ({ payload }) => {
           const startTime = liveProgress[importId]?.startTime || Date.now();
+          const startOffset = liveProgress[importId]?.startOffset || lastOffset;
           const elapsed = (Date.now() - startTime) / 1000;
-          const articlesPerSecond = payload.currentArticle / elapsed;
+          
+          // Calculate articles processed since this job started
+          const articlesProcessed = Math.max(0, payload.currentArticle - startOffset);
+          const articlesPerSecond = elapsed > 0 ? articlesProcessed / elapsed : 0;
           const remainingArticles = payload.totalArticles - payload.currentArticle;
           const estimatedSecondsRemaining = articlesPerSecond > 0 
             ? remainingArticles / articlesPerSecond 
             : 0;
+
+          console.log('ETA Calculation (Resume):', {
+            currentArticle: payload.currentArticle,
+            startOffset,
+            articlesProcessed,
+            elapsed: elapsed.toFixed(1),
+            articlesPerSecond: articlesPerSecond.toFixed(2),
+            estimatedSecondsRemaining: estimatedSecondsRemaining.toFixed(0)
+          });
 
           setLiveProgress(prev => ({
             ...prev,
             [importId]: {
               ...payload,
               startTime,
+              startOffset,
               articlesPerSecond,
               estimatedSecondsRemaining,
             }
@@ -349,6 +379,7 @@ export default function BackfillDashboard() {
           errors: 0,
           percentage: 0,
           startTime: Date.now(),
+          startOffset: lastOffset,
         }
       }));
 
