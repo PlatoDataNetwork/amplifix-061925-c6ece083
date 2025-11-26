@@ -82,7 +82,7 @@ Deno.serve(async (req) => {
     while (hasMore) {
       let query = supabase
         .from('articles')
-        .select('id, content, vertical_slug')
+        .select('id, content, vertical_slug, external_url')
         .not('vertical_slug', 'in', '("aerospace","aviation")')
         .order('vertical_slug');
       
