@@ -16,13 +16,11 @@ export const GlobalImportStatus = () => {
 
   const loadGlobalStats = async () => {
     try {
-      // Get article counts per vertical
       const { data: verticals, error } = await supabase
         .rpc('get_vertical_article_counts');
 
       if (error) throw error;
 
-      // Get AI processed counts and last import for each vertical
       const statsPromises = (verticals || []).map(async (v: any) => {
         const { count: aiProcessed } = await supabase
           .from('articles')
@@ -49,18 +47,20 @@ export const GlobalImportStatus = () => {
 
       const results = await Promise.all(statsPromises);
       setStats(results);
+      if (loading) setLoading(false);
     } catch (error) {
       console.error('Error loading global stats:', error);
-    } finally {
-      setLoading(false);
+      if (loading) setLoading(false);
     }
   };
 
   useEffect(() => {
     loadGlobalStats();
 
-    // Refresh every 10 seconds
-    const interval = setInterval(loadGlobalStats, 10000);
+    const interval = setInterval(() => {
+      loadGlobalStats();
+    }, 5000);
+    
     return () => clearInterval(interval);
   }, []);
 
