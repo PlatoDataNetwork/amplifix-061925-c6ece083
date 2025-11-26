@@ -37,11 +37,30 @@ export default function PlatoSourceStats() {
 
   const fetchStats = async () => {
     try {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('vertical_slug, content, external_url');
+      // Fetch all articles without limit restrictions
+      let allArticles: any[] = [];
+      let from = 0;
+      const batchSize = 1000;
+      let hasMore = true;
 
-      if (error) throw error;
+      while (hasMore) {
+        const { data, error } = await supabase
+          .from('articles')
+          .select('vertical_slug, content, external_url')
+          .range(from, from + batchSize - 1);
+
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+          allArticles = [...allArticles, ...data];
+          from += batchSize;
+          hasMore = data.length === batchSize;
+        } else {
+          hasMore = false;
+        }
+      }
+
+      console.log(`Fetched ${allArticles.length} total articles`);
 
       const statsMap = new Map<string, { 
         total: number; 
@@ -51,7 +70,7 @@ export default function PlatoSourceStats() {
         needsUpdate: number;
       }>();
 
-      data?.forEach((article) => {
+      allArticles.forEach((article) => {
         const stats = statsMap.get(article.vertical_slug) || { 
           total: 0, 
           updated: 0, 
@@ -87,6 +106,8 @@ export default function PlatoSourceStats() {
 
         statsMap.set(article.vertical_slug, stats);
       });
+
+      console.log(`Found ${statsMap.size} unique verticals`);
 
       const statsArray = Array.from(statsMap.entries()).map(([vertical_slug, stats]) => ({
         vertical_slug,
