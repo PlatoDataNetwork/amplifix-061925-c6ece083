@@ -11,6 +11,13 @@ interface VerticalStats {
   ai_processed: number;
   last_import: string | null;
   last_ai_processed: string | null;
+  import_stats: {
+    imported_count: number;
+    skipped_count: number;
+    error_count: number;
+    duration_ms: number | null;
+    status: string;
+  } | null;
 }
 
 type SortField = 'name' | 'articles' | 'ai_processed';
@@ -39,7 +46,7 @@ export const GlobalImportStatus = () => {
 
         const { data: lastImport } = await supabase
           .from('import_history')
-          .select('completed_at')
+          .select('completed_at, imported_count, skipped_count, error_count, duration_ms, status')
           .eq('vertical_slug', v.vertical_slug)
           .eq('status', 'completed')
           .order('completed_at', { ascending: false })
@@ -60,7 +67,14 @@ export const GlobalImportStatus = () => {
           total_articles: v.article_count,
           ai_processed: aiProcessed || 0,
           last_import: lastImport?.completed_at || null,
-          last_ai_processed: lastAiProcessed?.updated_at || null
+          last_ai_processed: lastAiProcessed?.updated_at || null,
+          import_stats: lastImport ? {
+            imported_count: lastImport.imported_count,
+            skipped_count: lastImport.skipped_count,
+            error_count: lastImport.error_count,
+            duration_ms: lastImport.duration_ms,
+            status: lastImport.status
+          } : null
         };
       });
 
@@ -225,29 +239,51 @@ export const GlobalImportStatus = () => {
             filteredStats.map((stat) => (
             <div
               key={stat.vertical_slug}
-              className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+              className="flex flex-col gap-2 p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
             >
-              <div className="flex items-center gap-3">
-                <span className="font-semibold capitalize">{stat.vertical_slug}</span>
-                <span className="text-xs text-muted-foreground">
-                  {stat.total_articles.toLocaleString()} articles
-                </span>
-              </div>
-              <div className="flex items-center gap-4 text-sm">
-                <span className="text-green-500">
-                  {stat.ai_processed} AI ✓
-                </span>
-                {stat.last_ai_processed && (
-                  <span className="text-xs text-purple-500">
-                    AI: {new Date(stat.last_ai_processed).toLocaleDateString()}
-                  </span>
-                )}
-                {stat.last_import && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="font-semibold capitalize">{stat.vertical_slug}</span>
                   <span className="text-xs text-muted-foreground">
-                    Import: {new Date(stat.last_import).toLocaleDateString()}
+                    {stat.total_articles.toLocaleString()} articles
                   </span>
-                )}
+                </div>
+                <div className="flex items-center gap-4 text-sm">
+                  <span className="text-green-500">
+                    {stat.ai_processed} AI ✓
+                  </span>
+                  {stat.last_ai_processed && (
+                    <span className="text-xs text-purple-500">
+                      AI: {new Date(stat.last_ai_processed).toLocaleDateString()}
+                    </span>
+                  )}
+                </div>
               </div>
+              {stat.import_stats && (
+                <div className="flex items-center gap-4 text-xs border-t border-border/30 pt-2">
+                  <span className="text-blue-500">
+                    ↓ {stat.import_stats.imported_count} imported
+                  </span>
+                  <span className="text-yellow-500">
+                    ⊘ {stat.import_stats.skipped_count} skipped
+                  </span>
+                  {stat.import_stats.error_count > 0 && (
+                    <span className="text-red-500">
+                      ✗ {stat.import_stats.error_count} errors
+                    </span>
+                  )}
+                  {stat.import_stats.duration_ms && (
+                    <span className="text-muted-foreground">
+                      ⏱ {(stat.import_stats.duration_ms / 1000).toFixed(1)}s
+                    </span>
+                  )}
+                  {stat.last_import && (
+                    <span className="text-muted-foreground ml-auto">
+                      Last: {new Date(stat.last_import).toLocaleDateString()}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
             ))
           )}
