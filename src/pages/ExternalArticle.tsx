@@ -351,17 +351,29 @@ if (!article) {
             <div className="mb-6 pb-6 border-b border-border">
               <p className="text-sm text-muted-foreground">
                 <span className="translate">Source:</span>{' '}
-                <a 
-                  href={article.external_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:text-blue-400 transition-colors underline"
-                >
-                  {new URL(article.external_url).hostname}
-                </a>
+                {article.vertical_slug === 'aerospace' || article.vertical_slug === 'aviation' ? (
+                  <a 
+                    href={article.external_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-400 transition-colors underline"
+                  >
+                    {new URL(article.external_url).hostname}
+                  </a>
+                ) : (
+                  <a
+                    href="https://platodata.ai"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-400 transition-colors underline"
+                  >
+                    Plato Data Intelligence
+                  </a>
+                )}
               </p>
             </div>
           )}
+
 
           {/* AmplifiX Branding */}
           <div className="mb-6 text-center pt-2">
