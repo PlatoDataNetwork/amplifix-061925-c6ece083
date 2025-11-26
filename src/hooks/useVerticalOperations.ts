@@ -1,0 +1,288 @@
+import { useState } from 'react';
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+export interface VerticalStats {
+  totalArticles: number;
+  aiProcessed: number;
+  remaining: number;
+  duplicates: number;
+  missingUrls: number;
+  lastImport: string | null;
+  aiJobId: string | null;
+  aiJobStatus: string | null;
+  aiProgress: number;
+  loading: boolean;
+}
+
+export const useVerticalOperations = (verticalSlug: string) => {
+  const [stats, setStats] = useState<VerticalStats>({
+    totalArticles: 0,
+    aiProcessed: 0,
+    remaining: 0,
+    duplicates: 0,
+    missingUrls: 0,
+    lastImport: null,
+    aiJobId: null,
+    aiJobStatus: null,
+    aiProgress: 0,
+    loading: true
+  });
+  const [processing, setProcessing] = useState(false);
+
+  const loadStats = async () => {
+    try {
+      setStats(prev => ({ ...prev, loading: true }));
+
+      // Total articles
+      const { count: total } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', verticalSlug)
+        .not('content', 'is', null);
+
+      // AI processed
+      const { count: processed } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', verticalSlug)
+        .eq('metadata->>ai_processed', 'true');
+
+      // Missing URLs
+      const { count: missing } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', verticalSlug)
+        .or('external_url.is.null,external_url.eq.');
+
+      // Last import
+      const { data: lastImport } = await supabase
+        .from('import_history')
+        .select('completed_at')
+        .eq('vertical_slug', verticalSlug)
+        .eq('status', 'completed')
+        .order('completed_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      // AI job
+      const { data: job } = await supabase
+        .from('ai_processing_jobs')
+        .select('*')
+        .eq('vertical_slug', verticalSlug)
+        .order('started_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      let progress = 0;
+      if (job && job.total_chunks > 0) {
+        const processedChunks = Array.from(new Set(job.processed_chunks || [])).length;
+        progress = Math.round((processedChunks / job.total_chunks) * 100);
+      }
+
+      setStats({
+        totalArticles: total || 0,
+        aiProcessed: processed || 0,
+        remaining: (total || 0) - (processed || 0),
+        duplicates: 0, // Will be calculated on demand
+        missingUrls: missing || 0,
+        lastImport: lastImport?.completed_at || null,
+        aiJobId: job?.id || null,
+        aiJobStatus: job?.status || null,
+        aiProgress: progress,
+        loading: false
+      });
+    } catch (error) {
+      console.error(`Error loading ${verticalSlug} stats:`, error);
+      setStats(prev => ({ ...prev, loading: false }));
+    }
+  };
+
+  const startFastImport = async () => {
+    try {
+      setProcessing(true);
+      toast.info(`Starting ${verticalSlug} import...`);
+
+      const functionName = `import-${verticalSlug}-fast`;
+      const { data, error } = await supabase.functions.invoke(functionName);
+
+      if (error) {
+        // Function might not exist for this vertical
+        if (error.message?.includes('not found') || error.message?.includes('404')) {
+          toast.warning(`Fast import not available for ${verticalSlug}`, {
+            description: 'This vertical may not have a dedicated import function yet'
+          });
+          return;
+        }
+        throw error;
+      }
+
+      toast.success(`${verticalSlug} import started!`, {
+        description: data?.message || 'Import running in background',
+        duration: 5000
+      });
+
+      await loadStats();
+    } catch (error) {
+      toast.error(`Failed to start ${verticalSlug} import`, {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const startAIProcessing = async () => {
+    try {
+      setProcessing(true);
+      toast.info(`Starting ${verticalSlug} AI processing...`);
+
+      const { data, error } = await supabase.functions.invoke('start-ai-processing', {
+        body: { verticalSlug }
+      });
+
+      if (error) throw error;
+
+      toast.success(`${verticalSlug} AI processing started!`, {
+        description: `Processing ${data.totalArticles} articles`,
+        duration: 5000
+      });
+
+      await loadStats();
+    } catch (error) {
+      toast.error(`Failed to start ${verticalSlug} AI processing`, {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const cleanupDuplicates = async () => {
+    try {
+      setProcessing(true);
+      toast.info(`Checking ${verticalSlug} duplicates...`);
+
+      const functionName = `cleanup-${verticalSlug}-duplicates`;
+      const { data, error } = await supabase.functions.invoke(functionName);
+
+      if (error) {
+        if (error.message?.includes('not found') || error.message?.includes('404')) {
+          toast.warning(`Duplicate cleanup not available for ${verticalSlug}`);
+          return;
+        }
+        throw error;
+      }
+
+      toast.success(`Duplicate cleanup complete!`, {
+        description: data?.message || 'Duplicates removed',
+        duration: 5000
+      });
+
+      await loadStats();
+    } catch (error) {
+      toast.error(`Failed to cleanup ${verticalSlug} duplicates`, {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const backfillUrls = async () => {
+    try {
+      setProcessing(true);
+      toast.info(`Starting ${verticalSlug} URL backfill...`);
+
+      const functionName = `backfill-${verticalSlug}-urls`;
+      const { data, error } = await supabase.functions.invoke(functionName);
+
+      if (error) {
+        if (error.message?.includes('not found') || error.message?.includes('404')) {
+          toast.warning(`URL backfill not available for ${verticalSlug}`);
+          return;
+        }
+        throw error;
+      }
+
+      toast.success(`URL backfill complete!`, {
+        description: data?.message || 'URLs updated',
+        duration: 5000
+      });
+
+      await loadStats();
+    } catch (error) {
+      toast.error(`Failed to backfill ${verticalSlug} URLs`, {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const clearImportHistory = async () => {
+    try {
+      setProcessing(true);
+      toast.info(`Clearing ${verticalSlug} import history...`);
+
+      const { error } = await supabase
+        .from('import_history')
+        .delete()
+        .eq('vertical_slug', verticalSlug);
+
+      if (error) throw error;
+
+      toast.success('Import history cleared!');
+      await loadStats();
+    } catch (error) {
+      toast.error(`Failed to clear ${verticalSlug} import history`, {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const clearAllArticles = async () => {
+    try {
+      setProcessing(true);
+      toast.info(`Clearing all ${verticalSlug} articles...`);
+
+      const functionName = `clear-${verticalSlug}-articles`;
+      const { data, error } = await supabase.functions.invoke(functionName);
+
+      if (error) {
+        if (error.message?.includes('not found') || error.message?.includes('404')) {
+          toast.warning(`Clear function not available for ${verticalSlug}`);
+          return;
+        }
+        throw error;
+      }
+
+      toast.success(`All ${verticalSlug} articles cleared!`, {
+        description: data?.message || 'Articles deleted',
+        duration: 5000
+      });
+
+      await loadStats();
+    } catch (error) {
+      toast.error(`Failed to clear ${verticalSlug} articles`, {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  return {
+    stats,
+    processing,
+    loadStats,
+    startFastImport,
+    startAIProcessing,
+    cleanupDuplicates,
+    backfillUrls,
+    clearImportHistory,
+    clearAllArticles
+  };
+};

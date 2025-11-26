@@ -53,7 +53,7 @@ import AdvancedAnalyticsArticle from "./pages/AdvancedAnalyticsArticle";
 import InvestorEngagementArticle from "./pages/InvestorEngagementArticle";
 import ExternalArticle from "./pages/ExternalArticle";
 import VerticalPage from "./pages/VerticalPage";
-import ImportAdmin from "./pages/ImportAdmin";
+import ImportAdminRefactored from "./pages/ImportAdminRefactored";
 import PlatoImport from "./pages/PlatoImport";
 import AviationImport from "./pages/AviationImport";
 import AerospaceImport from "./pages/AerospaceImport";
@@ -146,7 +146,7 @@ const App = () => (
           <Route path="/admin/security" element={<AdminRoute><SecurityDashboard /></AdminRoute>} />
           <Route path="/admin/backfill" element={<AdminRoute><BackfillDashboard /></AdminRoute>} />
           <Route path="/import_history" element={<AdminRoute><BackfillDashboard /></AdminRoute>} />
-        <Route path="/admin/import" element={<AdminRoute><ImportAdmin /></AdminRoute>} />
+        <Route path="/admin/import" element={<AdminRoute><ImportAdminRefactored /></AdminRoute>} />
           <Route path="/admin/plato-import" element={<AdminRoute><PlatoImport /></AdminRoute>} />
           <Route path="/admin/aviation-import" element={<AdminRoute><AviationImport /></AdminRoute>} />
           <Route path="/admin/aerospace-import" element={<AdminRoute><AerospaceImport /></AdminRoute>} />
