@@ -111,8 +111,109 @@ const ImportAdmin = () => {
     platoTotal: null,
     loading: false
   });
+  const [arvrStats, setArvrStats] = useState<{
+    total: number;
+    aiProcessed: number;
+    remaining: number;
+    jobId: string | null;
+    status: string | null;
+    progressPercent: number;
+    loading: boolean;
+  }>({
+    total: 0,
+    aiProcessed: 0,
+    remaining: 0,
+    jobId: null,
+    status: null,
+    progressPercent: 0,
+    loading: false
+  });
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   
+  // Load AR/VR article counts and AI job stats
+  const loadArvrStats = async () => {
+    setArvrStats(prev => ({ ...prev, loading: true }));
+    
+    try {
+      // Get total AR/VR articles
+      const { count: total, error: totalError } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', 'ar-vr')
+        .not('content', 'is', null);
+
+      if (totalError) throw totalError;
+
+      // Get AI-processed count
+      const { count: processed, error: processedError } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', 'ar-vr')
+        .not('content', 'is', null)
+        .eq('metadata->>ai_processed', 'true');
+
+      if (processedError) throw processedError;
+
+      // Get latest AI job
+      const { data: job, error: jobError } = await supabase
+        .from('ai_processing_jobs')
+        .select('*')
+        .eq('vertical_slug', 'ar-vr')
+        .order('started_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (jobError) throw jobError;
+
+      let progressPercent = 0;
+      if (job && job.total_chunks > 0) {
+        const processedChunks = Array.from(new Set(job.processed_chunks || [])).length;
+        progressPercent = Math.round((processedChunks / job.total_chunks) * 100);
+      }
+
+      setArvrStats({
+        total: total || 0,
+        aiProcessed: processed || 0,
+        remaining: (total || 0) - (processed || 0),
+        jobId: job?.id || null,
+        status: job?.status || null,
+        progressPercent,
+        loading: false
+      });
+    } catch (error) {
+      console.error('Error loading AR/VR stats:', error);
+      setArvrStats(prev => ({ ...prev, loading: false }));
+    }
+  };
+
+  // Start AR/VR AI processing
+  const handleStartArvrAiProcessing = async () => {
+    try {
+      toast.info('Starting AR/VR AI processing...');
+      setImporting('ar-vr-ai');
+      
+      const { data, error } = await supabase.functions.invoke('start-ai-processing', {
+        body: { verticalSlug: 'ar-vr' }
+      });
+      
+      if (error) throw error;
+      
+      toast.success('AR/VR AI processing started!', {
+        description: `Processing ${data.totalArticles} articles in ${data.totalChunks} chunks`,
+        duration: 5000
+      });
+      
+      // Refresh stats
+      await loadArvrStats();
+    } catch (error) {
+      toast.error('Failed to start AR/VR AI processing', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setImporting(null);
+    }
+  };
+
   // Load aerospace article counts - FOR AEROSPACE VERTICAL
   const loadAerospaceArticleCounts = async () => {
     try {
@@ -310,10 +411,12 @@ const ImportAdmin = () => {
     loadAiJobStats();
     loadAerospaceStats();
     loadAerospaceArticleCounts();
+    loadArvrStats();
     
     const interval = setInterval(() => {
       loadAiJobStats();
       loadAerospaceArticleCounts();
+      loadArvrStats();
     }, 5000); // Refresh every 5 seconds
 
     return () => clearInterval(interval);
@@ -334,6 +437,29 @@ const ImportAdmin = () => {
         () => {
           // Reload counts when any aerospace article is updated
           loadAerospaceArticleCounts();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // Real-time updates for AR/VR articles
+  useEffect(() => {
+    const channel = supabase
+      .channel('arvr-articles-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'articles',
+          filter: 'vertical_slug=eq.ar-vr'
+        },
+        () => {
+          loadArvrStats();
         }
       )
       .subscribe();
@@ -1561,6 +1687,81 @@ const ImportAdmin = () => {
           {/* Generic Import Section - Now supports any vertical via input fields */}
           {/* <AerospaceImport /> component hidden - using AviationImport as the generic importer */}
           
+          {/* AR/VR AI Processing Section */}
+          <Card className="mb-8 border-blue-500/50 bg-gradient-to-br from-blue-500/5 to-blue-500/10">
+            <CardHeader>
+              <CardTitle className="text-2xl flex items-center gap-2">
+                🥽 AR/VR AI Processing
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Process all AR/VR articles with AI to format content and extract tags
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {/* Stats Grid */}
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center p-6 bg-background rounded-lg border-2 border-blue-500/30">
+                    <p className="text-sm text-muted-foreground mb-2">Total Articles</p>
+                    <p className="text-4xl font-bold text-blue-500">
+                      {arvrStats.loading ? '...' : arvrStats.total.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="text-center p-6 bg-background rounded-lg border-2 border-green-500/30">
+                    <p className="text-sm text-muted-foreground mb-2">AI Processed</p>
+                    <p className="text-4xl font-bold text-green-500">
+                      {arvrStats.loading ? '...' : arvrStats.aiProcessed.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="text-center p-6 bg-background rounded-lg border-2 border-orange-500/30">
+                    <p className="text-sm text-muted-foreground mb-2">Remaining</p>
+                    <p className="text-4xl font-bold text-orange-500">
+                      {arvrStats.loading ? '...' : arvrStats.remaining.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Progress Bar (if processing) */}
+                {arvrStats.status === 'in_progress' && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">Processing Progress</span>
+                      <span className="text-sm text-muted-foreground">{arvrStats.progressPercent}%</span>
+                    </div>
+                    <Progress value={arvrStats.progressPercent} className="h-2" />
+                    <p className="text-xs text-muted-foreground">
+                      Job ID: {arvrStats.jobId}
+                    </p>
+                  </div>
+                )}
+
+                {/* Action Button */}
+                <Button
+                  onClick={handleStartArvrAiProcessing}
+                  disabled={importing !== null || arvrStats.status === 'in_progress'}
+                  className="w-full h-12"
+                  size="lg"
+                >
+                  {importing === 'ar-vr-ai' ? (
+                    '⏳ Starting AI Processing...'
+                  ) : arvrStats.status === 'in_progress' ? (
+                    '⚙️ Processing In Progress...'
+                  ) : arvrStats.remaining === 0 ? (
+                    '✅ All Articles Processed'
+                  ) : (
+                    `🚀 Process ${arvrStats.remaining.toLocaleString()} AR/VR Articles with AI`
+                  )}
+                </Button>
+
+                {arvrStats.status === 'in_progress' && (
+                  <p className="text-center text-sm text-muted-foreground">
+                    Processing is running in the background. Stats update every 5 seconds.
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Aerospace Statistics Dashboard */}
           <AerospaceStatsDashboard />
           
