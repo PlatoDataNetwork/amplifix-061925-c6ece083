@@ -10,12 +10,17 @@ const cleanText = (text?: string | null): string => {
     .replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/gi, '')
     .replace(/<div class="plato-post-bottom-links">[\s\S]*?<\/div>/gi, '')
     .replace(/Source Link:[\s\S]*?<\/a>/gi, '')
+    // Remove various source attributions
+    .replace(/Source:\s*Platodata\.ai/gi, '')
+    .replace(/Source:\s*Plato\s*Data\.ai/gi, '')
+    .replace(/Source:\s*Zephyrnet/gi, '')
+    .replace(/Source:\s*PlatoData\.network/gi, '')
+    .replace(/Source:\s*Plato\s*Data\s*Intelligence/gi, '')
     // Remove other HTML and formatting
     .replace(/<a\b[^>]*>/gi, "")
     .replace(/<\/a>/gi, "")
     .replace(/https?:\/\/\S+/gi, "")
     .replace(/\[.*?\]\(.*?\)/g, "")
-    .replace(/Source:?:?\s*/gi, "")
     .replace(/Link:?:?\s*/gi, "")
     .replace(/---/g, "")
     .replace(/\*\*(.+?)\*\*/g, "$1")
@@ -315,12 +320,15 @@ Deno.serve(async (req) => {
               const cleanedText = cleanText(article.content);
               const formattedContent = await formatArticleWithAI(cleanedText);
 
+              // Add source attribution at the end
+              const contentWithSource = `${formattedContent}\n\n<p class="text-sm text-muted-foreground mt-6 pt-4 border-t border-border">Source: <a href="https://platodata.ai" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Plato Data Intelligence</a></p>`;
+
               // Update article content and set ai_processed flag
               const currentMetadata = article.metadata || {};
               const { error: updateError } = await supabase
                 .from('articles')
                 .update({
-                  content: formattedContent,
+                  content: contentWithSource,
                   updated_at: new Date().toISOString(),
                   metadata: {
                     ...currentMetadata,
