@@ -13,12 +13,20 @@ interface VerticalInfo {
   article_count: number;
 }
 
+interface VerticalStats {
+  processed: number;
+  updated: number;
+  skipped: number;
+  errors: number;
+}
+
 export default function PlatoSourceStats() {
   const { isAdmin, loading: authLoading } = useAdminCheck();
   const navigate = useNavigate();
   const [verticals, setVerticals] = useState<VerticalInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingVertical, setProcessingVertical] = useState<string | null>(null);
+  const [verticalStats, setVerticalStats] = useState<Record<string, VerticalStats>>({});
 
   useEffect(() => {
     if (!authLoading && !isAdmin) {
@@ -75,8 +83,19 @@ export default function PlatoSourceStats() {
       if (functionError) throw functionError;
 
       if (data.success) {
+        const stats = data.stats.verticals?.[0] || data.stats;
+        setVerticalStats(prev => ({
+          ...prev,
+          [verticalSlug]: {
+            processed: stats.processed || 0,
+            updated: stats.updated || 0,
+            skipped: stats.skipped || 0,
+            errors: stats.errors || 0,
+          }
+        }));
+        
         toast.success('✓ Update Complete', {
-          description: `Updated ${data.stats.updated} articles in ${verticalSlug.replace(/-/g, ' ')}`,
+          description: `Updated ${stats.updated} articles in ${verticalSlug.replace(/-/g, ' ')}`,
         });
       } else {
         throw new Error(data.error || 'Update failed');
@@ -118,37 +137,60 @@ export default function PlatoSourceStats() {
                 <TableRow>
                   <TableHead>Vertical</TableHead>
                   <TableHead className="text-right">Total Articles</TableHead>
+                  <TableHead className="text-right">Processed</TableHead>
+                  <TableHead className="text-right">Updated</TableHead>
+                  <TableHead className="text-right">Skipped</TableHead>
+                  <TableHead className="text-right">Errors</TableHead>
                   <TableHead className="text-right">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {verticals.map((vertical) => (
-                  <TableRow key={vertical.vertical_slug}>
-                    <TableCell className="font-medium capitalize">
-                      {vertical.vertical_slug.replace(/-/g, ' ')}
-                    </TableCell>
-                    <TableCell className="text-right">{vertical.article_count.toLocaleString()}</TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        onClick={() => processVertical(vertical.vertical_slug)}
-                        disabled={processingVertical !== null}
-                        size="sm"
-                      >
-                        {processingVertical === vertical.vertical_slug ? (
-                          <>
-                            <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                            Processing...
-                          </>
+                {verticals.map((vertical) => {
+                  const stats = verticalStats[vertical.vertical_slug];
+                  return (
+                    <TableRow key={vertical.vertical_slug}>
+                      <TableCell className="font-medium capitalize">
+                        {vertical.vertical_slug.replace(/-/g, ' ')}
+                      </TableCell>
+                      <TableCell className="text-right">{vertical.article_count.toLocaleString()}</TableCell>
+                      <TableCell className="text-right text-muted-foreground">
+                        {stats ? stats.processed.toLocaleString() : '—'}
+                      </TableCell>
+                      <TableCell className="text-right text-primary">
+                        {stats ? stats.updated.toLocaleString() : '—'}
+                      </TableCell>
+                      <TableCell className="text-right text-muted-foreground">
+                        {stats ? stats.skipped.toLocaleString() : '—'}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {stats && stats.errors > 0 ? (
+                          <span className="text-destructive">{stats.errors}</span>
                         ) : (
-                          <>
-                            <Play className="mr-2 h-3 w-3" />
-                            Process
-                          </>
+                          <span className="text-muted-foreground">{stats ? '0' : '—'}</span>
                         )}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          onClick={() => processVertical(vertical.vertical_slug)}
+                          disabled={processingVertical !== null}
+                          size="sm"
+                        >
+                          {processingVertical === vertical.vertical_slug ? (
+                            <>
+                              <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                              Processing...
+                            </>
+                          ) : (
+                            <>
+                              <Play className="mr-2 h-3 w-3" />
+                              Process
+                            </>
+                          )}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </CardContent>
