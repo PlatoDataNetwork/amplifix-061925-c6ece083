@@ -29,7 +29,12 @@ Deno.serve(async (req) => {
       .from('articles')
       .select('id, content, title')
       .eq('vertical_slug', verticalSlug)
-      .ilike('content', '%Plato Data Intelligence%');
+      .or(
+        'content.ilike.%Plato Data Intelligence%,' +
+        'content.ilike.%platodata.ai%,' +
+        'content.ilike.%zephyrnet%,' +
+        'content.ilike.%PlatoData.network%'
+      );
 
     if (fetchError) throw fetchError;
 
@@ -59,6 +64,23 @@ Deno.serve(async (req) => {
           /<div[^>]*style="[^"]*margin-top:[^"]*"[^>]*>[\s\S]*?Plato Data Intelligence[\s\S]*?<\/div>/gi,
           ''
         );
+
+        // Remove legacy Plato/Zephyrnet source blocks and links
+        cleanedContent = cleanedContent
+          // Plato bottom link lists
+          .replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/gi, '')
+          .replace(/<div class="plato-post-bottom-links">[\s\S]*?<\/div>/gi, '')
+          .replace(/Source Link:[\s\S]*?<\/a>/gi, '')
+          // Text "Source:" lines for legacy domains
+          .replace(/Source:\s*Platodata\.?ai/gi, '')
+          .replace(/Source:\s*Plato\s*Data\.?ai/gi, '')
+          .replace(/Source:\s*Zephyrnet/gi, '')
+          .replace(/Source:\s*PlatoData\.network/gi, '')
+          .replace(/Source:\s*Plato\s*Data\s*Intelligence/gi, '')
+          // Zephyrnet links and URLs
+          .replace(/<a[^>]*zephyrnet[^>]*>[\s\S]*?<\/a>/gi, '')
+          .replace(/https?:\/\/[^^\s]*zephyrnet[^\s]*/gi, '')
+          .replace(/\[.*?\]\(.*?zephyrnet.*?\)/gi, '');
         
         // Remove any lingering line breaks before the end
         cleanedContent = cleanedContent.trim();
