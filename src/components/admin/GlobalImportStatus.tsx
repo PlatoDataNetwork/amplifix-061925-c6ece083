@@ -10,6 +10,7 @@ interface VerticalStats {
   total_articles: number;
   ai_processed: number;
   last_import: string | null;
+  last_ai_processed: string | null;
 }
 
 type SortField = 'name' | 'articles' | 'ai_processed';
@@ -45,11 +46,21 @@ export const GlobalImportStatus = () => {
           .limit(1)
           .maybeSingle();
 
+        const { data: lastAiProcessed } = await supabase
+          .from('articles')
+          .select('updated_at')
+          .eq('vertical_slug', v.vertical_slug)
+          .eq('metadata->>ai_processed', 'true')
+          .order('updated_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
         return {
           vertical_slug: v.vertical_slug,
           total_articles: v.article_count,
           ai_processed: aiProcessed || 0,
-          last_import: lastImport?.completed_at || null
+          last_import: lastImport?.completed_at || null,
+          last_ai_processed: lastAiProcessed?.updated_at || null
         };
       });
 
@@ -226,9 +237,14 @@ export const GlobalImportStatus = () => {
                 <span className="text-green-500">
                   {stat.ai_processed} AI ✓
                 </span>
+                {stat.last_ai_processed && (
+                  <span className="text-xs text-purple-500">
+                    AI: {new Date(stat.last_ai_processed).toLocaleDateString()}
+                  </span>
+                )}
                 {stat.last_import && (
                   <span className="text-xs text-muted-foreground">
-                    Last: {new Date(stat.last_import).toLocaleDateString()}
+                    Import: {new Date(stat.last_import).toLocaleDateString()}
                   </span>
                 )}
               </div>
