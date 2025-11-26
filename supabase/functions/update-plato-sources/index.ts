@@ -178,48 +178,41 @@ Deno.serve(async (req) => {
             let updatedContent = article.content;
             let needsUpdate = false;
 
-            // Pattern 1: Any link to platodata.ai, platodata.network, plato domains
-            const pattern1 = /Source:\s*<a\s+[^>]*href=["']https?:\/\/[^"']*plato[^"']*["'][^>]*>[^<]*<\/a>/gi;
+            // Pattern 1: Remove entire plato-post-bottom-links section
+            const pattern1 = /<ul\s+class=["']plato-post-bottom-links["'][^>]*>[\s\S]*?<\/ul>/gi;
             if (pattern1.test(updatedContent)) {
-              updatedContent = updatedContent.replace(pattern1, 'Source: Plato Data Intelligence.');
+              updatedContent = updatedContent.replace(pattern1, '<p>Source: Plato Data Intelligence.</p>');
               needsUpdate = true;
             }
 
-            // Pattern 2: Source: Something: <a href with plato>
-            const pattern2 = /Source:\s*[^:]+:\s*<a\s+[^>]*href=["']https?:\/\/[^"']*plato[^"']*["'][^>]*>[^<]*<\/a>/gi;
+            // Pattern 2: Source Link: with plato URL
+            const pattern2 = /(?:Source Link|Source):\s*<a\s+[^>]*href=["']https?:\/\/[^"']*plato[^"']*["'][^>]*>[^<]*<\/a>/gi;
             if (pattern2.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern2, 'Source: Plato Data Intelligence.');
               needsUpdate = true;
             }
 
-            // Pattern 3: Plain text platodata.ai, platodata.network, plato.ai references
-            const pattern3 = /Source:\s*(?:platodata\.ai|platodata\.network|plato\.ai|PlatoData\.ai)\s*\.?/gi;
-            if (pattern3.test(updatedContent)) {
-              updatedContent = updatedContent.replace(pattern3, 'Source: Plato Data Intelligence.');
+            // Pattern 3: Any link containing plato domains
+            const pattern3 = /<a\s+[^>]*href=["']https?:\/\/(?:platodata\.ai|platodata\.network|plato\.ai)[^"']*["'][^>]*>[^<]*<\/a>/gi;
+            if (pattern3.test(updatedContent) && /Source/i.test(updatedContent)) {
+              updatedContent = updatedContent.replace(
+                /(?:Source Link|Source)[^<]*<a\s+[^>]*href=["']https?:\/\/(?:platodata\.ai|platodata\.network|plato\.ai)[^"']*["'][^>]*>[^<]*<\/a>[^\.]*\.?/gi,
+                'Source: Plato Data Intelligence.'
+              );
               needsUpdate = true;
             }
 
-            // Pattern 4: Zephyrnet with link
-            const pattern4 = /Source:\s*<a\s+[^>]*href=["'][^"']*["'][^>]*>Zephyrnet[^<]*<\/a>/gi;
+            // Pattern 4: Plain text references
+            const pattern4 = /(?:Source Link|Source):\s*(?:platodata\.ai|platodata\.network|plato\.ai|PlatoData\.ai)\s*\.?/gi;
             if (pattern4.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern4, 'Source: Plato Data Intelligence.');
               needsUpdate = true;
             }
 
-            // Pattern 5: Zephyrnet plain text
-            const pattern5 = /Source:\s*Zephyrnet\s*\.?/gi;
+            // Pattern 5: Zephyrnet references
+            const pattern5 = /(?:Source Link|Source):\s*(?:<a[^>]*>)?Zephyrnet(?:<\/a>)?\s*\.?/gi;
             if (pattern5.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern5, 'Source: Plato Data Intelligence.');
-              needsUpdate = true;
-            }
-
-            // Pattern 6: Any remaining <a> tags with "Plato" in text (catch-all)
-            const pattern6 = /<a\s+[^>]*href=["'][^"']*["'][^>]*>.*?Plato.*?<\/a>/gi;
-            if (pattern6.test(updatedContent) && /Source:/i.test(updatedContent)) {
-              updatedContent = updatedContent.replace(
-                /Source:[^<]*<a\s+[^>]*href=["'][^"']*["'][^>]*>.*?Plato.*?<\/a>[^\.]*\.?/gi,
-                'Source: Plato Data Intelligence.'
-              );
               needsUpdate = true;
             }
 
