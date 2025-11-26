@@ -40,20 +40,21 @@ export const ImportHistoryTable = ({ verticalSlug }: ImportHistoryTableProps = {
   const [fixing, setFixing] = useState(false);
 
   const loadHistory = async () => {
-    console.log('📜 Loading import history...');
+    console.log('📜 Loading import history for vertical:', verticalSlug);
+    
+    if (!verticalSlug) {
+      setHistory([]);
+      setLoading(false);
+      return;
+    }
+    
     try {
-      let query = supabase
+      const { data, error } = await supabase
         .from('import_history')
         .select('*')
+        .eq('vertical_slug', verticalSlug)
         .order('started_at', { ascending: false })
         .limit(50);
-
-      // Filter by vertical if specified
-      if (verticalSlug) {
-        query = query.eq('vertical_slug', verticalSlug);
-      }
-
-      const { data, error } = await query;
 
       console.log('Import history data:', data);
       console.log('Import history error:', error);
@@ -65,29 +66,32 @@ export const ImportHistoryTable = ({ verticalSlug }: ImportHistoryTableProps = {
       setHistory((data || []) as ImportHistory[]);
     } catch (error) {
       console.error('Error loading import history:', error);
+      setHistory([]);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    console.log('📜 ImportHistoryTable component mounted');
+    console.log('📜 ImportHistoryTable component mounted/updated with vertical:', verticalSlug);
+    setLoading(true);
+    setHistory([]); // Clear history when vertical changes
     loadHistory();
 
-    // Subscribe to real-time updates
-    const channelFilter = verticalSlug 
-      ? `vertical_slug=eq.${verticalSlug}`
-      : undefined;
+    if (!verticalSlug) {
+      return;
+    }
 
+    // Subscribe to real-time updates
     const channel = supabase
-      .channel('import-history-updates')
+      .channel(`import-history-${verticalSlug}`)
       .on(
         'postgres_changes',
         {
           event: '*',
           schema: 'public',
           table: 'import_history',
-          filter: channelFilter
+          filter: `vertical_slug=eq.${verticalSlug}`
         },
         () => {
           console.log('📡 Import history real-time update received');
