@@ -46,23 +46,45 @@ export default function PlatoSourceUpdate() {
   useEffect(() => {
     const fetchVerticals = async () => {
       setIsLoadingVerticals(true);
-      const { data, error } = await supabase
-        .from('articles')
-        .select('vertical_slug')
-        .not('vertical_slug', 'in', '("aerospace","aviation")');
+      
+      // Fetch ALL articles in batches to count properly
+      let allArticles: any[] = [];
+      let from = 0;
+      const batchSize = 1000;
+      let hasMore = true;
 
-      if (!error && data) {
-        const counts: Record<string, number> = {};
-        data.forEach(article => {
-          counts[article.vertical_slug] = (counts[article.vertical_slug] || 0) + 1;
-        });
-        
-        const verticalList = Object.entries(counts)
-          .map(([vertical, count]) => ({ vertical, count }))
-          .sort((a, b) => b.count - a.count);
-        
-        setVerticals(verticalList);
+      while (hasMore) {
+        const { data: batch, error } = await supabase
+          .from('articles')
+          .select('vertical_slug')
+          .not('vertical_slug', 'in', '("aerospace","aviation")')
+          .range(from, from + batchSize - 1);
+
+        if (error) {
+          console.error('Error fetching verticals:', error);
+          break;
+        }
+
+        if (batch && batch.length > 0) {
+          allArticles = allArticles.concat(batch);
+          from += batchSize;
+          hasMore = batch.length === batchSize;
+        } else {
+          hasMore = false;
+        }
       }
+
+      // Count articles per vertical
+      const counts: Record<string, number> = {};
+      allArticles.forEach(article => {
+        counts[article.vertical_slug] = (counts[article.vertical_slug] || 0) + 1;
+      });
+      
+      const verticalList = Object.entries(counts)
+        .map(([vertical, count]) => ({ vertical, count }))
+        .sort((a, b) => b.count - a.count);
+      
+      setVerticals(verticalList);
       setIsLoadingVerticals(false);
     };
 
