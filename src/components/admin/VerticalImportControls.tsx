@@ -26,10 +26,12 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
   useEffect(() => {
     loadStats();
 
-    // Refresh stats every 5 seconds
-    const interval = setInterval(loadStats, 5000);
+    const interval = setInterval(() => {
+      loadStats();
+    }, 5000);
+    
     return () => clearInterval(interval);
-  }, [verticalSlug]);
+  }, [loadStats]);
 
   const formatVerticalName = (slug: string) => {
     return slug
