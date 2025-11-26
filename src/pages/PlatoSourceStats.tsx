@@ -14,6 +14,8 @@ interface VerticalStats {
   total_articles: number;
   updated_articles: number;
   skipped_articles: number;
+  urls_cleared: number;
+  needs_update: number;
 }
 
 interface Article {
@@ -21,6 +23,7 @@ interface Article {
   title: string;
   vertical_slug: string;
   content: string;
+  external_url: string | null;
   updated_at: string;
 }
 
@@ -53,14 +56,26 @@ export default function PlatoSourceStats() {
     try {
       const { data, error } = await supabase
         .from('articles')
-        .select('vertical_slug, content');
+        .select('vertical_slug, content, external_url');
 
       if (error) throw error;
 
-      const statsMap = new Map<string, { total: number; updated: number; skipped: number }>();
+      const statsMap = new Map<string, { 
+        total: number; 
+        updated: number; 
+        skipped: number;
+        urlsCleared: number;
+        needsUpdate: number;
+      }>();
 
       data?.forEach((article) => {
-        const stats = statsMap.get(article.vertical_slug) || { total: 0, updated: 0, skipped: 0 };
+        const stats = statsMap.get(article.vertical_slug) || { 
+          total: 0, 
+          updated: 0, 
+          skipped: 0,
+          urlsCleared: 0,
+          needsUpdate: 0
+        };
         stats.total++;
 
         const hasNewSource = article.content?.includes('Plato Data Intelligence');
@@ -69,8 +84,20 @@ export default function PlatoSourceStats() {
                            article.content?.includes('plato.ai') ||
                            article.content?.includes('Zephyrnet');
 
-        if (hasNewSource && !hasOldSource) {
+        // Check if external_url was cleared (null) or still has old source
+        const urlLower = article.external_url?.toLowerCase() || '';
+        const hasOldUrl = urlLower.includes('platodata') || 
+                         urlLower.includes('zephyrnet') || 
+                         urlLower.includes('plato');
+        
+        if (!article.external_url && hasNewSource) {
+          stats.urlsCleared++;
+        }
+
+        if (hasNewSource && !hasOldSource && !hasOldUrl) {
           stats.updated++;
+        } else if (hasOldSource || hasOldUrl) {
+          stats.needsUpdate++;
         } else {
           stats.skipped++;
         }
@@ -83,6 +110,8 @@ export default function PlatoSourceStats() {
         total_articles: stats.total,
         updated_articles: stats.updated,
         skipped_articles: stats.skipped,
+        urls_cleared: stats.urlsCleared,
+        needs_update: stats.needsUpdate,
       })).sort((a, b) => b.total_articles - a.total_articles);
 
       setVerticalStats(statsArray);
@@ -97,7 +126,7 @@ export default function PlatoSourceStats() {
     try {
       let query = supabase
         .from('articles')
-        .select('id, title, vertical_slug, content, updated_at')
+        .select('id, title, vertical_slug, content, external_url, updated_at')
         .order('updated_at', { ascending: false })
         .range(page * pageSize, (page + 1) * pageSize - 1);
 
@@ -118,19 +147,24 @@ export default function PlatoSourceStats() {
     }
   };
 
-  const getSourceStatus = (content: string) => {
+  const getSourceStatus = (content: string, external_url: string | null) => {
     const hasNewSource = content?.includes('Plato Data Intelligence');
     const hasOldSource = content?.includes('platodata.ai') || 
                        content?.includes('platodata.network') ||
                        content?.includes('plato.ai') ||
                        content?.includes('Zephyrnet');
+    
+    const urlLower = external_url?.toLowerCase() || '';
+    const hasOldUrl = urlLower.includes('platodata') || 
+                     urlLower.includes('zephyrnet') || 
+                     urlLower.includes('plato');
 
-    if (hasNewSource && !hasOldSource) {
-      return { status: 'Updated', variant: 'default' as const };
-    } else if (hasOldSource) {
-      return { status: 'Needs Update', variant: 'destructive' as const };
+    if (hasNewSource && !hasOldSource && !hasOldUrl) {
+      return { status: '✓ Updated', variant: 'default' as const, description: 'Shows Plato Data Intelligence' };
+    } else if (hasOldSource || hasOldUrl) {
+      return { status: '⚠ Needs Update', variant: 'destructive' as const, description: 'Still has old source' };
     } else {
-      return { status: 'Unknown', variant: 'secondary' as const };
+      return { status: 'Unknown', variant: 'secondary' as const, description: 'No source found' };
     }
   };
 
@@ -151,41 +185,88 @@ export default function PlatoSourceStats() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Total Verticals</CardTitle>
-                <CardDescription>Number of content verticals</CardDescription>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium">Total Verticals</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">{verticalStats.length}</div>
+                <p className="text-xs text-muted-foreground mt-1">Content categories</p>
               </CardContent>
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle>Total Articles</CardTitle>
-                <CardDescription>Across all verticals</CardDescription>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium">Total Articles</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">
-                  {verticalStats.reduce((sum, v) => sum + v.total_articles, 0)}
+                  {verticalStats.reduce((sum, v) => sum + v.total_articles, 0).toLocaleString()}
                 </div>
+                <p className="text-xs text-muted-foreground mt-1">Across all verticals</p>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Updated Articles</CardTitle>
-                <CardDescription>With new source attribution</CardDescription>
+            <Card className="border-green-500/20 bg-green-500/5">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-green-600">✓ DB Updated</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold text-green-600">
-                  {verticalStats.reduce((sum, v) => sum + v.updated_articles, 0)}
+                  {verticalStats.reduce((sum, v) => sum + v.updated_articles, 0).toLocaleString()}
                 </div>
+                <p className="text-xs text-green-600/80 mt-1">Plato Data Intelligence</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-blue-500/20 bg-blue-500/5">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-blue-600">URLs Cleared</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-blue-600">
+                  {verticalStats.reduce((sum, v) => sum + v.urls_cleared, 0).toLocaleString()}
+                </div>
+                <p className="text-xs text-blue-600/80 mt-1">Old sources removed</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-red-500/20 bg-red-500/5">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-red-600">Needs Update</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-red-600">
+                  {verticalStats.reduce((sum, v) => sum + v.needs_update, 0).toLocaleString()}
+                </div>
+                <p className="text-xs text-red-600/80 mt-1">Still showing old sources</p>
               </CardContent>
             </Card>
           </div>
+
+          {/* Status Alert */}
+          {verticalStats.reduce((sum, v) => sum + v.updated_articles, 0) > 0 && (
+            <Card className="border-green-500/20 bg-green-500/5">
+              <CardHeader>
+                <CardTitle className="text-green-600 flex items-center gap-2">
+                  <span className="text-2xl">✓</span> Database Update Confirmed
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p className="text-sm">
+                  <strong>{verticalStats.reduce((sum, v) => sum + v.updated_articles, 0).toLocaleString()}</strong> articles have been successfully updated in the database.
+                </p>
+                <p className="text-sm">
+                  All updated articles now display: <code className="bg-green-500/10 px-2 py-1 rounded text-green-600">Source: Plato Data Intelligence.</code>
+                </p>
+                <p className="text-sm">
+                  <strong>{verticalStats.reduce((sum, v) => sum + v.urls_cleared, 0).toLocaleString()}</strong> external URLs have been cleared from old sources.
+                </p>
+              </CardContent>
+            </Card>
+          )}
 
           <Card>
             <CardHeader>
@@ -197,24 +278,56 @@ export default function PlatoSourceStats() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Vertical</TableHead>
-                    <TableHead className="text-right">Total</TableHead>
-                    <TableHead className="text-right">Updated</TableHead>
+                    <TableHead className="text-right">Total Articles</TableHead>
+                    <TableHead className="text-right">DB Updated</TableHead>
+                    <TableHead className="text-right">URLs Cleared</TableHead>
                     <TableHead className="text-right">Needs Update</TableHead>
-                    <TableHead className="text-right">Update %</TableHead>
+                    <TableHead className="text-right">Success %</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {verticalStats.map((stat) => (
                     <TableRow key={stat.vertical_slug}>
-                      <TableCell className="font-medium">{stat.vertical_slug}</TableCell>
-                      <TableCell className="text-right">{stat.total_articles}</TableCell>
-                      <TableCell className="text-right text-green-600">{stat.updated_articles}</TableCell>
-                      <TableCell className="text-right text-red-600">{stat.skipped_articles}</TableCell>
+                      <TableCell className="font-medium capitalize">
+                        {stat.vertical_slug.replace(/-/g, ' ')}
+                      </TableCell>
+                      <TableCell className="text-right">{stat.total_articles.toLocaleString()}</TableCell>
                       <TableCell className="text-right">
+                        <span className="text-green-600 font-semibold">{stat.updated_articles.toLocaleString()}</span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <span className="text-blue-600">{stat.urls_cleared.toLocaleString()}</span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Badge variant={stat.needs_update > 0 ? "destructive" : "secondary"}>
+                          {stat.needs_update.toLocaleString()}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right font-semibold">
                         {((stat.updated_articles / stat.total_articles) * 100).toFixed(1)}%
                       </TableCell>
                     </TableRow>
                   ))}
+                  {/* Totals Row */}
+                  <TableRow className="bg-muted/50 font-bold">
+                    <TableCell>TOTAL</TableCell>
+                    <TableCell className="text-right">
+                      {verticalStats.reduce((sum, v) => sum + v.total_articles, 0).toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-right text-green-600">
+                      {verticalStats.reduce((sum, v) => sum + v.updated_articles, 0).toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-right text-blue-600">
+                      {verticalStats.reduce((sum, v) => sum + v.urls_cleared, 0).toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-right text-red-600">
+                      {verticalStats.reduce((sum, v) => sum + v.needs_update, 0).toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {((verticalStats.reduce((sum, v) => sum + v.updated_articles, 0) / 
+                        verticalStats.reduce((sum, v) => sum + v.total_articles, 0)) * 100).toFixed(1)}%
+                    </TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </CardContent>
@@ -253,21 +366,39 @@ export default function PlatoSourceStats() {
                   <TableRow>
                     <TableHead>Title</TableHead>
                     <TableHead>Vertical</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Last Updated</TableHead>
+                    <TableHead>Frontend Status</TableHead>
+                    <TableHead className="text-right">URL Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {articles.map((article) => {
-                    const { status, variant } = getSourceStatus(article.content);
+                    const { status, variant, description } = getSourceStatus(article.content, article.external_url);
+                    const urlLower = article.external_url?.toLowerCase() || '';
+                    const hasOldUrl = urlLower.includes('platodata') || 
+                                     urlLower.includes('zephyrnet') || 
+                                     urlLower.includes('plato');
+                    
                     return (
                       <TableRow key={article.id}>
-                        <TableCell className="max-w-md truncate">{article.title}</TableCell>
-                        <TableCell>{article.vertical_slug}</TableCell>
+                        <TableCell className="max-w-md">
+                          <div className="truncate">{article.title}</div>
+                          <div className="text-xs text-muted-foreground">{description}</div>
+                        </TableCell>
+                        <TableCell className="capitalize">{article.vertical_slug.replace(/-/g, ' ')}</TableCell>
                         <TableCell>
                           <Badge variant={variant}>{status}</Badge>
                         </TableCell>
-                        <TableCell>{new Date(article.updated_at).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-right">
+                          {article.external_url ? (
+                            hasOldUrl ? (
+                              <Badge variant="destructive">Old URL</Badge>
+                            ) : (
+                              <Badge variant="outline">Has URL</Badge>
+                            )
+                          ) : (
+                            <Badge variant="default" className="bg-green-500">URL Cleared</Badge>
+                          )}
+                        </TableCell>
                       </TableRow>
                     );
                   })}
