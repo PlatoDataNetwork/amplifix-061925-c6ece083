@@ -166,13 +166,16 @@ Deno.serve(async (req) => {
               continue;
             }
 
-            // Check if external_url needs clearing first
+            // Check if external_url needs clearing - be more aggressive
             let shouldClearUrl = false;
             if (article.external_url) {
               const urlLower = article.external_url.toLowerCase();
+              // Match ANY occurrence of these terms anywhere in URL
               shouldClearUrl = urlLower.includes('platodata') || 
                                urlLower.includes('zephyrnet') || 
-                               urlLower.includes('plato');
+                               urlLower.includes('plato.ai') ||
+                               urlLower.includes('plato') ||
+                               urlLower.includes('zephyr');
             }
 
             // Skip only if both content is correct AND external_url doesn't need clearing

@@ -3,29 +3,22 @@ import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Loader2, Play, RefreshCw } from 'lucide-react';
+import { Loader2, Play } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-interface VerticalStats {
+interface VerticalInfo {
   vertical_slug: string;
-  total_articles: number;
-  updated_articles: number;
-  skipped_articles: number;
-  urls_cleared: number;
-  needs_update: number;
+  article_count: number;
 }
 
 export default function PlatoSourceStats() {
   const { isAdmin, loading: authLoading } = useAdminCheck();
   const navigate = useNavigate();
-  const [verticalStats, setVerticalStats] = useState<VerticalStats[]>([]);
+  const [verticals, setVerticals] = useState<VerticalInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingVertical, setProcessingVertical] = useState<string | null>(null);
-  const [processingAll, setProcessingAll] = useState(false);
-  const [processProgress, setProcessProgress] = useState({ current: 0, total: 0 });
 
   useEffect(() => {
     if (!authLoading && !isAdmin) {
@@ -34,99 +27,20 @@ export default function PlatoSourceStats() {
   }, [isAdmin, authLoading, navigate]);
 
   useEffect(() => {
-    fetchStats();
+    fetchVerticals();
   }, []);
 
-  const fetchStats = async () => {
+  const fetchVerticals = async () => {
     setLoading(true);
     try {
-      // Fetch all articles without limit restrictions
-      let allArticles: any[] = [];
-      let from = 0;
-      const batchSize = 1000;
-      let hasMore = true;
+      const { data, error } = await supabase.rpc('get_vertical_article_counts');
 
-      while (hasMore) {
-        const { data, error } = await supabase
-          .from('articles')
-          .select('vertical_slug, content, external_url')
-          .range(from, from + batchSize - 1);
+      if (error) throw error;
 
-        if (error) {
-          console.error('Error fetching batch:', error);
-          throw error;
-        }
-        
-        if (data && data.length > 0) {
-          allArticles = [...allArticles, ...data];
-          from += batchSize;
-          hasMore = data.length === batchSize;
-        } else {
-          hasMore = false;
-        }
-      }
-
-      console.log(`Fetched ${allArticles.length} total articles`);
-
-      const statsMap = new Map<string, { 
-        total: number; 
-        updated: number; 
-        skipped: number;
-        urlsCleared: number;
-        needsUpdate: number;
-      }>();
-
-      allArticles.forEach((article) => {
-        const stats = statsMap.get(article.vertical_slug) || { 
-          total: 0, 
-          updated: 0, 
-          skipped: 0,
-          urlsCleared: 0,
-          needsUpdate: 0
-        };
-        stats.total++;
-
-        const hasNewSource = article.content?.includes('Plato Data Intelligence');
-        const hasOldSource = article.content?.includes('platodata.ai') || 
-                           article.content?.includes('platodata.network') ||
-                           article.content?.includes('plato.ai') ||
-                           article.content?.includes('Zephyrnet');
-
-        // Check if external_url was cleared (null) or still has old source
-        const urlLower = article.external_url?.toLowerCase() || '';
-        const hasOldUrl = urlLower.includes('platodata') || 
-                         urlLower.includes('zephyrnet') || 
-                         urlLower.includes('plato');
-        
-        if (!article.external_url && hasNewSource) {
-          stats.urlsCleared++;
-        }
-
-        if (hasNewSource && !hasOldSource && !hasOldUrl) {
-          stats.updated++;
-        } else if (hasOldSource || hasOldUrl) {
-          stats.needsUpdate++;
-        } else {
-          stats.skipped++;
-        }
-
-        statsMap.set(article.vertical_slug, stats);
-      });
-
-      console.log(`Found ${statsMap.size} unique verticals`);
-
-      const statsArray = Array.from(statsMap.entries()).map(([vertical_slug, stats]) => ({
-        vertical_slug,
-        total_articles: stats.total,
-        updated_articles: stats.updated,
-        skipped_articles: stats.skipped,
-        urls_cleared: stats.urlsCleared,
-        needs_update: stats.needsUpdate,
-      })).sort((a, b) => a.vertical_slug.localeCompare(b.vertical_slug)); // Alphabetical order
-
-      setVerticalStats(statsArray);
+      setVerticals(data || []);
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      console.error('Error fetching verticals:', error);
+      toast.error('Failed to load verticals');
     } finally {
       setLoading(false);
     }
@@ -142,10 +56,10 @@ export default function PlatoSourceStats() {
         throw new Error('You must be logged in to perform this action');
       }
 
-      const vertical = verticalStats.find(v => v.vertical_slug === verticalSlug);
+      const vertical = verticals.find(v => v.vertical_slug === verticalSlug);
       
       toast.info('Processing Started', {
-        description: `Updating ${vertical?.total_articles.toLocaleString()} articles in ${verticalSlug.replace(/-/g, ' ')}...`,
+        description: `Updating articles in ${verticalSlug.replace(/-/g, ' ')} (${vertical?.article_count.toLocaleString()} articles)...`,
       });
 
       const { data, error: functionError } = await supabase.functions.invoke(
@@ -164,9 +78,6 @@ export default function PlatoSourceStats() {
         toast.success('✓ Update Complete', {
           description: `Updated ${data.stats.updated} articles in ${verticalSlug.replace(/-/g, ' ')}`,
         });
-        
-        // Refresh stats
-        await fetchStats();
       } else {
         throw new Error(data.error || 'Update failed');
       }
@@ -180,278 +91,68 @@ export default function PlatoSourceStats() {
     }
   };
 
-  const processAllVerticals = async () => {
-    setProcessingAll(true);
-    const verticalsToProcess = verticalStats.filter(v => v.needs_update > 0);
-    setProcessProgress({ current: 0, total: verticalsToProcess.length });
-
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        throw new Error('You must be logged in to perform this action');
-      }
-
-      toast.info('Batch Processing Started', {
-        description: `Processing ${verticalsToProcess.length} verticals with updates needed...`,
-      });
-
-      let successCount = 0;
-      let errorCount = 0;
-
-      for (let i = 0; i < verticalsToProcess.length; i++) {
-        const vertical = verticalsToProcess[i];
-        setProcessProgress({ current: i + 1, total: verticalsToProcess.length });
-        
-        try {
-          const { data, error: functionError } = await supabase.functions.invoke(
-            'update-plato-sources',
-            {
-              body: { vertical: vertical.vertical_slug },
-              headers: {
-                Authorization: `Bearer ${session.access_token}`,
-              },
-            }
-          );
-
-          if (functionError) throw functionError;
-
-          if (data.success) {
-            successCount++;
-          } else {
-            errorCount++;
-          }
-        } catch (err) {
-          console.error(`Error processing ${vertical.vertical_slug}:`, err);
-          errorCount++;
-        }
-      }
-
-      // Refresh stats after all processing
-      await fetchStats();
-
-      toast.success('✓ Batch Processing Complete', {
-        description: `Processed ${successCount} verticals successfully${errorCount > 0 ? `, ${errorCount} errors` : ''}`,
-      });
-    } catch (err: any) {
-      console.error('Batch processing error:', err);
-      toast.error('Batch Processing Failed', {
-        description: err.message,
-      });
-    } finally {
-      setProcessingAll(false);
-      setProcessProgress({ current: 0, total: 0 });
-    }
-  };
-
   if (authLoading || !isAdmin) {
     return null;
   }
 
   return (
-      <div className="container mx-auto p-6 space-y-6">
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Plato Source Update Statistics</h1>
-            <p className="text-muted-foreground">Track article source attribution updates across all verticals</p>
-            {processingAll && (
-              <p className="text-sm text-primary mt-2">
-                Processing {processProgress.current} of {processProgress.total} verticals...
-              </p>
-            )}
-          </div>
-          <div className="flex gap-2">
-            <Button 
-              onClick={processAllVerticals} 
-              variant="default" 
-              disabled={loading || processingAll || verticalStats.reduce((sum, v) => sum + v.needs_update, 0) === 0}
-            >
-              <Play className={`mr-2 h-4 w-4 ${processingAll ? 'animate-spin' : ''}`} />
-              {processingAll ? 'Processing All...' : 'Process All Verticals'}
-            </Button>
-            <Button onClick={fetchStats} variant="outline" disabled={loading || processingAll}>
-              <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-              Refresh Stats
-            </Button>
-          </div>
-        </div>
+    <div className="container mx-auto p-6 space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold mb-2">Plato Source Update</h1>
+        <p className="text-muted-foreground">Process verticals to standardize source attribution to "Plato Data Intelligence"</p>
+      </div>
 
       {loading ? (
         <div className="flex items-center justify-center p-12">
           <Loader2 className="h-8 w-8 animate-spin" />
         </div>
       ) : (
-        <>
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Total Verticals</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">{verticalStats.length}</div>
-                <p className="text-xs text-muted-foreground mt-1">Content categories</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Total Articles</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">
-                  {verticalStats.reduce((sum, v) => sum + v.total_articles, 0).toLocaleString()}
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">Across all verticals</p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-green-500/20 bg-green-500/5">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-green-600">✓ DB Updated</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-green-600">
-                  {verticalStats.reduce((sum, v) => sum + v.updated_articles, 0).toLocaleString()}
-                </div>
-                <p className="text-xs text-green-600/80 mt-1">Plato Data Intelligence</p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-blue-500/20 bg-blue-500/5">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-blue-600">URLs Cleared</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-blue-600">
-                  {verticalStats.reduce((sum, v) => sum + v.urls_cleared, 0).toLocaleString()}
-                </div>
-                <p className="text-xs text-blue-600/80 mt-1">Old sources removed</p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-red-500/20 bg-red-500/5">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-red-600">Needs Update</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-red-600">
-                  {verticalStats.reduce((sum, v) => sum + v.needs_update, 0).toLocaleString()}
-                </div>
-                <p className="text-xs text-red-600/80 mt-1">Still showing old sources</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Status Alert */}
-          {verticalStats.reduce((sum, v) => sum + v.updated_articles, 0) > 0 && (
-            <Card className="border-green-500/20 bg-green-500/5">
-              <CardHeader>
-                <CardTitle className="text-green-600 flex items-center gap-2">
-                  <span className="text-2xl">✓</span> Database Update Confirmed
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <p className="text-sm">
-                  <strong>{verticalStats.reduce((sum, v) => sum + v.updated_articles, 0).toLocaleString()}</strong> articles have been successfully updated in the database.
-                </p>
-                <p className="text-sm">
-                  All updated articles now display: <code className="bg-green-500/10 px-2 py-1 rounded text-green-600">Source: Plato Data Intelligence.</code>
-                </p>
-                <p className="text-sm">
-                  <strong>{verticalStats.reduce((sum, v) => sum + v.urls_cleared, 0).toLocaleString()}</strong> external URLs have been cleared from old sources.
-                </p>
-              </CardContent>
-            </Card>
-          )}
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Statistics by Vertical</CardTitle>
-              <CardDescription>Breakdown of updated vs skipped articles per vertical - Process individual verticals</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Vertical</TableHead>
-                    <TableHead className="text-right">Total Articles</TableHead>
-                    <TableHead className="text-right">DB Updated</TableHead>
-                    <TableHead className="text-right">URLs Cleared</TableHead>
-                    <TableHead className="text-right">Needs Update</TableHead>
-                    <TableHead className="text-right">Success %</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {verticalStats.map((stat) => (
-                    <TableRow key={stat.vertical_slug}>
-                      <TableCell className="font-medium capitalize">
-                        {stat.vertical_slug.replace(/-/g, ' ')}
-                      </TableCell>
-                      <TableCell className="text-right">{stat.total_articles.toLocaleString()}</TableCell>
-                      <TableCell className="text-right">
-                        <span className="text-green-600 font-semibold">{stat.updated_articles.toLocaleString()}</span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <span className="text-blue-600">{stat.urls_cleared.toLocaleString()}</span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Badge variant={stat.needs_update > 0 ? "destructive" : "secondary"}>
-                          {stat.needs_update.toLocaleString()}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right font-semibold">
-                        {((stat.updated_articles / stat.total_articles) * 100).toFixed(1)}%
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button
-                          onClick={() => processVertical(stat.vertical_slug)}
-                          disabled={processingVertical !== null || processingAll}
-                          size="sm"
-                          variant={stat.needs_update > 0 ? "default" : "outline"}
-                        >
-                          {processingVertical === stat.vertical_slug ? (
-                            <>
-                              <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                              Processing...
-                            </>
-                          ) : (
-                            <>
-                              <Play className="mr-2 h-3 w-3" />
-                              Process
-                            </>
-                          )}
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {/* Totals Row */}
-                  <TableRow className="bg-muted/50 font-bold">
-                    <TableCell>TOTAL</TableCell>
+        <Card>
+          <CardHeader>
+            <CardTitle>Verticals</CardTitle>
+            <CardDescription>Click Process to update source attribution for each vertical</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Vertical</TableHead>
+                  <TableHead className="text-right">Total Articles</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {verticals.map((vertical) => (
+                  <TableRow key={vertical.vertical_slug}>
+                    <TableCell className="font-medium capitalize">
+                      {vertical.vertical_slug.replace(/-/g, ' ')}
+                    </TableCell>
+                    <TableCell className="text-right">{vertical.article_count.toLocaleString()}</TableCell>
                     <TableCell className="text-right">
-                      {verticalStats.reduce((sum, v) => sum + v.total_articles, 0).toLocaleString()}
+                      <Button
+                        onClick={() => processVertical(vertical.vertical_slug)}
+                        disabled={processingVertical !== null}
+                        size="sm"
+                      >
+                        {processingVertical === vertical.vertical_slug ? (
+                          <>
+                            <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            <Play className="mr-2 h-3 w-3" />
+                            Process
+                          </>
+                        )}
+                      </Button>
                     </TableCell>
-                    <TableCell className="text-right text-green-600">
-                      {verticalStats.reduce((sum, v) => sum + v.updated_articles, 0).toLocaleString()}
-                    </TableCell>
-                    <TableCell className="text-right text-blue-600">
-                      {verticalStats.reduce((sum, v) => sum + v.urls_cleared, 0).toLocaleString()}
-                    </TableCell>
-                    <TableCell className="text-right text-red-600">
-                      {verticalStats.reduce((sum, v) => sum + v.needs_update, 0).toLocaleString()}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {((verticalStats.reduce((sum, v) => sum + v.updated_articles, 0) / 
-                        verticalStats.reduce((sum, v) => sum + v.total_articles, 0)) * 100).toFixed(1)}%
-                    </TableCell>
-                    <TableCell></TableCell>
                   </TableRow>
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
