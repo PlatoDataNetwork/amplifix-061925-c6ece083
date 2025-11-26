@@ -215,7 +215,7 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
               <AlertDialogHeader>
                 <AlertDialogTitle>Add Source Attribution?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This will add "Source: Plato Data Intelligence" to the bottom of all {formatVerticalName(verticalSlug)} articles 
+                  This will add "Source: Plato Data Intelligence" to the bottom of all <span className="font-semibold">{formatVerticalName(verticalSlug)}</span> articles 
                   that don't already have it. The source will appear with proper styling.
                 </AlertDialogDescription>
               </AlertDialogHeader>
