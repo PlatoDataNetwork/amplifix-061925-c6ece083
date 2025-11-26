@@ -224,94 +224,70 @@ const ImportAdmin = () => {
         .from('ai_processing_jobs')
         .select('*')
         .eq('vertical_slug', 'ar-vr')
-        .eq('status', 'in_progress')
         .order('started_at', { ascending: false })
         .limit(1);
 
       if (jobError) throw jobError;
 
       if (!jobs || jobs.length === 0) {
-        toast.info('No stalled job found, starting fresh...');
+        toast.info('No existing job found, starting fresh...');
         await handleStartArvrAiProcessing();
         return;
       }
 
       const job = jobs[0];
-      const processedChunks = job.processed_chunks || [];
-      const totalChunks = job.total_chunks;
 
-      // Find unprocessed chunks
-      const unprocessedChunks = [];
-      for (let i = 0; i < totalChunks; i++) {
-        if (!processedChunks.includes(i)) {
-          unprocessedChunks.push(i);
-        }
-      }
+      // Process remaining unprocessed articles in small batches starting from the beginning
+      // We ignore chunk indexes here because the dataset of unprocessed articles keeps shrinking.
+      let safetyCounter = 0;
+      const MAX_BATCHES = 200; // hard safety limit
 
-      if (unprocessedChunks.length === 0) {
-        toast.success('All chunks already processed!');
-        // Mark job as complete
-        await supabase
-          .from('ai_processing_jobs')
-          .update({
-            status: 'completed',
-            completed_at: new Date().toISOString()
-          })
-          .eq('id', job.id);
-        await loadArvrStats();
-        return;
-      }
+      while (safetyCounter < MAX_BATCHES) {
+        safetyCounter++;
 
-      toast.success(`Resuming ${unprocessedChunks.length} remaining chunks...`, {
-        description: 'Processing will continue in background. Stats update every 5 seconds.',
-        duration: 5000
-      });
-
-      // Process chunks sequentially in background
-      const processChunksSequentially = async () => {
-        for (const chunkIndex of unprocessedChunks) {
-          try {
-            console.log(`📦 Processing AR/VR chunk ${chunkIndex + 1}/${totalChunks}...`);
-            
-            const response = await supabase.functions.invoke('format-all-articles', {
-              body: {
-                chunkIndex,
-                chunkSize: 50,
-                verticalSlug: 'ar-vr',
-                jobId: job.id
-              }
-            });
-
-            if (response.error) {
-              console.error(`❌ Chunk ${chunkIndex} failed:`, response.error);
-            } else {
-              console.log(`✅ Chunk ${chunkIndex} completed`);
-            }
-
-            // Wait between chunks to avoid overwhelming the system
-            await new Promise(resolve => setTimeout(resolve, 3000));
-          } catch (error) {
-            console.error(`❌ Error processing chunk ${chunkIndex}:`, error);
+        const { data, error } = await supabase.functions.invoke('format-all-articles', {
+          body: {
+            // Use default chunkIndex = 0 inside the function
+            chunkSize: 50,
+            verticalSlug: 'ar-vr',
+            jobId: job.id
           }
+        });
+
+        if (error) {
+          console.error('Error invoking format-all-articles for AR/VR:', error);
+          break;
         }
 
-        // Mark job as complete after all chunks
-        await supabase
-          .from('ai_processing_jobs')
-          .update({
-            status: 'completed',
-            completed_at: new Date().toISOString()
-          })
-          .eq('id', job.id);
+        // When there are no more articles to process, the function returns processed: 0
+        if (!data || (typeof data.processed === 'number' && data.processed === 0)) {
+          break;
+        }
 
-        console.log('🎉 AR/VR AI processing complete');
-      };
+        // Refresh stats between batches so the UI updates progressively
+        await loadArvrStats();
 
-      // Start processing in background (don't await)
-      processChunksSequentially();
-      
+        // Small delay between batches to avoid overwhelming the system / AI gateway
+        await new Promise(resolve => setTimeout(resolve, 3000));
+      }
+
+      // Try to mark the job as completed (ignore errors, since RLS might block this for non-service roles)
+      await supabase
+        .from('ai_processing_jobs')
+        .update({
+          status: 'completed',
+          completed_at: new Date().toISOString()
+        })
+        .eq('id', job.id);
+
       await loadArvrStats();
+
+      toast.success('AR/VR AI processing resume cycle finished.', {
+        description: 'If remaining is still > 0, some articles may have failed individual processing.',
+        duration: 6000,
+      });
     } catch (error) {
+      console.error('Failed to resume AR/VR AI processing:', error);
       toast.error('Failed to resume AR/VR AI processing', {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
