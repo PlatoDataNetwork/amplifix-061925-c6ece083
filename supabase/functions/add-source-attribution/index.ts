@@ -45,9 +45,10 @@ Deno.serve(async (req) => {
 
     console.log(`Found ${articles.length} articles to update`);
 
-    // Source attribution HTML with proper styling
+    // Source attribution HTML with proper styling and line break
     const sourceAttribution = `
-<div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(229, 231, 235, 0.3);">
+
+<div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid rgba(229, 231, 235, 0.5);">
   <p style="margin: 0; font-size: 0.875rem; line-height: 1.5;">
     <span style="color: rgba(255, 255, 255, 0.7);">Source: </span>
     <a href="https://plato.io" target="_blank" rel="noopener noreferrer" style="color: #3b82f6; text-decoration: none; font-weight: 500;">Plato Data Intelligence</a>
@@ -68,7 +69,7 @@ Deno.serve(async (req) => {
           continue;
         }
 
-        // Append source attribution to content
+        // Append source attribution with proper line break
         const updatedContent = article.content + sourceAttribution;
 
         const { error: updateError } = await supabase
