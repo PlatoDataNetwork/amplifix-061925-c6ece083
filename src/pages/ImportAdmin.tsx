@@ -29,6 +29,7 @@ import { DuplicateMonitor } from "@/components/DuplicateMonitor";
 import { AerospaceImport } from "@/components/admin/AerospaceImport";
 import { AerospaceStatsDashboard } from "@/components/AerospaceStatsDashboard";
 import { ImportHistoryTable } from "@/components/ImportHistoryTable";
+import { AerospaceUrlBackfill } from "@/components/AerospaceUrlBackfill";
 
 const ImportAdmin = () => {
   const navigate = useNavigate();
@@ -1603,6 +1604,11 @@ const ImportAdmin = () => {
 
           {/* Import History Table */}
           <ImportHistoryTable />
+
+          {/* Aerospace URL Backfill */}
+          <div className="mb-8">
+            <AerospaceUrlBackfill />
+          </div>
 
           {/* Test Import Single Vertical Section */}
           <Card className="mb-8 border-blue-500/50">
