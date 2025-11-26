@@ -27,7 +27,8 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
     clearImportHistory,
     clearAllArticles,
     addSourceAttribution,
-    removeSourceAttribution
+    removeSourceAttribution,
+    resetAIProcessing
   } = useVerticalOperations(verticalSlug);
 
   useEffect(() => {
@@ -192,6 +193,36 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
               </>
             )}
           </Button>
+
+          {stats.aiProcessed > 0 && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  disabled={processing}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Reset AI Processing ({stats.aiProcessed.toLocaleString()})
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reset AI Processing?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will reset the AI processing flag for {stats.aiProcessed.toLocaleString()} processed articles in {formatVerticalName(verticalSlug)}, 
+                    allowing you to reprocess them with the improved formatting. This is useful after updating the AI processing prompt.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={resetAIProcessing}>
+                    Reset Processing
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
 
           <p className="text-xs text-muted-foreground text-center">
             Formats content and extracts tags using AI
