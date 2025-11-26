@@ -24,6 +24,8 @@ export default function PlatoSourceStats() {
   const [verticalStats, setVerticalStats] = useState<VerticalStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingVertical, setProcessingVertical] = useState<string | null>(null);
+  const [processingAll, setProcessingAll] = useState(false);
+  const [processProgress, setProcessProgress] = useState({ current: 0, total: 0 });
 
   useEffect(() => {
     if (!authLoading && !isAdmin) {
@@ -174,6 +176,70 @@ export default function PlatoSourceStats() {
     }
   };
 
+  const processAllVerticals = async () => {
+    setProcessingAll(true);
+    const verticalsToProcess = verticalStats.filter(v => v.needs_update > 0);
+    setProcessProgress({ current: 0, total: verticalsToProcess.length });
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error('You must be logged in to perform this action');
+      }
+
+      toast.info('Batch Processing Started', {
+        description: `Processing ${verticalsToProcess.length} verticals with updates needed...`,
+      });
+
+      let successCount = 0;
+      let errorCount = 0;
+
+      for (let i = 0; i < verticalsToProcess.length; i++) {
+        const vertical = verticalsToProcess[i];
+        setProcessProgress({ current: i + 1, total: verticalsToProcess.length });
+        
+        try {
+          const { data, error: functionError } = await supabase.functions.invoke(
+            'update-plato-sources',
+            {
+              body: { vertical: vertical.vertical_slug },
+              headers: {
+                Authorization: `Bearer ${session.access_token}`,
+              },
+            }
+          );
+
+          if (functionError) throw functionError;
+
+          if (data.success) {
+            successCount++;
+          } else {
+            errorCount++;
+          }
+        } catch (err) {
+          console.error(`Error processing ${vertical.vertical_slug}:`, err);
+          errorCount++;
+        }
+      }
+
+      // Refresh stats after all processing
+      await fetchStats();
+
+      toast.success('✓ Batch Processing Complete', {
+        description: `Processed ${successCount} verticals successfully${errorCount > 0 ? `, ${errorCount} errors` : ''}`,
+      });
+    } catch (err: any) {
+      console.error('Batch processing error:', err);
+      toast.error('Batch Processing Failed', {
+        description: err.message,
+      });
+    } finally {
+      setProcessingAll(false);
+      setProcessProgress({ current: 0, total: 0 });
+    }
+  };
+
   if (authLoading || !isAdmin) {
     return null;
   }
@@ -184,11 +250,26 @@ export default function PlatoSourceStats() {
           <div>
             <h1 className="text-3xl font-bold mb-2">Plato Source Update Statistics</h1>
             <p className="text-muted-foreground">Track article source attribution updates across all verticals</p>
+            {processingAll && (
+              <p className="text-sm text-primary mt-2">
+                Processing {processProgress.current} of {processProgress.total} verticals...
+              </p>
+            )}
           </div>
-          <Button onClick={fetchStats} variant="outline" disabled={loading}>
-            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-            Refresh Stats
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={processAllVerticals} 
+              variant="default" 
+              disabled={loading || processingAll || verticalStats.reduce((sum, v) => sum + v.needs_update, 0) === 0}
+            >
+              <Play className={`mr-2 h-4 w-4 ${processingAll ? 'animate-spin' : ''}`} />
+              {processingAll ? 'Processing All...' : 'Process All Verticals'}
+            </Button>
+            <Button onClick={fetchStats} variant="outline" disabled={loading || processingAll}>
+              <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              Refresh Stats
+            </Button>
+          </div>
         </div>
 
       {loading ? (
@@ -322,7 +403,7 @@ export default function PlatoSourceStats() {
                       <TableCell className="text-right">
                         <Button
                           onClick={() => processVertical(stat.vertical_slug)}
-                          disabled={processingVertical !== null}
+                          disabled={processingVertical !== null || processingAll}
                           size="sm"
                           variant={stat.needs_update > 0 ? "default" : "outline"}
                         >
