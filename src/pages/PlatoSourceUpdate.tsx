@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { AlertCircle, CheckCircle2, Loader2, Clock } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, Database } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 
@@ -27,16 +27,23 @@ interface UpdateStats {
   verticals: VerticalStats[];
 }
 
+interface VerticalInfo {
+  vertical: string;
+  count: number;
+}
+
 export default function PlatoSourceUpdate() {
   const [isRunning, setIsRunning] = useState(false);
   const [stats, setStats] = useState<UpdateStats | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [verticalCounts, setVerticalCounts] = useState<Record<string, number>>({});
+  const [verticals, setVerticals] = useState<VerticalInfo[]>([]);
+  const [isLoadingVerticals, setIsLoadingVerticals] = useState(true);
   const { toast } = useToast();
 
-  // Fetch vertical counts on mount
+  // Fetch all verticals and their counts on mount
   useEffect(() => {
-    const fetchVerticalCounts = async () => {
+    const fetchVerticals = async () => {
+      setIsLoadingVerticals(true);
       const { data, error } = await supabase
         .from('articles')
         .select('vertical_slug')
@@ -47,11 +54,17 @@ export default function PlatoSourceUpdate() {
         data.forEach(article => {
           counts[article.vertical_slug] = (counts[article.vertical_slug] || 0) + 1;
         });
-        setVerticalCounts(counts);
+        
+        const verticalList = Object.entries(counts)
+          .map(([vertical, count]) => ({ vertical, count }))
+          .sort((a, b) => b.count - a.count);
+        
+        setVerticals(verticalList);
       }
+      setIsLoadingVerticals(false);
     };
 
-    fetchVerticalCounts();
+    fetchVerticals();
   }, []);
 
   const startUpdate = async () => {
@@ -67,8 +80,8 @@ export default function PlatoSourceUpdate() {
       }
 
       toast({
-        title: "Starting Update",
-        description: "Updating article sources across all verticals...",
+        title: "Starting Database Update",
+        description: `Processing ${verticals.reduce((sum, v) => sum + v.count, 0)} articles across ${verticals.length} verticals...`,
       });
 
       const { data, error: functionError } = await supabase.functions.invoke(
@@ -85,8 +98,8 @@ export default function PlatoSourceUpdate() {
       if (data.success) {
         setStats(data.stats);
         toast({
-          title: "Update Complete",
-          description: `Updated ${data.stats.updated} articles across ${data.stats.verticals.length} verticals`,
+          title: "Database Update Complete",
+          description: `Successfully updated ${data.stats.updated} articles across ${data.stats.verticals.length} verticals`,
         });
       } else {
         throw new Error(data.error || 'Update failed');
@@ -116,74 +129,125 @@ export default function PlatoSourceUpdate() {
       case 'completed':
         return <Badge className="bg-green-500">Completed</Badge>;
       case 'processing':
-        return <Badge className="bg-blue-500">Processing</Badge>;
+        return <Badge className="bg-blue-500 animate-pulse">Processing</Badge>;
       default:
         return <Badge variant="secondary">Pending</Badge>;
     }
   };
 
+  const totalArticles = verticals.reduce((sum, v) => sum + v.count, 0);
+
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
+    <div className="container mx-auto p-6 max-w-7xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Plato Source Update</h1>
+        <h1 className="text-3xl font-bold mb-2">Plato Source Update Dashboard</h1>
         <p className="text-muted-foreground">
-          Update article sources to display "Source: Plato Data Intelligence." without backlinks
+          Update article sources across all verticals (excluding Aerospace & Aviation)
         </p>
       </div>
+
+      <div className="grid gap-6 mb-6 md:grid-cols-3">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Total Verticals</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">{verticals.length}</div>
+            <p className="text-xs text-muted-foreground mt-1">Ready to process</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Total Articles</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">{totalArticles.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground mt-1">Across all verticals</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Successfully Processed</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+              {stats?.updated.toLocaleString() || '0'}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Database updated</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>All Verticals to Process</CardTitle>
+          <CardDescription>
+            Complete list of verticals and their article counts
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isLoadingVerticals ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              {verticals.map(({ vertical, count }) => (
+                <div 
+                  key={vertical} 
+                  className="flex justify-between items-center bg-secondary/30 px-4 py-3 rounded-lg hover:bg-secondary/50 transition-colors"
+                >
+                  <span className="capitalize text-sm font-medium">
+                    {vertical.replace(/-/g, ' ')}
+                  </span>
+                  <Badge variant="outline" className="ml-2">
+                    {count.toLocaleString()}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Update Configuration</CardTitle>
           <CardDescription>
-            This process will update all articles excluding Aerospace and Aviation verticals at the database level
+            Database-level updates with automatic source normalization
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Database-Level Updates</AlertTitle>
+            <Database className="h-4 w-4" />
+            <AlertTitle>What This Does</AlertTitle>
             <AlertDescription>
-              All changes are made directly to the database. This will remove all backlinks from article sources and replace them with plain text: 
-              <span className="font-mono text-sm ml-1">"Source: Plato Data Intelligence."</span>
+              <ul className="list-disc list-inside space-y-1 mt-2 text-sm">
+                <li>Updates articles <strong>directly in the database</strong></li>
+                <li>Replaces all source links with: <code className="bg-secondary px-1 py-0.5 rounded">Source: Plato Data Intelligence.</code></li>
+                <li>Removes Zephyrnet and Plato AI references</li>
+                <li>Skips articles already in correct format</li>
+              </ul>
             </AlertDescription>
           </Alert>
 
-          {Object.keys(verticalCounts).length > 0 && !stats && (
-            <div className="bg-secondary/30 p-4 rounded-lg">
-              <h3 className="font-semibold mb-3 flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                Verticals to Process
-              </h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 text-sm">
-                {Object.entries(verticalCounts)
-                  .sort((a, b) => b[1] - a[1])
-                  .map(([vertical, count]) => (
-                    <div key={vertical} className="flex justify-between items-center bg-background/50 px-3 py-2 rounded">
-                      <span className="capitalize">{vertical.replace(/-/g, ' ')}</span>
-                      <Badge variant="outline">{count}</Badge>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          )}
-
-          <div className="flex gap-4">
-            <Button
-              onClick={startUpdate}
-              disabled={isRunning}
-              size="lg"
-              className="w-full"
-            >
-              {isRunning ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating Database...
-                </>
-              ) : (
-                "Start Update"
-              )}
-            </Button>
-          </div>
+          <Button
+            onClick={startUpdate}
+            disabled={isRunning || verticals.length === 0}
+            size="lg"
+            className="w-full"
+          >
+            {isRunning ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing {totalArticles.toLocaleString()} Articles...
+              </>
+            ) : (
+              `Start Database Update (${totalArticles.toLocaleString()} Articles)`
+            )}
+          </Button>
         </CardContent>
       </Card>
 
@@ -209,35 +273,35 @@ export default function PlatoSourceUpdate() {
                 <div className="flex justify-between mb-2">
                   <span className="text-sm font-medium">Overall Progress</span>
                   <span className="text-sm text-muted-foreground">
-                    {stats.processed} / {stats.totalArticles}
+                    {stats.processed.toLocaleString()} / {stats.totalArticles.toLocaleString()}
                   </span>
                 </div>
-                <Progress value={getProgress()} className="h-2" />
+                <Progress value={getProgress()} className="h-3" />
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-secondary/50 p-4 rounded-lg">
-                  <div className="text-2xl font-bold">{stats.totalArticles}</div>
+                  <div className="text-2xl font-bold">{stats.totalArticles.toLocaleString()}</div>
                   <div className="text-sm text-muted-foreground">Total Articles</div>
                 </div>
                 
-                <div className="bg-green-500/10 p-4 rounded-lg">
+                <div className="bg-green-500/10 p-4 rounded-lg border border-green-500/20">
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                    {stats.updated}
+                    {stats.updated.toLocaleString()}
                   </div>
-                  <div className="text-sm text-muted-foreground">Updated</div>
+                  <div className="text-sm text-muted-foreground">Successfully Updated</div>
                 </div>
                 
-                <div className="bg-blue-500/10 p-4 rounded-lg">
+                <div className="bg-blue-500/10 p-4 rounded-lg border border-blue-500/20">
                   <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                    {stats.skipped}
+                    {stats.skipped.toLocaleString()}
                   </div>
-                  <div className="text-sm text-muted-foreground">Skipped</div>
+                  <div className="text-sm text-muted-foreground">Skipped (Already Correct)</div>
                 </div>
                 
-                <div className="bg-red-500/10 p-4 rounded-lg">
+                <div className="bg-red-500/10 p-4 rounded-lg border border-red-500/20">
                   <div className="text-2xl font-bold text-red-600 dark:text-red-400">
-                    {stats.errors}
+                    {stats.errors.toLocaleString()}
                   </div>
                   <div className="text-sm text-muted-foreground">Errors</div>
                 </div>
@@ -249,13 +313,13 @@ export default function PlatoSourceUpdate() {
             <CardHeader>
               <CardTitle>Per-Vertical Statistics</CardTitle>
               <CardDescription>
-                Detailed breakdown by vertical
+                Detailed breakdown by vertical with real-time status
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {stats.verticals.map((vertical) => (
-                  <div key={vertical.vertical} className="border rounded-lg p-4">
+                  <div key={vertical.vertical} className="border rounded-lg p-4 hover:border-primary/50 transition-colors">
                     <div className="flex justify-between items-center mb-3">
                       <h3 className="font-semibold capitalize text-lg">
                         {vertical.vertical.replace(/-/g, ' ')}

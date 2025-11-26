@@ -133,12 +133,24 @@ Deno.serve(async (req) => {
               continue;
             }
 
+            // Skip if already has correct format (plain text, no link)
+            if (/Source:\s*Plato Data Intelligence\.\s*$/mi.test(article.content) && 
+                !/<a[^>]*>.*?Plato Data Intelligence.*?<\/a>/i.test(article.content) &&
+                !/Zephyrnet/i.test(article.content) &&
+                !/Plato AI/i.test(article.content)) {
+              vStats.skipped++;
+              vStats.processed++;
+              stats.skipped++;
+              stats.processed++;
+              continue;
+            }
+
             // Replace various source patterns with the new format
             let updatedContent = article.content;
             let needsUpdate = false;
 
             // Pattern 1: Source: <a href="...">Plato Data Intelligence</a>
-            const pattern1 = /Source:\s*<a\s+[^>]*href=["'][^"']*["'][^>]*>Plato Data Intelligence(?:\.|<\/a>)/gi;
+            const pattern1 = /Source:\s*<a\s+[^>]*href=["'][^"']*["'][^>]*>Plato Data Intelligence[^<]*<\/a>/gi;
             if (pattern1.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern1, 'Source: Plato Data Intelligence.');
               needsUpdate = true;
@@ -155,6 +167,34 @@ Deno.serve(async (req) => {
             const pattern3 = /<a\s+[^>]*href=["']https?:\/\/[^"']*plato[^"']*["'][^>]*>Plato Data Intelligence[^<]*<\/a>/gi;
             if (pattern3.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern3, 'Plato Data Intelligence');
+              needsUpdate = true;
+            }
+
+            // Pattern 4: Remove Zephyrnet references
+            const pattern4 = /Source:\s*<a\s+[^>]*href=["'][^"']*["'][^>]*>Zephyrnet[^<]*<\/a>/gi;
+            if (pattern4.test(updatedContent)) {
+              updatedContent = updatedContent.replace(pattern4, 'Source: Plato Data Intelligence.');
+              needsUpdate = true;
+            }
+
+            // Pattern 5: Remove Zephyrnet plain text
+            const pattern5 = /Source:\s*Zephyrnet\s*\.?/gi;
+            if (pattern5.test(updatedContent)) {
+              updatedContent = updatedContent.replace(pattern5, 'Source: Plato Data Intelligence.');
+              needsUpdate = true;
+            }
+
+            // Pattern 6: Remove Plato AI references
+            const pattern6 = /Source:\s*<a\s+[^>]*href=["'][^"']*["'][^>]*>Plato AI[^<]*<\/a>/gi;
+            if (pattern6.test(updatedContent)) {
+              updatedContent = updatedContent.replace(pattern6, 'Source: Plato Data Intelligence.');
+              needsUpdate = true;
+            }
+
+            // Pattern 7: Remove Plato AI plain text
+            const pattern7 = /Source:\s*Plato AI\s*\.?/gi;
+            if (pattern7.test(updatedContent)) {
+              updatedContent = updatedContent.replace(pattern7, 'Source: Plato Data Intelligence.');
               needsUpdate = true;
             }
 
