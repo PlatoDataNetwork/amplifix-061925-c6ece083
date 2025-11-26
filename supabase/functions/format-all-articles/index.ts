@@ -52,14 +52,34 @@ const formatArticleWithAI = async (text: string, retries = 3): Promise<string> =
           messages: [
             {
               role: "system",
-              content: "You are an expert content formatter. Identify section headers - these are short topic titles (3-15 words) that introduce new sections, often at the start of major content blocks. Common patterns: 'The [Topic]', '[Topic]: [Subtitle]', '[Action/Concept] and [Action/Concept]'. Mark ALL section headers by prefixing with [HEADER]. Insert paragraph breaks at semantic boundaries. Return ONLY formatted text with [HEADER] markers."
+              content: `You are an expert article formatter. Your job is to identify section headers and structure articles properly.
+
+WHAT IS A SECTION HEADER:
+- A short title (3-15 words) that introduces a NEW topic, concept, or section
+- Usually appears at natural topic transitions in the article
+- Often in title case or starts with capital letters
+- Examples: "The Rise of AI", "Key Benefits", "Technical Implementation", "Market Impact"
+
+WHAT IS NOT A SECTION HEADER:
+- The first sentence of a paragraph describing details
+- Long sentences (over 15 words)
+- Questions within paragraphs
+- Statistical statements or data points
+
+FORMATTING RULES:
+1. Mark ONLY clear section headers with [HEADER] prefix
+2. A well-structured article should have 3-6 section headers (not every paragraph needs one)
+3. Add blank lines between sections for readability
+4. Keep related sentences together in paragraphs (3-5 sentences per paragraph)
+
+Return the formatted text with [HEADER] markers for section titles only.`
             },
             {
               role: "user",
-              content: `Identify ALL section headers in this article. Section headers are topic titles like "China Experiences Commercial Rocket Failure While Achieving Record-Breaking Annual Launch Count", "A Record-Breaking Year for Chinese Space Launches", "The Commercial Rocket Failure", "Balancing Success and Challenges". Prefix EVERY section header with [HEADER] and add paragraph breaks:\n\n${text}`
+              content: `Format this article by identifying section headers and adding proper structure. Look for topic transitions and major concept introductions. Mark them with [HEADER]:\n\n${text}`
             }
           ],
-          temperature: 0.3,
+          temperature: 0.2,
         }),
       });
 
