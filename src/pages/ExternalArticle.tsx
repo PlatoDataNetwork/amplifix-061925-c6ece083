@@ -332,27 +332,43 @@ if (!article) {
                dangerouslySetInnerHTML={{
                  __html: (() => {
                    // Remove Plato source links before processing
-                   const contentWithoutSourceLinks = (article.content || article.excerpt || "")
-                     .replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/gi, '')
-                     .replace(/<div class="plato-post-bottom-links">[\s\S]*?<\/div>/gi, '')
-                     .replace(/Source Link:[\s\S]*?<\/a>/gi, '');
-                   
-                   // Check if content has HTML tags
-                   return /<\/?[a-z][\s\S]*>/i.test(contentWithoutSourceLinks)
-                     ? contentWithoutSourceLinks
-                     : formatExternalArticleContent(contentWithoutSourceLinks);
+                    const contentWithoutSourceLinks = (article.content || article.excerpt || "")
+                      .replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/gi, '')
+                      .replace(/<div class="plato-post-bottom-links">[\s\S]*?<\/div>/gi, '')
+                      .replace(/Source Link:[\s\S]*?<\/a>/gi, '');
+
+                    // Remove existing Published footer paragraph to avoid duplication
+                    const contentWithoutPublished = contentWithoutSourceLinks.replace(
+                      /<p class="text-sm text-muted-foreground mt-6 pt-4 border-t border-border">[\s\S]*?Published:[\s\S]*?<\/p>/gi,
+                      ''
+                    );
+                    
+                    // Check if content has HTML tags
+                    return /<\/?[a-z][\s\S]*>/i.test(contentWithoutPublished)
+                      ? contentWithoutPublished
+                      : formatExternalArticleContent(contentWithoutPublished);
                  })(),
                }}
              />
            </div>
 
-          {/* Source Link */}
-          {article.external_url && (
-            <div className="mb-6 pb-6 border-b border-border">
-              <p className="text-sm text-muted-foreground">
-                <span className="translate">Source:</span>{' '}
-                {article.vertical_slug === 'aerospace' || article.vertical_slug === 'aviation' ? (
-                  <a 
+          {/* Published + Source */}
+          <div className="mb-6 pb-6 border-b border-border">
+            <p className="text-sm text-muted-foreground">
+              {(() => {
+                const isAviationOrAerospace =
+                  article.vertical_slug === 'aerospace' || article.vertical_slug === 'aviation';
+                const publishedAt = article.published_at ? new Date(article.published_at) : null;
+                const formattedDate = publishedAt
+                  ? publishedAt.toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })
+                  : null;
+
+                const sourceNode = isAviationOrAerospace && article.external_url ? (
+                  <a
                     href={article.external_url}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -361,13 +377,20 @@ if (!article) {
                     {new URL(article.external_url).hostname}
                   </a>
                 ) : (
-                  <span className="font-medium">
-                    Plato Data Intelligence
-                  </span>
-                )}
-              </p>
-            </div>
-          )}
+                  <span className="font-medium">Plato Data Intelligence</span>
+                );
+
+                return (
+                  <>
+                    {formattedDate && <>Published: {formattedDate} | </>}
+                    <span className="translate">Source:</span>{' '}
+                    {sourceNode}
+                  </>
+                );
+              })()}
+            </p>
+          </div>
+
 
 
 
