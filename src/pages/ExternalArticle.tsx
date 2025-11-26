@@ -361,18 +361,14 @@ if (!article) {
                     {new URL(article.external_url).hostname}
                   </a>
                 ) : (
-                  <a
-                    href="https://platodata.ai"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:text-blue-400 transition-colors underline"
-                  >
+                  <span className="font-medium">
                     Plato Data Intelligence
-                  </a>
+                  </span>
                 )}
               </p>
             </div>
           )}
+
 
 
           {/* AmplifiX Branding */}
