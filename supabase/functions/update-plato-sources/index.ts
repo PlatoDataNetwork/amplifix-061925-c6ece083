@@ -142,13 +142,16 @@ Deno.serve(async (req) => {
       verticals: verticalStats,
     };
 
-    const BATCH_SIZE = 20;
+    const BATCH_SIZE = 100; // Increased for faster processing
     
     // Process each vertical separately
     for (const [verticalSlug, verticalArticles] of verticalGroups) {
       const vStats = verticalStats.find(v => v.vertical === verticalSlug)!;
       vStats.status = 'processing';
       console.log(`\n🔄 Processing vertical: ${verticalSlug} (${verticalArticles.length} articles)`);
+
+      // Prepare bulk updates
+      const bulkUpdates: Array<{id: string, data: any}> = [];
 
       for (let i = 0; i < verticalArticles.length; i += BATCH_SIZE) {
         const batch = verticalArticles.slice(i, i + BATCH_SIZE);
@@ -248,19 +251,9 @@ Deno.serve(async (req) => {
                 updateData.external_url = null;
               }
 
-              const { error: updateError } = await supabase
-                .from('articles')
-                .update(updateData)
-                .eq('id', article.id);
-
-              if (updateError) {
-                console.error(`Error updating article ${article.id}:`, updateError);
-                vStats.errors++;
-                stats.errors++;
-              } else {
-                vStats.updated++;
-                stats.updated++;
-              }
+              bulkUpdates.push({ id: article.id, data: updateData });
+              vStats.updated++;
+              stats.updated++;
             } else {
               vStats.skipped++;
               stats.skipped++;
@@ -277,8 +270,27 @@ Deno.serve(async (req) => {
           }
         }
 
-        // Small delay between batches
-        await new Promise(resolve => setTimeout(resolve, 50));
+        // Execute bulk updates for this batch
+        if (bulkUpdates.length > 0) {
+          try {
+            for (const update of bulkUpdates) {
+              const { error: updateError } = await supabase
+                .from('articles')
+                .update(update.data)
+                .eq('id', update.id);
+
+              if (updateError) {
+                console.error(`Error updating article ${update.id}:`, updateError);
+                vStats.errors++;
+                stats.errors++;
+              }
+            }
+            console.log(`✓ Updated ${bulkUpdates.length} articles in batch`);
+            bulkUpdates.length = 0; // Clear the array
+          } catch (error) {
+            console.error(`Error in bulk update:`, error);
+          }
+        }
       }
 
       vStats.status = 'completed';
