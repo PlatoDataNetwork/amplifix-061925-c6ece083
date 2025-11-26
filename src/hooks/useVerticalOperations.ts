@@ -272,6 +272,32 @@ export const useVerticalOperations = (verticalSlug: string) => {
     }
   };
 
+  const addSourceAttribution = async () => {
+    try {
+      setProcessing(true);
+      toast.info(`Adding source attribution to ${verticalSlug} articles...`);
+
+      const { data, error } = await supabase.functions.invoke('add-source-attribution', {
+        body: { verticalSlug }
+      });
+
+      if (error) throw error;
+
+      toast.success('Source attribution added!', {
+        description: data?.message || `Updated ${data?.updated || 0} articles`,
+        duration: 5000
+      });
+
+      await loadStats();
+    } catch (error) {
+      toast.error(`Failed to add source attribution`, {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   return {
     stats,
     processing,
@@ -281,6 +307,7 @@ export const useVerticalOperations = (verticalSlug: string) => {
     cleanupDuplicates,
     backfillUrls,
     clearImportHistory,
-    clearAllArticles
+    clearAllArticles,
+    addSourceAttribution
   };
 };

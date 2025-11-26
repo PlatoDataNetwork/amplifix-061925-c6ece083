@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useVerticalOperations } from "@/hooks/useVerticalOperations";
-import { Loader2, Play, Sparkles, Trash2, Link2, History, AlertTriangle } from "lucide-react";
+import { Loader2, Play, Sparkles, Trash2, Link2, History, AlertTriangle, FileText } from "lucide-react";
 
 interface VerticalImportControlsProps {
   verticalSlug: string;
@@ -20,7 +20,8 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
     cleanupDuplicates,
     backfillUrls,
     clearImportHistory,
-    clearAllArticles
+    clearAllArticles,
+    addSourceAttribution
   } = useVerticalOperations(verticalSlug);
 
   useEffect(() => {
@@ -198,6 +199,34 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
             <Link2 className="mr-2 h-4 w-4" />
             Backfill Missing URLs ({stats.missingUrls})
           </Button>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                disabled={processing}
+                variant="outline"
+                className="w-full"
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                Add Source Attribution
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Add Source Attribution?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will add "Source: Plato Data Intelligence" to the bottom of all {formatVerticalName(verticalSlug)} articles 
+                  that don't already have it. The source will appear with proper styling.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={addSourceAttribution}>
+                  Add Source Attribution
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
