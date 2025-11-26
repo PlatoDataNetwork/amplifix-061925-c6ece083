@@ -77,6 +77,7 @@ import JsonTester from "./pages/JsonTester";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import BackfillDashboard from "./pages/BackfillDashboard";
 import PlatoSourceUpdate from "./pages/PlatoSourceUpdate";
+import PlatoSourceStats from "./pages/PlatoSourceStats";
 
 const queryClient = new QueryClient();
 
@@ -150,6 +151,7 @@ const App = () => (
           <Route path="/admin/aviation-import" element={<AdminRoute><AviationImport /></AdminRoute>} />
           <Route path="/admin/aerospace-import" element={<AdminRoute><AerospaceImport /></AdminRoute>} />
           <Route path="/admin/plato-source-update" element={<AdminRoute><PlatoSourceUpdate /></AdminRoute>} />
+          <Route path="/admin/plato-source-stats" element={<AdminRoute><PlatoSourceStats /></AdminRoute>} />
           <Route path="/admin/users" element={<AdminRoute><UserManagement /></AdminRoute>} />
           <Route path="/admin/articles" element={<AdminRoute><ArticleEditor /></AdminRoute>} />
           <Route path="/admin/articles/edit/:id" element={<AdminRoute><ArticleEditor /></AdminRoute>} />

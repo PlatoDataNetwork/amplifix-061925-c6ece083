@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { AlertCircle, CheckCircle2, Loader2, Database, Play } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, Database, Play, BarChart3 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 
@@ -189,11 +189,20 @@ export default function PlatoSourceUpdate() {
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Plato Source Update Dashboard</h1>
-        <p className="text-muted-foreground">
-          Update article sources across all verticals (excluding Aerospace & Aviation)
-        </p>
+      <div className="mb-8 flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Plato Source Update Dashboard</h1>
+          <p className="text-muted-foreground">
+            Update article sources across all verticals (excluding Aerospace & Aviation)
+          </p>
+        </div>
+        <Button 
+          variant="outline" 
+          onClick={() => window.location.href = '/admin/plato-source-stats'}
+        >
+          <BarChart3 className="mr-2 h-4 w-4" />
+          View Detailed Stats
+        </Button>
       </div>
 
       <div className="grid gap-6 mb-6 md:grid-cols-3">
