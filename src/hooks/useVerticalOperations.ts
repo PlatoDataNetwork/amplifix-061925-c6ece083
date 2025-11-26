@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -30,10 +30,8 @@ export const useVerticalOperations = (verticalSlug: string) => {
   });
   const [processing, setProcessing] = useState(false);
 
-  const loadStats = async () => {
+  const loadStats = useCallback(async () => {
     try {
-      setStats(prev => ({ ...prev, loading: true }));
-
       // Total articles
       const { count: total } = await supabase
         .from('articles')
@@ -80,23 +78,23 @@ export const useVerticalOperations = (verticalSlug: string) => {
         progress = Math.round((processedChunks / job.total_chunks) * 100);
       }
 
-      setStats({
+      setStats(prev => ({
         totalArticles: total || 0,
         aiProcessed: processed || 0,
         remaining: (total || 0) - (processed || 0),
-        duplicates: 0, // Will be calculated on demand
+        duplicates: 0,
         missingUrls: missing || 0,
         lastImport: lastImport?.completed_at || null,
         aiJobId: job?.id || null,
         aiJobStatus: job?.status || null,
         aiProgress: progress,
         loading: false
-      });
+      }));
     } catch (error) {
       console.error(`Error loading ${verticalSlug} stats:`, error);
       setStats(prev => ({ ...prev, loading: false }));
     }
-  };
+  }, [verticalSlug]);
 
   const startFastImport = async () => {
     try {
