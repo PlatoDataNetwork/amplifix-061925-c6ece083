@@ -4,7 +4,7 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, User, Clock, Share2, Twitter, Linkedin, Facebook, Mail, Link as LinkIcon, Edit } from "lucide-react";
+import { ArrowLeft, Calendar, User, Clock, Share2, Twitter, Linkedin, Facebook, Mail, Link as LinkIcon } from "lucide-react";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
@@ -247,7 +247,7 @@ if (!article) {
                 </div>
                 <div className="flex items-center gap-2 notranslate">
                   <Calendar className="h-4 w-4" />
-                  <span>{article.date}</span>
+                  <span>{new Date(article.published_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}</span>
                 </div>
                 <div className="flex items-center gap-2 notranslate">
                   <Clock className="h-4 w-4" />
@@ -297,16 +297,6 @@ if (!article) {
               
               {/* Back Button - Right Aligned */}
               <div className="flex items-center gap-2 ml-auto">
-                {isAdmin && article?.id && (
-                  <Button 
-                    onClick={() => navigate(`/admin/articles/edit/${article.id}`)} 
-                    variant="outline"
-                    className="gap-2"
-                  >
-                    <Edit className="h-4 w-4" />
-                    Edit Article
-                  </Button>
-                )}
                 <Button 
                   onClick={() => navigate(`${langPrefix}/intel/${article.vertical_slug || ''}`)} 
                   variant="ghost" 
