@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowUpDown } from "lucide-react";
 
 interface VerticalStats {
   vertical_slug: string;
@@ -10,9 +11,14 @@ interface VerticalStats {
   last_import: string | null;
 }
 
+type SortField = 'name' | 'articles' | 'ai_processed';
+type SortDirection = 'asc' | 'desc';
+
 export const GlobalImportStatus = () => {
   const [stats, setStats] = useState<VerticalStats[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortField, setSortField] = useState<SortField>('articles');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   const loadGlobalStats = async () => {
     try {
@@ -82,6 +88,45 @@ export const GlobalImportStatus = () => {
   const totalAiProcessed = stats.reduce((sum, s) => sum + s.ai_processed, 0);
   const totalVerticals = stats.length;
 
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('desc');
+    }
+  };
+
+  const sortedStats = [...stats].sort((a, b) => {
+    let aValue: string | number;
+    let bValue: string | number;
+
+    switch (sortField) {
+      case 'name':
+        aValue = a.vertical_slug;
+        bValue = b.vertical_slug;
+        break;
+      case 'articles':
+        aValue = a.total_articles;
+        bValue = b.total_articles;
+        break;
+      case 'ai_processed':
+        aValue = a.ai_processed;
+        bValue = b.ai_processed;
+        break;
+    }
+
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      return sortDirection === 'asc' 
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    }
+
+    return sortDirection === 'asc' 
+      ? (aValue as number) - (bValue as number)
+      : (bValue as number) - (aValue as number);
+  });
+
   return (
     <Card className="border-primary/20">
       <CardHeader>
@@ -107,8 +152,45 @@ export const GlobalImportStatus = () => {
         </div>
 
         <div className="space-y-2">
-          <h3 className="text-sm font-semibold text-muted-foreground mb-3">Vertical Breakdown</h3>
-          {stats.map((stat) => (
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-muted-foreground">Vertical Breakdown</h3>
+            <div className="flex gap-2">
+              <Button
+                variant={sortField === 'name' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => handleSort('name')}
+                className="h-8 text-xs"
+              >
+                Name
+                {sortField === 'name' && (
+                  <ArrowUpDown className="ml-1 h-3 w-3" />
+                )}
+              </Button>
+              <Button
+                variant={sortField === 'articles' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => handleSort('articles')}
+                className="h-8 text-xs"
+              >
+                Articles
+                {sortField === 'articles' && (
+                  <ArrowUpDown className="ml-1 h-3 w-3" />
+                )}
+              </Button>
+              <Button
+                variant={sortField === 'ai_processed' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => handleSort('ai_processed')}
+                className="h-8 text-xs"
+              >
+                AI Processed
+                {sortField === 'ai_processed' && (
+                  <ArrowUpDown className="ml-1 h-3 w-3" />
+                )}
+              </Button>
+            </div>
+          </div>
+          {sortedStats.map((stat) => (
             <div
               key={stat.vertical_slug}
               className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
