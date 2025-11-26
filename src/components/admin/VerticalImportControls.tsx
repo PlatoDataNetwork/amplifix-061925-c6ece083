@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useVerticalOperations } from "@/hooks/useVerticalOperations";
+import { SourceAttributionMonitor } from "@/components/admin/SourceAttributionMonitor";
 import { Loader2, Play, Sparkles, Trash2, Link2, History, AlertTriangle, FileText, ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -58,6 +59,12 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
 
   return (
     <div className="space-y-6">
+      {/* Source Attribution Monitor */}
+      <SourceAttributionMonitor 
+        verticalSlug={verticalSlug} 
+        isProcessing={processing}
+      />
+
       {/* Stats Overview */}
       <Card>
         <CardHeader>
