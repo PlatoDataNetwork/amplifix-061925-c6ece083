@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { AlertCircle, CheckCircle2, Loader2, Database } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, Database, Play } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 
@@ -34,10 +34,12 @@ interface VerticalInfo {
 
 export default function PlatoSourceUpdate() {
   const [isRunning, setIsRunning] = useState(false);
+  const [processingVertical, setProcessingVertical] = useState<string | null>(null);
   const [stats, setStats] = useState<UpdateStats | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [verticals, setVerticals] = useState<VerticalInfo[]>([]);
   const [isLoadingVerticals, setIsLoadingVerticals] = useState(true);
+  const [verticalResults, setVerticalResults] = useState<Record<string, VerticalStats>>({});
   const { toast } = useToast();
 
   // Fetch all verticals and their counts on mount
@@ -67,10 +69,15 @@ export default function PlatoSourceUpdate() {
     fetchVerticals();
   }, []);
 
-  const startUpdate = async () => {
+  const processVertical = async (vertical?: string) => {
+    const isAllVerticals = !vertical;
     setIsRunning(true);
+    setProcessingVertical(vertical || null);
     setError(null);
-    setStats(null);
+    if (isAllVerticals) {
+      setStats(null);
+      setVerticalResults({});
+    }
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -79,14 +86,21 @@ export default function PlatoSourceUpdate() {
         throw new Error('You must be logged in to perform this action');
       }
 
+      const articleCount = vertical 
+        ? verticals.find(v => v.vertical === vertical)?.count || 0
+        : verticals.reduce((sum, v) => sum + v.count, 0);
+
       toast({
         title: "Starting Database Update",
-        description: `Processing ${verticals.reduce((sum, v) => sum + v.count, 0)} articles across ${verticals.length} verticals...`,
+        description: vertical 
+          ? `Processing ${articleCount.toLocaleString()} articles in ${vertical.replace(/-/g, ' ')}...`
+          : `Processing ${articleCount.toLocaleString()} articles across ${verticals.length} verticals...`,
       });
 
       const { data, error: functionError } = await supabase.functions.invoke(
         'update-plato-sources',
         {
+          body: vertical ? { vertical } : {},
           headers: {
             Authorization: `Bearer ${session.access_token}`,
           },
@@ -96,10 +110,22 @@ export default function PlatoSourceUpdate() {
       if (functionError) throw functionError;
 
       if (data.success) {
-        setStats(data.stats);
+        if (isAllVerticals) {
+          setStats(data.stats);
+        } else {
+          // Store individual vertical result
+          const verticalStat = data.stats.verticals[0];
+          setVerticalResults(prev => ({
+            ...prev,
+            [vertical!]: verticalStat
+          }));
+        }
+        
         toast({
           title: "Database Update Complete",
-          description: `Successfully updated ${data.stats.updated} articles across ${data.stats.verticals.length} verticals`,
+          description: vertical
+            ? `Successfully updated ${data.stats.updated} articles in ${vertical.replace(/-/g, ' ')}`
+            : `Successfully updated ${data.stats.updated} articles across ${data.stats.verticals.length} verticals`,
         });
       } else {
         throw new Error(data.error || 'Update failed');
@@ -114,6 +140,7 @@ export default function PlatoSourceUpdate() {
       });
     } finally {
       setIsRunning(false);
+      setProcessingVertical(null);
     }
   };
 
@@ -136,6 +163,7 @@ export default function PlatoSourceUpdate() {
   };
 
   const totalArticles = verticals.reduce((sum, v) => sum + v.count, 0);
+  const totalProcessed = Object.values(verticalResults).reduce((sum, v) => sum + v.updated, 0);
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
@@ -173,7 +201,7 @@ export default function PlatoSourceUpdate() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-green-600 dark:text-green-400">
-              {stats?.updated.toLocaleString() || '0'}
+              {(stats?.updated || totalProcessed).toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Database updated</p>
           </CardContent>
@@ -182,41 +210,9 @@ export default function PlatoSourceUpdate() {
 
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>All Verticals to Process</CardTitle>
-          <CardDescription>
-            Complete list of verticals and their article counts
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {isLoadingVerticals ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin" />
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {verticals.map(({ vertical, count }) => (
-                <div 
-                  key={vertical} 
-                  className="flex justify-between items-center bg-secondary/30 px-4 py-3 rounded-lg hover:bg-secondary/50 transition-colors"
-                >
-                  <span className="capitalize text-sm font-medium">
-                    {vertical.replace(/-/g, ' ')}
-                  </span>
-                  <Badge variant="outline" className="ml-2">
-                    {count.toLocaleString()}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card className="mb-6">
-        <CardHeader>
           <CardTitle>Update Configuration</CardTitle>
           <CardDescription>
-            Database-level updates with automatic source normalization
+            Process all verticals at once or individually
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -234,18 +230,18 @@ export default function PlatoSourceUpdate() {
           </Alert>
 
           <Button
-            onClick={startUpdate}
+            onClick={() => processVertical()}
             disabled={isRunning || verticals.length === 0}
             size="lg"
             className="w-full"
           >
-            {isRunning ? (
+            {isRunning && !processingVertical ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processing {totalArticles.toLocaleString()} Articles...
+                Processing All Verticals ({totalArticles.toLocaleString()} Articles)...
               </>
             ) : (
-              `Start Database Update (${totalArticles.toLocaleString()} Articles)`
+              `Process All Verticals (${totalArticles.toLocaleString()} Articles)`
             )}
           </Button>
         </CardContent>
@@ -259,13 +255,80 @@ export default function PlatoSourceUpdate() {
         </Alert>
       )}
 
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Individual Verticals</CardTitle>
+          <CardDescription>
+            Process each vertical separately or view results
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isLoadingVerticals ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {verticals.map(({ vertical, count }) => {
+                const result = verticalResults[vertical];
+                const isProcessing = processingVertical === vertical;
+                
+                return (
+                  <div 
+                    key={vertical} 
+                    className="flex items-center justify-between bg-secondary/30 px-4 py-3 rounded-lg hover:bg-secondary/50 transition-colors"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <span className="capitalize font-medium">
+                          {vertical.replace(/-/g, ' ')}
+                        </span>
+                        <Badge variant="outline">
+                          {count.toLocaleString()} articles
+                        </Badge>
+                        {result && (
+                          <Badge className="bg-green-500">
+                            ✓ {result.updated} updated
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <Button
+                      onClick={() => processVertical(vertical)}
+                      disabled={isRunning}
+                      size="sm"
+                      variant={result ? "outline" : "default"}
+                    >
+                      {isProcessing ? (
+                        <>
+                          <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                          Processing...
+                        </>
+                      ) : result ? (
+                        <>Reprocess</>
+                      ) : (
+                        <>
+                          <Play className="mr-2 h-3 w-3" />
+                          Process
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {stats && (
         <>
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-green-500" />
-                Overall Results
+                Overall Results (All Verticals)
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -313,7 +376,7 @@ export default function PlatoSourceUpdate() {
             <CardHeader>
               <CardTitle>Per-Vertical Statistics</CardTitle>
               <CardDescription>
-                Detailed breakdown by vertical with real-time status
+                Detailed breakdown from batch processing
               </CardDescription>
             </CardHeader>
             <CardContent>
