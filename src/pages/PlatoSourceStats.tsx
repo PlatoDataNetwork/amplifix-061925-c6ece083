@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Loader2, Play, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface VerticalStats {
   vertical_slug: string;
@@ -18,25 +18,12 @@ interface VerticalStats {
   needs_update: number;
 }
 
-interface Article {
-  id: string;
-  title: string;
-  vertical_slug: string;
-  content: string;
-  external_url: string | null;
-  updated_at: string;
-}
-
 export default function PlatoSourceStats() {
   const { isAdmin, loading: authLoading } = useAdminCheck();
   const navigate = useNavigate();
   const [verticalStats, setVerticalStats] = useState<VerticalStats[]>([]);
-  const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTitle, setSearchTitle] = useState('');
-  const [selectedVertical, setSelectedVertical] = useState<string>('all');
-  const [page, setPage] = useState(0);
-  const pageSize = 50;
+  const [processingVertical, setProcessingVertical] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && !isAdmin) {
@@ -47,10 +34,6 @@ export default function PlatoSourceStats() {
   useEffect(() => {
     fetchStats();
   }, []);
-
-  useEffect(() => {
-    fetchArticles();
-  }, [searchTitle, selectedVertical, page]);
 
   const fetchStats = async () => {
     try {
@@ -122,49 +105,51 @@ export default function PlatoSourceStats() {
     }
   };
 
-  const fetchArticles = async () => {
-    try {
-      let query = supabase
-        .from('articles')
-        .select('id, title, vertical_slug, content, external_url, updated_at')
-        .order('updated_at', { ascending: false })
-        .range(page * pageSize, (page + 1) * pageSize - 1);
-
-      if (selectedVertical !== 'all') {
-        query = query.eq('vertical_slug', selectedVertical);
-      }
-
-      if (searchTitle) {
-        query = query.ilike('title', `%${searchTitle}%`);
-      }
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-      setArticles(data || []);
-    } catch (error) {
-      console.error('Error fetching articles:', error);
-    }
-  };
-
-  const getSourceStatus = (content: string, external_url: string | null) => {
-    const hasNewSource = content?.includes('Plato Data Intelligence');
-    const hasOldSource = content?.includes('platodata.ai') || 
-                       content?.includes('platodata.network') ||
-                       content?.includes('plato.ai') ||
-                       content?.includes('Zephyrnet');
+  const processVertical = async (verticalSlug: string) => {
+    setProcessingVertical(verticalSlug);
     
-    const urlLower = external_url?.toLowerCase() || '';
-    const hasOldUrl = urlLower.includes('platodata') || 
-                     urlLower.includes('zephyrnet') || 
-                     urlLower.includes('plato');
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error('You must be logged in to perform this action');
+      }
 
-    if (hasNewSource && !hasOldSource && !hasOldUrl) {
-      return { status: '✓ Updated', variant: 'default' as const, description: 'Shows Plato Data Intelligence' };
-    } else if (hasOldSource || hasOldUrl) {
-      return { status: '⚠ Needs Update', variant: 'destructive' as const, description: 'Still has old source' };
-    } else {
-      return { status: 'Unknown', variant: 'secondary' as const, description: 'No source found' };
+      const vertical = verticalStats.find(v => v.vertical_slug === verticalSlug);
+      
+      toast.info('Processing Started', {
+        description: `Updating ${vertical?.total_articles.toLocaleString()} articles in ${verticalSlug.replace(/-/g, ' ')}...`,
+      });
+
+      const { data, error: functionError } = await supabase.functions.invoke(
+        'update-plato-sources',
+        {
+          body: { vertical: verticalSlug },
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+
+      if (functionError) throw functionError;
+
+      if (data.success) {
+        toast.success('✓ Update Complete', {
+          description: `Updated ${data.stats.updated} articles in ${verticalSlug.replace(/-/g, ' ')}`,
+        });
+        
+        // Refresh stats
+        await fetchStats();
+      } else {
+        throw new Error(data.error || 'Update failed');
+      }
+    } catch (err: any) {
+      console.error('Update error:', err);
+      toast.error('Update Failed', {
+        description: err.message,
+      });
+    } finally {
+      setProcessingVertical(null);
     }
   };
 
@@ -173,11 +158,17 @@ export default function PlatoSourceStats() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Plato Source Update Statistics</h1>
-        <p className="text-muted-foreground">Track article source attribution updates across all verticals</p>
-      </div>
+      <div className="container mx-auto p-6 space-y-6">
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Plato Source Update Statistics</h1>
+            <p className="text-muted-foreground">Track article source attribution updates across all verticals</p>
+          </div>
+          <Button onClick={fetchStats} variant="outline" disabled={loading}>
+            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            Refresh Stats
+          </Button>
+        </div>
 
       {loading ? (
         <div className="flex items-center justify-center p-12">
@@ -271,7 +262,7 @@ export default function PlatoSourceStats() {
           <Card>
             <CardHeader>
               <CardTitle>Statistics by Vertical</CardTitle>
-              <CardDescription>Breakdown of updated vs skipped articles per vertical</CardDescription>
+              <CardDescription>Breakdown of updated vs skipped articles per vertical - Process individual verticals</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -283,6 +274,7 @@ export default function PlatoSourceStats() {
                     <TableHead className="text-right">URLs Cleared</TableHead>
                     <TableHead className="text-right">Needs Update</TableHead>
                     <TableHead className="text-right">Success %</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -306,6 +298,26 @@ export default function PlatoSourceStats() {
                       <TableCell className="text-right font-semibold">
                         {((stat.updated_articles / stat.total_articles) * 100).toFixed(1)}%
                       </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          onClick={() => processVertical(stat.vertical_slug)}
+                          disabled={processingVertical !== null}
+                          size="sm"
+                          variant={stat.needs_update > 0 ? "default" : "outline"}
+                        >
+                          {processingVertical === stat.vertical_slug ? (
+                            <>
+                              <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                              Processing...
+                            </>
+                          ) : (
+                            <>
+                              <Play className="mr-2 h-3 w-3" />
+                              Process
+                            </>
+                          )}
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                   {/* Totals Row */}
@@ -327,101 +339,10 @@ export default function PlatoSourceStats() {
                       {((verticalStats.reduce((sum, v) => sum + v.updated_articles, 0) / 
                         verticalStats.reduce((sum, v) => sum + v.total_articles, 0)) * 100).toFixed(1)}%
                     </TableCell>
+                    <TableCell></TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Article Details</CardTitle>
-              <CardDescription>Search and filter individual articles</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-4">
-                <Input
-                  placeholder="Search by title..."
-                  value={searchTitle}
-                  onChange={(e) => setSearchTitle(e.target.value)}
-                  className="max-w-sm"
-                />
-                <Select value={selectedVertical} onValueChange={setSelectedVertical}>
-                  <SelectTrigger className="max-w-xs">
-                    <SelectValue placeholder="Filter by vertical" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Verticals</SelectItem>
-                    {verticalStats.map((stat) => (
-                      <SelectItem key={stat.vertical_slug} value={stat.vertical_slug}>
-                        {stat.vertical_slug} ({stat.total_articles})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Vertical</TableHead>
-                    <TableHead>Frontend Status</TableHead>
-                    <TableHead className="text-right">URL Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {articles.map((article) => {
-                    const { status, variant, description } = getSourceStatus(article.content, article.external_url);
-                    const urlLower = article.external_url?.toLowerCase() || '';
-                    const hasOldUrl = urlLower.includes('platodata') || 
-                                     urlLower.includes('zephyrnet') || 
-                                     urlLower.includes('plato');
-                    
-                    return (
-                      <TableRow key={article.id}>
-                        <TableCell className="max-w-md">
-                          <div className="truncate">{article.title}</div>
-                          <div className="text-xs text-muted-foreground">{description}</div>
-                        </TableCell>
-                        <TableCell className="capitalize">{article.vertical_slug.replace(/-/g, ' ')}</TableCell>
-                        <TableCell>
-                          <Badge variant={variant}>{status}</Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {article.external_url ? (
-                            hasOldUrl ? (
-                              <Badge variant="destructive">Old URL</Badge>
-                            ) : (
-                              <Badge variant="outline">Has URL</Badge>
-                            )
-                          ) : (
-                            <Badge variant="default" className="bg-green-500">URL Cleared</Badge>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-
-              <div className="flex justify-between items-center">
-                <button
-                  onClick={() => setPage(Math.max(0, page - 1))}
-                  disabled={page === 0}
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded disabled:opacity-50"
-                >
-                  Previous
-                </button>
-                <span>Page {page + 1}</span>
-                <button
-                  onClick={() => setPage(page + 1)}
-                  disabled={articles.length < pageSize}
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded disabled:opacity-50"
-                >
-                  Next
-                </button>
-              </div>
             </CardContent>
           </Card>
         </>
