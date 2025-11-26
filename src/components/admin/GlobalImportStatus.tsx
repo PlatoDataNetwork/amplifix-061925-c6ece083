@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ArrowUpDown } from "lucide-react";
+import { Loader2, ArrowUpDown, Search } from "lucide-react";
 
 interface VerticalStats {
   vertical_slug: string;
@@ -19,6 +20,7 @@ export const GlobalImportStatus = () => {
   const [loading, setLoading] = useState(true);
   const [sortField, setSortField] = useState<SortField>('articles');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const loadGlobalStats = async () => {
     try {
@@ -127,6 +129,10 @@ export const GlobalImportStatus = () => {
       : (bValue as number) - (aValue as number);
   });
 
+  const filteredStats = sortedStats.filter((stat) =>
+    stat.vertical_slug.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <Card className="border-primary/20">
       <CardHeader>
@@ -154,7 +160,17 @@ export const GlobalImportStatus = () => {
         <div className="space-y-2">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-muted-foreground">Vertical Breakdown</h3>
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
+              <div className="relative">
+                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search verticals..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-8 w-48 pl-7 text-xs"
+                />
+              </div>
               <Button
                 variant={sortField === 'name' ? 'default' : 'outline'}
                 size="sm"
@@ -190,7 +206,12 @@ export const GlobalImportStatus = () => {
               </Button>
             </div>
           </div>
-          {sortedStats.map((stat) => (
+          {filteredStats.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              No verticals found matching "{searchQuery}"
+            </div>
+          ) : (
+            filteredStats.map((stat) => (
             <div
               key={stat.vertical_slug}
               className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
@@ -212,7 +233,8 @@ export const GlobalImportStatus = () => {
                 )}
               </div>
             </div>
-          ))}
+            ))
+          )}
         </div>
       </CardContent>
     </Card>
