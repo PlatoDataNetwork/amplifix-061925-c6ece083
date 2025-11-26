@@ -25,7 +25,8 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
     backfillUrls,
     clearImportHistory,
     clearAllArticles,
-    addSourceAttribution
+    addSourceAttribution,
+    removeSourceAttribution
   } = useVerticalOperations(verticalSlug);
 
   useEffect(() => {
@@ -242,6 +243,34 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction onClick={addSourceAttribution}>
                   Add Source Attribution
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                disabled={processing}
+                variant="outline"
+                className="w-full"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Remove Source Attribution
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Remove Source Attribution?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will remove "Source: Plato Data Intelligence" from all <span className="font-semibold">{formatVerticalName(verticalSlug)}</span> articles. 
+                  You can re-add it later with the updated formatting.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={removeSourceAttribution}>
+                  Remove Source Attribution
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
