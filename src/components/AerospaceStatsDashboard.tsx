@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -7,7 +6,7 @@ import { RefreshCw, FileText, Link, AlertCircle, CheckCircle, Clock } from "luci
 import { useAerospaceStats } from "@/hooks/useAerospaceStats";
 import { formatDistanceToNow } from "date-fns";
 
-const AerospaceStatsDashboardComponent = () => {
+export const AerospaceStatsDashboard = () => {
   const { stats, isLoading, error, refresh } = useAerospaceStats();
 
   if (isLoading) {
@@ -208,5 +207,3 @@ const AerospaceStatsDashboardComponent = () => {
     </div>
   );
 };
-
-export const AerospaceStatsDashboard = memo(AerospaceStatsDashboardComponent);
