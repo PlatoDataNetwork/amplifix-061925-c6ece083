@@ -214,6 +214,76 @@ const ImportAdmin = () => {
     }
   };
 
+  const handleResumeArvrAiProcessing = async () => {
+    try {
+      toast.info('Resuming AR/VR AI processing...');
+      setImporting('ar-vr-ai');
+      
+      // Get the current job
+      const { data: jobs, error: jobError } = await supabase
+        .from('ai_processing_jobs')
+        .select('*')
+        .eq('vertical_slug', 'ar-vr')
+        .eq('status', 'in_progress')
+        .order('started_at', { ascending: false })
+        .limit(1);
+
+      if (jobError) throw jobError;
+
+      if (!jobs || jobs.length === 0) {
+        toast.info('No stalled job found, starting fresh...');
+        await handleStartArvrAiProcessing();
+        return;
+      }
+
+      const job = jobs[0];
+      const processedChunks = job.processed_chunks || [];
+      const totalChunks = job.total_chunks;
+
+      // Find unprocessed chunks
+      const unprocessedChunks = [];
+      for (let i = 0; i < totalChunks; i++) {
+        if (!processedChunks.includes(i)) {
+          unprocessedChunks.push(i);
+        }
+      }
+
+      if (unprocessedChunks.length === 0) {
+        toast.success('All chunks already processed!');
+        await loadArvrStats();
+        return;
+      }
+
+      toast.info(`Processing ${unprocessedChunks.length} remaining chunks...`);
+
+      // Process remaining chunks in background
+      for (const chunkIndex of unprocessedChunks) {
+        supabase.functions.invoke('format-all-articles', {
+          body: {
+            chunkIndex,
+            chunkSize: 50,
+            verticalSlug: 'ar-vr',
+            jobId: job.id
+          }
+        }).catch(error => {
+          console.error(`Error processing chunk ${chunkIndex}:`, error);
+        });
+
+        // Small delay between chunk invocations
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+
+      toast.success(`Resumed processing ${unprocessedChunks.length} chunks`);
+      await loadArvrStats();
+    } catch (error) {
+      toast.error('Failed to resume AR/VR AI processing', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setImporting(null);
+    }
+  };
+
   // Load aerospace article counts - FOR AEROSPACE VERTICAL
   const loadAerospaceArticleCounts = async () => {
     try {
@@ -1735,23 +1805,39 @@ const ImportAdmin = () => {
                   </div>
                 )}
 
-                {/* Action Button */}
-                <Button
-                  onClick={handleStartArvrAiProcessing}
-                  disabled={importing !== null || arvrStats.status === 'in_progress'}
-                  className="w-full h-12"
-                  size="lg"
-                >
-                  {importing === 'ar-vr-ai' ? (
-                    '⏳ Starting AI Processing...'
-                  ) : arvrStats.status === 'in_progress' ? (
-                    '⚙️ Processing In Progress...'
-                  ) : arvrStats.remaining === 0 ? (
-                    '✅ All Articles Processed'
-                  ) : (
-                    `🚀 Process ${arvrStats.remaining.toLocaleString()} AR/VR Articles with AI`
-                  )}
-                </Button>
+                {/* Action Buttons */}
+                <div className="flex gap-3">
+                  <Button
+                    onClick={handleStartArvrAiProcessing}
+                    disabled={importing !== null || arvrStats.status === 'in_progress'}
+                    className="flex-1 h-12"
+                    size="lg"
+                  >
+                    {importing === 'ar-vr-ai' ? (
+                      '⏳ Starting...'
+                    ) : arvrStats.status === 'in_progress' ? (
+                      '⚙️ Processing...'
+                    ) : arvrStats.remaining === 0 ? (
+                      '✅ All Processed'
+                    ) : (
+                      `🚀 Start Processing`
+                    )}
+                  </Button>
+                  
+                  <Button
+                    onClick={handleResumeArvrAiProcessing}
+                    disabled={importing !== null}
+                    variant="outline"
+                    className="flex-1 h-12"
+                    size="lg"
+                  >
+                    {importing === 'ar-vr-ai' ? (
+                      '⏳ Resuming...'
+                    ) : (
+                      '🔄 Resume Processing'
+                    )}
+                  </Button>
+                </div>
 
                 {arvrStats.status === 'in_progress' && (
                   <p className="text-center text-sm text-muted-foreground">
