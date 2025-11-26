@@ -163,10 +163,21 @@ Deno.serve(async (req) => {
               continue;
             }
 
-            // Skip if already has correct format (plain text, no link)
-            if (/Source:\s*Plato Data Intelligence\.\s*$/mi.test(article.content) && 
+            // Check if external_url needs clearing first
+            let shouldClearUrl = false;
+            if (article.external_url) {
+              const urlLower = article.external_url.toLowerCase();
+              shouldClearUrl = urlLower.includes('platodata') || 
+                               urlLower.includes('zephyrnet') || 
+                               urlLower.includes('plato');
+            }
+
+            // Skip only if both content is correct AND external_url doesn't need clearing
+            const hasCorrectSource = /Source:\s*Plato Data Intelligence\.\s*$/mi.test(article.content) && 
                 !/<a[^>]*>.*?Plato.*?<\/a>/i.test(article.content) &&
-                !/Zephyrnet/i.test(article.content)) {
+                !/Zephyrnet/i.test(article.content);
+            
+            if (hasCorrectSource && !shouldClearUrl) {
               vStats.skipped++;
               vStats.processed++;
               stats.skipped++;
@@ -176,20 +187,20 @@ Deno.serve(async (req) => {
 
             // Replace various source patterns with the new format
             let updatedContent = article.content;
-            let needsUpdate = false;
+            let needsContentUpdate = false;
 
-            // Pattern 1: Remove entire plato-post-bottom-links section (more robust on class matching)
+            // Pattern 1: Remove entire plato-post-bottom-links section
             const pattern1 = /<ul[^>]*class=["'][^"']*plato-post-bottom-links[^"']*["'][^>]*>[\s\S]*?<\/ul>/gi;
             if (pattern1.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern1, '<p>Source: Plato Data Intelligence.</p>');
-              needsUpdate = true;
+              needsContentUpdate = true;
             }
 
             // Pattern 2: Source Link: with plato URL
             const pattern2 = /(?:Source Link|Source):\s*<a\s+[^>]*href=["']https?:\/\/[^"']*plato[^"']*["'][^>]*>[^<]*<\/a>/gi;
             if (pattern2.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern2, 'Source: Plato Data Intelligence.');
-              needsUpdate = true;
+              needsContentUpdate = true;
             }
 
             // Pattern 3: Any link containing plato domains
@@ -199,44 +210,41 @@ Deno.serve(async (req) => {
                 /(?:Source Link|Source)[^<]*<a\s+[^>]*href=["']https?:\/\/(?:platodata\.ai|platodata\.network|plato\.ai)[^"']*["'][^>]*>[^<]*<\/a>[^\.]*\.?/gi,
                 'Source: Plato Data Intelligence.'
               );
-              needsUpdate = true;
+              needsContentUpdate = true;
             }
 
             // Pattern 4: Plain text references
             const pattern4 = /(?:Source Link|Source):\s*(?:platodata\.ai|platodata\.network|plato\.ai|PlatoData\.ai)\s*\.?/gi;
             if (pattern4.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern4, 'Source: Plato Data Intelligence.');
-              needsUpdate = true;
+              needsContentUpdate = true;
             }
 
             // Pattern 5: Zephyrnet references
             const pattern5 = /(?:Source Link|Source):\s*(?:<a[^>]*>)?Zephyrnet(?:<\/a>)?\s*\.?/gi;
             if (pattern5.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern5, 'Source: Plato Data Intelligence.');
-              needsUpdate = true;
+              needsContentUpdate = true;
             }
 
             // Pattern 6: Fallback - any <ul> block containing a platodata.ai link
             const pattern6 = /<ul[^>]*>[\s\S]*?platodata\.ai[\s\S]*?<\/ul>/gi;
             if (pattern6.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern6, '<p>Source: Plato Data Intelligence.</p>');
-              needsUpdate = true;
+              needsContentUpdate = true;
             }
 
-            if (needsUpdate) {
-              // Also check if external_url needs updating
-              let shouldUpdateUrl = false;
-              if (article.external_url) {
-                const urlLower = article.external_url.toLowerCase();
-                shouldUpdateUrl = urlLower.includes('platodata') || 
-                                 urlLower.includes('zephyrnet') || 
-                                 urlLower.includes('plato');
+            // Update if either content or URL needs updating
+            if (needsContentUpdate || shouldClearUrl) {
+              const updateData: any = {};
+              
+              // Update content if needed
+              if (needsContentUpdate) {
+                updateData.content = updatedContent;
               }
-
-              const updateData: any = { content: updatedContent };
               
               // Clear external_url if it points to old sources
-              if (shouldUpdateUrl) {
+              if (shouldClearUrl) {
                 updateData.external_url = null;
               }
 
