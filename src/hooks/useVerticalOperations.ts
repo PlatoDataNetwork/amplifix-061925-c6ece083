@@ -293,8 +293,8 @@ export const useVerticalOperations = (verticalSlug: string) => {
 
       if (error) throw error;
 
-      toast.success('Source attribution added!', {
-        description: data?.message || `Updated ${data?.updated || 0} articles`,
+      toast.success('Source attribution completed!', {
+        description: `Updated: ${data?.updated || 0} | Skipped: ${data?.skipped || 0} | Total: ${data?.total || 0}`,
         duration: 5000
       });
 
