@@ -178,8 +178,8 @@ Deno.serve(async (req) => {
             let updatedContent = article.content;
             let needsUpdate = false;
 
-            // Pattern 1: Remove entire plato-post-bottom-links section
-            const pattern1 = /<ul\s+class=["']plato-post-bottom-links["'][^>]*>[\s\S]*?<\/ul>/gi;
+            // Pattern 1: Remove entire plato-post-bottom-links section (more robust on class matching)
+            const pattern1 = /<ul[^>]*class=["'][^"']*plato-post-bottom-links[^"']*["'][^>]*>[\s\S]*?<\/ul>/gi;
             if (pattern1.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern1, '<p>Source: Plato Data Intelligence.</p>');
               needsUpdate = true;
@@ -213,6 +213,13 @@ Deno.serve(async (req) => {
             const pattern5 = /(?:Source Link|Source):\s*(?:<a[^>]*>)?Zephyrnet(?:<\/a>)?\s*\.?/gi;
             if (pattern5.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern5, 'Source: Plato Data Intelligence.');
+              needsUpdate = true;
+            }
+
+            // Pattern 6: Fallback - any <ul> block containing a platodata.ai link
+            const pattern6 = /<ul[^>]*>[\s\S]*?platodata\.ai[\s\S]*?<\/ul>/gi;
+            if (pattern6.test(updatedContent)) {
+              updatedContent = updatedContent.replace(pattern6, '<p>Source: Plato Data Intelligence.</p>');
               needsUpdate = true;
             }
 
