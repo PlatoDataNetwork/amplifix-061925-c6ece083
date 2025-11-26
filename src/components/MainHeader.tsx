@@ -7,7 +7,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
-import { LogOut, User, Shield, Users as UsersIcon, Database } from "lucide-react";
+import { LogOut, User, Shield, Users as UsersIcon, Database, FileText } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -99,6 +99,10 @@ const MainHeader = () => {
               <DropdownMenuItem onClick={() => navigate('/admin/import')}>
                 <Database className="h-4 w-4 mr-2" />
                 Article Import
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/admin/plato-source-stats')}>
+                <FileText className="h-4 w-4 mr-2" />
+                Plato Source Stats
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/admin/users')}>
                 <UsersIcon className="h-4 w-4 mr-2" />
