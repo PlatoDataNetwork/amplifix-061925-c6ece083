@@ -320,15 +320,12 @@ Deno.serve(async (req) => {
               const cleanedText = cleanText(article.content);
               const formattedContent = await formatArticleWithAI(cleanedText);
 
-              // Add source attribution one line below the last paragraph
-              const contentWithSource = `${formattedContent}\n\n<p class="text-sm mt-4">Source: <a href="https://platodata.ai" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Plato Data Intelligence</a></p>`;
-
               // Update article content and set ai_processed flag
               const currentMetadata = article.metadata || {};
               const { error: updateError } = await supabase
                 .from('articles')
                 .update({
-                  content: contentWithSource,
+                  content: formattedContent,
                   updated_at: new Date().toISOString(),
                   metadata: {
                     ...currentMetadata,
