@@ -99,7 +99,7 @@ export default function PlatoSourceStats() {
     <div className="container mx-auto p-6 space-y-6">
       <div>
         <h1 className="text-3xl font-bold mb-2">Plato Source Update</h1>
-        <p className="text-muted-foreground">Process verticals to standardize source attribution to "Plato Data Intelligence"</p>
+        <p className="text-muted-foreground">Process verticals to standardize source attribution to <span className="text-primary font-semibold">"Plato Data Intelligence"</span></p>
       </div>
 
       {loading ? (
