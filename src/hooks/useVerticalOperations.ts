@@ -334,6 +334,32 @@ export const useVerticalOperations = (verticalSlug: string) => {
     }
   };
 
+  const resetAIProcessing = async () => {
+    try {
+      setProcessing(true);
+      toast.info(`Resetting AI processing for ${verticalSlug} articles...`);
+
+      const { data, error } = await supabase.functions.invoke('reset-vertical-ai', {
+        body: { verticalSlug }
+      });
+
+      if (error) throw error;
+
+      toast.success('AI processing reset complete!', {
+        description: `Reset ${data?.count || 0} articles for reprocessing`,
+        duration: 5000
+      });
+
+      await loadStats();
+    } catch (error) {
+      toast.error(`Failed to reset AI processing`, {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   return {
     stats,
     processing,
@@ -347,6 +373,7 @@ export const useVerticalOperations = (verticalSlug: string) => {
     clearImportHistory,
     clearAllArticles,
     addSourceAttribution,
-    removeSourceAttribution
+    removeSourceAttribution,
+    resetAIProcessing
   };
 };
