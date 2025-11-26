@@ -65,7 +65,13 @@ Deno.serve(async (req) => {
       });
     }
 
-    console.log('🔄 Starting Plato source update process...');
+    // Get vertical parameter from request body (if processing single vertical)
+    const body = await req.json().catch(() => ({}));
+    const targetVertical = body.vertical || null;
+
+    console.log(targetVertical 
+      ? `🔄 Starting Plato source update for vertical: ${targetVertical}` 
+      : '🔄 Starting Plato source update process for all verticals...');
 
     // Fetch ALL articles excluding aerospace and aviation (fetch in batches to avoid limits)
     let allArticles: any[] = [];
@@ -74,12 +80,18 @@ Deno.serve(async (req) => {
     let hasMore = true;
 
     while (hasMore) {
-      const { data: batch, error: fetchError } = await supabase
+      let query = supabase
         .from('articles')
         .select('id, content, vertical_slug')
         .not('vertical_slug', 'in', '("aerospace","aviation")')
-        .order('vertical_slug')
-        .range(from, from + batchSize - 1);
+        .order('vertical_slug');
+      
+      // If processing single vertical, filter by it
+      if (targetVertical) {
+        query = query.eq('vertical_slug', targetVertical);
+      }
+      
+      const { data: batch, error: fetchError } = await query.range(from, from + batchSize - 1);
 
       if (fetchError) {
         console.error('Error fetching articles:', fetchError);
