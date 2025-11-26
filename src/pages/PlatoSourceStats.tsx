@@ -95,7 +95,7 @@ export default function PlatoSourceStats() {
         skipped_articles: stats.skipped,
         urls_cleared: stats.urlsCleared,
         needs_update: stats.needsUpdate,
-      })).sort((a, b) => b.total_articles - a.total_articles);
+      })).sort((a, b) => a.vertical_slug.localeCompare(b.vertical_slug)); // Alphabetical order
 
       setVerticalStats(statsArray);
     } catch (error) {
