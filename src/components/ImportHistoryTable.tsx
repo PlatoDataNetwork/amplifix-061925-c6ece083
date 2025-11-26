@@ -30,7 +30,11 @@ interface ImportHistory {
   metadata: any;
 }
 
-export const ImportHistoryTable = () => {
+interface ImportHistoryTableProps {
+  verticalSlug?: string;
+}
+
+export const ImportHistoryTable = ({ verticalSlug }: ImportHistoryTableProps = {}) => {
   const [history, setHistory] = useState<ImportHistory[]>([]);
   const [loading, setLoading] = useState(true);
   const [fixing, setFixing] = useState(false);
@@ -38,11 +42,18 @@ export const ImportHistoryTable = () => {
   const loadHistory = async () => {
     console.log('📜 Loading import history...');
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('import_history')
         .select('*')
         .order('started_at', { ascending: false })
         .limit(50);
+
+      // Filter by vertical if specified
+      if (verticalSlug) {
+        query = query.eq('vertical_slug', verticalSlug);
+      }
+
+      const { data, error } = await query;
 
       console.log('Import history data:', data);
       console.log('Import history error:', error);
@@ -64,6 +75,10 @@ export const ImportHistoryTable = () => {
     loadHistory();
 
     // Subscribe to real-time updates
+    const channelFilter = verticalSlug 
+      ? `vertical_slug=eq.${verticalSlug}`
+      : undefined;
+
     const channel = supabase
       .channel('import-history-updates')
       .on(
@@ -72,6 +87,7 @@ export const ImportHistoryTable = () => {
           event: '*',
           schema: 'public',
           table: 'import_history',
+          filter: channelFilter
         },
         () => {
           console.log('📡 Import history real-time update received');
@@ -84,7 +100,7 @@ export const ImportHistoryTable = () => {
       console.log('📜 ImportHistoryTable component unmounting');
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [verticalSlug]);
 
   console.log('📜 ImportHistoryTable rendering, loading:', loading, 'history count:', history.length);
 
