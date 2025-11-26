@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { GlobalImportStatus } from '@/components/admin/GlobalImportStatus';
 import { VerticalImportControls } from '@/components/admin/VerticalImportControls';
-import { ImportHistoryTable } from '@/components/ImportHistoryTable';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { usePlatoVerticals } from '@/hooks/usePlatoVerticals';
 import { Loader2 } from 'lucide-react';
@@ -87,21 +86,7 @@ export default function ImportAdminRefactored() {
 
         {/* Vertical Operations */}
         {selectedVertical && (
-          <div className="space-y-8">
-            <VerticalImportControls verticalSlug={selectedVertical} />
-
-            {/* Import History */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  📜 Import History
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ImportHistoryTable verticalSlug={selectedVertical} />
-              </CardContent>
-            </Card>
-          </div>
+          <VerticalImportControls verticalSlug={selectedVertical} />
         )}
       </main>
 
