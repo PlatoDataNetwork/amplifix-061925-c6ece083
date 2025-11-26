@@ -46,7 +46,11 @@ export const GlobalImportStatus = () => {
       });
 
       const results = await Promise.all(statsPromises);
-      setStats(results);
+      
+      // Filter out verticals with 0 articles
+      const filteredResults = results.filter(stat => stat.total_articles > 0);
+      
+      setStats(filteredResults);
       if (loading) setLoading(false);
     } catch (error) {
       console.error('Error loading global stats:', error);
