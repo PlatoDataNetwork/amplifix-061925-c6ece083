@@ -345,7 +345,7 @@ const AerospaceImport = () => {
     const interval = setInterval(() => {
       loadAiJobStats();
       loadAerospaceArticleCounts();
-    }, 15000); // Changed from 5s to 15s to reduce flashing
+    }, 30000); // Changed to 30s for smoother updates
 
     return () => clearInterval(interval);
   }, []);
