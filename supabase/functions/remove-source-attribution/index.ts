@@ -29,12 +29,7 @@ Deno.serve(async (req) => {
       .from('articles')
       .select('id, content, title')
       .eq('vertical_slug', verticalSlug)
-      .or(
-        'content.ilike.%Plato Data Intelligence%,' +
-        'content.ilike.%platodata.ai%,' +
-        'content.ilike.%zephyrnet%,' +
-        'content.ilike.%PlatoData.network%'
-      );
+      .not('content', 'is', null);
 
     if (fetchError) throw fetchError;
 
