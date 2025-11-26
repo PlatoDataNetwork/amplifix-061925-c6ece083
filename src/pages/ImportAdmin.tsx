@@ -171,7 +171,7 @@ const ImportAdmin = () => {
       const { data: job, error } = await supabase
         .from('ai_processing_jobs')
         .select('*')
-        .eq('vertical_slug', 'aviation')
+        .eq('vertical_slug', 'aerospace')
         .order('started_at', { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -239,17 +239,17 @@ const ImportAdmin = () => {
         .select('*', { count: 'exact', head: true })
         .eq('vertical_slug', 'aerospace');
       
-      // Get count of aviation articles missing URLs or with Plato URLs
+      // Get count of aerospace articles missing URLs or with Plato URLs
       const { count: missingUrls } = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true })
-        .eq('vertical_slug', 'aviation')
+        .eq('vertical_slug', 'aerospace')
         .or('external_url.is.null,external_url.ilike.%platodata.ai%');
       
       // Try to estimate total from Plato AI (first page to check if we can get count)
       let platoTotal: number | null = null;
       try {
-        const { data: feedData } = await supabase.functions.invoke('fetch-aviation-feed', {
+        const { data: feedData } = await supabase.functions.invoke('fetch-aerospace-feed', {
           body: { page: 1 }
         });
         
