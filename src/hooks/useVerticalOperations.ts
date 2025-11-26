@@ -29,6 +29,7 @@ export const useVerticalOperations = (verticalSlug: string) => {
     loading: true
   });
   const [processing, setProcessing] = useState(false);
+  const [jsonUrl, setJsonUrl] = useState('');
 
   const loadStats = useCallback(async () => {
     try {
@@ -99,10 +100,18 @@ export const useVerticalOperations = (verticalSlug: string) => {
   const startFastImport = async () => {
     try {
       setProcessing(true);
+      
+      if (!jsonUrl || !jsonUrl.trim()) {
+        toast.error('Please enter a JSON URL');
+        return;
+      }
+
       toast.info(`Starting ${verticalSlug} import...`);
 
       const functionName = `import-${verticalSlug}-fast`;
-      const { data, error } = await supabase.functions.invoke(functionName);
+      const { data, error } = await supabase.functions.invoke(functionName, {
+        body: { jsonUrl }
+      });
 
       if (error) {
         // Function might not exist for this vertical
@@ -120,6 +129,7 @@ export const useVerticalOperations = (verticalSlug: string) => {
         duration: 5000
       });
 
+      setJsonUrl(''); // Clear the URL after successful import
       await loadStats();
     } catch (error) {
       toast.error(`Failed to start ${verticalSlug} import`, {
@@ -301,6 +311,8 @@ export const useVerticalOperations = (verticalSlug: string) => {
   return {
     stats,
     processing,
+    jsonUrl,
+    setJsonUrl,
     loadStats,
     startFastImport,
     startAIProcessing,
