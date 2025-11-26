@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,7 +17,7 @@ interface ProgressUpdate {
   percentComplete: number;
 }
 
-export const AerospaceUrlBackfill = () => {
+const AerospaceUrlBackfillComponent = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState<ProgressUpdate | null>(null);
   const [result, setResult] = useState<{
@@ -182,3 +182,5 @@ export const AerospaceUrlBackfill = () => {
     </Card>
   );
 };
+
+export const AerospaceUrlBackfill = memo(AerospaceUrlBackfillComponent);

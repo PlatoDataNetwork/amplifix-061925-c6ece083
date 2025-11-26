@@ -113,55 +113,6 @@ export const useAerospaceStats = () => {
 
   useEffect(() => {
     loadStats();
-
-    // Subscribe to real-time updates
-    const articlesChannel = supabase
-      .channel("aerospace-articles-changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "articles",
-          filter: "vertical_slug=eq.aerospace",
-        },
-        () => loadStats()
-      )
-      .subscribe();
-
-    const jobsChannel = supabase
-      .channel("aerospace-jobs-changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "ai_processing_jobs",
-          filter: "vertical_slug=eq.aerospace",
-        },
-        () => loadStats()
-      )
-      .subscribe();
-
-    const importChannel = supabase
-      .channel("aerospace-import-changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "import_history",
-          filter: "vertical_slug=eq.aerospace",
-        },
-        () => loadStats()
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(articlesChannel);
-      supabase.removeChannel(jobsChannel);
-      supabase.removeChannel(importChannel);
-    };
   }, []);
 
   return { stats, isLoading, error, refresh: loadStats };
