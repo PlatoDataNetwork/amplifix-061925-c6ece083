@@ -67,19 +67,37 @@ Deno.serve(async (req) => {
 
     console.log('🔄 Starting Plato source update process...');
 
-    // Fetch all articles excluding aerospace and aviation, grouped by vertical
-    const { data: articles, error: fetchError } = await supabase
-      .from('articles')
-      .select('id, content, vertical_slug')
-      .not('vertical_slug', 'in', '("aerospace","aviation")')
-      .order('vertical_slug');
+    // Fetch ALL articles excluding aerospace and aviation (fetch in batches to avoid limits)
+    let allArticles: any[] = [];
+    let from = 0;
+    const batchSize = 1000;
+    let hasMore = true;
 
-    if (fetchError) {
-      console.error('Error fetching articles:', fetchError);
-      throw fetchError;
+    while (hasMore) {
+      const { data: batch, error: fetchError } = await supabase
+        .from('articles')
+        .select('id, content, vertical_slug')
+        .not('vertical_slug', 'in', '("aerospace","aviation")')
+        .order('vertical_slug')
+        .range(from, from + batchSize - 1);
+
+      if (fetchError) {
+        console.error('Error fetching articles:', fetchError);
+        throw fetchError;
+      }
+
+      if (batch && batch.length > 0) {
+        allArticles = allArticles.concat(batch);
+        console.log(`📦 Fetched batch: ${batch.length} articles (total so far: ${allArticles.length})`);
+        from += batchSize;
+        hasMore = batch.length === batchSize;
+      } else {
+        hasMore = false;
+      }
     }
 
-    console.log(`📊 Found ${articles.length} articles to process`);
+    const articles = allArticles;
+    console.log(`📊 Total articles to process: ${articles.length}`);
 
     // Group articles by vertical
     const verticalGroups = new Map<string, typeof articles>();
