@@ -38,6 +38,7 @@ export default function PlatoSourceStats() {
   }, []);
 
   const fetchStats = async () => {
+    setLoading(true);
     try {
       // Fetch all articles without limit restrictions
       let allArticles: any[] = [];
@@ -51,7 +52,10 @@ export default function PlatoSourceStats() {
           .select('vertical_slug, content, external_url')
           .range(from, from + batchSize - 1);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching batch:', error);
+          throw error;
+        }
         
         if (data && data.length > 0) {
           allArticles = [...allArticles, ...data];
