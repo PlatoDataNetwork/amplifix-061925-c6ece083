@@ -308,6 +308,32 @@ export const useVerticalOperations = (verticalSlug: string) => {
     }
   };
 
+  const removeSourceAttribution = async () => {
+    try {
+      setProcessing(true);
+      toast.info(`Removing source attribution from ${verticalSlug} articles...`);
+
+      const { data, error } = await supabase.functions.invoke('remove-source-attribution', {
+        body: { verticalSlug }
+      });
+
+      if (error) throw error;
+
+      toast.success('Source attribution removed!', {
+        description: data?.message || `Cleaned ${data?.removed || 0} articles`,
+        duration: 5000
+      });
+
+      await loadStats();
+    } catch (error) {
+      toast.error(`Failed to remove source attribution`, {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   return {
     stats,
     processing,
@@ -320,6 +346,7 @@ export const useVerticalOperations = (verticalSlug: string) => {
     backfillUrls,
     clearImportHistory,
     clearAllArticles,
-    addSourceAttribution
+    addSourceAttribution,
+    removeSourceAttribution
   };
 };
