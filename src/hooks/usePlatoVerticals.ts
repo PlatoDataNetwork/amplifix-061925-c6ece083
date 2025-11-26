@@ -27,7 +27,7 @@ export function usePlatoVerticals() {
       { name: 'Clinical Trials', slug: 'clinical-trials', url: 'https://dashboard.platodata.io/json/clinical-trials.json' },
       { name: 'Code', slug: 'code', url: 'https://dashboard.platodata.io/json/code.json' },
       { name: 'Crowdfunding', slug: 'crowdfunding', url: 'https://dashboard.platodata.io/json/crowdfunding.json' },
-      { name: 'Crypto', slug: 'blockchain', url: 'https://dashboard.platodata.io/json/blockchain.json' },
+      { name: 'Blockchain', slug: 'blockchain', url: 'https://dashboard.platodata.io/json/blockchain.json' },
       { name: 'Cyber Security', slug: 'cyber-security', url: 'https://dashboard.platodata.io/json/cyber-security.json' },
       { name: 'Defense', slug: 'defense', url: 'https://dashboard.platodata.io/json/defense.json' },
       { name: 'Ecommerce', slug: 'ecommerce', url: 'https://dashboard.platodata.io/json/ecommerce.json' },
