@@ -16,6 +16,10 @@ const cleanText = (text?: string | null): string => {
     .replace(/Source:\s*Zephyrnet/gi, '')
     .replace(/Source:\s*PlatoData\.network/gi, '')
     .replace(/Source:\s*Plato\s*Data\s*Intelligence/gi, '')
+    // Remove Zephyrnet links and attributions
+    .replace(/<a[^>]*zephyrnet[^>]*>[\s\S]*?<\/a>/gi, '')
+    .replace(/https?:\/\/[^\s]*zephyrnet[^\s]*/gi, '')
+    .replace(/\[.*?\]\(.*?zephyrnet.*?\)/gi, '')
     // Remove other HTML and formatting
     .replace(/<a\b[^>]*>/gi, "")
     .replace(/<\/a>/gi, "")
