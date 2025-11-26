@@ -250,30 +250,66 @@ const ImportAdmin = () => {
 
       if (unprocessedChunks.length === 0) {
         toast.success('All chunks already processed!');
+        // Mark job as complete
+        await supabase
+          .from('ai_processing_jobs')
+          .update({
+            status: 'completed',
+            completed_at: new Date().toISOString()
+          })
+          .eq('id', job.id);
         await loadArvrStats();
         return;
       }
 
-      toast.info(`Processing ${unprocessedChunks.length} remaining chunks...`);
+      toast.success(`Resuming ${unprocessedChunks.length} remaining chunks...`, {
+        description: 'Processing will continue in background. Stats update every 5 seconds.',
+        duration: 5000
+      });
 
-      // Process remaining chunks in background
-      for (const chunkIndex of unprocessedChunks) {
-        supabase.functions.invoke('format-all-articles', {
-          body: {
-            chunkIndex,
-            chunkSize: 50,
-            verticalSlug: 'ar-vr',
-            jobId: job.id
+      // Process chunks sequentially in background
+      const processChunksSequentially = async () => {
+        for (const chunkIndex of unprocessedChunks) {
+          try {
+            console.log(`📦 Processing AR/VR chunk ${chunkIndex + 1}/${totalChunks}...`);
+            
+            const response = await supabase.functions.invoke('format-all-articles', {
+              body: {
+                chunkIndex,
+                chunkSize: 50,
+                verticalSlug: 'ar-vr',
+                jobId: job.id
+              }
+            });
+
+            if (response.error) {
+              console.error(`❌ Chunk ${chunkIndex} failed:`, response.error);
+            } else {
+              console.log(`✅ Chunk ${chunkIndex} completed`);
+            }
+
+            // Wait between chunks to avoid overwhelming the system
+            await new Promise(resolve => setTimeout(resolve, 3000));
+          } catch (error) {
+            console.error(`❌ Error processing chunk ${chunkIndex}:`, error);
           }
-        }).catch(error => {
-          console.error(`Error processing chunk ${chunkIndex}:`, error);
-        });
+        }
 
-        // Small delay between chunk invocations
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
+        // Mark job as complete after all chunks
+        await supabase
+          .from('ai_processing_jobs')
+          .update({
+            status: 'completed',
+            completed_at: new Date().toISOString()
+          })
+          .eq('id', job.id);
 
-      toast.success(`Resumed processing ${unprocessedChunks.length} chunks`);
+        console.log('🎉 AR/VR AI processing complete');
+      };
+
+      // Start processing in background (don't await)
+      processChunksSequentially();
+      
       await loadArvrStats();
     } catch (error) {
       toast.error('Failed to resume AR/VR AI processing', {
