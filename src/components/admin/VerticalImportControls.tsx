@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useVerticalOperations } from "@/hooks/useVerticalOperations";
-import { Loader2, Play, Sparkles, Trash2, Link2, History, AlertTriangle, FileText } from "lucide-react";
+import { Loader2, Play, Sparkles, Trash2, Link2, History, AlertTriangle, FileText, ExternalLink } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface VerticalImportControlsProps {
   verticalSlug: string;
@@ -14,6 +16,8 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
   const {
     stats,
     processing,
+    jsonUrl,
+    setJsonUrl,
     loadStats,
     startFastImport,
     startAIProcessing,
@@ -96,29 +100,44 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
             Import Operations
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
-          <Button
-            onClick={startFastImport}
-            disabled={processing}
-            className="w-full h-12"
-            size="lg"
-          >
-            {processing ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processing...
-              </>
-            ) : (
-              <>
-                <Play className="mr-2 h-4 w-4" />
-                Start Fast Import
-              </>
-            )}
-          </Button>
-
-          <p className="text-xs text-muted-foreground text-center">
-            Imports latest articles from Plato Data feed
-          </p>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="json-url" className="text-sm font-medium">
+              JSON Feed URL
+            </Label>
+            <div className="flex gap-2">
+              <Input
+                id="json-url"
+                type="url"
+                placeholder="https://example.com/feed.json"
+                value={jsonUrl}
+                onChange={(e) => setJsonUrl(e.target.value)}
+                disabled={processing}
+                className="flex-1"
+              />
+              <Button
+                onClick={startFastImport}
+                disabled={processing || !jsonUrl.trim()}
+                size="lg"
+                className="min-w-[140px]"
+              >
+                {processing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Importing...
+                  </>
+                ) : (
+                  <>
+                    <Play className="mr-2 h-4 w-4" />
+                    Start Import
+                  </>
+                )}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Enter the JSON feed URL from Plato Data Intelligence
+            </p>
+          </div>
         </CardContent>
       </Card>
 
