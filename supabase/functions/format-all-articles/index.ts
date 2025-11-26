@@ -262,7 +262,7 @@ Deno.serve(async (req) => {
     // Fetch articles in this chunk (excluding those with null content)
     let query = supabase
       .from('articles')
-      .select('id, title, content, excerpt, metadata')
+      .select('id, title, content, excerpt, metadata, published_at')
       .not('content', 'is', null);
     
     // Filter by vertical if specified
@@ -320,8 +320,15 @@ Deno.serve(async (req) => {
               const cleanedText = cleanText(article.content);
               const formattedContent = await formatArticleWithAI(cleanedText);
 
-              // Add source attribution at the end
-              const contentWithSource = `${formattedContent}\n\n<p class="text-sm text-muted-foreground mt-6 pt-4 border-t border-border">Source: <a href="https://platodata.ai" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Plato Data Intelligence</a></p>`;
+              // Format the publication date
+              const publishedDate = new Date(article.published_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              });
+
+              // Add source attribution with date at the end
+              const contentWithSource = `${formattedContent}\n\n<p class="text-sm text-muted-foreground mt-6 pt-4 border-t border-border">Published: ${publishedDate} | Source: <a href="https://platodata.ai" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Plato Data Intelligence</a></p>`;
 
               // Update article content and set ai_processed flag
               const currentMetadata = article.metadata || {};
