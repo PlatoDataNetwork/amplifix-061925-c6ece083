@@ -243,7 +243,9 @@ if (!article) {
               <div className="flex flex-wrap items-center gap-4">
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4" />
-                  <span className="translate">{article.author}</span>
+                  <span className="translate">
+                    {article.author === 'PlatoData' || article.author === 'Plato Data' ? 'Plato Data Intelligence' : article.author}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 notranslate">
                   <Calendar className="h-4 w-4" />
