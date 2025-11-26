@@ -224,9 +224,25 @@ Deno.serve(async (req) => {
             }
 
             if (needsUpdate) {
+              // Also check if external_url needs updating
+              let shouldUpdateUrl = false;
+              if (article.external_url) {
+                const urlLower = article.external_url.toLowerCase();
+                shouldUpdateUrl = urlLower.includes('platodata') || 
+                                 urlLower.includes('zephyrnet') || 
+                                 urlLower.includes('plato');
+              }
+
+              const updateData: any = { content: updatedContent };
+              
+              // Clear external_url if it points to old sources
+              if (shouldUpdateUrl) {
+                updateData.external_url = null;
+              }
+
               const { error: updateError } = await supabase
                 .from('articles')
-                .update({ content: updatedContent })
+                .update(updateData)
                 .eq('id', article.id);
 
               if (updateError) {
