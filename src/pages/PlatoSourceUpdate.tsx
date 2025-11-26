@@ -113,10 +113,10 @@ export default function PlatoSourceUpdate() {
         : verticals.reduce((sum, v) => sum + v.count, 0);
 
       toast({
-        title: "Starting Database Update",
+        title: "Processing Started",
         description: vertical 
-          ? `Processing ${articleCount.toLocaleString()} articles in ${vertical.replace(/-/g, ' ')}...`
-          : `Processing ${articleCount.toLocaleString()} articles across ${verticals.length} verticals...`,
+          ? `Updating ${articleCount.toLocaleString()} articles in ${vertical.replace(/-/g, ' ')}...`
+          : `Updating ${articleCount.toLocaleString()} articles across ${verticals.length} verticals...`,
       });
 
       const { data, error: functionError } = await supabase.functions.invoke(
@@ -144,10 +144,10 @@ export default function PlatoSourceUpdate() {
         }
         
         toast({
-          title: "Database Update Complete",
+          title: "✓ Update Complete",
           description: vertical
-            ? `Successfully updated ${data.stats.updated} articles in ${vertical.replace(/-/g, ' ')}`
-            : `Successfully updated ${data.stats.updated} articles across ${data.stats.verticals.length} verticals`,
+            ? `Updated ${data.stats.updated} of ${articleCount.toLocaleString()} articles in ${vertical.replace(/-/g, ' ')}`
+            : `Updated ${data.stats.updated} articles across ${data.stats.verticals.length} verticals`,
         });
       } else {
         throw new Error(data.error || 'Update failed');
