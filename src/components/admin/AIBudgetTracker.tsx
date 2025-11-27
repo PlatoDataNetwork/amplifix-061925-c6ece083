@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle, TrendingUp, DollarSign, Activity } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { CostEstimator } from "./CostEstimator";
 
 interface AIUsageData {
   date: string;
@@ -143,6 +144,8 @@ export const AIBudgetTracker = () => {
           </div>
         </CardContent>
       </Card>
+
+      <CostEstimator />
     </div>
   );
 };
