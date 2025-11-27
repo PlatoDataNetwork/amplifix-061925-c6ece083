@@ -94,88 +94,57 @@ Deno.serve(async (req) => {
 
     console.log(`✅ Created AI processing job ${job.id}`);
 
-    // Process first chunk to get started
+    // Process only the first chunk immediately, then let self-scheduling take over
     const processFirstChunk = async () => {
-      for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
-        try {
-          console.log(`📦 Processing chunk ${chunkIndex + 1}/${totalChunks}`);
+      try {
+        console.log(`📦 Starting first chunk (0/${totalChunks}) for job ${job.id}`);
+        
+        const response = await fetch(`${supabaseUrl}/functions/v1/format-all-articles`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${supabaseServiceKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chunkIndex: 0,
+            chunkSize,
+            verticalSlug,
+            jobId: job.id,
+            autoScheduleNext: true
+          })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`❌ First chunk failed:`, errorText);
           
-          const response = await fetch(`${supabaseUrl}/functions/v1/format-all-articles`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${supabaseServiceKey}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              chunkIndex,
-              chunkSize,
-              verticalSlug,
-              jobId: job.id
+          // Mark job as failed
+          await supabase
+            .from('ai_processing_jobs')
+            .update({
+              status: 'failed',
+              failed_chunks: [0],
+              updated_at: new Date().toISOString()
             })
-          });
-
-          if (!response.ok) {
-            console.error(`❌ Chunk ${chunkIndex} failed:`, await response.text());
-            
-            // Mark chunk as failed
-            await supabase
-              .from('ai_processing_jobs')
-              .update({
-                failed_chunks: supabase.rpc('array_append', {
-                  arr: job.failed_chunks || [],
-                  element: chunkIndex
-                })
-              })
-              .eq('id', job.id);
-          } else {
-            const result = await response.json();
-            console.log(`✅ Chunk ${chunkIndex} complete:`, result);
-            
-            // Mark chunk as processed
-            const { data: currentJob } = await supabase
-              .from('ai_processing_jobs')
-              .select('processed_chunks')
-              .eq('id', job.id)
-              .single();
-
-            const processedChunks = currentJob?.processed_chunks || [];
-            processedChunks.push(chunkIndex);
-
-            await supabase
-              .from('ai_processing_jobs')
-              .update({
-                processed_chunks: processedChunks,
-                updated_at: new Date().toISOString()
-              })
-              .eq('id', job.id);
-          }
-
-          // Longer delay between chunks to prevent overwhelming the system
-          await new Promise(resolve => setTimeout(resolve, 5000));
-        } catch (error) {
-          console.error(`❌ Error processing chunk ${chunkIndex}:`, error);
+            .eq('id', job.id);
+        } else {
+          const result = await response.json();
+          console.log(`✅ First chunk initiated:`, result);
         }
+      } catch (error) {
+        console.error(`❌ Error starting first chunk:`, error);
+        await supabase
+          .from('ai_processing_jobs')
+          .update({
+            status: 'failed',
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', job.id);
       }
-
-      // Mark job as complete
-      await supabase
-        .from('ai_processing_jobs')
-        .update({
-          status: 'completed',
-          completed_at: new Date().toISOString()
-        })
-        .eq('id', job.id);
-
-      console.log(`🎉 AI processing complete for ${verticalSlug}`);
     };
 
-    // Start processing in background
-    const ctx = Deno.env.get('DENO_REGION') ? (globalThis as any).EdgeRuntime : null;
-    if (ctx && ctx.waitUntil) {
-      ctx.waitUntil(processFirstChunk());
-    } else {
-      processFirstChunk().catch(console.error);
-    }
+    // Start processing first chunk in background
+    processFirstChunk().catch(console.error);
 
     return new Response(
       JSON.stringify({ 

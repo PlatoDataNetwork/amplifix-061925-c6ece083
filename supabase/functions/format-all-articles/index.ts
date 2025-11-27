@@ -259,7 +259,7 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { chunkIndex = 0, chunkSize = 50, verticalSlug = null, jobId = null } = await req.json();
+    const { chunkIndex = 0, chunkSize = 50, verticalSlug = null, jobId = null, autoScheduleNext = false } = await req.json();
 
     console.log(`Processing chunk ${chunkIndex} with size ${chunkSize}${verticalSlug ? ` for vertical ${verticalSlug}` : ''}`);
 
@@ -297,11 +297,11 @@ Deno.serve(async (req) => {
 
     console.log(`Found ${articles.length} articles to process`);
 
-    // Background processing function with parallel batching
-    const processArticles = async () => {
+    // Process articles immediately, then schedule next chunk
+    const processArticlesAndScheduleNext = async () => {
       let processed = 0;
       const failed: string[] = [];
-      const PARALLEL_BATCH_SIZE = 3; // Process 3 articles simultaneously to avoid overwhelming API
+      const PARALLEL_BATCH_SIZE = 3;
 
       // Split articles into batches
       const batches = [];
@@ -309,11 +309,11 @@ Deno.serve(async (req) => {
         batches.push(articles.slice(i, i + PARALLEL_BATCH_SIZE));
       }
 
-      console.log(`Processing ${articles.length} articles in ${batches.length} parallel batches of ${PARALLEL_BATCH_SIZE}`);
+      console.log(`[Chunk ${chunkIndex}] Processing ${articles.length} articles in ${batches.length} batches`);
 
       for (let batchIdx = 0; batchIdx < batches.length; batchIdx++) {
         const batch = batches[batchIdx];
-        console.log(`[Batch ${batchIdx + 1}/${batches.length}] Processing ${batch.length} articles in parallel...`);
+        console.log(`[Chunk ${chunkIndex}][Batch ${batchIdx + 1}/${batches.length}] Processing ${batch.length} articles...`);
 
         // Process all articles in this batch simultaneously
         const batchResults = await Promise.allSettled(
@@ -412,25 +412,36 @@ Deno.serve(async (req) => {
           }
         });
 
-        console.log(`Batch ${batchIdx + 1} complete: ${processed} total processed, ${failed.length} total failed`);
+        console.log(`[Chunk ${chunkIndex}] Batch ${batchIdx + 1} complete: ${processed}/${articles.length} processed`);
 
-        // Longer delay between batches to avoid overwhelming the API
+        // Small delay between batches
         if (batchIdx < batches.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
       }
 
-      // Update job tracking if jobId provided
+      // Update job tracking with chunk completion and schedule next chunk
       if (jobId) {
         const { data: currentJob } = await supabase
           .from('ai_processing_jobs')
-          .select('processed_chunks, failed_chunks, total_chunks')
+          .select('processed_chunks, failed_chunks, total_chunks, status')
           .eq('id', jobId)
           .single();
 
-        const currentChunks = currentJob?.processed_chunks || [];
-        const failedChunks = currentJob?.failed_chunks || [];
-        const totalChunks = currentJob?.total_chunks || 0;
+        if (!currentJob) {
+          console.error(`Job ${jobId} not found`);
+          return;
+        }
+
+        // Check if job was cancelled
+        if (currentJob.status === 'cancelled') {
+          console.log(`Job ${jobId} was cancelled, stopping processing`);
+          return;
+        }
+
+        const currentChunks = currentJob.processed_chunks || [];
+        const failedChunks = currentJob.failed_chunks || [];
+        const totalChunks = currentJob.total_chunks || 0;
         
         // Use Set to prevent duplicates
         const uniqueChunks = new Set([...currentChunks, chunkIndex]);
@@ -441,11 +452,15 @@ Deno.serve(async (req) => {
           ? Array.from(new Set([...failedChunks, chunkIndex]))
           : failedChunks;
 
+        const isComplete = updatedChunks.length >= totalChunks;
+
         const { error: jobError } = await supabase
           .from('ai_processing_jobs')
           .update({
             processed_chunks: updatedChunks,
             failed_chunks: updatedFailedChunks,
+            status: isComplete ? 'completed' : 'in_progress',
+            completed_at: isComplete ? new Date().toISOString() : null,
             updated_at: new Date().toISOString()
           })
           .eq('id', jobId);
@@ -453,26 +468,60 @@ Deno.serve(async (req) => {
         if (jobError) {
           console.error('Error updating job tracking:', jobError);
         } else {
-          console.log(`Chunk ${chunkIndex} complete: ${processed}/${articles.length} processed, ${failed.length} failed`);
+          console.log(`[Chunk ${chunkIndex}] Job ${jobId} updated: ${updatedChunks.length}/${totalChunks} chunks complete`);
+        }
+
+        // Schedule next chunk if not complete and auto-scheduling is enabled
+        if (!isComplete && autoScheduleNext) {
+          const nextChunkIndex = chunkIndex + 1;
+          console.log(`[Chunk ${chunkIndex}] Scheduling next chunk ${nextChunkIndex}...`);
+          
+          // Schedule next chunk after a brief delay
+          setTimeout(async () => {
+            try {
+              const nextResponse = await fetch(`${supabaseUrl}/functions/v1/format-all-articles`, {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${supabaseServiceKey}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  chunkIndex: nextChunkIndex,
+                  chunkSize,
+                  verticalSlug,
+                  jobId,
+                  autoScheduleNext: true
+                })
+              });
+
+              if (!nextResponse.ok) {
+                console.error(`Failed to schedule chunk ${nextChunkIndex}:`, await nextResponse.text());
+              } else {
+                console.log(`✅ Scheduled chunk ${nextChunkIndex}`);
+              }
+            } catch (error) {
+              console.error(`Error scheduling chunk ${nextChunkIndex}:`, error);
+            }
+          }, 2000);
+        } else if (isComplete) {
+          console.log(`🎉 Job ${jobId} complete! All ${totalChunks} chunks processed`);
         }
       }
     };
 
     // Start background processing using waitUntil if available
-    const ctx = Deno.env.get('DENO_REGION') ? (globalThis as any).EdgeRuntime : null;
-    if (ctx && ctx.waitUntil) {
-      ctx.waitUntil(processArticles());
-    } else {
-      processArticles().catch(console.error);
-    }
+    processArticlesAndScheduleNext().catch(error => {
+      console.error(`Error processing chunk ${chunkIndex}:`, error);
+    });
 
     // Return immediately
     return new Response(
       JSON.stringify({ 
-        success: true, 
-        message: `Started processing ${articles.length} articles in background`,
-        articlesCount: articles.length,
-        chunkIndex
+        success: true,
+        message: `Processing chunk ${chunkIndex}`,
+        articlesInChunk: articles.length,
+        chunkIndex,
+        autoScheduleNext
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
