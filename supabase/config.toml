@@ -102,3 +102,6 @@ verify_jwt = true
 [functions.process-all-verticals]
 verify_jwt = true
 
+[functions.fix-stuck-ai-jobs]
+verify_jwt = false
+
