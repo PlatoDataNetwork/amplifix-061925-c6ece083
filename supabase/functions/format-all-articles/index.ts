@@ -285,6 +285,24 @@ Deno.serve(async (req) => {
     }
 
     if (!articles || articles.length === 0) {
+      // If this is part of a tracked job, mark it as completed since there are no more unprocessed articles
+      if (jobId) {
+        const { error: jobUpdateError } = await supabase
+          .from('ai_processing_jobs')
+          .update({
+            status: 'completed',
+            completed_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', jobId);
+
+        if (jobUpdateError) {
+          console.error('Error marking job as completed when no more articles:', jobUpdateError);
+        } else {
+          console.log(`No more articles to process; job ${jobId} marked as completed`);
+        }
+      }
+
       return new Response(
         JSON.stringify({ 
           success: true, 
@@ -301,7 +319,7 @@ Deno.serve(async (req) => {
     const processArticlesAndScheduleNext = async () => {
       let processed = 0;
       const failed: string[] = [];
-      const PARALLEL_BATCH_SIZE = 3;
+      const PARALLEL_BATCH_SIZE = 5;
 
       // Split articles into batches
       const batches = [];
@@ -414,98 +432,114 @@ Deno.serve(async (req) => {
 
         console.log(`[Chunk ${chunkIndex}] Batch ${batchIdx + 1} complete: ${processed}/${articles.length} processed`);
 
-        // Small delay between batches
+        // Small delay between batches to avoid overwhelming external services
         if (batchIdx < batches.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await new Promise(resolve => setTimeout(resolve, 250));
         }
       }
 
-      // Update job tracking with chunk completion and schedule next chunk
+      let isComplete = false;
+
+      // Update job tracking with chunk completion
       if (jobId) {
-        const { data: currentJob } = await supabase
+        const { data: currentJob, error: jobFetchError } = await supabase
           .from('ai_processing_jobs')
           .select('processed_chunks, failed_chunks, total_chunks, status')
           .eq('id', jobId)
           .single();
 
-        if (!currentJob) {
-          console.error(`Job ${jobId} not found`);
-          return;
+        if (jobFetchError) {
+          console.error(`Error fetching job ${jobId} for tracking:`, jobFetchError);
         }
 
-        // Check if job was cancelled
-        if (currentJob.status === 'cancelled') {
-          console.log(`Job ${jobId} was cancelled, stopping processing`);
-          return;
-        }
+        if (!jobFetchError && currentJob) {
+          // Check if job was cancelled
+          if (currentJob.status === 'cancelled') {
+            console.log(`Job ${jobId} was cancelled, stopping processing`);
+            return;
+          }
 
-        const currentChunks = currentJob.processed_chunks || [];
-        const failedChunks = currentJob.failed_chunks || [];
-        const totalChunks = currentJob.total_chunks || 0;
-        
-        // Use Set to prevent duplicates
-        const uniqueChunks = new Set([...currentChunks, chunkIndex]);
-        const updatedChunks = Array.from(uniqueChunks).sort((a, b) => a - b);
-        
-        // Track failed chunks if we had failures
-        const updatedFailedChunks = failed.length > 0 
-          ? Array.from(new Set([...failedChunks, chunkIndex]))
-          : failedChunks;
-
-        const isComplete = updatedChunks.length >= totalChunks;
-
-        const { error: jobError } = await supabase
-          .from('ai_processing_jobs')
-          .update({
-            processed_chunks: updatedChunks,
-            failed_chunks: updatedFailedChunks,
-            status: isComplete ? 'completed' : 'in_progress',
-            completed_at: isComplete ? new Date().toISOString() : null,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', jobId);
-
-        if (jobError) {
-          console.error('Error updating job tracking:', jobError);
-        } else {
-          console.log(`[Chunk ${chunkIndex}] Job ${jobId} updated: ${updatedChunks.length}/${totalChunks} chunks complete`);
-        }
-
-        // Schedule next chunk if not complete and auto-scheduling is enabled
-        if (!isComplete && autoScheduleNext) {
-          const nextChunkIndex = chunkIndex + 1;
-          console.log(`[Chunk ${chunkIndex}] Scheduling next chunk ${nextChunkIndex}...`);
+          const currentChunks = currentJob.processed_chunks || [];
+          const failedChunks = currentJob.failed_chunks || [];
+          const totalChunks = currentJob.total_chunks || 0;
           
-          // Schedule next chunk after a brief delay
-          setTimeout(async () => {
-            try {
-              const nextResponse = await fetch(`${supabaseUrl}/functions/v1/format-all-articles`, {
-                method: 'POST',
-                headers: {
-                  'Authorization': `Bearer ${supabaseServiceKey}`,
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  chunkIndex: nextChunkIndex,
-                  chunkSize,
-                  verticalSlug,
-                  jobId,
-                  autoScheduleNext: true
-                })
-              });
+          // Use Set to prevent duplicates
+          const uniqueChunks = new Set([...currentChunks, chunkIndex]);
+          const updatedChunks = Array.from(uniqueChunks).sort((a, b) => a - b);
+          
+          // Track failed chunks if we had failures
+          const updatedFailedChunks = failed.length > 0 
+            ? Array.from(new Set([...failedChunks, chunkIndex]))
+            : failedChunks;
 
-              if (!nextResponse.ok) {
-                console.error(`Failed to schedule chunk ${nextChunkIndex}:`, await nextResponse.text());
-              } else {
-                console.log(`✅ Scheduled chunk ${nextChunkIndex}`);
-              }
-            } catch (error) {
-              console.error(`Error scheduling chunk ${nextChunkIndex}:`, error);
-            }
-          }, 2000);
-        } else if (isComplete) {
-          console.log(`🎉 Job ${jobId} complete! All ${totalChunks} chunks processed`);
+          isComplete = updatedChunks.length >= totalChunks;
+
+          const { error: jobError } = await supabase
+            .from('ai_processing_jobs')
+            .update({
+              processed_chunks: updatedChunks,
+              failed_chunks: updatedFailedChunks,
+              status: isComplete ? 'completed' : 'in_progress',
+              completed_at: isComplete ? new Date().toISOString() : null,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', jobId);
+
+          if (jobError) {
+            console.error('Error updating job tracking:', jobError);
+          } else {
+            console.log(`[Chunk ${chunkIndex}] Job ${jobId} updated: ${updatedChunks.length}/${totalChunks} chunks complete`);
+          }
+        } else if (!jobFetchError && !currentJob) {
+          console.warn(`Job ${jobId} not found when updating tracking; continuing without job update`);
         }
+      }
+
+      // Schedule next chunk if not complete and auto-scheduling is enabled
+      if (!isComplete && autoScheduleNext) {
+        const nextChunkIndex = chunkIndex + 1;
+        console.log(`[Chunk ${chunkIndex}] Scheduling next chunk ${nextChunkIndex}...`);
+        
+        const scheduleNextChunk = async () => {
+          try {
+            // Brief delay between chunks to avoid overwhelming external services
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const nextResponse = await fetch(`${supabaseUrl}/functions/v1/format-all-articles`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${supabaseServiceKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                chunkIndex: nextChunkIndex,
+                chunkSize,
+                verticalSlug,
+                jobId,
+                autoScheduleNext: true
+              })
+            });
+
+            if (!nextResponse.ok) {
+              console.error(`Failed to schedule chunk ${nextChunkIndex}:`, await nextResponse.text());
+            } else {
+              console.log(`✅ Scheduled chunk ${nextChunkIndex}`);
+            }
+          } catch (error) {
+            console.error(`Error scheduling chunk ${nextChunkIndex}:`, error);
+          }
+        };
+
+        try {
+          // Use EdgeRuntime background tasks if available
+          // @ts-ignore EdgeRuntime is provided by the Supabase Edge runtime
+          EdgeRuntime.waitUntil(scheduleNextChunk());
+        } catch {
+          // Fallback: run directly if EdgeRuntime is not available
+          scheduleNextChunk();
+        }
+      } else if (isComplete && jobId) {
+        console.log(`🎉 Job ${jobId} complete! All chunks processed`);
       }
     };
 
