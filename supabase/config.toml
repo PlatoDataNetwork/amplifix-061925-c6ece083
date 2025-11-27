@@ -108,3 +108,6 @@ verify_jwt = false
 [functions.resume-ai-job]
 verify_jwt = true
 
+[functions.reset-and-restart-ai]
+verify_jwt = true
+
