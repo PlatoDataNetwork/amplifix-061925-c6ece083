@@ -283,9 +283,18 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { chunkIndex = 0, chunkSize = 50, verticalSlug = null, jobId = null, autoScheduleNext = false } = await req.json();
+    const { 
+      chunkIndex = 0, 
+      chunkSize = 50, 
+      verticalSlug = null, 
+      jobId = null, 
+      autoScheduleNext = false,
+      fastMode = false,
+      skipTags = false
+    } = await req.json();
 
-    console.log(`Processing chunk ${chunkIndex} with size ${chunkSize}${verticalSlug ? ` for vertical ${verticalSlug}` : ''}`);
+    const mode = fastMode ? 'FAST' : 'NORMAL';
+    console.log(`[${mode}] Processing chunk ${chunkIndex} with size ${chunkSize}${verticalSlug ? ` for vertical ${verticalSlug}` : ''}`);
 
     // Fetch articles in this chunk (excluding those with null content)
     let query = supabase
@@ -343,7 +352,8 @@ Deno.serve(async (req) => {
     const processArticlesAndScheduleNext = async () => {
       let processed = 0;
       const failed: string[] = [];
-      const PARALLEL_BATCH_SIZE = 5;
+      // Reduce concurrency in fast mode to avoid DB timeouts
+      const PARALLEL_BATCH_SIZE = fastMode ? 2 : 5;
 
       // Split articles into batches
       const batches = [];
@@ -364,7 +374,10 @@ Deno.serve(async (req) => {
             try {
               console.log(`[${articleNum}/${articles.length}] Formatting article ${article.id}...`);
               const cleanedText = cleanText(article.content);
-              const formattedContent = await formatArticleWithAI(cleanedText, supabase, verticalSlug);
+              // In fast mode, skip AI and use only fallback formatting
+              const formattedContent = fastMode 
+                ? fallbackFormatting(cleanedText)
+                : await formatArticleWithAI(cleanedText, supabase, verticalSlug);
 
               // Update article content and set ai_processed flag
               const currentMetadata = article.metadata || {};
@@ -388,8 +401,9 @@ Deno.serve(async (req) => {
 
               console.log(`Successfully formatted article ${article.id}`);
 
-              // Extract and store tags
-              try {
+              // Extract and store tags (skip if fastMode + skipTags is true)
+              if (!skipTags) {
+                try {
                 const tags = extractKeywords(article.content || article.excerpt || '', article.title);
                 console.log(`Extracted ${tags.length} tags for article ${article.id}`);
 
@@ -432,8 +446,9 @@ Deno.serve(async (req) => {
                     .from('article_tags')
                     .insert({ article_id: article.id, tag_id: tagId });
                 }
-              } catch (tagError) {
-                console.error(`Error extracting tags for article ${article.id}:`, tagError);
+                } catch (tagError) {
+                  console.error(`Error extracting tags for article ${article.id}:`, tagError);
+                }
               }
 
               return { success: true, articleId: article.id };
@@ -540,7 +555,9 @@ Deno.serve(async (req) => {
                 chunkSize,
                 verticalSlug,
                 jobId,
-                autoScheduleNext: true
+                autoScheduleNext: true,
+                fastMode,
+                skipTags
               })
             });
 
