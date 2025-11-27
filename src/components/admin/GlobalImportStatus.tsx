@@ -37,48 +37,67 @@ export const GlobalImportStatus = () => {
 
       if (error) throw error;
 
-      const statsPromises = (verticals || []).map(async (v: any) => {
-        const { count: aiProcessed } = await supabase
-          .from('articles')
-          .select('*', { count: 'exact', head: true })
-          .eq('vertical_slug', v.vertical_slug)
-          .eq('metadata->>ai_processed', 'true');
+      // Process verticals in smaller batches to reduce database load
+      const batchSize = 5;
+      const results: VerticalStats[] = [];
+      
+      for (let i = 0; i < (verticals || []).length; i += batchSize) {
+        const batch = (verticals || []).slice(i, i + batchSize);
+        
+        const batchPromises = batch.map(async (v: any) => {
+          try {
+            const { count: aiProcessed } = await supabase
+              .from('articles')
+              .select('*', { count: 'exact', head: true })
+              .eq('vertical_slug', v.vertical_slug)
+              .eq('metadata->>ai_processed', 'true');
 
-        const { data: lastImport } = await supabase
-          .from('import_history')
-          .select('completed_at, imported_count, skipped_count, error_count, duration_ms, status')
-          .eq('vertical_slug', v.vertical_slug)
-          .eq('status', 'completed')
-          .order('completed_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
+            const { data: lastImport } = await supabase
+              .from('import_history')
+              .select('completed_at, imported_count, skipped_count, error_count, duration_ms, status')
+              .eq('vertical_slug', v.vertical_slug)
+              .eq('status', 'completed')
+              .order('completed_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
 
-        const { data: lastAiProcessed } = await supabase
-          .from('articles')
-          .select('updated_at')
-          .eq('vertical_slug', v.vertical_slug)
-          .eq('metadata->>ai_processed', 'true')
-          .order('updated_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
+            const { data: lastAiProcessed } = await supabase
+              .from('articles')
+              .select('updated_at')
+              .eq('vertical_slug', v.vertical_slug)
+              .eq('metadata->>ai_processed', 'true')
+              .order('updated_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
 
-        return {
-          vertical_slug: v.vertical_slug,
-          total_articles: v.article_count,
-          ai_processed: aiProcessed || 0,
-          last_import: lastImport?.completed_at || null,
-          last_ai_processed: lastAiProcessed?.updated_at || null,
-          import_stats: lastImport ? {
-            imported_count: lastImport.imported_count,
-            skipped_count: lastImport.skipped_count,
-            error_count: lastImport.error_count,
-            duration_ms: lastImport.duration_ms,
-            status: lastImport.status
-          } : null
-        };
-      });
+            return {
+              vertical_slug: v.vertical_slug,
+              total_articles: v.article_count,
+              ai_processed: aiProcessed || 0,
+              last_import: lastImport?.completed_at || null,
+              last_ai_processed: lastAiProcessed?.updated_at || null,
+              import_stats: lastImport ? {
+                imported_count: lastImport.imported_count,
+                skipped_count: lastImport.skipped_count,
+                error_count: lastImport.error_count,
+                duration_ms: lastImport.duration_ms,
+                status: lastImport.status
+              } : null
+            };
+          } catch (err) {
+            console.warn(`Failed to load stats for ${v.vertical_slug}:`, err);
+            return null;
+          }
+        });
 
-      const results = await Promise.all(statsPromises);
+        const batchResults = await Promise.all(batchPromises);
+        results.push(...batchResults.filter((r): r is VerticalStats => r !== null));
+        
+        // Small delay between batches to prevent overwhelming the database
+        if (i + batchSize < (verticals || []).length) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+      }
       
       // Filter out verticals with 0 articles
       const filteredResults = results.filter(stat => stat.total_articles > 0);
@@ -94,9 +113,10 @@ export const GlobalImportStatus = () => {
   useEffect(() => {
     loadGlobalStats();
 
+    // Refresh every 30 seconds instead of 5 to reduce database load
     const interval = setInterval(() => {
       loadGlobalStats();
-    }, 5000);
+    }, 30000);
     
     return () => clearInterval(interval);
   }, []);
