@@ -64,14 +64,31 @@ export const useVerticalOperations = (verticalSlug: string) => {
         .limit(1)
         .maybeSingle();
 
-      // AI job
-      const { data: job } = await supabase
+      // AI job - prefer any in-progress job, fallback to latest job
+      let job: any = null;
+
+      const { data: inProgressJob } = await supabase
         .from('ai_processing_jobs')
         .select('*')
         .eq('vertical_slug', verticalSlug)
+        .eq('status', 'in_progress')
         .order('started_at', { ascending: false })
         .limit(1)
         .maybeSingle();
+
+      if (inProgressJob) {
+        job = inProgressJob;
+      } else {
+        const { data: latestJob } = await supabase
+          .from('ai_processing_jobs')
+          .select('*')
+          .eq('vertical_slug', verticalSlug)
+          .order('started_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        job = latestJob;
+      }
 
       let progress = 0;
       if (job && job.total_chunks > 0) {
