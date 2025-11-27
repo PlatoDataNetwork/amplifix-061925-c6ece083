@@ -29,7 +29,8 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
     clearAllArticles,
     addSourceAttribution,
     removeSourceAttribution,
-    resetAIProcessing
+    resetAIProcessing,
+    resetAndRestartAI
   } = useVerticalOperations(verticalSlug);
   
   const { resumeJob, resuming } = useResumeAIJob();
@@ -163,9 +164,9 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
         </CardHeader>
         <CardContent className="space-y-3">
           {stats.aiJobStatus === 'in_progress' && (
-            <div className="space-y-2 mb-4">
+            <div className="space-y-2 mb-4 p-4 rounded-lg border-2 border-orange-500/20 bg-orange-500/5">
               <div className="flex items-center justify-between text-sm">
-                <span>Progress</span>
+                <span className="font-medium">Job In Progress</span>
                 <span className="font-semibold">{stats.aiProgress}%</span>
               </div>
               <Progress value={stats.aiProgress} className="h-2" />
@@ -173,24 +174,60 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
                 <p className="text-xs text-muted-foreground">
                   Job ID: {stats.aiJobId}
                 </p>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => stats.aiJobId && resumeJob(stats.aiJobId).then(loadStats)}
-                  disabled={resuming}
-                >
-                  {resuming ? (
-                    <>
-                      <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                      Resuming...
-                    </>
-                  ) : (
-                    <>
-                      <RefreshCcw className="mr-2 h-3 w-3" />
-                      Resume if Stuck
-                    </>
-                  )}
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => stats.aiJobId && resumeJob(stats.aiJobId).then(loadStats)}
+                    disabled={resuming}
+                  >
+                    {resuming ? (
+                      <>
+                        <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                        Resuming...
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCcw className="mr-2 h-3 w-3" />
+                        Resume
+                      </>
+                    )}
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        disabled={processing}
+                      >
+                        <AlertTriangle className="mr-2 h-3 w-3" />
+                        Reset & Restart
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Reset & Restart AI Processing?</AlertDialogTitle>
+                        <AlertDialogDescription className="space-y-2">
+                          <p>This will:</p>
+                          <ul className="list-disc list-inside space-y-1 text-sm">
+                            <li>Mark the current stuck job as completed</li>
+                            <li>Start a fresh AI processing job immediately</li>
+                            <li>Use the latest cheaper model and optimized settings</li>
+                          </ul>
+                          <p className="font-semibold text-orange-600 dark:text-orange-400 mt-3">
+                            Use this when processing gets stuck or fails to progress.
+                          </p>
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={resetAndRestartAI}>
+                          Reset & Restart
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </div>
             </div>
           )}
