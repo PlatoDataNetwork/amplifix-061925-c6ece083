@@ -11,7 +11,7 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { verticalSlug } = await req.json();
+    const { verticalSlug, fastMode = false, skipTags = false } = await req.json();
 
     if (!verticalSlug) {
       return new Response(
@@ -111,7 +111,9 @@ Deno.serve(async (req) => {
         chunkSize,
         verticalSlug,
         jobId: newJob.id,
-        autoScheduleNext: true
+        autoScheduleNext: true,
+        fastMode,
+        skipTags
       }
     });
 

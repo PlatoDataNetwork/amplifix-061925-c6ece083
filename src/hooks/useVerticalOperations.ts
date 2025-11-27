@@ -157,13 +157,14 @@ export const useVerticalOperations = (verticalSlug: string) => {
     }
   };
 
-  const startAIProcessing = async () => {
+  const startAIProcessing = async (fastMode = false, skipTags = false) => {
     try {
       setProcessing(true);
-      toast.info(`Starting ${verticalSlug} AI processing...`);
+      const mode = fastMode ? ' (Fast Mode)' : '';
+      toast.info(`Starting ${verticalSlug} AI processing${mode}...`);
 
       const { data, error } = await supabase.functions.invoke('start-ai-processing', {
-        body: { verticalSlug }
+        body: { verticalSlug, fastMode, skipTags }
       });
 
       if (error) throw error;
@@ -178,7 +179,7 @@ export const useVerticalOperations = (verticalSlug: string) => {
         return;
       }
 
-      toast.success(`${verticalSlug} AI processing started!`, {
+      toast.success(`${verticalSlug} AI processing started${mode}!`, {
         description: `Processing ${data.totalArticles} articles`,
         duration: 5000
       });
@@ -387,18 +388,19 @@ export const useVerticalOperations = (verticalSlug: string) => {
     }
   };
 
-  const resetAndRestartAI = async () => {
+  const resetAndRestartAI = async (fastMode = false, skipTags = false) => {
     try {
       setProcessing(true);
-      toast.info(`Completing stuck jobs and starting fresh AI processing for ${verticalSlug}...`);
+      const mode = fastMode ? ' (Fast Mode)' : '';
+      toast.info(`Completing stuck jobs and starting fresh AI processing for ${verticalSlug}${mode}...`);
 
       const { data, error } = await supabase.functions.invoke('reset-and-restart-ai', {
-        body: { verticalSlug }
+        body: { verticalSlug, fastMode, skipTags }
       });
 
       if (error) throw error;
 
-      toast.success('Reset and restart complete!', {
+      toast.success(`Reset and restart complete${mode}!`, {
         description: data?.message || `Processing ${data?.articlesToProcess || 0} articles`,
         duration: 5000
       });

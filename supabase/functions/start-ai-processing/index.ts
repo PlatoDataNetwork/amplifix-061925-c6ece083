@@ -11,9 +11,10 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { verticalSlug = 'aviation' } = await req.json();
+    const { verticalSlug = 'aviation', fastMode = false, skipTags = false } = await req.json();
 
-    console.log(`🚀 Starting AI processing for ${verticalSlug}`);
+    const mode = fastMode ? 'FAST MODE' : 'NORMAL';
+    console.log(`🚀 Starting AI processing for ${verticalSlug} (${mode})`);
 
     // Check for existing in-progress job
     const { data: existingJob, error: checkError } = await supabase
@@ -110,7 +111,9 @@ Deno.serve(async (req) => {
             chunkSize,
             verticalSlug,
             jobId: job.id,
-            autoScheduleNext: true
+            autoScheduleNext: true,
+            fastMode,
+            skipTags
           })
         });
 

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -6,9 +6,10 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useVerticalOperations } from "@/hooks/useVerticalOperations";
 import { useResumeAIJob } from "@/hooks/useResumeAIJob";
 import { SourceAttributionMonitor } from "@/components/admin/SourceAttributionMonitor";
-import { Loader2, Play, Sparkles, Trash2, Link2, History, AlertTriangle, FileText, ExternalLink, RefreshCcw } from "lucide-react";
+import { Loader2, Play, Sparkles, Trash2, Link2, History, AlertTriangle, FileText, ExternalLink, RefreshCcw, Zap } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 interface VerticalImportControlsProps {
   verticalSlug: string;
@@ -34,6 +35,8 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
   } = useVerticalOperations(verticalSlug);
   
   const { resumeJob, resuming } = useResumeAIJob();
+  const [fastMode, setFastMode] = useState(verticalSlug === 'cannabis');
+  const [skipTags, setSkipTags] = useState(verticalSlug === 'cannabis');
 
   useEffect(() => {
     loadStats();
@@ -219,10 +222,10 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
                           </p>
                         </AlertDialogDescription>
                       </AlertDialogHeader>
-                      <AlertDialogFooter>
+                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={resetAndRestartAI}>
-                          Reset & Restart
+                        <AlertDialogAction onClick={() => resetAndRestartAI(fastMode, skipTags)}>
+                          Reset & Restart {fastMode && '(Fast)'}
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -232,8 +235,39 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
             </div>
           )}
 
+          {verticalSlug === 'cannabis' && stats.remaining > 0 && (
+            <div className="space-y-3 p-4 bg-muted rounded-lg mb-4">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="fast-mode" className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-yellow-500" />
+                  Fast Mode
+                </Label>
+                <Switch
+                  id="fast-mode"
+                  checked={fastMode}
+                  onCheckedChange={setFastMode}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Skip AI formatting, use fallback only, reduce concurrency to avoid timeouts
+              </p>
+              
+              <div className="flex items-center justify-between">
+                <Label htmlFor="skip-tags">Skip Tag Extraction</Label>
+                <Switch
+                  id="skip-tags"
+                  checked={skipTags}
+                  onCheckedChange={setSkipTags}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Skip extracting and storing article tags for faster processing
+              </p>
+            </div>
+          )}
+
           <Button
-            onClick={startAIProcessing}
+            onClick={() => startAIProcessing(fastMode, skipTags)}
             disabled={processing || stats.remaining === 0}
             className="w-full h-12"
             size="lg"
@@ -248,8 +282,8 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
               <>✅ All Articles Processed</>
             ) : (
               <>
-                <Sparkles className="mr-2 h-4 w-4" />
-                Process {stats.remaining.toLocaleString()} Articles with AI
+                {fastMode ? <Zap className="mr-2 h-4 w-4" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                Process {stats.remaining.toLocaleString()} Articles {fastMode ? '(Fast)' : 'with AI'}
               </>
             )}
           </Button>
