@@ -15,6 +15,37 @@ Deno.serve(async (req) => {
 
     console.log(`🚀 Starting AI processing for ${verticalSlug}`);
 
+    // Check for existing in-progress job
+    const { data: existingJob, error: checkError } = await supabase
+      .from('ai_processing_jobs')
+      .select('*')
+      .eq('vertical_slug', verticalSlug)
+      .eq('status', 'in_progress')
+      .order('started_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (checkError) {
+      throw checkError;
+    }
+
+    if (existingJob) {
+      const progress = existingJob.processed_chunks?.length || 0;
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: `AI processing already in progress for ${verticalSlug}`,
+          jobId: existingJob.id,
+          progress: `${progress}/${existingJob.total_chunks} chunks processed`,
+          message: 'Please wait for the current job to complete or cancel it first'
+        }),
+        { 
+          status: 409,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
     // Count unprocessed articles
     const { count, error: countError } = await supabase
       .from('articles')
