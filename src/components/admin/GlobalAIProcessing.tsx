@@ -7,6 +7,7 @@ import { Brain, Loader2 } from 'lucide-react';
 
 export function GlobalAIProcessing() {
   const [processing, setProcessing] = useState(false);
+  const [stopping, setStopping] = useState(false);
 
   const handleProcessAll = async () => {
     setProcessing(true);
@@ -30,6 +31,28 @@ export function GlobalAIProcessing() {
     }
   };
 
+  const handleStopAll = async () => {
+    setStopping(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('stop-all-ai-processing');
+      
+      if (error) throw error;
+      
+      toast.success('AI Processing Stopped', {
+        description: data.message || 'All active processing jobs have been stopped'
+      });
+      
+      console.log('Stopped jobs:', data);
+    } catch (error) {
+      console.error('Error stopping AI processing:', error);
+      toast.error('Failed to stop AI processing', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setStopping(false);
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -41,16 +64,27 @@ export function GlobalAIProcessing() {
           Run AI processing on all verticals (except Aerospace and Aviation) sequentially
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-3">
         <Button 
           onClick={handleProcessAll} 
-          disabled={processing}
+          disabled={processing || stopping}
           className="w-full"
         >
           {processing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {processing ? 'Starting AI Processing...' : 'Process All Verticals'}
         </Button>
-        <p className="text-xs text-muted-foreground mt-2">
+        
+        <Button 
+          onClick={handleStopAll} 
+          disabled={stopping || processing}
+          variant="destructive"
+          className="w-full"
+        >
+          {stopping && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {stopping ? 'Stopping...' : 'Stop All Processing'}
+        </Button>
+        
+        <p className="text-xs text-muted-foreground">
           This will format and tag all unprocessed articles across all verticals one by one
         </p>
       </CardContent>
