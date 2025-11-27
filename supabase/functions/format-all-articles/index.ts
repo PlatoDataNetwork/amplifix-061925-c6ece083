@@ -57,38 +57,17 @@ const formatArticleWithAI = async (text: string, retries = 3): Promise<string> =
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
+          model: "google/gemini-2.5-flash-lite",
           messages: [
             {
               role: "system",
-              content: `You are an expert article formatter. Your job is to identify section headers and structure articles properly.
-
-WHAT IS A SECTION HEADER:
-- A short title (3-15 words) that introduces a NEW topic, concept, or section
-- Usually appears at natural topic transitions in the article
-- Often in title case or starts with capital letters
-- Examples: "The Rise of AI", "Key Benefits", "Technical Implementation", "Market Impact"
-
-WHAT IS NOT A SECTION HEADER:
-- The first sentence of a paragraph describing details
-- Long sentences (over 15 words)
-- Questions within paragraphs
-- Statistical statements or data points
-
-FORMATTING RULES:
-1. Mark ONLY clear section headers with [HEADER] prefix
-2. A well-structured article should have 3-6 section headers (not every paragraph needs one)
-3. Add blank lines between sections for readability
-4. Keep related sentences together in paragraphs (3-5 sentences per paragraph)
-
-Return the formatted text with [HEADER] markers for section titles only.`
+              content: "Format article. Mark section headers (3-15 words, topic transitions) with [HEADER]. Keep 3-5 sentences per paragraph."
             },
             {
               role: "user",
-              content: `Format this article by identifying section headers and adding proper structure. Look for topic transitions and major concept introductions. Mark them with [HEADER]:\n\n${text}`
+              content: `Format:\n\n${text}`
             }
           ],
-          temperature: 0.2,
         }),
       });
 
