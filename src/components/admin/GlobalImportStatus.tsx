@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ArrowUpDown } from "lucide-react";
+import { Loader2, ArrowUpDown, RefreshCw } from "lucide-react";
 
 interface VerticalStats {
   vertical_slug: string;
@@ -26,12 +26,15 @@ type SortDirection = 'asc' | 'desc';
 export const GlobalImportStatus = () => {
   const [stats, setStats] = useState<VerticalStats[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [sortField, setSortField] = useState<SortField>('articles');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [selectedVertical, setSelectedVertical] = useState('ALL');
 
-  const loadGlobalStats = async () => {
+  const loadGlobalStats = async (isManualRefresh = false) => {
     try {
+      if (isManualRefresh) setRefreshing(true);
+      
       const { data: verticals, error } = await supabase
         .rpc('get_vertical_article_counts');
 
@@ -107,7 +110,13 @@ export const GlobalImportStatus = () => {
     } catch (error) {
       console.error('Error loading global stats:', error);
       if (loading) setLoading(false);
+    } finally {
+      if (isManualRefresh) setRefreshing(false);
     }
+  };
+
+  const handleManualRefresh = () => {
+    loadGlobalStats(true);
   };
 
   useEffect(() => {
@@ -183,10 +192,26 @@ export const GlobalImportStatus = () => {
   return (
     <Card className="border-primary/20">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <span className="text-2xl">🌐</span>
-          Global Import Status
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <span className="text-2xl">🌐</span>
+            Global Import Status
+          </CardTitle>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleManualRefresh}
+            disabled={refreshing}
+            className="h-8"
+          >
+            {refreshing ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="h-4 w-4" />
+            )}
+            <span className="ml-2">Refresh</span>
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
