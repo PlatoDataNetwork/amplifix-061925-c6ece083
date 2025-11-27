@@ -8,6 +8,7 @@ import { GlobalImportStatus } from '@/components/admin/GlobalImportStatus';
 import { VerticalImportControls } from '@/components/admin/VerticalImportControls';
 import { GlobalFooterNormalization } from '@/components/admin/GlobalFooterNormalization';
 import { GlobalAIProcessing } from '@/components/admin/GlobalAIProcessing';
+import { GlobalAIProcessingDashboard } from '@/components/admin/GlobalAIProcessingDashboard';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { usePlatoVerticals } from '@/hooks/usePlatoVerticals';
 import { Loader2 } from 'lucide-react';
@@ -67,8 +68,9 @@ export default function ImportAdminRefactored() {
         </div>
 
         {/* Global AI Processing */}
-        <div className="mb-8">
+        <div className="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
           <GlobalAIProcessing />
+          <GlobalAIProcessingDashboard />
         </div>
 
         {/* Vertical Selector */}
