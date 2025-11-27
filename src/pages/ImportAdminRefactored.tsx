@@ -7,8 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { GlobalImportStatus } from '@/components/admin/GlobalImportStatus';
 import { VerticalImportControls } from '@/components/admin/VerticalImportControls';
 import { GlobalFooterNormalization } from '@/components/admin/GlobalFooterNormalization';
-import { GlobalAIProcessing } from '@/components/admin/GlobalAIProcessing';
-import { GlobalAIProcessingDashboard } from '@/components/admin/GlobalAIProcessingDashboard';
+import { VerticalAIProcessingList } from '@/components/admin/VerticalAIProcessingList';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { usePlatoVerticals } from '@/hooks/usePlatoVerticals';
 import { Loader2 } from 'lucide-react';
@@ -67,10 +66,9 @@ export default function ImportAdminRefactored() {
           <GlobalFooterNormalization />
         </div>
 
-        {/* Global AI Processing */}
-        <div className="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <GlobalAIProcessing />
-          <GlobalAIProcessingDashboard />
+        {/* Vertical AI Processing */}
+        <div className="mb-8">
+          <VerticalAIProcessingList />
         </div>
 
         {/* Vertical Selector */}
