@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_credit_usage: {
+        Row: {
+          api_calls: number
+          created_at: string
+          date: string
+          error_402_count: number
+          failed_calls: number
+          id: string
+          model_used: string
+          tokens_used: number
+          updated_at: string
+          vertical_slug: string | null
+        }
+        Insert: {
+          api_calls?: number
+          created_at?: string
+          date?: string
+          error_402_count?: number
+          failed_calls?: number
+          id?: string
+          model_used: string
+          tokens_used?: number
+          updated_at?: string
+          vertical_slug?: string | null
+        }
+        Update: {
+          api_calls?: number
+          created_at?: string
+          date?: string
+          error_402_count?: number
+          failed_calls?: number
+          id?: string
+          model_used?: string
+          tokens_used?: number
+          updated_at?: string
+          vertical_slug?: string | null
+        }
+        Relationships: []
+      }
       ai_processing_jobs: {
         Row: {
           completed_at: string | null

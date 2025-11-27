@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import MainHeader from '@/components/MainHeader';
 import Footer from '@/components/Footer';
 import { Database, Users, FileText, Shield, Activity, Clock, LogOut, Archive, GitCompare, Map, Languages, Briefcase, BarChart3, Save, RotateCcw } from 'lucide-react';
+import { AIBudgetTracker } from '@/components/admin/AIBudgetTracker';
 
 interface SystemStats {
   totalUsers: number;
@@ -324,6 +325,26 @@ const AdminDashboard = () => {
               <Shield className="h-4 w-4" />
               <span>Automatic backups are created before all destructive operations</span>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* AI Budget Tracker */}
+        <Card className="mb-8 border-2 border-primary/20 bg-gradient-to-br from-blue-500/5 to-cyan-500/5">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500">
+                <Activity className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl">AI Credit Usage</CardTitle>
+                <CardDescription className="text-base">
+                  Monitor your daily AI API usage and remaining credits
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <AIBudgetTracker />
           </CardContent>
         </Card>
 
