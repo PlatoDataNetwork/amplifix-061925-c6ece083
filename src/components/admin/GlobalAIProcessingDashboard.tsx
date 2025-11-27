@@ -34,13 +34,23 @@ export function GlobalAIProcessingDashboard() {
       // Group by vertical and keep only the most recent
       const jobsByVertical = new Map<string, JobStatus>();
       data?.forEach((job) => {
+        // Exclude aerospace and aviation
+        if (job.vertical_slug === 'aerospace' || job.vertical_slug === 'aviation') {
+          return;
+        }
+        
         if (!jobsByVertical.has(job.vertical_slug) || 
             new Date(job.started_at) > new Date(jobsByVertical.get(job.vertical_slug)!.started_at)) {
           jobsByVertical.set(job.vertical_slug, job);
         }
       });
 
-      setJobs(Array.from(jobsByVertical.values()).sort((a, b) => 
+      // Filter to only show jobs that are not completed or have failed chunks
+      const filteredJobs = Array.from(jobsByVertical.values()).filter(job => {
+        return job.status !== 'completed' || (job.failed_chunks && job.failed_chunks.length > 0);
+      });
+
+      setJobs(filteredJobs.sort((a, b) => 
         a.vertical_slug.localeCompare(b.vertical_slug)
       ));
     } catch (error) {
