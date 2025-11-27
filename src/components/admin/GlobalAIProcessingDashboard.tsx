@@ -45,12 +45,8 @@ export function GlobalAIProcessingDashboard() {
         }
       });
 
-      // Filter to only show jobs that are not completed or have failed chunks
-      const filteredJobs = Array.from(jobsByVertical.values()).filter(job => {
-        return job.status !== 'completed' || (job.failed_chunks && job.failed_chunks.length > 0);
-      });
-
-      setJobs(filteredJobs.sort((a, b) => 
+      // Show all jobs (no filtering by completion status)
+      setJobs(Array.from(jobsByVertical.values()).sort((a, b) =>
         a.vertical_slug.localeCompare(b.vertical_slug)
       ));
     } catch (error) {
