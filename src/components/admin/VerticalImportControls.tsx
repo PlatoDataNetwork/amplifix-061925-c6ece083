@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useVerticalOperations } from "@/hooks/useVerticalOperations";
+import { useResumeAIJob } from "@/hooks/useResumeAIJob";
 import { SourceAttributionMonitor } from "@/components/admin/SourceAttributionMonitor";
-import { Loader2, Play, Sparkles, Trash2, Link2, History, AlertTriangle, FileText, ExternalLink } from "lucide-react";
+import { Loader2, Play, Sparkles, Trash2, Link2, History, AlertTriangle, FileText, ExternalLink, RefreshCcw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -30,6 +31,8 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
     removeSourceAttribution,
     resetAIProcessing
   } = useVerticalOperations(verticalSlug);
+  
+  const { resumeJob, resuming } = useResumeAIJob();
 
   useEffect(() => {
     loadStats();
@@ -166,9 +169,29 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
                 <span className="font-semibold">{stats.aiProgress}%</span>
               </div>
               <Progress value={stats.aiProgress} className="h-2" />
-              <p className="text-xs text-muted-foreground">
-                Job ID: {stats.aiJobId}
-              </p>
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-muted-foreground">
+                  Job ID: {stats.aiJobId}
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => stats.aiJobId && resumeJob(stats.aiJobId).then(loadStats)}
+                  disabled={resuming}
+                >
+                  {resuming ? (
+                    <>
+                      <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                      Resuming...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCcw className="mr-2 h-3 w-3" />
+                      Resume if Stuck
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           )}
 
