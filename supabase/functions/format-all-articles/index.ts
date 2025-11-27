@@ -40,8 +40,49 @@ const cleanText = (text?: string | null): string => {
     .trim();
 };
 
+// Track AI usage in the database
+const trackAIUsage = async (supabase: any, verticalSlug: string | null, success: boolean, is402Error: boolean) => {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const model = "google/gemini-2.5-flash-lite";
+    
+    const { data: existing } = await supabase
+      .from('ai_credit_usage')
+      .select('*')
+      .eq('date', today)
+      .eq('model_used', model)
+      .eq('vertical_slug', verticalSlug || 'all')
+      .maybeSingle();
+
+    if (existing) {
+      await supabase
+        .from('ai_credit_usage')
+        .update({
+          api_calls: existing.api_calls + 1,
+          failed_calls: success ? existing.failed_calls : existing.failed_calls + 1,
+          error_402_count: is402Error ? existing.error_402_count + 1 : existing.error_402_count,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', existing.id);
+    } else {
+      await supabase
+        .from('ai_credit_usage')
+        .insert({
+          date: today,
+          vertical_slug: verticalSlug || 'all',
+          model_used: model,
+          api_calls: 1,
+          failed_calls: success ? 0 : 1,
+          error_402_count: is402Error ? 1 : 0
+        });
+    }
+  } catch (error) {
+    console.error('Error tracking AI usage:', error);
+  }
+};
+
 // Use AI to detect semantic breaks and split into paragraphs with headers
-const formatArticleWithAI = async (text: string, retries = 3): Promise<string> => {
+const formatArticleWithAI = async (text: string, supabase: any, verticalSlug: string | null, retries = 3): Promise<string> => {
   const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
   if (!LOVABLE_API_KEY) {
     console.error("LOVABLE_API_KEY not found, falling back to simple formatting");
@@ -71,6 +112,9 @@ const formatArticleWithAI = async (text: string, retries = 3): Promise<string> =
         }),
       });
 
+      const is402 = response.status === 402;
+      await trackAIUsage(supabase, verticalSlug, response.ok, is402);
+
       if (response.status === 429) {
         // Rate limited - exponential backoff
         const backoffMs = Math.min(1000 * Math.pow(2, attempt), 10000);
@@ -80,7 +124,8 @@ const formatArticleWithAI = async (text: string, retries = 3): Promise<string> =
       }
 
       if (!response.ok) {
-        console.error("AI API error:", response.status, await response.text());
+        const errorText = await response.text();
+        console.error("AI API error:", response.status, errorText);
         return fallbackFormatting(text);
       }
 
@@ -319,7 +364,7 @@ Deno.serve(async (req) => {
             try {
               console.log(`[${articleNum}/${articles.length}] Formatting article ${article.id}...`);
               const cleanedText = cleanText(article.content);
-              const formattedContent = await formatArticleWithAI(cleanedText);
+              const formattedContent = await formatArticleWithAI(cleanedText, supabase, verticalSlug);
 
               // Update article content and set ai_processed flag
               const currentMetadata = article.metadata || {};
