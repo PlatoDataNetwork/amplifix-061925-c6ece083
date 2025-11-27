@@ -16,6 +16,17 @@ export default function ImportAdminRefactored() {
   const { isAdmin, loading } = useAdminCheck();
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   const [selectedVertical, setSelectedVertical] = useState<string>('');
+  const [loadingTimeout, setLoadingTimeout] = useState(false);
+
+  // Timeout to prevent infinite loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loading || verticalsLoading) {
+        setLoadingTimeout(true);
+      }
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [loading, verticalsLoading]);
 
   // Redirect if not admin
   useEffect(() => {
@@ -31,10 +42,26 @@ export default function ImportAdminRefactored() {
     }
   }, [verticals, verticalsLoading, selectedVertical]);
 
-  if (loading || verticalsLoading) {
+  if ((loading || verticalsLoading) && !loadingTimeout) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (loadingTimeout) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-lg text-muted-foreground mb-4">Loading timeout. Please refresh the page.</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+          >
+            Refresh Page
+          </button>
+        </div>
       </div>
     );
   }
