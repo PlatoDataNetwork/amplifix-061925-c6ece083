@@ -12,6 +12,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 interface VerticalStats {
   slug: string;
   totalArticles: number;
+  processedArticles: number;
   unprocessedArticles: number;
   latestJob?: {
     id: string;
@@ -24,24 +25,6 @@ interface VerticalStats {
   };
 }
 
-const ALL_VERTICALS = [
-  'blockchain',
-  'fintech',
-  'ai',
-  'healthtech',
-  'cleantech',
-  'edtech',
-  'arvr',
-  'security',
-  'mobility',
-  'iot',
-  'biotech',
-  'legal',
-  'hr',
-  'marketing',
-  'analytics'
-];
-
 export function VerticalAIProcessingList() {
   const [verticals, setVerticals] = useState<VerticalStats[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,14 +34,31 @@ export function VerticalAIProcessingList() {
   const loadVerticalStats = async () => {
     setLoading(true);
     try {
+      // First, get all unique vertical slugs from articles
+      const { data: allArticles, error: articlesError } = await supabase
+        .from('articles')
+        .select('vertical_slug');
+
+      if (articlesError) throw articlesError;
+
+      // Get unique verticals
+      const uniqueVerticals = [...new Set(allArticles?.map(a => a.vertical_slug) || [])];
+      
       const stats: VerticalStats[] = [];
 
-      for (const slug of ALL_VERTICALS) {
+      for (const slug of uniqueVerticals) {
         // Count total articles
         const { count: total } = await supabase
           .from('articles')
           .select('*', { count: 'exact', head: true })
           .eq('vertical_slug', slug);
+
+        // Count AI processed articles
+        const { count: processed } = await supabase
+          .from('articles')
+          .select('*', { count: 'exact', head: true })
+          .eq('vertical_slug', slug)
+          .not('metadata->ai_processed', 'is', null);
 
         // Count unprocessed articles
         const { count: unprocessed } = await supabase
@@ -78,11 +78,14 @@ export function VerticalAIProcessingList() {
         stats.push({
           slug,
           totalArticles: total || 0,
+          processedArticles: processed || 0,
           unprocessedArticles: unprocessed || 0,
           latestJob: jobs?.[0] || undefined
         });
       }
 
+      // Sort by vertical name
+      stats.sort((a, b) => a.slug.localeCompare(b.slug));
       setVerticals(stats);
     } catch (error) {
       console.error('Error loading vertical stats:', error);
@@ -95,7 +98,7 @@ export function VerticalAIProcessingList() {
   useEffect(() => {
     loadVerticalStats();
 
-    // Subscribe to real-time updates
+    // Subscribe to real-time updates for both jobs and articles
     const channel = supabase
       .channel('vertical-stats-changes')
       .on(
@@ -109,12 +112,32 @@ export function VerticalAIProcessingList() {
           loadVerticalStats();
         }
       )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'articles'
+        },
+        () => {
+          loadVerticalStats();
+        }
+      )
       .subscribe();
+
+    // Auto-refresh every 5 seconds when there are active jobs
+    const interval = setInterval(() => {
+      const hasActiveJobs = verticals.some(v => v.latestJob?.status === 'processing');
+      if (hasActiveJobs) {
+        loadVerticalStats();
+      }
+    }, 5000);
 
     return () => {
       supabase.removeChannel(channel);
+      clearInterval(interval);
     };
-  }, []);
+  }, [verticals]);
 
   const handleStartProcessing = async (verticalSlug: string) => {
     setProcessingVertical(verticalSlug);
@@ -253,11 +276,10 @@ export function VerticalAIProcessingList() {
                       <h3 className="font-semibold text-lg">
                         {formatVerticalName(vertical.slug)}
                       </h3>
-                      <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-                        <span>Total: {vertical.totalArticles}</span>
-                        <span className="text-orange-600">
-                          Unprocessed: {vertical.unprocessedArticles}
-                        </span>
+                      <div className="flex items-center gap-4 mt-1 text-sm">
+                        <span className="text-muted-foreground">Total: <span className="font-medium text-foreground">{vertical.totalArticles}</span></span>
+                        <span className="text-muted-foreground">AI Processed: <span className="font-medium text-green-600">{vertical.processedArticles}</span></span>
+                        <span className="text-muted-foreground">Unprocessed: <span className="font-medium text-orange-600">{vertical.unprocessedArticles}</span></span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
