@@ -149,21 +149,10 @@ export const useVerticalOperations = (verticalSlug: string) => {
         body: { verticalSlug }
       });
 
-      if (error) {
-        // Check if it's a conflict error (job already running)
-        if (error.message?.includes('already in progress')) {
-          toast.warning(`AI processing already running for ${verticalSlug}`, {
-            description: 'Please wait for the current job to complete',
-            duration: 5000
-          });
-          await loadStats();
-          return;
-        }
-        throw error;
-      }
+      if (error) throw error;
 
-      // Check if response indicates job already running
-      if (data && !data.success && data.error?.includes('already in progress')) {
+      // Check if job is already running
+      if (data && !data.success) {
         toast.warning(`AI processing already running for ${verticalSlug}`, {
           description: data.progress || 'Please wait for the current job to complete',
           duration: 5000

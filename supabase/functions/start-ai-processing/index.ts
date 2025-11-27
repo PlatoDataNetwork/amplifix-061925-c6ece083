@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
           message: 'Please wait for the current job to complete or cancel it first'
         }),
         { 
-          status: 409,
+          status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
