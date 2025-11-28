@@ -125,28 +125,21 @@ export const useVerticalOperations = (verticalSlug: string) => {
 
       toast.info(`Starting ${verticalSlug} import...`);
 
-      const functionName = `import-${verticalSlug}-fast`;
-      const { data, error } = await supabase.functions.invoke(functionName, {
-        body: { jsonUrl }
+      const { data, error } = await supabase.functions.invoke('import-articles', {
+        body: { 
+          vertical: verticalSlug,
+          customJsonUrl: jsonUrl
+        }
       });
 
-      if (error) {
-        // Function might not exist for this vertical
-        if (error.message?.includes('not found') || error.message?.includes('404')) {
-          toast.warning(`Fast import not available for ${verticalSlug}`, {
-            description: 'This vertical may not have a dedicated import function yet'
-          });
-          return;
-        }
-        throw error;
-      }
+      if (error) throw error;
 
-      toast.success(`${verticalSlug} import started!`, {
-        description: data?.message || 'Import running in background',
+      const insertedCount = data?.insertedArticles || 0;
+      toast.success(`${verticalSlug} import completed!`, {
+        description: `${insertedCount} articles imported`,
         duration: 5000
       });
 
-      setJsonUrl(''); // Clear the URL after successful import
       await loadStats();
     } catch (error) {
       toast.error(`Failed to start ${verticalSlug} import`, {
