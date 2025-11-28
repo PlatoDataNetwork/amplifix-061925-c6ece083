@@ -121,7 +121,7 @@ export default function ImportAdminRefactored() {
                     <input
                       id={`url-${vertical.slug}`}
                       type="url"
-                      placeholder="https://dashboard.platodata.io/json/..."
+                      placeholder="https://platodata.ai/cannabis/json/"
                       value={urls[vertical.slug] || ''}
                       onChange={(e) => handleUrlChange(vertical.slug, e.target.value)}
                       className="w-full px-4 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
