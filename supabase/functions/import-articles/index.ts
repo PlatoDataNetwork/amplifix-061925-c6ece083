@@ -294,12 +294,12 @@ Deno.serve(async (req) => {
         };
       });
 
-      // Upsert articles (insert or update if post_id already exists)
+      // Insert articles (skip if post_id already exists)
       const { data, error } = await supabaseClient
         .from('articles')
         .upsert(transformedArticles, { 
           onConflict: 'post_id',
-          ignoreDuplicates: false 
+          ignoreDuplicates: true 
         })
         .select('id, post_id');
 
