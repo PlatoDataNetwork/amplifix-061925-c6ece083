@@ -6,15 +6,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { usePlatoVerticals } from '@/hooks/usePlatoVerticals';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Play, Activity, TrendingUp, Database, Zap } from 'lucide-react';
+import { Loader2, Play, Activity, Database, Download, FileJson } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
-interface VerticalStats {
-  totalArticles: number;
-  aiProcessed: number;
-  remaining: number;
+interface VerticalData {
+  slug: string;
+  name: string;
+  currentArticles: number;
+  jsonArticles: number;
+  newArticles: number;
+  isLoading: boolean;
+  importStatus: 'idle' | 'importing' | 'completed' | 'error';
 }
 
 export default function ImportAdminRefactored() {
@@ -23,13 +27,8 @@ export default function ImportAdminRefactored() {
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   const [loadingTimeout, setLoadingTimeout] = useState(false);
   const [urls, setUrls] = useState<Record<string, string>>({});
-  const [globalStats, setGlobalStats] = useState<VerticalStats>({
-    totalArticles: 0,
-    aiProcessed: 0,
-    remaining: 0
-  });
-  const [activeJobs, setActiveJobs] = useState<number>(0);
-  const [realtimeStatus, setRealtimeStatus] = useState<string>('Idle');
+  const [verticalData, setVerticalData] = useState<Record<string, VerticalData>>({});
+  const [realtimeStatus, setRealtimeStatus] = useState<string>('Monitoring...');
 
   // Timeout to prevent infinite loading
   useEffect(() => {
@@ -48,70 +47,143 @@ export default function ImportAdminRefactored() {
     }
   }, [isAdmin, loading, navigate]);
 
-  // Initialize URLs from verticals
+  // Initialize URLs and vertical data from verticals
   useEffect(() => {
     if (verticals.length > 0) {
       const initialUrls: Record<string, string> = {};
+      const initialData: Record<string, VerticalData> = {};
+      
       verticals.forEach(v => {
         initialUrls[v.slug] = v.url;
+        initialData[v.slug] = {
+          slug: v.slug,
+          name: v.name,
+          currentArticles: 0,
+          jsonArticles: 0,
+          newArticles: 0,
+          isLoading: true,
+          importStatus: 'idle'
+        };
       });
+      
       setUrls(initialUrls);
+      setVerticalData(initialData);
+      
+      // Load stats for each vertical
+      verticals.forEach(v => loadVerticalStats(v.slug));
     }
   }, [verticals]);
 
-  // Load global stats
-  const loadGlobalStats = async () => {
+  // Load stats for a specific vertical
+  const loadVerticalStats = async (slug: string) => {
     try {
-      const { count: totalArticles } = await supabase
-        .from('articles')
-        .select('*', { count: 'exact', head: true });
-
-      const { count: aiProcessed } = await supabase
+      // Get current articles count from DB
+      const { count: currentCount } = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true })
-        .not('metadata->ai_processed', 'is', null);
+        .eq('vertical_slug', slug);
 
-      const { count: activeJobsCount } = await supabase
-        .from('ai_processing_jobs')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'in_progress');
+      // Get post_ids already in DB for this vertical
+      const { data: existingArticles } = await supabase
+        .from('articles')
+        .select('post_id')
+        .eq('vertical_slug', slug);
 
-      setGlobalStats({
-        totalArticles: totalArticles || 0,
-        aiProcessed: aiProcessed || 0,
-        remaining: (totalArticles || 0) - (aiProcessed || 0)
-      });
+      const existingPostIds = new Set(existingArticles?.map(a => a.post_id) || []);
 
-      setActiveJobs(activeJobsCount || 0);
+      // Fetch JSON feed to count articles
+      let jsonCount = 0;
+      let newCount = 0;
+      
+      try {
+        const jsonUrl = urls[slug];
+        if (jsonUrl) {
+          const response = await fetch(jsonUrl);
+          if (response.ok) {
+            const data = await response.json();
+            const articles = Array.isArray(data) ? data : data.articles || [];
+            jsonCount = articles.length;
+            
+            // Count how many are new (not in DB)
+            newCount = articles.filter((article: any) => !existingPostIds.has(article.post_id)).length;
+          }
+        }
+      } catch (error) {
+        console.error(`Error fetching JSON for ${slug}:`, error);
+      }
+
+      setVerticalData(prev => ({
+        ...prev,
+        [slug]: {
+          ...prev[slug],
+          currentArticles: currentCount || 0,
+          jsonArticles: jsonCount,
+          newArticles: newCount,
+          isLoading: false
+        }
+      }));
     } catch (error) {
-      console.error('Error loading global stats:', error);
+      console.error(`Error loading stats for ${slug}:`, error);
+      setVerticalData(prev => ({
+        ...prev,
+        [slug]: {
+          ...prev[slug],
+          isLoading: false
+        }
+      }));
     }
   };
 
-  useEffect(() => {
-    if (!loading && !verticalsLoading) {
-      loadGlobalStats();
-    }
-  }, [loading, verticalsLoading]);
-
-  // Realtime updates for AI jobs
+  // Realtime updates for imports
   useEffect(() => {
     const channel = supabase
-      .channel('ai-jobs-changes')
+      .channel('import-monitoring')
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'INSERT',
           schema: 'public',
-          table: 'ai_processing_jobs'
+          table: 'import_history'
         },
         (payload: any) => {
-          console.log('AI job change:', payload);
-          const verticalSlug = payload.new?.vertical_slug || payload.old?.vertical_slug || 'unknown';
-          setRealtimeStatus(`Job ${payload.eventType}: ${verticalSlug}`);
-          loadGlobalStats();
+          const verticalSlug = payload.new?.vertical_slug;
+          if (verticalSlug) {
+            setRealtimeStatus(`Import started: ${verticalSlug}`);
+            setVerticalData(prev => ({
+              ...prev,
+              [verticalSlug]: {
+                ...prev[verticalSlug],
+                importStatus: 'importing'
+              }
+            }));
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'import_history'
+        },
+        (payload: any) => {
+          const verticalSlug = payload.new?.vertical_slug;
+          const status = payload.new?.status;
           
-          setTimeout(() => setRealtimeStatus('Idle'), 3000);
+          if (verticalSlug && status === 'completed') {
+            setRealtimeStatus(`Import completed: ${verticalSlug}`);
+            setVerticalData(prev => ({
+              ...prev,
+              [verticalSlug]: {
+                ...prev[verticalSlug],
+                importStatus: 'completed'
+              }
+            }));
+            
+            // Reload stats for this vertical
+            setTimeout(() => loadVerticalStats(verticalSlug), 1000);
+            setTimeout(() => setRealtimeStatus('Monitoring...'), 3000);
+          }
         }
       )
       .on(
@@ -122,11 +194,11 @@ export default function ImportAdminRefactored() {
           table: 'articles'
         },
         (payload: any) => {
-          console.log('New article:', payload);
-          setRealtimeStatus('New article imported');
-          loadGlobalStats();
-          
-          setTimeout(() => setRealtimeStatus('Idle'), 2000);
+          const verticalSlug = payload.new?.vertical_slug;
+          if (verticalSlug) {
+            setRealtimeStatus(`New article: ${verticalSlug}`);
+            setTimeout(() => setRealtimeStatus('Monitoring...'), 2000);
+          }
         }
       )
       .subscribe();
@@ -134,16 +206,7 @@ export default function ImportAdminRefactored() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
-
-  // Auto refresh stats every 10 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      loadGlobalStats();
-    }, 10000);
-    
-    return () => clearInterval(interval);
-  }, []);
+  }, [urls]);
 
   if ((loading || verticalsLoading) && !loadingTimeout) {
     return (
@@ -179,6 +242,11 @@ export default function ImportAdminRefactored() {
 
   const handleImport = async (slug: string, name: string) => {
     try {
+      setVerticalData(prev => ({
+        ...prev,
+        [slug]: { ...prev[slug], importStatus: 'importing' }
+      }));
+      
       toast.info(`Starting import for ${name}...`);
       
       const { data, error } = await supabase.functions.invoke('import-articles', {
@@ -190,9 +258,34 @@ export default function ImportAdminRefactored() {
 
       if (error) throw error;
       
-      toast.success(`${name} import completed! ${data?.insertedArticles || 0} articles imported.`);
+      setVerticalData(prev => ({
+        ...prev,
+        [slug]: { ...prev[slug], importStatus: 'completed' }
+      }));
+      
+      toast.success(`${name} import completed! ${data?.insertedArticles || 0} new articles added.`);
+      
+      // Reload stats
+      setTimeout(() => loadVerticalStats(slug), 1000);
+      setTimeout(() => {
+        setVerticalData(prev => ({
+          ...prev,
+          [slug]: { ...prev[slug], importStatus: 'idle' }
+        }));
+      }, 3000);
     } catch (error: any) {
+      setVerticalData(prev => ({
+        ...prev,
+        [slug]: { ...prev[slug], importStatus: 'error' }
+      }));
       toast.error(`Import failed: ${error.message}`);
+      
+      setTimeout(() => {
+        setVerticalData(prev => ({
+          ...prev,
+          [slug]: { ...prev[slug], importStatus: 'idle' }
+        }));
+      }, 3000);
     }
   };
 
@@ -200,107 +293,134 @@ export default function ImportAdminRefactored() {
     <div className="min-h-screen bg-background">
       <MainHeader />
       
-      <main className="container mx-auto px-4 py-8 max-w-5xl">
+      <main className="container mx-auto px-4 py-8 max-w-6xl">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-4xl font-bold mb-2">Import JSON URLs</h1>
+              <h1 className="text-4xl font-bold mb-2">Import Dashboard</h1>
               <p className="text-muted-foreground">
-                Configure JSON feed URLs for each vertical and start imports
+                Monitor article counts and import new content from JSON feeds
               </p>
             </div>
             <Badge 
-              variant={realtimeStatus === 'Idle' ? 'outline' : 'default'}
+              variant={realtimeStatus === 'Monitoring...' ? 'outline' : 'default'}
               className="gap-2"
             >
-              <Activity className={`h-3 w-3 ${realtimeStatus !== 'Idle' ? 'animate-pulse' : ''}`} />
+              <Activity className={`h-3 w-3 ${realtimeStatus !== 'Monitoring...' ? 'animate-pulse' : ''}`} />
               {realtimeStatus}
             </Badge>
           </div>
-
-          {/* Global Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Database className="h-4 w-4" />
-                  Total Articles
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-3xl font-bold">{globalStats.totalArticles.toLocaleString()}</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Zap className="h-4 w-4" />
-                  AI Processed
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-3xl font-bold text-green-600">{globalStats.aiProcessed.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {((globalStats.aiProcessed / globalStats.totalArticles) * 100).toFixed(1)}% complete
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4" />
-                  Remaining
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-3xl font-bold text-orange-600">{globalStats.remaining.toLocaleString()}</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Activity className="h-4 w-4" />
-                  Active Jobs
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-3xl font-bold text-blue-600">{activeJobs}</p>
-              </CardContent>
-            </Card>
-          </div>
         </div>
 
-        {/* Verticals List */}
-        <div className="space-y-3">
-          {verticals.map((vertical) => (
-            <Card key={vertical.slug}>
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-4">
-                  <div className="flex-1">
-                    <label htmlFor={`url-${vertical.slug}`} className="block text-sm font-medium mb-2">
-                      {vertical.name}
-                    </label>
-                    <input
-                      id={`url-${vertical.slug}`}
-                      type="url"
-                      placeholder="https://platodata.ai/cannabis/json/"
-                      value={urls[vertical.slug] || ''}
-                      onChange={(e) => handleUrlChange(vertical.slug, e.target.value)}
-                      className="w-full px-4 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
+        {/* Verticals Grid */}
+        <div className="grid gap-6">
+          {verticals.map((vertical) => {
+            const data = verticalData[vertical.slug];
+            const isImporting = data?.importStatus === 'importing';
+            const isCompleted = data?.importStatus === 'completed';
+            const hasError = data?.importStatus === 'error';
+
+            return (
+              <Card key={vertical.slug} className="overflow-hidden">
+                <CardHeader className="bg-muted/30">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-xl">{vertical.name}</CardTitle>
+                    {isImporting && (
+                      <Badge variant="default" className="gap-2">
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        Importing...
+                      </Badge>
+                    )}
+                    {isCompleted && (
+                      <Badge variant="default" className="gap-2 bg-green-600">
+                        ✓ Completed
+                      </Badge>
+                    )}
+                    {hasError && (
+                      <Badge variant="destructive">
+                        Error
+                      </Badge>
+                    )}
                   </div>
-                  <Button
-                    onClick={() => handleImport(vertical.slug, vertical.name)}
-                    disabled={!urls[vertical.slug]?.trim()}
-                    className="mt-6"
-                  >
-                    <Play className="mr-2 h-4 w-4" />
-                    Import
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardHeader>
+                <CardContent className="pt-6">
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-3 gap-4 mb-6">
+                    <div className="text-center p-4 rounded-lg bg-muted/50">
+                      <div className="flex items-center justify-center gap-2 mb-2 text-muted-foreground">
+                        <Database className="h-4 w-4" />
+                        <span className="text-sm font-medium">Current Articles</span>
+                      </div>
+                      {data?.isLoading ? (
+                        <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+                      ) : (
+                        <p className="text-3xl font-bold">{data?.currentArticles.toLocaleString() || 0}</p>
+                      )}
+                    </div>
+
+                    <div className="text-center p-4 rounded-lg bg-muted/50">
+                      <div className="flex items-center justify-center gap-2 mb-2 text-muted-foreground">
+                        <FileJson className="h-4 w-4" />
+                        <span className="text-sm font-medium">In JSON Feed</span>
+                      </div>
+                      {data?.isLoading ? (
+                        <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+                      ) : (
+                        <p className="text-3xl font-bold text-blue-600">{data?.jsonArticles.toLocaleString() || 0}</p>
+                      )}
+                    </div>
+
+                    <div className="text-center p-4 rounded-lg bg-primary/10">
+                      <div className="flex items-center justify-center gap-2 mb-2 text-muted-foreground">
+                        <Download className="h-4 w-4" />
+                        <span className="text-sm font-medium">New to Import</span>
+                      </div>
+                      {data?.isLoading ? (
+                        <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+                      ) : (
+                        <p className="text-3xl font-bold text-primary">{data?.newArticles.toLocaleString() || 0}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* JSON URL Input and Import Button */}
+                  <div className="flex items-end gap-4">
+                    <div className="flex-1">
+                      <label htmlFor={`url-${vertical.slug}`} className="block text-sm font-medium mb-2">
+                        JSON Feed URL
+                      </label>
+                      <input
+                        id={`url-${vertical.slug}`}
+                        type="url"
+                        placeholder="https://dashboard.platodata.io/json/..."
+                        value={urls[vertical.slug] || ''}
+                        onChange={(e) => handleUrlChange(vertical.slug, e.target.value)}
+                        className="w-full px-4 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        disabled={isImporting}
+                      />
+                    </div>
+                    <Button
+                      onClick={() => handleImport(vertical.slug, vertical.name)}
+                      disabled={!urls[vertical.slug]?.trim() || isImporting || data?.isLoading}
+                      size="lg"
+                    >
+                      {isImporting ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Importing...
+                        </>
+                      ) : (
+                        <>
+                          <Play className="mr-2 h-4 w-4" />
+                          Import {data?.newArticles ? `(${data.newArticles})` : ''}
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </main>
 
