@@ -132,14 +132,16 @@ const formatArticleWithAI = async (text: string, supabase: any, verticalSlug: st
       const data = await response.json();
       const formattedText = data.choices?.[0]?.message?.content || text;
     
-      // Process the text line by line to properly separate headers from content
-      const lines = formattedText.split('\n').map((line: string) => line.trim());
+      // Process text: split into lines and look for [HEADER] markers
+      const lines = formattedText.split('\n');
       const result: string[] = [];
       let currentParagraph: string[] = [];
       
-      for (const line of lines) {
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        
+        // Empty line - finalize current paragraph
         if (!line) {
-          // Empty line - end current paragraph if any
           if (currentParagraph.length > 0) {
             result.push(`<p>${currentParagraph.join(' ')}</p>`);
             currentParagraph = [];
@@ -147,19 +149,24 @@ const formatArticleWithAI = async (text: string, supabase: any, verticalSlug: st
           continue;
         }
         
-        if (line.startsWith('[HEADER]')) {
-          // End current paragraph before adding header
+        // Check if line contains [HEADER] marker
+        if (line.includes('[HEADER]')) {
+          // Finalize current paragraph first
           if (currentParagraph.length > 0) {
             result.push(`<p>${currentParagraph.join(' ')}</p>`);
             currentParagraph = [];
           }
-          // Extract ONLY the header text (first line after [HEADER])
-          const headerText = line.replace('[HEADER]', '').trim();
+          
+          // Extract header text (remove [HEADER] marker and clean up)
+          let headerText = line.replace(/\[HEADER\]/gi, '').trim();
+          // Remove any markdown bold markers
+          headerText = headerText.replace(/\*\*/g, '').trim();
+          
           if (headerText) {
             result.push(`<h3>${headerText}</h3>`);
           }
         } else {
-          // Regular content line - add to current paragraph
+          // Regular content line
           currentParagraph.push(line);
         }
       }
