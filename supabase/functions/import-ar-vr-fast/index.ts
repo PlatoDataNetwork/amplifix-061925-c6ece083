@@ -1,0 +1,374 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+
+interface ArVrArticle {
+  id: number;
+  title: { rendered: string };
+  excerpt: { rendered: string };
+  content?: { rendered: string };
+  link?: string;
+  date?: string;
+  author?: string;
+  featured_media?: string;
+  yoast_head_json?: {
+    og_image?: Array<{ url: string }>;
+  };
+  _embedded?: {
+    "wp:featuredmedia"?: Array<{ source_url: string }>;
+  };
+}
+
+function cleanText(text?: string | null): string {
+  if (!text) return "";
+  return text
+    .replace(/<[^>]*>/g, "")
+    .replace(/https?:\/\/[^\s]+/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .trim();
+}
+
+async function runBackgroundImport(
+  supabaseUrl: string,
+  supabaseKey: string,
+  jsonUrl: string,
+  importHistoryId: string,
+  startedAt: string,
+) {
+  const supabase = createClient(supabaseUrl, supabaseKey);
+  const channel = supabase.channel(`import-progress-ar-vr`);
+
+  let totalProcessed = 0;
+  let importedCount = 0;
+  let skippedCount = 0;
+  let errorCount = 0;
+  let page = 1;
+  const batchSize = 20;
+
+  try {
+    await channel.subscribe();
+
+    while (true) {
+      const { data: shouldCancel } = await supabase.rpc("should_cancel_import", {
+        p_vertical_slug: "ar-vr",
+        p_started_after: startedAt,
+      });
+
+      if (shouldCancel) {
+        console.log("Import cancelled by user");
+        await supabase
+          .from("import_history")
+          .update({
+            status: "cancelled",
+            completed_at: new Date().toISOString(),
+            total_processed: totalProcessed,
+            imported_count: importedCount,
+            skipped_count: skippedCount,
+            error_count: errorCount,
+          })
+          .eq("id", importHistoryId);
+
+        await channel.send({
+          type: "broadcast",
+          event: "import_cancelled",
+          payload: { vertical: "ar-vr" },
+        });
+        break;
+      }
+
+      const pageUrl = `${jsonUrl}${jsonUrl.includes("?") ? "&" : "?"}page=${page}`;
+      console.log(`Fetching ar-vr page ${page} from ${pageUrl}`);
+
+      const response = await fetch(pageUrl);
+      if (!response.ok) {
+        console.error(`Failed to fetch page ${page}:`, response.status);
+        break;
+      }
+
+      const articles: ArVrArticle[] = await response.json();
+      if (!articles || articles.length === 0) {
+        console.log(`No more articles found at page ${page}`);
+        break;
+      }
+
+      const batch = [];
+      for (const article of articles) {
+        try {
+          const postId = article.id;
+          const { data: existing } = await supabase
+            .from("articles")
+            .select("id")
+            .eq("post_id", postId)
+            .eq("vertical_slug", "ar-vr")
+            .maybeSingle();
+
+          if (existing) {
+            skippedCount++;
+            totalProcessed++;
+            continue;
+          }
+
+          let imageUrl = null;
+          if (article._embedded?.["wp:featuredmedia"]?.[0]?.source_url) {
+            imageUrl = article._embedded["wp:featuredmedia"][0].source_url;
+          } else if (article.yoast_head_json?.og_image?.[0]?.url) {
+            imageUrl = article.yoast_head_json.og_image[0].url;
+          }
+
+          batch.push({
+            title: cleanText(article.title?.rendered),
+            excerpt: cleanText(article.excerpt?.rendered),
+            content: cleanText(article.content?.rendered),
+            external_url: article.link || null,
+            published_at: article.date || new Date().toISOString(),
+            author: article.author || null,
+            image_url: imageUrl,
+            vertical_slug: "ar-vr",
+            post_id: postId,
+            metadata: {},
+          });
+        } catch (articleError) {
+          console.error("Error processing article:", articleError);
+          errorCount++;
+        }
+      }
+
+      if (batch.length > 0) {
+        const { error: insertError } = await supabase
+          .from("articles")
+          .insert(batch);
+
+        if (insertError) {
+          console.error("Batch insert error:", insertError);
+          errorCount += batch.length;
+        } else {
+          importedCount += batch.length;
+        }
+      }
+
+      totalProcessed += articles.length;
+
+      await supabase
+        .from("import_history")
+        .update({
+          total_processed: totalProcessed,
+          imported_count: importedCount,
+          skipped_count: skippedCount,
+          error_count: errorCount,
+        })
+        .eq("id", importHistoryId);
+
+      await channel.send({
+        type: "broadcast",
+        event: "import_progress",
+        payload: {
+          vertical: "ar-vr",
+          totalProcessed,
+          importedCount,
+          skippedCount,
+          errorCount,
+          currentPage: page,
+        },
+      });
+
+      console.log(`Page ${page} complete - Imported: ${importedCount}, Skipped: ${skippedCount}`);
+
+      if (articles.length < batchSize) {
+        break;
+      }
+
+      page++;
+    }
+
+    const completedAt = new Date().toISOString();
+    const startTime = new Date(startedAt).getTime();
+    const endTime = new Date(completedAt).getTime();
+    const durationMs = endTime - startTime;
+
+    await supabase
+      .from("import_history")
+      .update({
+        status: "completed",
+        completed_at: completedAt,
+        duration_ms: durationMs,
+        total_processed: totalProcessed,
+        imported_count: importedCount,
+        skipped_count: skippedCount,
+        error_count: errorCount,
+      })
+      .eq("id", importHistoryId);
+
+    await channel.send({
+      type: "broadcast",
+      event: "import_complete",
+      payload: {
+        vertical: "ar-vr",
+        totalProcessed,
+        importedCount,
+        skippedCount,
+        errorCount,
+      },
+    });
+
+    console.log("Import complete:", {
+      totalProcessed,
+      importedCount,
+      skippedCount,
+      errorCount,
+    });
+  } catch (error) {
+    console.error("Import error:", error);
+    await supabase
+      .from("import_history")
+      .update({
+        status: "failed",
+        completed_at: new Date().toISOString(),
+        total_processed: totalProcessed,
+        imported_count: importedCount,
+        skipped_count: skippedCount,
+        error_count: errorCount,
+      })
+      .eq("id", importHistoryId);
+  } finally {
+    await channel.unsubscribe();
+  }
+}
+
+Deno.serve(async (req: Request): Promise<Response> => {
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers":
+      "authorization, x-client-info, apikey, content-type",
+  };
+
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const authHeader = req.headers.get("Authorization");
+
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "No authorization header" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    const { data: hasAdminRole } = await supabase.rpc("has_role", {
+      _user_id: user.id,
+      _role: "admin",
+    });
+
+    if (!hasAdminRole) {
+      return new Response(JSON.stringify({ error: "Admin access required" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    const { jsonUrl, resumeImportId } = await req.json();
+    const startedAt = new Date().toISOString();
+
+    let importHistoryId: string;
+
+    if (resumeImportId) {
+      const { data: existingImport } = await supabase
+        .from("import_history")
+        .select("*")
+        .eq("id", resumeImportId)
+        .eq("vertical_slug", "ar-vr")
+        .single();
+
+      if (!existingImport) {
+        return new Response(
+          JSON.stringify({ error: "Import history not found" }),
+          {
+            status: 404,
+            headers: { "Content-Type": "application/json", ...corsHeaders },
+          },
+        );
+      }
+
+      importHistoryId = resumeImportId;
+      await supabase
+        .from("import_history")
+        .update({
+          status: "in_progress",
+          started_at: startedAt,
+          cancelled: false,
+        })
+        .eq("id", importHistoryId);
+    } else {
+      const { data: newImport, error: insertError } = await supabase
+        .from("import_history")
+        .insert({
+          vertical_slug: "ar-vr",
+          started_at: startedAt,
+          status: "in_progress",
+          imported_by: user.id,
+          metadata: { jsonUrl },
+        })
+        .select()
+        .single();
+
+      if (insertError || !newImport) {
+        throw new Error("Failed to create import history");
+      }
+
+      importHistoryId = newImport.id;
+    }
+
+    EdgeRuntime.waitUntil(
+      runBackgroundImport(
+        supabaseUrl,
+        supabaseKey,
+        jsonUrl || "https://platodata.ai/ar-vr/json/",
+        importHistoryId,
+        startedAt,
+      ),
+    );
+
+    return new Response(
+      JSON.stringify({
+        message: "AR/VR import started in background",
+        importHistoryId,
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      },
+    );
+  } catch (error: any) {
+    console.error("Error starting import:", error);
+    return new Response(
+      JSON.stringify({
+        error: error.message || "Failed to start import",
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      },
+    );
+  }
+});
