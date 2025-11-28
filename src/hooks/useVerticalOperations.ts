@@ -125,21 +125,19 @@ export const useVerticalOperations = (verticalSlug: string) => {
 
       toast.info(`Starting ${verticalSlug} import...`);
 
-      const { data, error } = await supabase.functions.invoke('import-articles', {
-        body: { 
-          vertical: verticalSlug,
-          customJsonUrl: jsonUrl
-        }
+      const functionName = `import-${verticalSlug}-fast`;
+      const { data, error } = await supabase.functions.invoke(functionName, {
+        body: { jsonUrl }
       });
 
       if (error) throw error;
 
-      const insertedCount = data?.insertedArticles || 0;
-      toast.success(`${verticalSlug} import completed!`, {
-        description: `${insertedCount} articles imported`,
+      toast.success(`${verticalSlug} import started!`, {
+        description: data?.message || 'Import running in background',
         duration: 5000
       });
 
+      setJsonUrl('');
       await loadStats();
     } catch (error) {
       toast.error(`Failed to start ${verticalSlug} import`, {
