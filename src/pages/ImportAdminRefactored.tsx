@@ -2,13 +2,20 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainHeader from '@/components/MainHeader';
 import Footer from '@/components/Footer';
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { usePlatoVerticals } from '@/hooks/usePlatoVerticals';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Play } from 'lucide-react';
+import { Loader2, Play, Activity, TrendingUp, Database, Zap } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+
+interface VerticalStats {
+  totalArticles: number;
+  aiProcessed: number;
+  remaining: number;
+}
 
 export default function ImportAdminRefactored() {
   const navigate = useNavigate();
@@ -16,6 +23,13 @@ export default function ImportAdminRefactored() {
   const { verticals, isLoading: verticalsLoading } = usePlatoVerticals();
   const [loadingTimeout, setLoadingTimeout] = useState(false);
   const [urls, setUrls] = useState<Record<string, string>>({});
+  const [globalStats, setGlobalStats] = useState<VerticalStats>({
+    totalArticles: 0,
+    aiProcessed: 0,
+    remaining: 0
+  });
+  const [activeJobs, setActiveJobs] = useState<number>(0);
+  const [realtimeStatus, setRealtimeStatus] = useState<string>('Idle');
 
   // Timeout to prevent infinite loading
   useEffect(() => {
@@ -44,6 +58,92 @@ export default function ImportAdminRefactored() {
       setUrls(initialUrls);
     }
   }, [verticals]);
+
+  // Load global stats
+  const loadGlobalStats = async () => {
+    try {
+      const { count: totalArticles } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true });
+
+      const { count: aiProcessed } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .not('metadata->ai_processed', 'is', null);
+
+      const { count: activeJobsCount } = await supabase
+        .from('ai_processing_jobs')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'in_progress');
+
+      setGlobalStats({
+        totalArticles: totalArticles || 0,
+        aiProcessed: aiProcessed || 0,
+        remaining: (totalArticles || 0) - (aiProcessed || 0)
+      });
+
+      setActiveJobs(activeJobsCount || 0);
+    } catch (error) {
+      console.error('Error loading global stats:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (!loading && !verticalsLoading) {
+      loadGlobalStats();
+    }
+  }, [loading, verticalsLoading]);
+
+  // Realtime updates for AI jobs
+  useEffect(() => {
+    const channel = supabase
+      .channel('ai-jobs-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'ai_processing_jobs'
+        },
+        (payload: any) => {
+          console.log('AI job change:', payload);
+          const verticalSlug = payload.new?.vertical_slug || payload.old?.vertical_slug || 'unknown';
+          setRealtimeStatus(`Job ${payload.eventType}: ${verticalSlug}`);
+          loadGlobalStats();
+          
+          setTimeout(() => setRealtimeStatus('Idle'), 3000);
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'articles'
+        },
+        (payload: any) => {
+          console.log('New article:', payload);
+          setRealtimeStatus('New article imported');
+          loadGlobalStats();
+          
+          setTimeout(() => setRealtimeStatus('Idle'), 2000);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // Auto refresh stats every 10 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadGlobalStats();
+    }, 10000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   if ((loading || verticalsLoading) && !loadingTimeout) {
     return (
@@ -102,10 +202,72 @@ export default function ImportAdminRefactored() {
       
       <main className="container mx-auto px-4 py-8 max-w-5xl">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Import JSON URLs</h1>
-          <p className="text-muted-foreground">
-            Configure JSON feed URLs for each vertical and start imports
-          </p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-4xl font-bold mb-2">Import JSON URLs</h1>
+              <p className="text-muted-foreground">
+                Configure JSON feed URLs for each vertical and start imports
+              </p>
+            </div>
+            <Badge 
+              variant={realtimeStatus === 'Idle' ? 'outline' : 'default'}
+              className="gap-2"
+            >
+              <Activity className={`h-3 w-3 ${realtimeStatus !== 'Idle' ? 'animate-pulse' : ''}`} />
+              {realtimeStatus}
+            </Badge>
+          </div>
+
+          {/* Global Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <Database className="h-4 w-4" />
+                  Total Articles
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold">{globalStats.totalArticles.toLocaleString()}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <Zap className="h-4 w-4" />
+                  AI Processed
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold text-green-600">{globalStats.aiProcessed.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {((globalStats.aiProcessed / globalStats.totalArticles) * 100).toFixed(1)}% complete
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  Remaining
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold text-orange-600">{globalStats.remaining.toLocaleString()}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <Activity className="h-4 w-4" />
+                  Active Jobs
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold text-blue-600">{activeJobs}</p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Verticals List */}
