@@ -239,8 +239,40 @@ Deno.serve(async (req) => {
         // Extract image URL
         const imageUrl = article.metadata?.featuredImage?.[0] || null;
 
-        // Extract external URL
-        const externalUrl = article.metadata?.sourceLink?.[0] || null;
+        // Extract external URL - prioritize original source, not platodata.ai
+        let externalUrl = article.metadata?.sourceLink?.[0] || null;
+        
+        // If sourceLink is missing or is a platodata.ai URL, try to extract from content
+        if (!externalUrl || externalUrl.includes('platodata.')) {
+          // Parse HTML content to find first external link
+          const urlRegex = /https?:\/\/[^\s<>"]+/g;
+          const urls = article.content?.match(urlRegex) || [];
+          
+          // Priority domains for better source attribution
+          const priorityDomains = [
+            'reuters.com', 'bloomberg.com', 'wsj.com', 'ft.com',
+            'cnbc.com', 'techcrunch.com', 'theverge.com', 'wired.com',
+            'forbes.com', 'businessinsider.com', 'marketwatch.com'
+          ];
+          
+          // First try priority domains
+          for (const url of urls) {
+            if (!url.includes('platodata.') && priorityDomains.some(domain => url.includes(domain))) {
+              externalUrl = url;
+              break;
+            }
+          }
+          
+          // If no priority domain found, use first non-platodata URL
+          if (!externalUrl || externalUrl.includes('platodata.')) {
+            for (const url of urls) {
+              if (!url.includes('platodata.')) {
+                externalUrl = url;
+                break;
+              }
+            }
+          }
+        }
 
         // Create excerpt from content
         const plainContent = article.content?.replace(/<[^>]*>/g, '') || '';
