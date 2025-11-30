@@ -253,7 +253,7 @@ const ArticleBackups = () => {
       }
 
       // Create backup job record
-      const chunkSize = 5000;
+      const chunkSize = 1000;
       const totalChunks = Math.ceil(totalCount / chunkSize);
 
       const { data: authData } = await supabase.auth.getUser();
