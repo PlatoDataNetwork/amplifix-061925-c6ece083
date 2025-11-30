@@ -264,6 +264,14 @@ export default function ImportAdminRefactored() {
               </p>
             </div>
             <div className="flex items-center gap-3">
+              <Button
+                onClick={() => navigate('/admin/bulk-import')}
+                variant="outline"
+                size="sm"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Bulk Import All
+              </Button>
               {activeJobs > 0 && (
                 <Button
                   onClick={stopAllAIProcessing}
