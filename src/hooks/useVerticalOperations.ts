@@ -64,7 +64,7 @@ export const useVerticalOperations = (verticalSlug: string) => {
         .limit(1)
         .maybeSingle();
 
-      // AI job - prefer any in-progress job, fallback to latest job
+      // AI job - only track actively in-progress jobs
       let job: any = null;
 
       const { data: inProgressJob } = await supabase
@@ -78,16 +78,6 @@ export const useVerticalOperations = (verticalSlug: string) => {
 
       if (inProgressJob) {
         job = inProgressJob;
-      } else {
-        const { data: latestJob } = await supabase
-          .from('ai_processing_jobs')
-          .select('*')
-          .eq('vertical_slug', verticalSlug)
-          .order('started_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-
-        job = latestJob;
       }
 
       let progress = 0;
