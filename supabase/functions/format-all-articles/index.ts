@@ -358,7 +358,12 @@ Deno.serve(async (req) => {
     query = query.or('metadata->>ai_processed.is.null,metadata->>ai_processed.eq.false');
     
     const { data: articles, error: fetchError } = await query
-      .range(chunkIndex * chunkSize, (chunkIndex + 1) * chunkSize - 1);
+-      .range(chunkIndex * chunkSize, (chunkIndex + 1) * chunkSize - 1);
++      // Always take the first page of currently unprocessed articles.
++      // Using a fixed range(0, chunkSize - 1) ensures we don't "skip" remaining
++      // articles when resuming jobs where chunk indexes no longer align with
++      // the shrinking unprocessed set.
++      .range(0, chunkSize - 1);
 
     if (fetchError) {
       throw fetchError;
