@@ -37,10 +37,18 @@ const sanitizeText = (text?: string | null) => {
 };
 
 const capitalizeVertical = (text: string) => {
+  // Special cases that should be fully uppercase
+  const uppercaseWords = ['ar', 'vr', 'ai', 'ipo', 'api', 'ceo', 'cto'];
+  
   return text
     .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join('/');
+    .map(word => {
+      const lower = word.toLowerCase();
+      return uppercaseWords.includes(lower) 
+        ? lower.toUpperCase() 
+        : word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' / ');
 };
 
 const cacheArticle = (post: BlogPost) => {
