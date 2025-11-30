@@ -38,14 +38,7 @@ const VerticalAIChat = ({ verticalSlug, verticalName }: VerticalAIChatProps) => 
     setIsLoading(true);
 
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-      
-      if (!supabaseUrl || !supabaseKey) {
-        throw new Error("Supabase configuration missing");
-      }
-
-      const CHAT_URL = `${supabaseUrl}/functions/v1/vertical-ai-chat`;
+      const CHAT_URL = `https://rfkdcmvzvxcsoecoeddi.supabase.co/functions/v1/vertical-ai-chat`;
       
       console.log("Sending chat request to:", CHAT_URL);
       console.log("Vertical:", verticalSlug);
@@ -54,7 +47,7 @@ const VerticalAIChat = ({ verticalSlug, verticalName }: VerticalAIChatProps) => 
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${supabaseKey}`,
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJma2RjbXZ6dnhjc29lY29lZGRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc0MzU5NjcsImV4cCI6MjA3MzAxMTk2N30.Qaom06rLiekLwBWb15giAbkpEr_r0xzdyEsslcA86os`,
         },
         body: JSON.stringify({ 
           messages: newMessages,
@@ -252,7 +245,7 @@ const VerticalAIChat = ({ verticalSlug, verticalName }: VerticalAIChatProps) => 
               </Button>
             </div>
             <p className="text-xs text-muted-foreground mt-2 text-center">
-              Powered by AI • Context-aware responses
+              Powered by Plato AI • Context-aware responses
             </p>
           </div>
         </Card>
