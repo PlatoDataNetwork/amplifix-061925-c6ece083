@@ -62,13 +62,40 @@ async function runBackgroundImport(
     await channel.subscribe();
 
     while (true) {
+      // First, check the current import_history row for an explicit cancel or status change
+      const { data: importRow, error: importRowError } = await supabase
+        .from("import_history")
+        .select("cancelled, status")
+        .eq("id", importHistoryId)
+        .maybeSingle();
+
+      if (importRowError) {
+        console.error("Error checking import status:", importRowError);
+      } else if (!importRow) {
+        console.error("Import history record not found, stopping import.");
+        return;
+      } else if (
+        importRow.cancelled ||
+        importRow.status === "failed" ||
+        importRow.status === "cancelled"
+      ) {
+        console.log("Import stopped due to status/cancellation flag");
+        await channel.send({
+          type: "broadcast",
+          event: "import_cancelled",
+          payload: { vertical: "cannabis" },
+        });
+        return;
+      }
+
+      // Fallback to generic cancellation RPC so other admin tools can also signal a stop
       const { data: shouldCancel } = await supabase.rpc("should_cancel_import", {
         p_vertical_slug: "cannabis",
         p_started_after: startedAt,
       });
 
       if (shouldCancel) {
-        console.log("Import cancelled by user");
+        console.log("Import cancelled by user (RPC signal)");
         await supabase
           .from("import_history")
           .update({
@@ -86,7 +113,7 @@ async function runBackgroundImport(
           event: "import_cancelled",
           payload: { vertical: "cannabis" },
         });
-        break;
+        return;
       }
 
       const pageUrl = `${jsonUrl}${jsonUrl.includes("?") ? "&" : "?"}page=${page}`;
