@@ -98,6 +98,7 @@ const ImportAdmin = () => {
   const [lastCountsUpdate, setLastCountsUpdate] = useState<Date | null>(null);
   const [lastAiStatsUpdate, setLastAiStatsUpdate] = useState<Date | null>(null);
   const [lastAiProgress, setLastAiProgress] = useState<number>(0);
+  const [testingImport, setTestingImport] = useState(false);
   const [autoRestartEnabled, setAutoRestartEnabled] = useState(true);
   const [isClearing, setIsClearing] = useState(false);
   const [aerospaceStats, setAerospaceStats] = useState<{
@@ -1908,6 +1909,178 @@ const ImportAdmin = () => {
           <div className="mb-8">
             <AerospaceUrlBackfill />
           </div>
+
+          {/* Cannabis Import Test Section */}
+          <Card className="mb-8 border-green-500/50 bg-green-500/5">
+            <CardHeader>
+              <CardTitle className="text-2xl flex items-center gap-2">
+                🌿 Cannabis Import Field Mapping Test
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Test the updated import function with Cannabis vertical (uses id→post_id, date→published_at field mapping)
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="p-4 bg-muted/50 rounded-lg border border-border">
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    📋 Current Status
+                  </h4>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-muted-foreground">Vertical</p>
+                      <p className="font-mono font-bold">cannabis</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Current Articles</p>
+                      <p className="font-mono font-bold text-blue-500">
+                        {metrics['cannabis']?.toLocaleString() || '0'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex gap-4">
+                  <Button
+                    onClick={async () => {
+                      setImporting('cannabis-test');
+                      setTestingImport(true);
+                      try {
+                        const startCount = metrics['cannabis'] || 0;
+                        
+                        toast.info('Testing Cannabis import with 10 articles...', {
+                          description: 'This will test the new field mapping (id→post_id, date→published_at)'
+                        });
+                        
+                        const { data, error } = await supabase.functions.invoke('import-articles', {
+                          body: { 
+                            vertical: 'cannabis',
+                            limit: 10,
+                            customJsonUrl: 'https://platodata.ai/cannabis/json/'
+                          }
+                        });
+
+                        if (error) throw error;
+
+                        // Fetch the recently imported articles
+                        const { data: recentArticles } = await supabase
+                          .from('articles')
+                          .select('id, title, post_id, external_url, published_at, author')
+                          .eq('vertical_slug', 'cannabis')
+                          .order('created_at', { ascending: false })
+                          .limit(10);
+
+                        const importedCount = data?.insertedArticles || 0;
+                        
+                        setResults(prev => ({ 
+                          ...prev, 
+                          'cannabis-test': {
+                            ...data,
+                            articles: recentArticles || [],
+                            beforeCount: startCount,
+                            afterCount: startCount + importedCount
+                          }
+                        }));
+                        
+                        await loadMetrics();
+                        
+                        if (importedCount > 0) {
+                          toast.success('✅ Cannabis import successful!', {
+                            description: `Imported ${importedCount} articles using field mapping`,
+                            duration: 5000
+                          });
+                        } else {
+                          toast.info('No new articles imported', {
+                            description: 'Articles may already exist in the database'
+                          });
+                        }
+                      } catch (error) {
+                        console.error('Cannabis test error:', error);
+                        toast.error('Failed to test Cannabis import', {
+                          description: error instanceof Error ? error.message : 'Unknown error'
+                        });
+                      } finally {
+                        setImporting(null);
+                        setTestingImport(false);
+                      }
+                    }}
+                    disabled={importing !== null || testingImport}
+                    className="flex-1 bg-green-600 hover:bg-green-700"
+                  >
+                    {testingImport ? '🔄 Testing...' : '🧪 Test Import 10 Cannabis Articles'}
+                  </Button>
+                </div>
+
+                {results['cannabis-test'] && (
+                  <div className="mt-4 p-4 bg-muted rounded-lg space-y-3 border border-green-500/30">
+                    <h4 className="font-semibold text-green-600 dark:text-green-400">Test Results</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Imported</p>
+                        <p className="text-xl font-bold text-green-500">{results['cannabis-test'].insertedArticles}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Total Articles</p>
+                        <p className="text-xl font-bold text-blue-500">{results['cannabis-test'].totalArticles}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Before</p>
+                        <p className="text-xl font-bold">{results['cannabis-test'].beforeCount?.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">After</p>
+                        <p className="text-xl font-bold">{results['cannabis-test'].afterCount?.toLocaleString()}</p>
+                      </div>
+                    </div>
+                    
+                    {results['cannabis-test'].articles && results['cannabis-test'].articles.length > 0 && (
+                      <div className="mt-4">
+                        <h4 className="font-semibold mb-2">Recently Imported Articles:</h4>
+                        <div className="space-y-2 max-h-96 overflow-y-auto">
+                          {results['cannabis-test'].articles.map((article: any, index: number) => (
+                            <div key={article.id} className="p-3 bg-background rounded border border-border hover:border-green-500/50 transition-colors">
+                              <div className="space-y-1">
+                                <p className="text-sm font-medium">{index + 1}. {article.title}</p>
+                                <div className="flex gap-4 text-xs text-muted-foreground">
+                                  <span>Post ID: <span className="font-mono text-green-600 dark:text-green-400">{article.post_id}</span></span>
+                                  <span>Author: {article.author}</span>
+                                </div>
+                                {article.published_at && (
+                                  <p className="text-xs text-muted-foreground">
+                                    Published: {new Date(article.published_at).toLocaleDateString()}
+                                  </p>
+                                )}
+                                <div className="flex gap-2 mt-2">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => navigate(`/intel/article/${article.id}`)}
+                                    className="text-xs"
+                                  >
+                                    View Article
+                                  </Button>
+                                  {article.external_url && (
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => window.open(article.external_url, '_blank')}
+                                      className="text-xs"
+                                    >
+                                      Source
+                                    </Button>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Test Import Single Vertical Section */}
           <Card className="mb-8 border-blue-500/50">
