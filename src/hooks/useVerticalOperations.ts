@@ -9,6 +9,7 @@ export interface VerticalStats {
   duplicates: number;
   missingUrls: number;
   lastImport: string | null;
+  lastFeedSize: number | null;
   importJobStatus: string | null;
   importProgress: number;
   importImported: number;
@@ -28,6 +29,7 @@ export const useVerticalOperations = (verticalSlug: string) => {
     duplicates: 0,
     missingUrls: 0,
     lastImport: null,
+    lastFeedSize: null,
     importJobStatus: null,
     importProgress: 0,
     importImported: 0,
@@ -64,15 +66,19 @@ export const useVerticalOperations = (verticalSlug: string) => {
         .eq('vertical_slug', verticalSlug)
         .or('external_url.is.null,external_url.eq.');
 
-      // Last completed import
+      // Last completed import (with feed size)
       const { data: lastCompletedImport } = await supabase
         .from('import_history')
-        .select('completed_at')
+        .select('completed_at, metadata')
         .eq('vertical_slug', verticalSlug)
         .eq('status', 'completed')
         .order('completed_at', { ascending: false })
         .limit(1)
         .maybeSingle();
+
+      const lastFeedSize = lastCompletedImport?.metadata 
+        ? (lastCompletedImport.metadata as any)?.total_from_feed as number | null
+        : null;
 
       // Active import job (for progress)
       const { data: activeImport } = await supabase
@@ -134,6 +140,7 @@ export const useVerticalOperations = (verticalSlug: string) => {
         duplicates: 0,
         missingUrls: missing || 0,
         lastImport: lastCompletedImport?.completed_at || null,
+        lastFeedSize,
         importJobStatus,
         importProgress,
         importImported,

@@ -100,11 +100,31 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
             </div>
           </div>
 
-          {stats.lastImport && (
-            <p className="text-xs text-muted-foreground mt-4 text-center">
-              Last import: {new Date(stats.lastImport).toLocaleString()}
-            </p>
-          )}
+          <div className="mt-4 space-y-1">
+            {stats.lastImport && (
+              <p className="text-xs text-muted-foreground text-center">
+                Last import: {new Date(stats.lastImport).toLocaleString()}
+              </p>
+            )}
+            {stats.lastFeedSize !== null && (
+              <div className="text-xs text-center">
+                <span className="text-muted-foreground">Feed size: </span>
+                <span className="font-semibold">{stats.lastFeedSize.toLocaleString()}</span>
+                <span className="text-muted-foreground"> vs DB: </span>
+                <span className="font-semibold">{stats.totalArticles.toLocaleString()}</span>
+                {stats.lastFeedSize > stats.totalArticles && (
+                  <span className="ml-2 text-green-600 dark:text-green-400 font-medium">
+                    (~{(stats.lastFeedSize - stats.totalArticles).toLocaleString()} potential new)
+                  </span>
+                )}
+                {stats.lastFeedSize <= stats.totalArticles && (
+                  <span className="ml-2 text-muted-foreground">
+                    (up to date)
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 
