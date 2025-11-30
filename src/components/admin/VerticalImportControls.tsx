@@ -7,10 +7,11 @@ import { useVerticalOperations } from "@/hooks/useVerticalOperations";
 import { useResumeAIJob } from "@/hooks/useResumeAIJob";
 import { SourceAttributionMonitor } from "@/components/admin/SourceAttributionMonitor";
 import { SourceUrlStats } from "@/components/admin/SourceUrlStats";
-import { Loader2, Play, Sparkles, Trash2, Link2, History, AlertTriangle, FileText, ExternalLink, RefreshCcw, Zap } from "lucide-react";
+import { Loader2, Play, Sparkles, Trash2, Link2, History, AlertTriangle, FileText, ExternalLink, RefreshCcw, Zap, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { supabase } from "@/integrations/supabase/client";
 
 interface VerticalImportControlsProps {
   verticalSlug: string;
@@ -40,15 +41,50 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
   const [fastMode, setFastMode] = useState(verticalSlug === 'cannabis');
   const [skipTags, setSkipTags] = useState(verticalSlug === 'cannabis');
 
+  // Initial load
   useEffect(() => {
     loadStats();
-
-    const interval = setInterval(() => {
-      loadStats();
-    }, 5000);
-    
-    return () => clearInterval(interval);
   }, [loadStats]);
+
+  // Real-time updates for articles and AI jobs
+  useEffect(() => {
+    const articlesChannel = supabase
+      .channel(`vertical-${verticalSlug}-articles`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'articles',
+          filter: `vertical_slug=eq.${verticalSlug}`
+        },
+        () => {
+          loadStats();
+        }
+      )
+      .subscribe();
+
+    const jobsChannel = supabase
+      .channel(`vertical-${verticalSlug}-jobs`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'ai_processing_jobs',
+          filter: `vertical_slug=eq.${verticalSlug}`
+        },
+        () => {
+          loadStats();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(articlesChannel);
+      supabase.removeChannel(jobsChannel);
+    };
+  }, [verticalSlug, loadStats]);
 
   const formatVerticalName = (slug: string) => {
     return slug
@@ -87,372 +123,194 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
         isProcessing={processing}
       />
 
-      {/* Stats Overview */}
-      <Card>
+      {/* Stats Overview - Real-time */}
+      <Card className="border-2">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            📊 {formatVerticalName(verticalSlug)} Statistics
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              📊 {formatVerticalName(verticalSlug)} Statistics
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-xs text-muted-foreground">Live</span>
+              </div>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-background rounded-lg border">
-              <p className="text-xs text-muted-foreground mb-1">Total Articles</p>
-              <p className="text-2xl font-bold">{stats.totalArticles.toLocaleString()}</p>
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="text-center p-6 bg-gradient-to-br from-blue-500/10 to-blue-600/5 rounded-lg border-2 border-blue-500/20">
+              <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-2">TOTAL ARTICLES</p>
+              <p className="text-4xl font-bold">{stats.totalArticles.toLocaleString()}</p>
             </div>
-            <div className="text-center p-4 bg-background rounded-lg border">
-              <p className="text-xs text-muted-foreground mb-1">AI Processed</p>
-              <p className="text-2xl font-bold text-green-500">{stats.aiProcessed.toLocaleString()}</p>
+            <div className="text-center p-6 bg-gradient-to-br from-green-500/10 to-green-600/5 rounded-lg border-2 border-green-500/20">
+              <p className="text-xs font-semibold text-green-600 dark:text-green-400 mb-2">AI PROCESSED</p>
+              <p className="text-4xl font-bold">{stats.aiProcessed.toLocaleString()}</p>
             </div>
-            <div className="text-center p-4 bg-background rounded-lg border">
-              <p className="text-xs text-muted-foreground mb-1">Remaining</p>
-              <p className="text-2xl font-bold text-orange-500">{stats.remaining.toLocaleString()}</p>
-            </div>
-            <div className="text-center p-4 bg-background rounded-lg border">
-              <p className="text-xs text-muted-foreground mb-1">Missing URLs</p>
-              <p className="text-2xl font-bold text-red-500">{stats.missingUrls.toLocaleString()}</p>
+            <div className="text-center p-6 bg-gradient-to-br from-orange-500/10 to-orange-600/5 rounded-lg border-2 border-orange-500/20">
+              <p className="text-xs font-semibold text-orange-600 dark:text-orange-400 mb-2">REMAINING</p>
+              <p className="text-4xl font-bold">{stats.remaining.toLocaleString()}</p>
             </div>
           </div>
 
-          <div className="mt-4 space-y-1">
+          {stats.remaining > 0 && (
+            <div className="mb-4">
+              <div className="flex items-center justify-between text-sm mb-2">
+                <span className="text-muted-foreground">Processing Progress</span>
+                <span className="font-semibold">{Math.round((stats.aiProcessed / stats.totalArticles) * 100)}%</span>
+              </div>
+              <Progress value={(stats.aiProcessed / stats.totalArticles) * 100} className="h-3" />
+            </div>
+          )}
+
+          <div className="mt-4 pt-4 border-t space-y-1">
             {stats.lastImport && (
               <p className="text-xs text-muted-foreground text-center">
                 Last import: {new Date(stats.lastImport).toLocaleString()}
               </p>
             )}
-            {stats.lastFeedSize !== null && (
-              <div className="text-xs text-center">
-                <span className="text-muted-foreground">Feed size: </span>
-                <span className="font-semibold">{stats.lastFeedSize.toLocaleString()}</span>
-                <span className="text-muted-foreground"> vs DB: </span>
-                <span className="font-semibold">{stats.totalArticles.toLocaleString()}</span>
-                {stats.lastFeedSize > stats.totalArticles && (
-                  <span className="ml-2 text-green-600 dark:text-green-400 font-medium">
-                    (~{(stats.lastFeedSize - stats.totalArticles).toLocaleString()} potential new)
-                  </span>
-                )}
-                {stats.lastFeedSize <= stats.totalArticles && (
-                  <span className="ml-2 text-muted-foreground">
-                    (up to date)
-                  </span>
-                )}
-              </div>
-            )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Import Operations */}
-      <Card>
+      {/* Streamlined 2-Step Workflow */}
+      <Card className="border-2 border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Play className="h-5 w-5" />
-            Import Operations
+            <Zap className="h-5 w-5 text-primary" />
+            Quick Workflow: Import → Process
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="json-url" className="text-sm font-medium">
-              JSON Feed URL
-            </Label>
+          {/* Step 1: Fast Import */}
+          <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center w-7 h-7 rounded-full bg-primary text-primary-foreground font-bold text-sm">
+                1
+              </div>
+              <Label htmlFor="json-url" className="text-base font-semibold">
+                Fast Import
+              </Label>
+            </div>
             <div className="flex gap-2">
               <Input
                 id="json-url"
                 type="url"
-                placeholder="https://example.com/feed.json"
+                placeholder="Paste Plato Data JSON URL..."
                 value={jsonUrl}
                 onChange={(e) => setJsonUrl(e.target.value)}
                 disabled={processing}
-                className="flex-1"
+                className="flex-1 h-12 text-base"
               />
               <Button
                 onClick={startFastImport}
                 disabled={processing || !jsonUrl.trim()}
                 size="lg"
-                className="min-w-[140px]"
+                className="min-w-[140px] h-12"
               >
                 {processing ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Importing...
                   </>
                 ) : (
                   <>
-                    <Play className="mr-2 h-4 w-4" />
-                    Start Import
+                    <Download className="mr-2 h-5 w-5" />
+                    Import
                   </>
                 )}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Enter the JSON feed URL from Plato Data Intelligence
-            </p>
+            {stats.importJobStatus && (
+              <div className="space-y-2 rounded-lg border bg-background p-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="font-medium">
+                    {stats.importJobStatus === 'in_progress' ? '⏳ Importing...' : `✅ ${stats.importJobStatus}`}
+                  </span>
+                  <span className="font-bold">{stats.importProgress.toFixed(0)}%</span>
+                </div>
+                <Progress value={stats.importProgress} className="h-2" />
+                <p className="text-xs text-muted-foreground">
+                  Imported: {stats.importImported.toLocaleString()} · Skipped: {stats.importSkipped.toLocaleString()}
+                </p>
+              </div>
+            )}
           </div>
 
-          {stats.importJobStatus && (
-            <div className="space-y-2 rounded-lg border bg-muted/60 p-4">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-medium">
-                  {stats.importJobStatus === 'in_progress'
-                    ? 'Import in progress'
-                    : `Import ${stats.importJobStatus}`}
-                </span>
-                <span className="font-semibold">
-                  {stats.importProgress.toFixed(0)}%
-                </span>
+          {/* Step 2: AI Process */}
+          <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center w-7 h-7 rounded-full bg-primary text-primary-foreground font-bold text-sm">
+                2
               </div>
-              <Progress value={stats.importProgress} className="h-2" />
-              <p className="text-[11px] text-muted-foreground">
-                Imported {stats.importImported.toLocaleString()} · Skipped {stats.importSkipped.toLocaleString()} · Errors {stats.importErrors.toLocaleString()}
-              </p>
+              <Label className="text-base font-semibold">
+                AI Process
+              </Label>
             </div>
-          )}
-        </CardContent>
-      </Card>
 
-      {/* AI Processing */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5" />
-            AI Processing
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {stats.aiJobStatus === 'in_progress' && (
-            <div className="space-y-2 mb-4 p-4 rounded-lg border-2 border-orange-500/20 bg-orange-500/5">
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-medium">Job In Progress</span>
-                <span className="font-semibold">{stats.aiProgress}%</span>
+            {verticalSlug === 'cannabis' && (
+              <div className="flex items-center justify-between p-3 bg-background rounded-lg border">
+                <div className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm font-medium">Fast Mode</span>
+                </div>
+                <Switch
+                  checked={fastMode}
+                  onCheckedChange={setFastMode}
+                />
               </div>
-              <Progress value={stats.aiProgress} className="h-2" />
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-muted-foreground">
-                  Job ID: {stats.aiJobId}
-                </p>
-                <div className="flex gap-2">
+            )}
+
+            <Button
+              onClick={() => startAIProcessing(fastMode, skipTags)}
+              disabled={processing || stats.remaining === 0}
+              className="w-full h-12"
+              size="lg"
+              variant={stats.remaining === 0 ? "outline" : "default"}
+            >
+              {processing ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Processing...
+                </>
+              ) : stats.remaining === 0 ? (
+                <>✅ All Articles Processed</>
+              ) : (
+                <>
+                  {fastMode ? <Zap className="mr-2 h-5 w-5" /> : <Sparkles className="mr-2 h-5 w-5" />}
+                  Process {stats.remaining.toLocaleString()} Articles
+                </>
+              )}
+            </Button>
+
+            {stats.aiJobStatus === 'in_progress' && (
+              <div className="space-y-2 rounded-lg border-2 border-orange-500/20 bg-orange-500/5 p-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="font-medium">⚡ AI Processing</span>
+                  <span className="font-bold">{stats.aiProgress}%</span>
+                </div>
+                <Progress value={stats.aiProgress} className="h-2" />
+                <div className="flex items-center justify-between pt-1">
+                  <p className="text-xs text-muted-foreground">
+                    Job: {stats.aiJobId?.slice(0, 8)}...
+                  </p>
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => stats.aiJobId && resumeJob(stats.aiJobId).then(loadStats)}
                     disabled={resuming}
                   >
-                    {resuming ? (
-                      <>
-                        <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                        Resuming...
-                      </>
-                    ) : (
-                      <>
-                        <RefreshCcw className="mr-2 h-3 w-3" />
-                        Resume
-                      </>
-                    )}
+                    <RefreshCcw className="mr-1 h-3 w-3" />
+                    Resume
                   </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        disabled={processing}
-                      >
-                        <AlertTriangle className="mr-2 h-3 w-3" />
-                        Reset & Restart
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Reset & Restart AI Processing?</AlertDialogTitle>
-                        <AlertDialogDescription className="space-y-2">
-                          <p>This will:</p>
-                          <ul className="list-disc list-inside space-y-1 text-sm">
-                            <li>Mark the current stuck job as completed</li>
-                            <li>Start a fresh AI processing job immediately</li>
-                            <li>Use the latest cheaper model and optimized settings</li>
-                          </ul>
-                          <p className="font-semibold text-orange-600 dark:text-orange-400 mt-3">
-                            Use this when processing gets stuck or fails to progress.
-                          </p>
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                       <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => resetAndRestartAI(fastMode, skipTags)}>
-                          Reset & Restart {fastMode && '(Fast)'}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
                 </div>
               </div>
-            </div>
-          )}
-
-          {verticalSlug === 'cannabis' && stats.remaining > 0 && (
-            <div className="space-y-3 p-4 bg-muted rounded-lg mb-4">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="fast-mode" className="flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-yellow-500" />
-                  Fast Mode
-                </Label>
-                <Switch
-                  id="fast-mode"
-                  checked={fastMode}
-                  onCheckedChange={setFastMode}
-                />
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Skip AI formatting, use fallback only, reduce concurrency to avoid timeouts
-              </p>
-              
-              <div className="flex items-center justify-between">
-                <Label htmlFor="skip-tags">Skip Tag Extraction</Label>
-                <Switch
-                  id="skip-tags"
-                  checked={skipTags}
-                  onCheckedChange={setSkipTags}
-                />
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Skip extracting and storing article tags for faster processing
-              </p>
-            </div>
-          )}
-
-          <Button
-            onClick={() => startAIProcessing(fastMode, skipTags)}
-            disabled={processing || stats.remaining === 0}
-            className="w-full h-12"
-            size="lg"
-            variant={stats.remaining === 0 ? "outline" : "default"}
-          >
-            {processing ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processing...
-              </>
-            ) : stats.remaining === 0 ? (
-              <>✅ All Articles Processed</>
-            ) : (
-              <>
-                {fastMode ? <Zap className="mr-2 h-4 w-4" /> : <Sparkles className="mr-2 h-4 w-4" />}
-                Process {stats.remaining.toLocaleString()} Articles {fastMode ? '(Fast)' : 'with AI'}
-              </>
             )}
-          </Button>
-
-          {/* Reprocess with Source Extraction - Cannabis specific */}
-          {verticalSlug === 'cannabis' && stats.totalArticles > 0 && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  disabled={processing}
-                  variant="secondary"
-                  className="w-full"
-                >
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  Reprocess & Extract Sources ({stats.totalArticles.toLocaleString()})
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Reprocess with Source Extraction?</AlertDialogTitle>
-                  <AlertDialogDescription className="space-y-2">
-                    <p>This will:</p>
-                    <ul className="list-disc list-inside space-y-1 text-sm">
-                      <li>Clear AI processing flags for ALL {stats.totalArticles.toLocaleString()} Cannabis articles</li>
-                      <li>Reprocess them with the new source extraction feature</li>
-                      <li>Extract and store actual source URLs (not Plato links)</li>
-                      <li>Re-format content and update tags</li>
-                    </ul>
-                    <p className="font-semibold text-blue-600 dark:text-blue-400 mt-3">
-                      Use this to add source URLs to articles that were processed before this feature was added.
-                    </p>
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => reprocessWithSourceExtraction(fastMode, skipTags)}>
-                    Reprocess {fastMode && '(Fast)'}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
-
-          {stats.aiProcessed > 0 && (
-            <>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    disabled={processing}
-                    variant="outline"
-                    className="w-full"
-                  >
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    Reset AI Processing ({stats.aiProcessed.toLocaleString()})
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Reset AI Processing?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This will reset the AI processing flag for {stats.aiProcessed.toLocaleString()} processed articles in {formatVerticalName(verticalSlug)}, 
-                      allowing you to reprocess them with the improved formatting. This is useful after updating the AI processing prompt.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={resetAIProcessing}>
-                      Reset Processing
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    disabled={processing}
-                    variant="secondary"
-                    className="w-full"
-                  >
-                    <ExternalLink className="mr-2 h-4 w-4" />
-                    Reprocess & Extract Sources ({stats.aiProcessed.toLocaleString()})
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Reprocess with Source Extraction?</AlertDialogTitle>
-                    <AlertDialogDescription className="space-y-2">
-                      <p>This will:</p>
-                      <ul className="list-disc list-inside space-y-1 text-sm">
-                        <li>Clear AI processing flags for {stats.aiProcessed.toLocaleString()} articles</li>
-                        <li>Reprocess them with the new source extraction feature</li>
-                        <li>Extract and store actual source URLs (not Plato links)</li>
-                        <li>Re-format content and update tags</li>
-                      </ul>
-                      <p className="font-semibold text-blue-600 dark:text-blue-400 mt-3">
-                        Use this to add source URLs to articles that were processed before this feature was added.
-                      </p>
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => reprocessWithSourceExtraction(fastMode, skipTags)}>
-                      Reprocess {fastMode && '(Fast)'}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </>
-          )}
-
-          <p className="text-xs text-muted-foreground text-center">
-            Formats content and extracts tags using AI
-          </p>
+          </div>
         </CardContent>
       </Card>
+
 
       {/* Maintenance Operations */}
       <Card>
