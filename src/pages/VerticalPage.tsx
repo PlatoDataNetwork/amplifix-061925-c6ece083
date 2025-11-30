@@ -6,6 +6,7 @@ import BlogPostCard from "@/components/BlogPostCard";
 import ArticleListItem from "@/components/ArticleListItem";
 import ViewToggle from "@/components/ViewToggle";
 import VerticalAIChat from "@/components/VerticalAIChat";
+import ArticleSearch from "@/components/ArticleSearch";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useMemo, useState, useEffect } from "react";
@@ -16,6 +17,7 @@ import { useRSSFeed } from "@/hooks/useRSSFeed";
 import { useArticlesFromDB } from "@/hooks/useArticlesFromDB";
 import { ArrowLeft } from "lucide-react";
 import { getCurrentLanguage } from "@/utils/language";
+import { supabase } from "@/integrations/supabase/client";
 
 const VerticalPage = () => {
   const { vertical } = useParams<{ vertical: string }>();
@@ -30,9 +32,46 @@ const VerticalPage = () => {
     return (saved as "card" | "list") || "card";
   });
 
+  // Search state
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+
   const handleViewChange = (newView: "card" | "list") => {
     setView(newView);
     localStorage.setItem("vertical-view-preference", newView);
+  };
+
+  const handleSearch = async (results: any[], query: string) => {
+    setIsSearching(true);
+    setSearchQuery(query);
+    
+    // Fetch full article data for the search results
+    if (results.length > 0) {
+      const ids = results.map(r => r.id);
+      const { data, error } = await supabase
+        .from("articles")
+        .select("*")
+        .in("id", ids);
+      
+      if (!error && data) {
+        // Sort by search rank
+        const sortedData = data.sort((a, b) => {
+          const rankA = results.find(r => r.id === a.id)?.rank || 0;
+          const rankB = results.find(r => r.id === b.id)?.rank || 0;
+          return rankB - rankA;
+        });
+        setSearchResults(sortedData);
+      }
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    setSearchResults([]);
+    setIsSearching(false);
   };
   
   // Determine language prefix from current path (e.g. /uk/intel/...)
@@ -63,23 +102,26 @@ const VerticalPage = () => {
     verticalInfo?.name || ''
   );
   
-  // Prioritize database articles, fallback to external API
-  const allPosts = useMemo(() => {
+  // Prioritize search results if searching, otherwise use regular posts
+  const displayPosts = useMemo(() => {
+    if (isSearching && searchQuery) {
+      return searchResults;
+    }
     if (dbPosts.length > 0) {
       return dbPosts;
     }
     return platoDataPosts;
-  }, [dbPosts, platoDataPosts]);
+  }, [isSearching, searchQuery, searchResults, dbPosts, platoDataPosts]);
   
   const isLoading = dbLoading || platoLoading;
   const error = dbError || platoError;
   
-  // Use database hasMore if we have DB posts, otherwise check platoData length
-  const hasMorePosts = dbPosts.length > 0 ? dbHasMore : allPosts.length > 0;
+  // Use database hasMore if we have DB posts and not searching, otherwise check platoData length
+  const hasMorePosts = !isSearching && dbPosts.length > 0 ? dbHasMore : displayPosts.length > 0;
 
   // Re-run GTranslate once posts are loaded so thumbnails/text can be translated
   useEffect(() => {
-    if (isLoading || !allPosts.length) return;
+    if (isLoading || !displayPosts.length) return;
 
     try {
       const lang = getCurrentLanguage();
@@ -98,7 +140,7 @@ const VerticalPage = () => {
     } catch (e) {
       console.error('GTranslate vertical refresh error', e);
     }
-  }, [isLoading, allPosts.length]);
+  }, [isLoading, displayPosts.length]);
   
   const handleShowMore = () => {
     // If using DB posts with pagination, load more from DB
@@ -154,13 +196,32 @@ const VerticalPage = () => {
             </span>
             {' '}Intelligence
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4">
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4 mb-8">
             Stay updated with the latest {verticalInfo.name} news, insights, and intelligence.
           </p>
+
+          {/* Search Bar */}
+          <ArticleSearch 
+            verticalSlug={verticalInfo.slug}
+            onSearch={handleSearch}
+            onClear={handleClearSearch}
+          />
         </div>
 
+        {/* Search Results Header */}
+        {isSearching && searchQuery && (
+          <div className="mb-6">
+            <p className="text-muted-foreground">
+              {searchResults.length > 0 
+                ? `Found ${searchResults.length} ${searchResults.length === 1 ? 'result' : 'results'} for "${searchQuery}"`
+                : `No results found for "${searchQuery}"`
+              }
+            </p>
+          </div>
+        )}
+
         {/* View Toggle */}
-        {!isLoading && allPosts.length > 0 && (
+        {!isLoading && displayPosts.length > 0 && (
           <div className="flex justify-end mb-8">
             <ViewToggle view={view} onViewChange={handleViewChange} />
           </div>
@@ -192,11 +253,11 @@ const VerticalPage = () => {
         )}
 
         {/* Articles Grid/List */}
-        {!isLoading && allPosts.length > 0 && (
+        {!isLoading && displayPosts.length > 0 && (
           <section className="mb-12 md:mb-16">
             {view === "card" ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                {allPosts.map((post) => (
+                {displayPosts.map((post) => (
                   <BlogPostCard 
                     key={post.id} 
                     post={{
@@ -210,7 +271,7 @@ const VerticalPage = () => {
               </div>
             ) : (
               <div className="flex flex-col gap-4">
-                {allPosts.map((post) => (
+                {displayPosts.map((post) => (
                   <ArticleListItem 
                     key={post.id} 
                     post={{
@@ -224,11 +285,11 @@ const VerticalPage = () => {
               </div>
             )}
 
-            {/* Show More Button */}
-            {hasMorePosts && (
+            {/* Show More Button - only show if not searching */}
+            {hasMorePosts && !isSearching && (
               <div className="mt-12 flex flex-col items-center gap-4">
                 <p className="text-muted-foreground text-sm">
-                  Showing {allPosts.length} articles
+                  Showing {displayPosts.length} articles
                 </p>
                 <Button 
                   onClick={handleShowMore}
@@ -245,7 +306,7 @@ const VerticalPage = () => {
         )}
 
         {/* No Articles */}
-        {!isLoading && allPosts.length === 0 && (
+        {!isLoading && displayPosts.length === 0 && !isSearching && (
           <div className="text-center py-12">
             <p className="text-muted-foreground text-lg mb-4">
               No articles available for {verticalInfo.name} at the moment.
