@@ -122,7 +122,8 @@ export default function BulkImportAdmin() {
 
           return {
             ...s,
-            importing: isImporting,
+            // Treat a stalled import as no longer "importing" so the spinner stops
+            importing: isImporting && !stalled,
             importComplete: isCompleted,
             importProgress: {
               totalProcessed: data.total_processed ?? 0,
