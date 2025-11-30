@@ -90,22 +90,33 @@ export default function BulkImportAdmin() {
       if (!data) return;
 
       setVerticalStats(prev =>
-        prev.map(s =>
-          s.slug === activeImportSlug
-            ? {
-                ...s,
-                importing: data.status === 'in_progress',
-                importComplete: data.status === 'completed',
-                importProgress: {
-                  totalProcessed: data.total_processed,
-                  importedCount: data.imported_count,
-                  skippedCount: data.skipped_count,
-                  errorCount: data.error_count,
-                  currentPage: Math.max(1, Math.ceil(data.total_processed / 20)),
-                },
-              }
-            : s,
-        ),
+        prev.map(s => {
+          if (s.slug !== activeImportSlug) return s;
+          
+          // Check if progress actually changed to avoid unnecessary updates
+          const hasProgressChanged = !s.importProgress ||
+            s.importProgress.totalProcessed !== data.total_processed ||
+            s.importProgress.importedCount !== data.imported_count ||
+            s.importProgress.skippedCount !== data.skipped_count ||
+            s.importProgress.errorCount !== data.error_count;
+
+          if (!hasProgressChanged && s.importing === (data.status === 'in_progress')) {
+            return s; // No changes, return same object
+          }
+
+          return {
+            ...s,
+            importing: data.status === 'in_progress',
+            importComplete: data.status === 'completed',
+            importProgress: {
+              totalProcessed: data.total_processed,
+              importedCount: data.imported_count,
+              skippedCount: data.skipped_count,
+              errorCount: data.error_count,
+              currentPage: Math.max(1, Math.ceil(data.total_processed / 20)),
+            },
+          };
+        }),
       );
 
       if (['completed', 'failed', 'cancelled'].includes(data.status)) {
@@ -453,29 +464,34 @@ export default function BulkImportAdmin() {
                 </div>
               </CardHeader>
               <CardContent>
-                {/* Import Progress Details */}
-                {stat.importing && stat.importProgress && (
+                {/* Import Progress Details - Show if progress exists */}
+                {stat.importProgress && (
                   <div className="mb-4 p-3 bg-muted/50 rounded-lg space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="font-medium">Import Progress</span>
-                      <span className="text-muted-foreground">Page {stat.importProgress.currentPage}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground">Page {stat.importProgress.currentPage}</span>
+                        {stat.importing && (
+                          <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                        )}
+                      </div>
                     </div>
                     <div className="grid grid-cols-4 gap-2 text-xs">
                       <div>
                         <span className="text-muted-foreground">Processed:</span>
-                        <p className="font-semibold">{stat.importProgress.totalProcessed}</p>
+                        <p className="font-semibold">{stat.importProgress.totalProcessed.toLocaleString()}</p>
                       </div>
                       <div>
                         <span className="text-green-600">Imported:</span>
-                        <p className="font-semibold text-green-600">{stat.importProgress.importedCount}</p>
+                        <p className="font-semibold text-green-600">{stat.importProgress.importedCount.toLocaleString()}</p>
                       </div>
                       <div>
                         <span className="text-yellow-600">Skipped:</span>
-                        <p className="font-semibold text-yellow-600">{stat.importProgress.skippedCount}</p>
+                        <p className="font-semibold text-yellow-600">{stat.importProgress.skippedCount.toLocaleString()}</p>
                       </div>
                       <div>
                         <span className="text-red-600">Errors:</span>
-                        <p className="font-semibold text-red-600">{stat.importProgress.errorCount}</p>
+                        <p className="font-semibold text-red-600">{stat.importProgress.errorCount.toLocaleString()}</p>
                       </div>
                     </div>
                   </div>
