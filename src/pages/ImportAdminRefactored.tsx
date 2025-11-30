@@ -36,6 +36,7 @@ export default function ImportAdminRefactored() {
   const [stoppingJobs, setStoppingJobs] = useState(false);
   const [testVertical, setTestVertical] = useState<string>('');
   const [testImporting, setTestImporting] = useState(false);
+  const [recentArticles, setRecentArticles] = useState<any[]>([]);
 
   // Timeout to prevent infinite loading
   useEffect(() => {
@@ -194,6 +195,16 @@ export default function ImportAdminRefactored() {
 
       const imported = (afterCount ?? 0) - (beforeCount ?? 0);
       const total = afterCount ?? 0;
+
+      // Fetch the last 10 articles for this vertical
+      const { data: articles } = await supabase
+        .from('articles')
+        .select('title, post_id, published_at')
+        .eq('vertical_slug', testVertical)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      setRecentArticles(articles || []);
 
       toast.success('Test import complete!', {
         description: `Imported: ${imported} of ${total} articles`,
@@ -386,6 +397,35 @@ export default function ImportAdminRefactored() {
                 Import 25 Test Articles
               </Button>
             </div>
+
+            {/* Recent Articles Table */}
+            {recentArticles.length > 0 && (
+              <div className="mt-6">
+                <h3 className="text-sm font-medium mb-3">Last 10 Imported Articles</h3>
+                <div className="border rounded-lg overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead className="bg-muted/50">
+                      <tr>
+                        <th className="text-left p-2 font-medium">Title</th>
+                        <th className="text-left p-2 font-medium">Post ID</th>
+                        <th className="text-left p-2 font-medium">Published</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {recentArticles.map((article, idx) => (
+                        <tr key={idx} className="border-t">
+                          <td className="p-2 max-w-md truncate">{article.title}</td>
+                          <td className="p-2">{article.post_id}</td>
+                          <td className="p-2">
+                            {new Date(article.published_at).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
