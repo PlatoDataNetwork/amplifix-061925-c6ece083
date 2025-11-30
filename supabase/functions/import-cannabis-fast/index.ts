@@ -76,8 +76,7 @@ async function runBackgroundImport(
         return;
       } else if (
         importRow.cancelled ||
-        importRow.status === "failed" ||
-        importRow.status === "cancelled"
+        importRow.status === "failed"
       ) {
         console.log("Import stopped due to status/cancellation flag");
         await channel.send({
@@ -99,7 +98,8 @@ async function runBackgroundImport(
         await supabase
           .from("import_history")
           .update({
-            status: "cancelled",
+            status: "failed",
+            cancelled: true,
             completed_at: new Date().toISOString(),
             total_processed: totalProcessed,
             imported_count: importedCount,
@@ -247,7 +247,7 @@ async function runBackgroundImport(
     await supabase
       .from("import_history")
       .update({
-        status: "failed", // use allowed status value; cancellation is tracked via the "cancelled" boolean
+        status: "completed",
         completed_at: completedAt,
         duration_ms: durationMs,
         total_processed: totalProcessed,

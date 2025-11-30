@@ -322,24 +322,21 @@ export default function BulkImportAdmin() {
         toast.info('No running imports found for this vertical');
       } else {
         const nowIso = new Date().toISOString();
-        const { error: cancelError } = await supabase
-          .from('import_history')
-          .update(row => ({
-            status: 'failed',
-            cancelled: true,
-            completed_at: row.completed_at ?? nowIso,
-            metadata: {
-              ...(row.metadata as any ?? {}),
-              failureReason: 'Import manually cancelled from Bulk Import Admin',
-            },
-          }))
-          .eq('vertical_slug', slug)
-          .eq('status', 'in_progress');
-
-        if (cancelError) {
-          console.error('Error cancelling in-progress imports:', cancelError);
-          toast.error('Failed to cancel import', { description: cancelError.message });
-          return;
+        
+        // Update each in-progress import individually to preserve its metadata
+        for (const row of inProgress) {
+          await supabase
+            .from('import_history')
+            .update({
+              status: 'failed',
+              cancelled: true,
+              completed_at: row.completed_at ?? nowIso,
+              metadata: {
+                ...(row.metadata as any ?? {}),
+                failureReason: 'Import manually cancelled from Bulk Import Admin',
+              },
+            })
+            .eq('id', row.id);
         }
 
         toast.success(`Stopped all running imports for ${slug}`, {
