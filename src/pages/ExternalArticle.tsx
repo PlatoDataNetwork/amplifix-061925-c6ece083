@@ -367,14 +367,17 @@ if (!article) {
                     })
                   : null;
 
-                const sourceNode = isAviationOrAerospace && article.external_url ? (
+                // Check for source URL in metadata first, then external_url
+                const sourceUrl = article.metadata?.source || article.metadata?.original_url || article.external_url;
+                
+                const sourceNode = sourceUrl ? (
                   <a
-                    href={article.external_url}
+                    href={sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:text-blue-400 transition-colors underline"
                   >
-                    {new URL(article.external_url).hostname}
+                    {new URL(sourceUrl).hostname}
                   </a>
                 ) : (
                   <span className="font-medium">Plato Data Intelligence</span>
