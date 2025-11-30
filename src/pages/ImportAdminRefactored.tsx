@@ -416,7 +416,7 @@ export default function ImportAdminRefactored() {
                         <tr key={idx} className="border-t">
                           <td className="p-2 max-w-md">
                             <a
-                              href={`/intel/article/${article.id}`}
+                              href={`/intel/article/${article.post_id}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-primary hover:underline truncate block"
