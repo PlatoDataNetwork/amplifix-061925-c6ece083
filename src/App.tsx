@@ -78,6 +78,7 @@ import AdminAnalytics from "./pages/AdminAnalytics";
 import BackfillDashboard from "./pages/BackfillDashboard";
 import PlatoSourceUpdate from "./pages/PlatoSourceUpdate";
 import PlatoSourceStats from "./pages/PlatoSourceStats";
+import BulkImportAdmin from "./pages/BulkImportAdmin";
 
 const queryClient = new QueryClient();
 
@@ -146,7 +147,8 @@ const App = () => (
           <Route path="/admin/security" element={<AdminRoute><SecurityDashboard /></AdminRoute>} />
           <Route path="/admin/backfill" element={<AdminRoute><BackfillDashboard /></AdminRoute>} />
           <Route path="/import_history" element={<AdminRoute><BackfillDashboard /></AdminRoute>} />
-        <Route path="/admin/import" element={<AdminRoute><ImportAdminRefactored /></AdminRoute>} />
+          <Route path="/admin/import" element={<AdminRoute><ImportAdminRefactored /></AdminRoute>} />
+          <Route path="/admin/bulk-import" element={<AdminRoute><BulkImportAdmin /></AdminRoute>} />
           <Route path="/admin/plato-import" element={<AdminRoute><PlatoImport /></AdminRoute>} />
           <Route path="/admin/aviation-import" element={<AdminRoute><AviationImport /></AdminRoute>} />
           <Route path="/admin/aerospace-import" element={<AdminRoute><AerospaceImport /></AdminRoute>} />
