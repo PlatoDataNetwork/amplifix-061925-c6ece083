@@ -11,12 +11,32 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  console.log("=== Vertical AI Chat Request Received ===");
+  console.log("Method:", req.method);
+  console.log("Headers:", Object.fromEntries(req.headers.entries()));
+
   try {
-    const { messages, verticalSlug } = await req.json();
-    console.log("Received chat request for vertical:", verticalSlug);
+    const body = await req.json();
+    const { messages, verticalSlug } = body;
+    
+    console.log("Received chat request");
+    console.log("Vertical:", verticalSlug);
+    console.log("Messages count:", messages?.length);
+
+    if (!messages || !verticalSlug) {
+      console.error("Missing required fields:", { messages: !!messages, verticalSlug: !!verticalSlug });
+      return new Response(
+        JSON.stringify({ error: "Missing required fields: messages and verticalSlug" }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
+      console.error("LOVABLE_API_KEY not configured");
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
