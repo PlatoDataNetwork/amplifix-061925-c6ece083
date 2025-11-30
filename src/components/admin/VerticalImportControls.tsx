@@ -67,6 +67,15 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
     );
   }
 
+  // Debug logging
+  console.log('🔍 VerticalImportControls Debug:', {
+    verticalSlug,
+    totalArticles: stats.totalArticles,
+    aiProcessed: stats.aiProcessed,
+    remaining: stats.remaining,
+    shouldShowButton: verticalSlug === 'cannabis' && stats.totalArticles > 0
+  });
+
   return (
     <div className="space-y-6">
       {/* Source URL Extraction Stats */}
