@@ -16,7 +16,8 @@ async function backupArticles(
   backupName: string,
   backupDescription: string | null,
   userId: string | null,
-  totalCount: number
+  totalCount: number,
+  verticalSlug?: string
 ) {
   let from = 0;
   const fetchSize = 500;
@@ -24,17 +25,24 @@ async function backupArticles(
   let totalBacked = 0;
   let hasMore = true;
   
-  console.log(`Background task: Starting backup of ${totalCount} articles`);
+  console.log(`Background task: Starting backup of ${totalCount} articles${verticalSlug ? ` for vertical: ${verticalSlug}` : ''}`);
 
   try {
     while (hasMore && !isShuttingDown) {
       lastProcessedIndex = from;
       
-      // Fetch a batch of articles
-      const { data: articles, error: fetchError } = await supabase
+      // Build query with optional vertical filter
+      let query = supabase
         .from('articles')
         .select('*')
         .range(from, from + fetchSize - 1);
+      
+      if (verticalSlug) {
+        query = query.eq('vertical_slug', verticalSlug);
+      }
+      
+      // Fetch a batch of articles
+      const { data: articles, error: fetchError } = await query;
 
       if (fetchError) {
         console.error('Error fetching articles:', fetchError);
@@ -159,7 +167,7 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Get request body
-    const { backupName, backupDescription } = await req.json();
+    const { backupName, backupDescription, verticalSlug } = await req.json();
 
     if (!backupName) {
       return new Response(
@@ -171,7 +179,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log(`Starting backup: ${backupName}`);
+    console.log(`Starting backup: ${backupName}${verticalSlug ? ` for vertical: ${verticalSlug}` : ''}`);
 
     // Get auth user
     const authHeader = req.headers.get('Authorization');
@@ -183,10 +191,16 @@ Deno.serve(async (req) => {
       userId = user?.id;
     }
 
-    // Get total count
-    const { count: totalCount } = await supabase
+    // Get total count with optional vertical filter
+    let countQuery = supabase
       .from('articles')
       .select('*', { count: 'exact', head: true });
+    
+    if (verticalSlug) {
+      countQuery = countQuery.eq('vertical_slug', verticalSlug);
+    }
+    
+    const { count: totalCount } = await countQuery;
 
     console.log(`Total articles to backup: ${totalCount || 0}`);
 
@@ -214,7 +228,7 @@ Deno.serve(async (req) => {
 
     // Start backup in background
     EdgeRuntime.waitUntil(
-      backupArticles(supabase, backupName, backupDescription, userId, totalCount)
+      backupArticles(supabase, backupName, backupDescription, userId, totalCount, verticalSlug)
     );
 
     // Return immediately
