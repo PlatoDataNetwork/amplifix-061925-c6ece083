@@ -370,7 +370,10 @@ if (!article) {
                 // Check for source URL in metadata first, then external_url
                 const sourceUrl = article.metadata?.source || article.metadata?.original_url || article.external_url;
                 
-                const sourceNode = sourceUrl ? (
+                // If external_url is a platodata.ai link, show "Plato Data Intelligence" with link to main site
+                const isPlatoArticle = article.external_url?.includes('platodata.ai');
+                
+                const sourceNode = sourceUrl && !isPlatoArticle ? (
                   <a
                     href={sourceUrl}
                     target="_blank"
@@ -380,7 +383,14 @@ if (!article) {
                     {new URL(sourceUrl).hostname}
                   </a>
                 ) : (
-                  <span className="font-medium">Plato Data Intelligence</span>
+                  <a
+                    href="https://platodata.io"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-400 transition-colors font-medium"
+                  >
+                    Plato Data Intelligence
+                  </a>
                 );
 
                 return (
