@@ -498,9 +498,9 @@ const ArticleBackups = () => {
   const handleExportBackup = async (backupName: string) => {
     try {
       setExportProgress({ current: 0, total: 0 });
-      toast.info('Starting export... This may take a while for large backups.');
+      toast.info('Starting export... Large backups will be split into multiple files.');
 
-      // Get total count first using indexed backup_name filter
+      // Get total count first
       const { count, error: countError } = await supabase
         .from('article_backups')
         .select('*', { count: 'exact', head: true })
@@ -516,9 +516,49 @@ const ArticleBackups = () => {
 
       setExportProgress({ current: 0, total: count });
 
-      const batchSize = 500; // smaller batches to avoid timeouts
-      const allRecords: any[] = [];
+      const articlesPerFile = 10000; // 10k articles per file to avoid memory issues
+      const fileCount = Math.ceil(count / articlesPerFile);
+      
       let lastId: string | null = null;
+      let fileIndex = 1;
+      let currentFileRecords: any[] = [];
+
+      const downloadFile = (records: any[], index: number, total: number) => {
+        const exportData = {
+          backup_name: backupName,
+          backup_description: records[0]?.backup_description,
+          exported_at: new Date().toISOString(),
+          part: `${index} of ${total}`,
+          articles_in_part: records.length,
+          total_articles_in_backup: count,
+          articles: records.map((record) => ({
+            article_id: record.article_id,
+            post_id: record.post_id,
+            title: record.title,
+            content: record.content,
+            excerpt: record.excerpt,
+            author: record.author,
+            image_url: record.image_url,
+            vertical_slug: record.vertical_slug,
+            published_at: record.published_at,
+            metadata: record.metadata,
+          })),
+        };
+
+        const json = JSON.stringify(exportData, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = total > 1 
+          ? `${backupName}-part${index}-of-${total}.json`
+          : `${backupName}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      };
 
       while (true) {
         let query = supabase
@@ -526,7 +566,7 @@ const ArticleBackups = () => {
           .select('*')
           .eq('backup_name', backupName)
           .order('id', { ascending: true })
-          .limit(batchSize);
+          .limit(500);
 
         if (lastId) {
           query = query.gt('id', lastId);
@@ -537,54 +577,37 @@ const ArticleBackups = () => {
         if (error) throw error;
         if (!batch || batch.length === 0) break;
 
-        allRecords.push(...batch);
+        currentFileRecords.push(...batch);
         lastId = batch[batch.length - 1].id;
-        setExportProgress({ current: allRecords.length, total: count });
+
+        const totalLoaded = (fileIndex - 1) * articlesPerFile + currentFileRecords.length;
+        setExportProgress({ current: totalLoaded, total: count });
+
+        // If we've reached the file limit, download this file
+        if (currentFileRecords.length >= articlesPerFile) {
+          downloadFile(currentFileRecords, fileIndex, fileCount);
+          toast.success(`Downloaded part ${fileIndex} of ${fileCount}`);
+          fileIndex++;
+          currentFileRecords = [];
+          // Small delay between downloads
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        }
 
         // Yield to keep UI responsive
         await new Promise((resolve) => setTimeout(resolve, 0));
       }
 
-      if (allRecords.length === 0) {
-        toast.error('No backup data found');
-        setExportProgress(null);
-        return;
+      // Download remaining records if any
+      if (currentFileRecords.length > 0) {
+        downloadFile(currentFileRecords, fileIndex, fileCount);
+        toast.success(`Downloaded part ${fileIndex} of ${fileCount}`);
       }
 
-      toast.info('Creating JSON file...');
-
-      const exportData = {
-        backup_name: backupName,
-        backup_description: allRecords[0]?.backup_description,
-        exported_at: new Date().toISOString(),
-        total_articles: allRecords.length,
-        articles: allRecords.map((record) => ({
-          article_id: record.article_id,
-          post_id: record.post_id,
-          title: record.title,
-          content: record.content,
-          excerpt: record.excerpt,
-          author: record.author,
-          image_url: record.image_url,
-          vertical_slug: record.vertical_slug,
-          published_at: record.published_at,
-          metadata: record.metadata,
-        })),
-      };
-
-      const json = JSON.stringify(exportData, null, 2);
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${backupName}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-
-      toast.success(`Exported ${allRecords.length.toLocaleString()} articles to ${backupName}.json`);
+      toast.success(
+        fileCount > 1
+          ? `Export complete! Downloaded ${fileCount} files with ${count.toLocaleString()} total articles.`
+          : `Exported ${count.toLocaleString()} articles to ${backupName}.json`
+      );
       setExportProgress(null);
     } catch (error) {
       console.error('Error exporting backup:', error);
