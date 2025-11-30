@@ -51,6 +51,20 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
     }
   };
   
+  const cancelCleanup = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('cleanup-cannabis-articles', {
+        body: { action: 'cancel' }
+      });
+      
+      if (error) throw error;
+      console.log('Cleanup cancelled successfully');
+      loadStats();
+    } catch (error) {
+      console.error('Error cancelling cleanup:', error);
+    }
+  };
+  
   const { resumeJob, resuming } = useResumeAIJob();
   const [fastMode, setFastMode] = useState(verticalSlug === 'cannabis');
   const [skipTags, setSkipTags] = useState(verticalSlug === 'cannabis');
