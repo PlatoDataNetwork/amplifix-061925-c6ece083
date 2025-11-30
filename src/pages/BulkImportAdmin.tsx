@@ -311,22 +311,42 @@ export default function BulkImportAdmin() {
         return;
       }
 
-      // Mark the stuck import as failed
+      // Signal cancellation to stop the background Edge Function task
+      // Keep status as 'in_progress' so the should_cancel_import check works
       const { error } = await supabase
+        .from('import_history')
+        .update({
+          cancelled: true,
+        })
+        .eq('id', history.id);
+
+      if (error) {
+        toast.error('Failed to cancel import', { description: error.message });
+        return;
+      }
+
+      toast.info(`Cancelling background task for ${slug}...`, {
+        description: 'Please wait a moment for it to stop',
+      });
+
+      // Wait 5 seconds for the background task to detect cancellation
+      await new Promise(resolve => setTimeout(resolve, 5000));
+
+      // Now mark it as failed and clean up
+      const { error: updateError } = await supabase
         .from('import_history')
         .update({
           status: 'failed',
           completed_at: new Date().toISOString(),
           metadata: {
             ...((history.metadata as any) || {}),
-            failureReason: 'Import stalled - manually fixed by admin',
+            failureReason: 'Import stalled - manually cancelled by admin',
           },
         })
         .eq('id', history.id);
 
-      if (error) {
-        toast.error('Failed to mark import as failed', { description: error.message });
-        return;
+      if (updateError) {
+        console.error('Error marking as failed:', updateError);
       }
 
       // Clear the active tracking and reset state
@@ -348,7 +368,7 @@ export default function BulkImportAdmin() {
         ),
       );
 
-      toast.success(`Fixed stuck import for ${slug}`, {
+      toast.success(`Stopped and fixed stuck import for ${slug}`, {
         description: 'You can now start a fresh import',
       });
     } catch (error: any) {
