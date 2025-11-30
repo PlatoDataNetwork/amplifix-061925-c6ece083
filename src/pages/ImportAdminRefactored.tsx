@@ -182,8 +182,11 @@ export default function ImportAdminRefactored() {
 
       if (error) throw error;
 
+      const imported = data?.insertedArticles ?? data?.processedArticles ?? 0;
+      const total = data?.totalArticles ?? 0;
+
       toast.success('Test import complete!', {
-        description: `Imported: ${data?.imported || 0}, Skipped: ${data?.skipped || 0}`,
+        description: `Imported: ${imported} of ${total} articles`,
         duration: 5000
       });
 
