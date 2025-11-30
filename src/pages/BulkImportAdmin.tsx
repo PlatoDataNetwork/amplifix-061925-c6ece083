@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { usePlatoVerticals } from '@/hooks/usePlatoVerticals';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Database, Zap, Download, Play, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Loader2, Database, Zap, Download, Play, CheckCircle2, AlertCircle, Activity, RefreshCw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -43,6 +43,29 @@ interface GlobalStats {
   verticalsAIProcessed: number;
 }
 
+interface FeedHealth {
+  slug: string;
+  name: string;
+  feedUrl: string;
+  status: "online" | "offline" | "error";
+  responseTime: number | null;
+  httpStatus: number | null;
+  error?: string;
+  timestamp: string;
+}
+
+interface FeedHealthResponse {
+  summary: {
+    total: number;
+    online: number;
+    offline: number;
+    error: number;
+    checkDuration: number;
+  };
+  feeds: FeedHealth[];
+  timestamp: string;
+}
+
 export default function BulkImportAdmin() {
   const navigate = useNavigate();
   const { isAdmin, loading } = useAdminCheck();
@@ -56,6 +79,9 @@ export default function BulkImportAdmin() {
   });
   const [initializing, setInitializing] = useState(true);
   const [activeImportSlug, setActiveImportSlug] = useState<string | null>(null);
+  const [feedHealth, setFeedHealth] = useState<FeedHealthResponse | null>(null);
+  const [checkingHealth, setCheckingHealth] = useState(false);
+  const [showHealthDashboard, setShowHealthDashboard] = useState(false);
 
   // Initialize stats on load
   useEffect(() => {
@@ -63,6 +89,18 @@ export default function BulkImportAdmin() {
       initializeStats();
     }
   }, [verticals]);
+
+  // Auto-refresh feed health every 5 minutes if dashboard is visible
+  useEffect(() => {
+    if (!showHealthDashboard) return;
+    
+    checkFeedHealth(); // Initial check
+    const interval = setInterval(() => {
+      checkFeedHealth();
+    }, 300000); // 5 minutes
+    
+    return () => clearInterval(interval);
+  }, [showHealthDashboard]);
 
 
   // Poll import_history for the active import to show realtime stats
@@ -386,6 +424,43 @@ export default function BulkImportAdmin() {
     }
   };
 
+  const checkFeedHealth = async () => {
+    setCheckingHealth(true);
+    try {
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        throw new Error('Authentication required. Please log in again.');
+      }
+
+      const { data, error } = await supabase.functions.invoke('check-feed-health', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (error) {
+        if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+          throw new Error('Session expired. Please refresh the page and log in again.');
+        }
+        throw error;
+      }
+
+      setFeedHealth(data);
+      toast.success('Feed health check complete', {
+        description: `${data.summary.online} online, ${data.summary.offline + data.summary.error} unavailable`,
+        duration: 3000
+      });
+    } catch (error: any) {
+      console.error('Feed health check error:', error);
+      toast.error('Failed to check feed health', {
+        description: error.message || 'Unknown error'
+      });
+    } finally {
+      setCheckingHealth(false);
+    }
+  };
+
   const handleAIProcessing = async (slug: string) => {
     setVerticalStats(prev =>
       prev.map(s => s.slug === slug ? { ...s, aiProcessing: true } : s)
@@ -530,6 +605,122 @@ export default function BulkImportAdmin() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Feed Health Dashboard */}
+        <Card className="mb-6">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                <CardTitle className="text-lg">Feed Health Status</CardTitle>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => setShowHealthDashboard(!showHealthDashboard)}
+                  variant="outline"
+                  size="sm"
+                >
+                  {showHealthDashboard ? 'Hide' : 'Show'} Health Dashboard
+                </Button>
+                <Button
+                  onClick={checkFeedHealth}
+                  disabled={checkingHealth}
+                  variant="default"
+                  size="sm"
+                >
+                  {checkingHealth ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Checking...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                      Check All Feeds
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          {showHealthDashboard && feedHealth && (
+            <CardContent>
+              {/* Summary */}
+              <div className="grid grid-cols-4 gap-4 mb-4">
+                <div className="text-center p-3 bg-muted/50 rounded-lg">
+                  <p className="text-2xl font-bold">{feedHealth.summary.total}</p>
+                  <p className="text-xs text-muted-foreground">Total Feeds</p>
+                </div>
+                <div className="text-center p-3 bg-green-500/10 rounded-lg">
+                  <p className="text-2xl font-bold text-green-600">{feedHealth.summary.online}</p>
+                  <p className="text-xs text-muted-foreground">Online</p>
+                </div>
+                <div className="text-center p-3 bg-red-500/10 rounded-lg">
+                  <p className="text-2xl font-bold text-red-600">{feedHealth.summary.offline}</p>
+                  <p className="text-xs text-muted-foreground">Offline</p>
+                </div>
+                <div className="text-center p-3 bg-yellow-500/10 rounded-lg">
+                  <p className="text-2xl font-bold text-yellow-600">{feedHealth.summary.error}</p>
+                  <p className="text-xs text-muted-foreground">Error</p>
+                </div>
+              </div>
+
+              <p className="text-xs text-muted-foreground mb-4">
+                Last checked: {new Date(feedHealth.timestamp).toLocaleString()} • 
+                Check duration: {(feedHealth.summary.checkDuration / 1000).toFixed(1)}s
+              </p>
+
+              {/* Feed List */}
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {feedHealth.feeds.map((feed) => (
+                  <div
+                    key={feed.slug}
+                    className={`flex items-center justify-between p-3 rounded-lg border ${
+                      feed.status === 'online'
+                        ? 'bg-green-500/5 border-green-500/20'
+                        : feed.status === 'offline'
+                        ? 'bg-red-500/5 border-red-500/20'
+                        : 'bg-yellow-500/5 border-yellow-500/20'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 flex-1">
+                      <div
+                        className={`w-2 h-2 rounded-full ${
+                          feed.status === 'online'
+                            ? 'bg-green-500'
+                            : feed.status === 'offline'
+                            ? 'bg-red-500'
+                            : 'bg-yellow-500'
+                        } animate-pulse`}
+                      />
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">{feed.name}</p>
+                        <p className="text-xs text-muted-foreground truncate max-w-md">
+                          {feed.feedUrl}
+                        </p>
+                        {feed.error && (
+                          <p className="text-xs text-red-600 mt-1">{feed.error}</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      {feed.httpStatus && (
+                        <Badge variant={feed.status === 'online' ? 'default' : 'destructive'}>
+                          {feed.httpStatus}
+                        </Badge>
+                      )}
+                      {feed.responseTime !== null && (
+                        <span className="text-xs text-muted-foreground tabular-nums">
+                          {feed.responseTime}ms
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          )}
+        </Card>
 
         {/* Progress Bar */}
         {progressPercent > 0 && (
