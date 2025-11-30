@@ -103,28 +103,46 @@ Deno.serve(async (req) => {
       console.log(`✅ Deleted ${garbageArticles.length} garbage articles`);
     }
 
-    // Step 2: Find articles without headers
-    console.log('Step 2: Finding articles without headers...');
-    const { data: articlesWithoutHeaders, error: headersError } = await supabase
+    // Step 2: Count total articles without headers
+    console.log('Step 2: Counting articles without headers...');
+    const { count: totalCount, error: countError } = await supabase
       .from('articles')
-      .select('id, title, content, post_id')
+      .select('*', { count: 'exact', head: true })
       .eq('vertical_slug', 'cannabis')
       .not('content', 'is', null)
-      .not('content', 'eq', '')
-      .order('created_at', { ascending: false })
-      .limit(100); // Process in batches
+      .not('content', 'eq', '');
 
-    if (headersError) {
-      throw new Error(`Error finding articles: ${headersError.message}`);
+    if (countError) {
+      throw new Error(`Error counting articles: ${countError.message}`);
     }
 
-    console.log(`Found ${articlesWithoutHeaders?.length || 0} articles to check`);
+    console.log(`Total cannabis articles to check: ${totalCount || 0}`);
 
+    // Process in batches of 50
+    const BATCH_SIZE = 50;
     let reformattedCount = 0;
     let skippedCount = 0;
+    let offset = 0;
 
-    if (articlesWithoutHeaders) {
-      for (const article of articlesWithoutHeaders) {
+    while (offset < (totalCount || 0)) {
+      console.log(`Processing batch at offset ${offset}...`);
+      
+      const { data: batch, error: batchError } = await supabase
+        .from('articles')
+        .select('id, title, content, post_id')
+        .eq('vertical_slug', 'cannabis')
+        .not('content', 'is', null)
+        .not('content', 'eq', '')
+        .range(offset, offset + BATCH_SIZE - 1);
+
+      if (batchError) {
+        console.error(`Error fetching batch at offset ${offset}:`, batchError);
+        break;
+      }
+
+      if (!batch || batch.length === 0) break;
+
+      for (const article of batch) {
         // Check if article needs headers
         const hasHeaders = article.content?.includes('<h3>') || article.content?.includes('<h2>');
         
@@ -149,11 +167,14 @@ Deno.serve(async (req) => {
           }
           
           // Small delay to avoid rate limiting
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise(resolve => setTimeout(resolve, 200));
         } else {
           skippedCount++;
         }
       }
+
+      offset += BATCH_SIZE;
+      console.log(`Batch complete. Progress: ${offset}/${totalCount}. Reformatted: ${reformattedCount}, Skipped: ${skippedCount}`);
     }
 
     const summary = {
@@ -161,6 +182,7 @@ Deno.serve(async (req) => {
       deletedCount: garbageArticles?.length || 0,
       reformattedCount,
       skippedCount,
+      totalProcessed: offset,
       message: `Cleanup complete: deleted ${garbageArticles?.length || 0} garbage articles, reformatted ${reformattedCount} articles without headers, skipped ${skippedCount} articles with headers`
     };
 
