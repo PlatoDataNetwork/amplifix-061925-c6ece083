@@ -111,3 +111,6 @@ verify_jwt = true
 [functions.reset-and-restart-ai]
 verify_jwt = true
 
+[functions.test-cannabis-feed]
+verify_jwt = false
+
