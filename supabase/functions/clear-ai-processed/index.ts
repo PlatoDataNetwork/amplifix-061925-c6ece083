@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
     // First, get all articles to filter properly
     const { data: allArticles, error: fetchError } = await supabase
       .from('articles')
-      .select('id, metadata')
+      .select('id, metadata, content')
       .eq('vertical_slug', verticalSlug)
       .eq('metadata->>ai_processed', 'true');
 
@@ -48,10 +48,12 @@ Deno.serve(async (req) => {
     // Filter to only articles missing source_url or with empty source_url
     const articles = allArticles.filter(article => {
       const metadata = article.metadata || {};
-      const sourceUrl = metadata.source_url;
+      const sourceUrl = (metadata.source_url || '').trim();
+      const content = (article as any).content || '';
+      const hasPlatoSource = /Plato Data Intelligence/i.test(content);
       
-      // Only include if source_url is missing, null, or empty
-      return !sourceUrl || sourceUrl.trim() === '';
+      // Only include if source_url is missing/empty AND content is not from Plato Data Intelligence
+      return (!sourceUrl || sourceUrl === '') && !hasPlatoSource;
     });
 
     const totalCount = articles.length;

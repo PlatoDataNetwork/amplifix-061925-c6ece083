@@ -346,14 +346,14 @@ Deno.serve(async (req) => {
     // Fetch articles in this chunk (excluding those with null content)
     let query = supabase
       .from('articles')
-      .select('id, title, content, excerpt, metadata, published_at')
+      .select('id, title, content, excerpt, metadata, published_at, external_url')
       .not('content', 'is', null);
     
     // Filter by vertical if specified
     if (verticalSlug) {
       query = query.eq('vertical_slug', verticalSlug);
     }
-
+    
     // Only process articles that have not yet been AI-processed
     query = query.or('metadata->>ai_processed.is.null,metadata->>ai_processed.eq.false');
     
