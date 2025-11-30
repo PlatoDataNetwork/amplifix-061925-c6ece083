@@ -175,7 +175,8 @@ Deno.serve(async (req) => {
                                urlLower.includes('zephyrnet') || 
                                urlLower.includes('plato.ai') ||
                                urlLower.includes('plato') ||
-                               urlLower.includes('zephyr');
+                               urlLower.includes('zephyr') ||
+                               urlLower.includes('osint');
             }
 
             // Skip only if both content is correct AND external_url doesn't need clearing
@@ -209,18 +210,18 @@ Deno.serve(async (req) => {
               needsContentUpdate = true;
             }
 
-            // Pattern 3: Any link containing plato domains
-            const pattern3 = /<a\s+[^>]*href=["']https?:\/\/(?:platodata\.ai|platodata\.network|plato\.ai)[^"']*["'][^>]*>[^<]*<\/a>/gi;
+            // Pattern 3: Any link containing plato/osint domains
+            const pattern3 = /<a\s+[^>]*href=["']https?:\/\/(?:osint\.platodata\.io|platodata\.ai|platodata\.network|plato\.ai)[^"']*["'][^>]*>[^<]*<\/a>/gi;
             if (pattern3.test(updatedContent) && /Source/i.test(updatedContent)) {
               updatedContent = updatedContent.replace(
-                /(?:Source Link|Source)[^<]*<a\s+[^>]*href=["']https?:\/\/(?:platodata\.ai|platodata\.network|plato\.ai)[^"']*["'][^>]*>[^<]*<\/a>[^\.]*\.?/gi,
+                /(?:Source Link|Source)[^<]*<a\s+[^>]*href=["']https?:\/\/(?:osint\.platodata\.io|platodata\.ai|platodata\.network|plato\.ai)[^"']*["'][^>]*>[^<]*<\/a>[^\.]*\.?/gi,
                 'Source: Plato Data Intelligence.'
               );
               needsContentUpdate = true;
             }
 
             // Pattern 4: Plain text references
-            const pattern4 = /(?:Source Link|Source):\s*(?:platodata\.ai|platodata\.network|plato\.ai|PlatoData\.ai)\s*\.?/gi;
+            const pattern4 = /(?:Source Link|Source):\s*(?:osint\.platodata\.io|platodata\.ai|platodata\.network|plato\.ai|PlatoData\.ai)\s*\.?/gi;
             if (pattern4.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern4, 'Source: Plato Data Intelligence.');
               needsContentUpdate = true;
@@ -233,8 +234,8 @@ Deno.serve(async (req) => {
               needsContentUpdate = true;
             }
 
-            // Pattern 6: Fallback - any <ul> block containing a platodata.ai link
-            const pattern6 = /<ul[^>]*>[\s\S]*?platodata\.ai[\s\S]*?<\/ul>/gi;
+            // Pattern 6: Fallback - any <ul> block containing platodata/osint links
+            const pattern6 = /<ul[^>]*>[\s\S]*?(?:osint\.platodata\.io|platodata\.ai)[\s\S]*?<\/ul>/gi;
             if (pattern6.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern6, '<p>Source: Plato Data Intelligence.</p>');
               needsContentUpdate = true;
