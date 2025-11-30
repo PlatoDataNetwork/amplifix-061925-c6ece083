@@ -179,7 +179,6 @@ serve(async (req) => {
             error_count: errors,
             total_processed: totalProcessed,
             status: 'in_progress',
-            updated_at: new Date().toISOString(),
           })
           .eq('id', importHistoryId);
 
