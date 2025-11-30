@@ -480,7 +480,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
         }
       }
 
-      if (maxLastPage > 0 && sourceImportId) {
+      // Only resume if the page is within reasonable bounds (under 2000)
+      if (maxLastPage > 0 && maxLastPage < 2000 && sourceImportId) {
         // Cancel any in-progress imports before starting the resume run
         await supabase
           .from("import_history")
