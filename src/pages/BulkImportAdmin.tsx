@@ -101,6 +101,7 @@ export default function BulkImportAdmin() {
     batchIndex: number;
   } | null>(null);
   const [loadingCannabisCheckpoint, setLoadingCannabisCheckpoint] = useState(false);
+  const [cannabisManualStartPage, setCannabisManualStartPage] = useState<number>(1);
 
   // Initialize stats on load
   useEffect(() => {
@@ -312,7 +313,7 @@ export default function BulkImportAdmin() {
     }
   };
 
-  const handleImport = async (slug: string, resumeImportId?: string) => {
+  const handleImport = async (slug: string, resumeImportId?: string, manualStartPage?: number) => {
     setVerticalStats(prev =>
       prev.map(s =>
         s.slug === slug
@@ -343,10 +344,10 @@ export default function BulkImportAdmin() {
         throw new Error('Authentication required. Please log in again.');
       }
 
-      toast.info(resumeImportId ? `Resuming import for ${slug}...` : `Starting fast import for ${slug}...`);
+      toast.info(resumeImportId ? `Resuming import for ${slug}...` : manualStartPage && manualStartPage > 1 ? `Starting fast import for ${slug} from page ${manualStartPage}...` : `Starting fast import for ${slug}...`);
 
       const { data, error } = await supabase.functions.invoke(`import-${slug}-fast`, {
-        body: { resumeImportId },
+        body: { resumeImportId, manualStartPage },
         headers: {
           Authorization: `Bearer ${session.access_token}`
         }
@@ -1125,9 +1126,28 @@ export default function BulkImportAdmin() {
                   </div>
                 )}
 
+                {/* Cannabis manual start page input */}
+                {stat.slug === 'cannabis' && !stat.importing && !stat.importComplete && (
+                  <div className="mb-3 flex items-center gap-2">
+                    <label htmlFor="cannabis-start-page" className="text-sm text-muted-foreground whitespace-nowrap">
+                      Start from page:
+                    </label>
+                    <input
+                      id="cannabis-start-page"
+                      type="number"
+                      min="1"
+                      value={cannabisManualStartPage}
+                      onChange={(e) => setCannabisManualStartPage(Math.max(1, parseInt(e.target.value) || 1))}
+                      className="w-24 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="1"
+                    />
+                    <span className="text-xs text-muted-foreground">(default: auto-resume or 1)</span>
+                  </div>
+                )}
+
                 <div className="flex gap-2">
                   <Button
-                    onClick={() => handleImport(stat.slug)}
+                    onClick={() => handleImport(stat.slug, undefined, stat.slug === 'cannabis' ? cannabisManualStartPage : undefined)}
                     disabled={stat.importing || stat.importComplete}
                     variant="default"
                     size="sm"
