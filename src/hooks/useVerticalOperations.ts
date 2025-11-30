@@ -453,24 +453,35 @@ export const useVerticalOperations = (verticalSlug: string) => {
     try {
       setProcessing(true);
       const mode = fastMode ? ' (Fast Mode)' : '';
+      console.log('🔄 Starting reprocessWithSourceExtraction for:', verticalSlug, 'fastMode:', fastMode, 'skipTags:', skipTags);
       toast.info(`Clearing AI flags for ${verticalSlug}${mode}...`);
 
       // Step 1: Clear AI processed flags
+      console.log('📝 Calling clear-ai-processed...');
       const { data: clearData, error: clearError } = await supabase.functions.invoke('clear-ai-processed', {
         body: { verticalSlug }
       });
 
-      if (clearError) throw clearError;
+      if (clearError) {
+        console.error('❌ Clear error:', clearError);
+        throw clearError;
+      }
 
+      console.log('✅ Cleared:', clearData);
       toast.info(`Cleared ${clearData.cleared} articles, starting reprocessing with source extraction${mode}...`);
 
       // Step 2: Start fresh AI processing with source extraction
+      console.log('🚀 Calling reset-and-restart-ai...');
       const { data, error } = await supabase.functions.invoke('reset-and-restart-ai', {
         body: { verticalSlug, fastMode, skipTags }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Restart error:', error);
+        throw error;
+      }
 
+      console.log('✅ Restart complete:', data);
       toast.success(`Reprocessing started with source extraction${mode}!`, {
         description: `Processing ${data?.articlesToProcess || 0} articles to extract source URLs`,
         duration: 6000
@@ -478,6 +489,7 @@ export const useVerticalOperations = (verticalSlug: string) => {
 
       await loadStats();
     } catch (error) {
+      console.error('💥 Reprocess error:', error);
       toast.error(`Failed to reprocess articles`, {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
