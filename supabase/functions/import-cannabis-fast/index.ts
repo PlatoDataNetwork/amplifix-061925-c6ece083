@@ -1,239 +1,392 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+const supabaseUrlEnv = Deno.env.get("SUPABASE_URL");
+const supabaseServiceKeyEnv = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
-interface CannabisFeedArticle {
-  id?: number;
-  post_id?: number;
-  title: string;
-  slug?: string;
-  excerpt?: string;
-  content?: string;
+// Global Supabase client to avoid ReferenceError in any execution path
+const supabase =
+  supabaseUrlEnv && supabaseServiceKeyEnv
+    ? createClient(supabaseUrlEnv, supabaseServiceKeyEnv)
+    : null;
+
+interface CannabisArticle {
+  id: number;
+  title: { rendered: string };
+  excerpt: { rendered: string };
+  content?: { rendered: string };
+  link?: string;
   date?: string;
-  published_at?: string;
   author?: string;
-  source?: string;
-  categories?: string[];
-  image_url?: string;
-  external_url?: string;
+  featured_media?: string;
+  yoast_head_json?: {
+    og_image?: Array<{ url: string }>;
+  };
+  _embedded?: {
+    "wp:featuredmedia"?: Array<{ source_url: string }>;
+  };
 }
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
+function cleanText(text?: string | null): string {
+  if (!text) return "";
+  return text
+    .replace(/<[^>]*>/g, "")
+    .replace(/https?:\/\/[^\s]+/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .trim();
+}
+
+async function runBackgroundImport(
+  supabaseUrl: string,
+  supabaseKey: string,
+  jsonUrl: string,
+  importHistoryId: string,
+  startedAt: string,
+) {
+  const supabase = createClient(supabaseUrl, supabaseKey);
+  const channel = supabase.channel(`import-progress-cannabis`);
+
+  let totalProcessed = 0;
+  let importedCount = 0;
+  let skippedCount = 0;
+  let errorCount = 0;
+  let page = 1;
+  const batchSize = 20;
+
+  try {
+    await channel.subscribe();
+
+    while (true) {
+      const { data: shouldCancel } = await supabase.rpc("should_cancel_import", {
+        p_vertical_slug: "cannabis",
+        p_started_after: startedAt,
+      });
+
+      if (shouldCancel) {
+        console.log("Import cancelled by user");
+        await supabase
+          .from("import_history")
+          .update({
+            status: "cancelled",
+            completed_at: new Date().toISOString(),
+            total_processed: totalProcessed,
+            imported_count: importedCount,
+            skipped_count: skippedCount,
+            error_count: errorCount,
+          })
+          .eq("id", importHistoryId);
+
+        await channel.send({
+          type: "broadcast",
+          event: "import_cancelled",
+          payload: { vertical: "cannabis" },
+        });
+        break;
+      }
+
+      const pageUrl = `${jsonUrl}${jsonUrl.includes("?") ? "&" : "?"}page=${page}`;
+      console.log(`Fetching cannabis page ${page} from ${pageUrl}`);
+
+      const response = await fetch(pageUrl);
+      if (!response.ok) {
+        console.error(`Failed to fetch page ${page}:`, response.status);
+        break;
+      }
+
+      const articles: CannabisArticle[] = await response.json();
+      if (!articles || articles.length === 0) {
+        console.log(`No more articles found at page ${page}`);
+        break;
+      }
+
+      const batch = [];
+      for (const article of articles) {
+        try {
+          const postId = article.id;
+          const { data: existing } = await supabase
+            .from("articles")
+            .select("id")
+            .eq("post_id", postId)
+            .eq("vertical_slug", "cannabis")
+            .maybeSingle();
+
+          if (existing) {
+            skippedCount++;
+            totalProcessed++;
+            continue;
+          }
+
+          let imageUrl = null;
+          if (article._embedded?.["wp:featuredmedia"]?.[0]?.source_url) {
+            imageUrl = article._embedded["wp:featuredmedia"][0].source_url;
+          } else if (article.yoast_head_json?.og_image?.[0]?.url) {
+            imageUrl = article.yoast_head_json.og_image[0].url;
+          }
+
+          batch.push({
+            title: cleanText(article.title?.rendered),
+            excerpt: cleanText(article.excerpt?.rendered),
+            content: cleanText(article.content?.rendered),
+            external_url: article.link || null,
+            published_at: article.date || new Date().toISOString(),
+            author: article.author || null,
+            image_url: imageUrl,
+            vertical_slug: "cannabis",
+            post_id: postId,
+            metadata: {},
+          });
+        } catch (articleError) {
+          console.error("Error processing article:", articleError);
+          errorCount++;
+        }
+      }
+
+      if (batch.length > 0) {
+        const { error: insertError } = await supabase
+          .from("articles")
+          .insert(batch);
+
+        if (insertError) {
+          console.error("Batch insert error:", insertError);
+          errorCount += batch.length;
+        } else {
+          importedCount += batch.length;
+        }
+      }
+
+      totalProcessed += articles.length;
+
+      await supabase
+        .from("import_history")
+        .update({
+          total_processed: totalProcessed,
+          imported_count: importedCount,
+          skipped_count: skippedCount,
+          error_count: errorCount,
+        })
+        .eq("id", importHistoryId);
+
+      await channel.send({
+        type: "broadcast",
+        event: "import_progress",
+        payload: {
+          vertical: "cannabis",
+          totalProcessed,
+          importedCount,
+          skippedCount,
+          errorCount,
+          currentPage: page,
+        },
+      });
+
+      console.log(`Page ${page} complete - Imported: ${importedCount}, Skipped: ${skippedCount}`);
+
+      if (articles.length < batchSize) {
+        break;
+      }
+
+      page++;
+    }
+
+    const completedAt = new Date().toISOString();
+    const startTime = new Date(startedAt).getTime();
+    const endTime = new Date(completedAt).getTime();
+    const durationMs = endTime - startTime;
+
+    await supabase
+      .from("import_history")
+      .update({
+        status: "completed",
+        completed_at: completedAt,
+        duration_ms: durationMs,
+        total_processed: totalProcessed,
+        imported_count: importedCount,
+        skipped_count: skippedCount,
+        error_count: errorCount,
+      })
+      .eq("id", importHistoryId);
+
+    await channel.send({
+      type: "broadcast",
+      event: "import_complete",
+      payload: {
+        vertical: "cannabis",
+        totalProcessed,
+        importedCount,
+        skippedCount,
+        errorCount,
+      },
+    });
+
+    console.log("Import complete:", {
+      totalProcessed,
+      importedCount,
+      skippedCount,
+      errorCount,
+    });
+  } catch (error) {
+    console.error("Import error:", error);
+    await supabase
+      .from("import_history")
+      .update({
+        status: "failed",
+        completed_at: new Date().toISOString(),
+        total_processed: totalProcessed,
+        imported_count: importedCount,
+        skipped_count: skippedCount,
+        error_count: errorCount,
+      })
+      .eq("id", importHistoryId);
+  } finally {
+    await channel.unsubscribe();
+  }
+}
+
+Deno.serve(async (req: Request): Promise<Response> => {
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers":
+      "authorization, x-client-info, apikey, content-type",
+  };
+
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const authHeader = req.headers.get("Authorization");
 
-    const { jsonUrl } = await req.json();
-    
-    if (!jsonUrl) {
-      throw new Error('JSON URL is required');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "No authorization header" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
     }
 
-    console.log('Starting cannabis fast import from:', jsonUrl);
+    const token = authHeader.replace("Bearer ", "");
 
-    const response = await fetch(jsonUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch cannabis feed: ${response.status} ${response.statusText}`);
+    // Use anon key + user token for auth / role checks
+    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: { persistSession: false },
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabaseAuth.auth.getUser(token);
+
+    if (userError || !user) {
+      console.error("Auth error in import-cannabis-fast:", userError);
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
     }
 
-    const feedData = await response.json();
+    const { data: hasAdminRole, error: roleError } = await supabaseAuth.rpc("has_role", {
+      _user_id: user.id,
+      _role: "admin",
+    });
 
-    // Handle different JSON structures (array or wrapped object)
-    let articles: CannabisFeedArticle[] = [];
-    if (Array.isArray(feedData)) {
-      articles = feedData as CannabisFeedArticle[];
-    } else if (Array.isArray(feedData.articles)) {
-      articles = feedData.articles as CannabisFeedArticle[];
-    } else if (Array.isArray(feedData.posts)) {
-      articles = feedData.posts as CannabisFeedArticle[];
+    if (roleError || !hasAdminRole) {
+      console.error("Role check failed in import-cannabis-fast:", roleError);
+      return new Response(JSON.stringify({ error: "Admin access required" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
     }
 
-    console.log(`Fetched ${articles.length} cannabis articles from feed`);
+    const { jsonUrl, resumeImportId } = await req.json();
+    const startedAt = new Date().toISOString();
 
-    let imported = 0;
-    let skipped = 0;
-    let errors = 0;
-    let importHistoryId: string | null = null;
+    // Create service role client for database operations
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const batchSize = 50;
+    let importHistoryId: string;
 
-    const totalFromFeed = articles.length;
-
-    if (totalFromFeed > 0) {
-      const { data: historyRow, error: historyError } = await supabaseClient
-        .from('import_history')
-        .insert({
-          vertical_slug: 'cannabis',
-          status: 'in_progress',
-          imported_count: 0,
-          skipped_count: 0,
-          error_count: 0,
-          total_processed: 0,
-          metadata: {
-            json_url: jsonUrl,
-            total_from_feed: totalFromFeed,
-          },
-        })
-        .select('id')
+    if (resumeImportId) {
+      const { data: existingImport } = await supabase
+        .from("import_history")
+        .select("*")
+        .eq("id", resumeImportId)
+        .eq("vertical_slug", "cannabis")
         .single();
 
-      if (historyError) {
-        console.error('Error creating cannabis import history:', historyError);
-      } else {
-        importHistoryId = historyRow?.id ?? null;
-      }
-    }
-
-    for (let i = 0; i < articles.length; i += batchSize) {
-      const batch = articles.slice(i, i + batchSize);
-
-      for (const raw of batch) {
-        try {
-          const title = raw.title?.trim();
-          if (!title) {
-            skipped++;
-            continue;
-          }
-
-          // Check if article already exists (by title + vertical)
-          const { data: existing, error: existingError } = await supabaseClient
-            .from('articles')
-            .select('id')
-            .eq('title', title)
-            .eq('vertical_slug', 'cannabis')
-            .maybeSingle();
-
-          if (existingError) {
-            console.error('Error checking existing article:', existingError);
-          }
-
-          if (existing) {
-            skipped++;
-            continue;
-          }
-
-          const content = raw.content ?? '';
-
-          // Derive excerpt if not provided
-          const plainContent = content.replace(/<[^>]*>/g, '');
-          const excerpt = raw.excerpt || plainContent.substring(0, 300).trim() || null;
-
-          // Map date field
-          const publishedRaw = raw.published_at || raw.date;
-          const published_at = publishedRaw
-            ? new Date(publishedRaw).toISOString()
-            : new Date().toISOString();
-
-          // Map external URL from "source" when present
-          const external_url = raw.external_url || raw.source || null;
-
-          const { error: insertError } = await supabaseClient
-            .from('articles')
-            .insert({
-              title,
-              content,
-              excerpt,
-              author: raw.author || 'Republished By Plato',
-              published_at,
-              image_url: raw.image_url || null,
-              external_url,
-              vertical_slug: 'cannabis',
-              metadata: {
-                source: raw.source || 'cannabis-feed',
-                original_url: external_url,
-                original_id: raw.post_id || raw.id,
-                slug: raw.slug,
-                categories: raw.categories || [],
-              },
-            });
-
-          if (insertError) {
-            console.error('Insert error:', insertError);
-            errors++;
-          } else {
-            imported++;
-          }
-        } catch (error) {
-          console.error('Error processing cannabis article:', error);
-          errors++;
-        }
+      if (!existingImport) {
+        return new Response(
+          JSON.stringify({ error: "Import history not found" }),
+          {
+            status: 404,
+            headers: { "Content-Type": "application/json", ...corsHeaders },
+          },
+        );
       }
 
-      if (importHistoryId) {
-        const totalProcessed = imported + skipped + errors;
-        const { error: updateError } = await supabaseClient
-          .from('import_history')
-          .update({
-            imported_count: imported,
-            skipped_count: skipped,
-            error_count: errors,
-            total_processed: totalProcessed,
-            status: 'in_progress',
-          })
-          .eq('id', importHistoryId);
-
-        if (updateError) {
-          console.error('Error updating cannabis import history:', updateError);
-        }
-      }
-
-      console.log(
-        `Processed cannabis batch ${Math.floor(i / batchSize) + 1}: ${imported} imported, ${skipped} skipped, ${errors} errors`,
-      );
-    }
-
-    if (importHistoryId) {
-      const totalProcessed = imported + skipped + errors;
-      const { error: finalizeError } = await supabaseClient
-        .from('import_history')
+      importHistoryId = resumeImportId;
+      await supabase
+        .from("import_history")
         .update({
-          imported_count: imported,
-          skipped_count: skipped,
-          error_count: errors,
-          total_processed: totalProcessed,
-          status: 'completed',
-          completed_at: new Date().toISOString(),
+          status: "in_progress",
+          started_at: startedAt,
           cancelled: false,
         })
-        .eq('id', importHistoryId);
+        .eq("id", importHistoryId);
+    } else {
+      const { data: newImport, error: insertError } = await supabase
+        .from("import_history")
+        .insert({
+          vertical_slug: "cannabis",
+          started_at: startedAt,
+          status: "in_progress",
+          imported_by: user.id,
+          metadata: { jsonUrl },
+        })
+        .select()
+        .single();
 
-      if (finalizeError) {
-        console.error('Error finalizing cannabis import history:', finalizeError);
+      if (insertError || !newImport) {
+        throw new Error("Failed to create import history");
       }
+
+      importHistoryId = newImport.id;
     }
 
-    const message = `Cannabis import complete: ${imported} imported, ${skipped} skipped, ${errors} errors`;
-    console.log(message);
+    EdgeRuntime.waitUntil(
+      runBackgroundImport(
+        supabaseUrl,
+        supabaseServiceKey,
+        jsonUrl || "https://platodata.ai/cannabis/json/",
+        importHistoryId,
+        startedAt,
+      ),
+    );
 
     return new Response(
       JSON.stringify({
-        success: true,
-        message,
-        imported,
-        skipped,
-        errors,
+        message: "Cannabis import started in background",
+        importHistoryId,
       }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
       },
     );
   } catch (error: any) {
-    console.error('Error in cannabis fast import:', error);
+    console.error("Error starting import:", error);
     return new Response(
-      JSON.stringify({ error: error?.message || 'Unknown error in cannabis fast import' }),
+      JSON.stringify({
+        error: error.message || "Failed to start import",
+      }),
       {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json", ...corsHeaders },
       },
     );
   }

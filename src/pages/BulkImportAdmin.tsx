@@ -206,7 +206,7 @@ export default function BulkImportAdmin() {
     }));
   };
 
-  const handleImport = async (slug: string) => {
+  const handleImport = async (slug: string, resumeImportId?: string) => {
     setVerticalStats(prev =>
       prev.map(s => s.slug === slug ? { ...s, importing: true } : s)
     );
@@ -219,10 +219,10 @@ export default function BulkImportAdmin() {
         throw new Error('Authentication required. Please log in again.');
       }
 
-      toast.info(`Starting fast import for ${slug}...`);
+      toast.info(resumeImportId ? `Resuming import for ${slug}...` : `Starting fast import for ${slug}...`);
 
       const { data, error } = await supabase.functions.invoke(`import-${slug}-fast`, {
-        body: {},
+        body: { resumeImportId },
         headers: {
           Authorization: `Bearer ${session.access_token}`
         }
@@ -236,19 +236,10 @@ export default function BulkImportAdmin() {
         throw error;
       }
 
-      toast.success(`Import complete for ${slug}!`, {
-        description: `Imported ${data.imported || 0} articles`,
+      toast.success(resumeImportId ? `Import resumed for ${slug}!` : `Import started for ${slug}!`, {
+        description: data.message,
         duration: 5000
       });
-
-      setVerticalStats(prev =>
-        prev.map(s => s.slug === slug 
-          ? { ...s, importing: false, importComplete: true } 
-          : s
-        )
-      );
-
-      await updateCurrentCounts();
     } catch (error: any) {
       console.error(`Import error for ${slug}:`, error);
       toast.error(`Import failed for ${slug}`, {
@@ -259,6 +250,23 @@ export default function BulkImportAdmin() {
         prev.map(s => s.slug === slug ? { ...s, importing: false } : s)
       );
     }
+  };
+
+  const getLatestImportHistory = async (slug: string) => {
+    const { data, error } = await supabase
+      .from('import_history')
+      .select('*')
+      .eq('vertical_slug', slug)
+      .order('started_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error fetching import history:', error);
+      return null;
+    }
+
+    return data;
   };
 
   const handleAIProcessing = async (slug: string) => {
@@ -487,7 +495,7 @@ export default function BulkImportAdmin() {
                   </div>
                 )}
 
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                   <Button
                     onClick={() => handleImport(stat.slug)}
                     disabled={stat.importing || stat.importComplete}
@@ -511,6 +519,22 @@ export default function BulkImportAdmin() {
                         Start Import
                       </>
                     )}
+                  </Button>
+
+                  <Button
+                    onClick={async () => {
+                      const history = await getLatestImportHistory(stat.slug);
+                      if (history?.id) {
+                        await handleImport(stat.slug, history.id);
+                      } else {
+                        toast.error('No import history found to resume');
+                      }
+                    }}
+                    disabled={stat.importing || !stat.importProgress}
+                    variant="outline"
+                    size="sm"
+                  >
+                    Resume
                   </Button>
 
                   <Button
