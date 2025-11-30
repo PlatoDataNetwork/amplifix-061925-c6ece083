@@ -21,6 +21,13 @@ interface VerticalStats {
   aiProcessing: boolean;
   importComplete: boolean;
   aiComplete: boolean;
+  importProgress?: {
+    totalProcessed: number;
+    importedCount: number;
+    skippedCount: number;
+    errorCount: number;
+    currentPage: number;
+  };
 }
 
 interface GlobalStats {
@@ -60,6 +67,74 @@ export default function BulkImportAdmin() {
 
     return () => clearInterval(interval);
   }, [verticalStats]);
+
+  // Subscribe to realtime import progress for all verticals
+  useEffect(() => {
+    if (verticalStats.length === 0) return;
+
+    const channels = verticalStats.map(stat => {
+      const channel = supabase.channel(`import-progress-${stat.slug}`);
+      
+      channel
+        .on('broadcast', { event: 'import_progress' }, (payload) => {
+          console.log(`Import progress for ${stat.slug}:`, payload);
+          
+          setVerticalStats(prev =>
+            prev.map(s => s.slug === stat.slug 
+              ? { 
+                  ...s, 
+                  importProgress: payload.payload,
+                  currentCount: s.beforeCount + (payload.payload.importedCount || 0)
+                } 
+              : s
+            )
+          );
+        })
+        .on('broadcast', { event: 'import_complete' }, (payload) => {
+          console.log(`Import complete for ${stat.slug}:`, payload);
+          
+          toast.success(`Import complete for ${stat.slug}!`, {
+            description: `Imported ${payload.payload.importedCount || 0} articles`,
+            duration: 5000
+          });
+
+          setVerticalStats(prev =>
+            prev.map(s => s.slug === stat.slug 
+              ? { 
+                  ...s, 
+                  importing: false, 
+                  importComplete: true,
+                  importProgress: payload.payload
+                } 
+              : s
+            )
+          );
+
+          updateCurrentCounts();
+        })
+        .on('broadcast', { event: 'import_cancelled' }, (payload) => {
+          console.log(`Import cancelled for ${stat.slug}:`, payload);
+          
+          toast.warning(`Import cancelled for ${stat.slug}`);
+
+          setVerticalStats(prev =>
+            prev.map(s => s.slug === stat.slug 
+              ? { ...s, importing: false, importProgress: undefined } 
+              : s
+            )
+          );
+        })
+        .subscribe();
+
+      return channel;
+    });
+
+    return () => {
+      channels.forEach(channel => {
+        supabase.removeChannel(channel);
+      });
+    };
+  }, [verticalStats.length]);
 
   const initializeStats = async () => {
     setInitializing(true);
@@ -384,6 +459,34 @@ export default function BulkImportAdmin() {
                 </div>
               </CardHeader>
               <CardContent>
+                {/* Import Progress Details */}
+                {stat.importing && stat.importProgress && (
+                  <div className="mb-4 p-3 bg-muted/50 rounded-lg space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="font-medium">Import Progress</span>
+                      <span className="text-muted-foreground">Page {stat.importProgress.currentPage}</span>
+                    </div>
+                    <div className="grid grid-cols-4 gap-2 text-xs">
+                      <div>
+                        <span className="text-muted-foreground">Processed:</span>
+                        <p className="font-semibold">{stat.importProgress.totalProcessed}</p>
+                      </div>
+                      <div>
+                        <span className="text-green-600">Imported:</span>
+                        <p className="font-semibold text-green-600">{stat.importProgress.importedCount}</p>
+                      </div>
+                      <div>
+                        <span className="text-yellow-600">Skipped:</span>
+                        <p className="font-semibold text-yellow-600">{stat.importProgress.skippedCount}</p>
+                      </div>
+                      <div>
+                        <span className="text-red-600">Errors:</span>
+                        <p className="font-semibold text-red-600">{stat.importProgress.errorCount}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex gap-3">
                   <Button
                     onClick={() => handleImport(stat.slug)}
