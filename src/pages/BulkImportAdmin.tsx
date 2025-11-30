@@ -112,8 +112,9 @@ export default function BulkImportAdmin() {
 
           return {
             ...s,
-            // Treat a stalled import as no longer "importing" so the spinner stops
-            importing: isImporting && !stalled,
+            // Keep importing=true while status is in_progress so the card can
+            // clearly show a "stalled" state and keep the Fix Stuck button enabled.
+            importing: isImporting,
             importComplete: isCompleted,
             importProgress: {
               totalProcessed: data.total_processed ?? 0,
@@ -567,8 +568,11 @@ export default function BulkImportAdmin() {
                       <div className="flex items-center gap-2">
                         <span className="text-muted-foreground">
                           Page {stat.importProgress.currentPage}
-                          {stat.importing && (
-                            <span className="ml-1 inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse" title="Live updates active" />
+                          {stat.importing && !stat.stalled && (
+                            <span
+                              className="ml-1 inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"
+                              title="Live updates active"
+                            />
                           )}
                         </span>
                         {stat.importing && (
@@ -585,7 +589,7 @@ export default function BulkImportAdmin() {
                     </div>
                     
                     {/* Live update timestamp */}
-                    {stat.importing && (
+                    {stat.importing && !stat.stalled && (
                       <div className="text-[10px] text-muted-foreground/70 italic flex items-center gap-1">
                         <span className="inline-block w-1 h-1 bg-green-500 rounded-full animate-pulse" />
                         Live • Updates every 3s • {new Date().toLocaleTimeString()}
@@ -607,7 +611,7 @@ export default function BulkImportAdmin() {
                       <div className="flex items-center gap-2 p-2 bg-destructive/10 border border-destructive/20 rounded text-xs">
                         <AlertCircle className="h-3 w-3 text-destructive flex-shrink-0" />
                         <span className="text-destructive font-medium">
-                          No progress detected – import may be stalled
+                          No progress for ~{(stat.stalledPolls ?? 0) * 3}s – import may be stalled. You can use "Fix Stuck" to stop this run.
                         </span>
                       </div>
                     )}
