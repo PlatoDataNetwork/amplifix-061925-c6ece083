@@ -454,10 +454,10 @@ export const useVerticalOperations = (verticalSlug: string) => {
       setProcessing(true);
       const mode = fastMode ? ' (Fast Mode)' : '';
       console.log('🔄 Starting reprocessWithSourceExtraction for:', verticalSlug, 'fastMode:', fastMode, 'skipTags:', skipTags);
-      toast.info(`Clearing AI flags for ${verticalSlug}${mode}...`);
+      toast.info(`Identifying ${verticalSlug} articles missing source URLs${mode}...`);
 
-      // Step 1: Clear AI processed flags
-      console.log('📝 Calling clear-ai-processed...');
+      // Step 1: Clear AI processed flags (only for articles missing source URLs)
+      console.log('📝 Calling clear-ai-processed (filtering for missing source URLs)...');
       const { data: clearData, error: clearError } = await supabase.functions.invoke('clear-ai-processed', {
         body: { verticalSlug }
       });
@@ -468,7 +468,20 @@ export const useVerticalOperations = (verticalSlug: string) => {
       }
 
       console.log('✅ Cleared:', clearData);
-      toast.info(`Cleared ${clearData.cleared} articles, starting reprocessing with source extraction${mode}...`);
+      
+      if (clearData.cleared === 0) {
+        toast.success(clearData.message || 'All articles already have source URLs', {
+          description: clearData.alreadyProcessed 
+            ? `${clearData.alreadyProcessed} articles already processed with source URLs`
+            : undefined,
+          duration: 5000
+        });
+        await loadStats();
+        setProcessing(false);
+        return;
+      }
+
+      toast.info(`Found ${clearData.cleared} articles needing source extraction, starting AI processing${mode}...`);
 
       // Step 2: Start fresh AI processing with source extraction
       console.log('🚀 Calling reset-and-restart-ai...');
