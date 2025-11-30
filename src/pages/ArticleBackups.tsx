@@ -498,60 +498,20 @@ const ArticleBackups = () => {
     try {
       toast.info('Exporting backup... This may take a moment for large backups.');
 
-      // First get the total count
-      const { count } = await supabase
-        .from('article_backups')
-        .select('*', { count: 'exact', head: true })
-        .eq('backup_name', backupName);
+      // Call edge function to handle the export server-side
+      const { data, error } = await supabase.functions.invoke('export-backup', {
+        body: { backupName }
+      });
 
-      if (!count || count === 0) {
-        toast.error('No backup data found');
+      if (error) throw error;
+
+      if (!data) {
+        toast.error('No data received from export');
         return;
       }
 
-      // Fetch all records in batches to avoid hitting limits
-      const batchSize = 1000;
-      const allRecords = [];
-      
-      for (let i = 0; i < count; i += batchSize) {
-        const { data: batch, error } = await supabase
-          .from('article_backups')
-          .select('*')
-          .eq('backup_name', backupName)
-          .order('created_at', { ascending: true })
-          .range(i, i + batchSize - 1);
-
-        if (error) throw error;
-        if (batch) allRecords.push(...batch);
-        
-        // Show progress for large exports
-        if (count > batchSize) {
-          toast.info(`Loading ${Math.min(i + batchSize, count)} of ${count} articles...`);
-        }
-      }
-
-      // Create export object with metadata
-      const exportData = {
-        backup_name: backupName,
-        backup_description: allRecords[0]?.backup_description,
-        exported_at: new Date().toISOString(),
-        total_articles: allRecords.length,
-        articles: allRecords.map(record => ({
-          article_id: record.article_id,
-          post_id: record.post_id,
-          title: record.title,
-          content: record.content,
-          excerpt: record.excerpt,
-          author: record.author,
-          image_url: record.image_url,
-          vertical_slug: record.vertical_slug,
-          published_at: record.published_at,
-          metadata: record.metadata
-        }))
-      };
-
       // Convert to JSON and create download
-      const json = JSON.stringify(exportData, null, 2);
+      const json = JSON.stringify(data, null, 2);
       const blob = new Blob([json], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       
@@ -564,7 +524,7 @@ const ArticleBackups = () => {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      toast.success(`Exported ${allRecords.length.toLocaleString()} articles to ${backupName}.json`);
+      toast.success(`Exported ${data.total_articles?.toLocaleString() || 0} articles to ${backupName}.json`);
     } catch (error) {
       console.error('Error exporting backup:', error);
       toast.error('Failed to export backup', {
