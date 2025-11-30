@@ -496,26 +496,68 @@ const ArticleBackups = () => {
 
   const handleExportBackup = async (backupName: string) => {
     try {
-      toast.info('Exporting backup... This may take a moment for large backups.');
+      toast.info('Exporting backup... This may take a while for large backups. Please keep this tab open.');
 
-      // Call edge function to handle the export server-side
-      const { data, error } = await supabase.functions.invoke('export-backup', {
-        body: { backupName }
-      });
+      // Get total count first using indexed backup_name filter
+      const { count, error: countError } = await supabase
+        .from('article_backups')
+        .select('*', { count: 'exact', head: true })
+        .eq('backup_name', backupName);
 
-      if (error) throw error;
+      if (countError) throw countError;
 
-      if (!data) {
-        toast.error('No data received from export');
+      if (!count || count === 0) {
+        toast.error('No backup data found');
         return;
       }
 
-      // Convert to JSON and create download
-      const json = JSON.stringify(data, null, 2);
+      const batchSize = 500; // smaller batches to avoid timeouts
+      const allRecords: any[] = [];
+
+      for (let from = 0; from < count; from += batchSize) {
+        const to = Math.min(from + batchSize - 1, count - 1);
+
+        const { data: batch, error } = await supabase
+          .from('article_backups')
+          .select('*')
+          .eq('backup_name', backupName)
+          .order('created_at', { ascending: true })
+          .range(from, to);
+
+        if (error) throw error;
+        if (batch && batch.length > 0) {
+          allRecords.push(...batch);
+        }
+      }
+
+      if (allRecords.length === 0) {
+        toast.error('No backup data found');
+        return;
+      }
+
+      const exportData = {
+        backup_name: backupName,
+        backup_description: allRecords[0]?.backup_description,
+        exported_at: new Date().toISOString(),
+        total_articles: allRecords.length,
+        articles: allRecords.map((record) => ({
+          article_id: record.article_id,
+          post_id: record.post_id,
+          title: record.title,
+          content: record.content,
+          excerpt: record.excerpt,
+          author: record.author,
+          image_url: record.image_url,
+          vertical_slug: record.vertical_slug,
+          published_at: record.published_at,
+          metadata: record.metadata,
+        })),
+      };
+
+      const json = JSON.stringify(exportData, null, 2);
       const blob = new Blob([json], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
-      
-      // Create download link
+
       const link = document.createElement('a');
       link.href = url;
       link.download = `${backupName}.json`;
@@ -524,11 +566,11 @@ const ArticleBackups = () => {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      toast.success(`Exported ${data.total_articles?.toLocaleString() || 0} articles to ${backupName}.json`);
+      toast.success(`Exported ${allRecords.length.toLocaleString()} articles to ${backupName}.json`);
     } catch (error) {
       console.error('Error exporting backup:', error);
       toast.error('Failed to export backup', {
-        description: error instanceof Error ? error.message : 'Unknown error'
+        description: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   };
