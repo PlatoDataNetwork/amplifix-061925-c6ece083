@@ -208,10 +208,7 @@ async function runBackgroundImport(
 
       console.log(`Page ${page} complete - Imported: ${importedCount}, Skipped: ${skippedCount}`);
 
-      if (articles.length < batchSize) {
-        break;
-      }
-
+      // Move to next page; loop will stop when the API returns 0 articles
       page++;
     }
 
