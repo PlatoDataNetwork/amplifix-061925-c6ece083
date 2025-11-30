@@ -249,7 +249,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const authHeader = req.headers.get("Authorization");
 
     if (!authHeader) {
@@ -259,28 +260,34 @@ Deno.serve(async (req: Request): Promise<Response> => {
       });
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey, {
+    const token = authHeader.replace("Bearer ", "");
+
+    // Use anon key + user token for auth / role checks
+    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: { persistSession: false },
       global: { headers: { Authorization: authHeader } },
     });
 
     const {
       data: { user },
       error: userError,
-    } = await supabase.auth.getUser();
+    } = await supabaseAuth.auth.getUser(token);
 
     if (userError || !user) {
+      console.error("Auth error in import-ar-vr-fast:", userError);
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
 
-    const { data: hasAdminRole } = await supabase.rpc("has_role", {
+    const { data: hasAdminRole, error: roleError } = await supabaseAuth.rpc("has_role", {
       _user_id: user.id,
       _role: "admin",
     });
 
-    if (!hasAdminRole) {
+    if (roleError || !hasAdminRole) {
+      console.error("Role check failed in import-ar-vr-fast:", roleError);
       return new Response(JSON.stringify({ error: "Admin access required" }), {
         status: 403,
         headers: { "Content-Type": "application/json", ...corsHeaders },
@@ -342,7 +349,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
     EdgeRuntime.waitUntil(
       runBackgroundImport(
         supabaseUrl,
-        supabaseKey,
+        supabaseServiceKey,
         jsonUrl || "https://platodata.ai/ar-vr/json/",
         importHistoryId,
         startedAt,
