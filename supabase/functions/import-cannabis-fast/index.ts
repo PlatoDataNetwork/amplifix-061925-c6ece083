@@ -303,8 +303,12 @@ Deno.serve(async (req: Request): Promise<Response> => {
       });
     }
 
-    const { jsonUrl, resumeImportId } = await req.json();
+    const body = await req.json();
+    const jsonUrl = body.jsonUrl || "https://platodata.ai/cannabis/json/";
+    const resumeImportId = body.resumeImportId;
     const startedAt = new Date().toISOString();
+
+    console.log(`Cannabis import - jsonUrl: ${jsonUrl}, resumeImportId: ${resumeImportId}`);
 
     // Create service role client for database operations
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
