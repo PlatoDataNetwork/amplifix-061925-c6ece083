@@ -179,7 +179,8 @@ Deno.serve(async (req) => {
                                urlLower.includes('osint');
             }
 
-            // Skip only if both content is correct AND external_url doesn't need clearing
+            // Check if content has correct source AND external_url doesn't need clearing
+            const hasSourceLine = /Source:/mi.test(article.content);
             const hasCorrectSource = /Source:\s*Plato Data Intelligence\.\s*$/mi.test(article.content) && 
                 !/<a[^>]*>.*?Plato.*?<\/a>/i.test(article.content) &&
                 !/Zephyrnet/i.test(article.content);
@@ -238,6 +239,12 @@ Deno.serve(async (req) => {
             const pattern6 = /<ul[^>]*>[\s\S]*?(?:osint\.platodata\.io|platodata\.ai)[\s\S]*?<\/ul>/gi;
             if (pattern6.test(updatedContent)) {
               updatedContent = updatedContent.replace(pattern6, '<p>Source: Plato Data Intelligence.</p>');
+              needsContentUpdate = true;
+            }
+
+            // Pattern 7: If no source line exists but external_url needs clearing, add source line
+            if (!hasSourceLine && shouldClearUrl) {
+              updatedContent = updatedContent.trim() + '\n\n<p>Source: Plato Data Intelligence.</p>';
               needsContentUpdate = true;
             }
 
