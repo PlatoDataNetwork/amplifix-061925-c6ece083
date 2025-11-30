@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowLeft, Loader2, Database, Trash2, RotateCcw, AlertCircle, Save, Pause, Play } from "lucide-react";
+import { ArrowLeft, Loader2, Database, Trash2, RotateCcw, AlertCircle, Save, Pause, Play, Download } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import {
@@ -494,6 +494,67 @@ const ArticleBackups = () => {
     }
   };
 
+  const handleExportBackup = async (backupName: string) => {
+    try {
+      toast.info('Exporting backup...');
+
+      // Fetch all backup records for this backup name
+      const { data: backupRecords, error } = await supabase
+        .from('article_backups')
+        .select('*')
+        .eq('backup_name', backupName)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+
+      if (!backupRecords || backupRecords.length === 0) {
+        toast.error('No backup data found');
+        return;
+      }
+
+      // Create export object with metadata
+      const exportData = {
+        backup_name: backupName,
+        backup_description: backupRecords[0]?.backup_description,
+        exported_at: new Date().toISOString(),
+        total_articles: backupRecords.length,
+        articles: backupRecords.map(record => ({
+          article_id: record.article_id,
+          post_id: record.post_id,
+          title: record.title,
+          content: record.content,
+          excerpt: record.excerpt,
+          author: record.author,
+          image_url: record.image_url,
+          vertical_slug: record.vertical_slug,
+          published_at: record.published_at,
+          metadata: record.metadata
+        }))
+      };
+
+      // Convert to JSON and create download
+      const json = JSON.stringify(exportData, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      // Create download link
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${backupName}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast.success(`Exported ${backupRecords.length.toLocaleString()} articles to ${backupName}.json`);
+    } catch (error) {
+      console.error('Error exporting backup:', error);
+      toast.error('Failed to export backup', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  };
+
   const handleDeleteAllExcept = async (keepBackupName: string) => {
     if (!confirm(
       `⚠️ CRITICAL WARNING: This will permanently delete ALL backups except "${keepBackupName}".\n\n` +
@@ -809,20 +870,6 @@ const ArticleBackups = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleRestore(backup.backup_name)}
-                          disabled={processingBackup === backup.backup_name || isDeleting}
-                          className="gap-2"
-                        >
-                          {processingBackup === backup.backup_name ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <RotateCcw className="h-4 w-4" />
-                          )}
-                          Restore
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
                           onClick={() => handleDeleteAllExcept(backup.backup_name)}
                           disabled={isDeleting || processingBackup !== null}
                           className="gap-2 text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-950"
@@ -834,6 +881,31 @@ const ArticleBackups = () => {
                             <Database className="h-4 w-4" />
                           )}
                           Keep Only This
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleExportBackup(backup.backup_name)}
+                          disabled={processingBackup === backup.backup_name || isDeleting}
+                          className="gap-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-950"
+                          title="Export this backup as a JSON file"
+                        >
+                          <Download className="h-4 w-4" />
+                          Export JSON
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleRestore(backup.backup_name)}
+                          disabled={processingBackup === backup.backup_name || isDeleting}
+                          className="gap-2"
+                        >
+                          {processingBackup === backup.backup_name ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <RotateCcw className="h-4 w-4" />
+                          )}
+                          Restore
                         </Button>
                         <Button
                           variant="outline"
