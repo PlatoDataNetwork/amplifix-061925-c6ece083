@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { BackupProgress } from "@/components/BackupProgress";
 
 interface Backup {
   backup_name: string;
@@ -32,6 +33,7 @@ const ArticleBackups = () => {
   const [isCreatingBackup, setIsCreatingBackup] = useState(false);
   const [selectedVertical, setSelectedVertical] = useState<string>("");
   const [verticals, setVerticals] = useState<Array<{ slug: string; count: number }>>([]);
+  const [activeBackupName, setActiveBackupName] = useState<string | null>(null);
 
   useEffect(() => {
     loadBackups();
@@ -238,13 +240,13 @@ const ArticleBackups = () => {
 
       if (error) throw error;
 
-      toast.success(`✅ Backup started successfully!`, {
-        description: `Backup name: ${backupName}. Refresh this page in a few minutes to see it.`,
-        duration: 10000
-      });
+      // Show live progress
+      setActiveBackupName(backupName);
       
-      // Refresh after a short delay
-      setTimeout(() => loadBackups(), 2000);
+      toast.success(`✅ Backup started successfully!`, {
+        description: `Backup name: ${backupName}. Watch the progress below.`,
+        duration: 5000
+      });
     } catch (error) {
       console.error("Error creating backup:", error);
       toast.error("Failed to start backup", {
@@ -349,6 +351,19 @@ const ArticleBackups = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Live Backup Progress */}
+          {activeBackupName && (
+            <div className="mb-6">
+              <BackupProgress 
+                backupName={activeBackupName} 
+                onComplete={() => {
+                  setActiveBackupName(null);
+                  loadBackups();
+                }}
+              />
+            </div>
+          )}
 
           {/* Info Alert */}
           <Alert className="mb-6">
