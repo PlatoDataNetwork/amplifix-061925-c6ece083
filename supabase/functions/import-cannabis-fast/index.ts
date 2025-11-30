@@ -1,3 +1,5 @@
+// Cannabis Fast Import with Realtime Progress Updates
+// Updated: 2025-11-30 - Fixed JSON response parsing
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const supabaseUrlEnv = Deno.env.get("SUPABASE_URL");
