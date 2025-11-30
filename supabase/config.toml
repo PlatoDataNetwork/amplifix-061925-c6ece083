@@ -114,3 +114,6 @@ verify_jwt = true
 [functions.test-cannabis-feed]
 verify_jwt = false
 
+[functions.import-cannabis-fast]
+verify_jwt = true
+
