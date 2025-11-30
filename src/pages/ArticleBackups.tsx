@@ -57,36 +57,45 @@ const ArticleBackups = () => {
 
   const loadBackups = async () => {
     try {
-      // Get distinct backup names with their metadata
-      const { data: distinctBackups, error: distinctError } = await supabase
+      // Get unique backup names directly with aggregation
+      const { data: backupData, error: backupError } = await supabase
         .from('article_backups')
         .select('backup_name, backup_description, created_at')
         .order('created_at', { ascending: false });
 
-      if (distinctError) {
-        console.error("Error loading backups:", distinctError);
-        throw distinctError;
+      if (backupError) {
+        console.error("Error loading backups:", backupError);
+        throw backupError;
       }
 
-      if (!distinctBackups || distinctBackups.length === 0) {
+      if (!backupData || backupData.length === 0) {
         setBackups([]);
         setIsLoading(false);
         return;
       }
 
-      // Group by backup_name to get unique backups
+      // Group by backup_name and get the earliest created_at
       const backupMap = new Map<string, { backup_description: string | null, created_at: string }>();
       
-      distinctBackups.forEach((item: any) => {
+      backupData.forEach((item: any) => {
         if (!backupMap.has(item.backup_name)) {
           backupMap.set(item.backup_name, {
             backup_description: item.backup_description,
             created_at: item.created_at
           });
+        } else {
+          // Keep the earliest created_at
+          const existing = backupMap.get(item.backup_name)!;
+          if (new Date(item.created_at) < new Date(existing.created_at)) {
+            backupMap.set(item.backup_name, {
+              backup_description: item.backup_description,
+              created_at: item.created_at
+            });
+          }
         }
       });
 
-      // Now get the count for each backup
+      // Get count for each unique backup
       const backupsWithCounts = await Promise.all(
         Array.from(backupMap.entries()).map(async ([backupName, metadata]) => {
           const { count, error: countError } = await supabase
@@ -108,7 +117,7 @@ const ArticleBackups = () => {
         })
       );
 
-      // Filter out any null results and sort by creation date
+      // Sort by earliest created_at for each backup
       const validBackups = backupsWithCounts
         .filter((b): b is Backup => b !== null)
         .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
