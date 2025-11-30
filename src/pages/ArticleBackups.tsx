@@ -498,7 +498,7 @@ const ArticleBackups = () => {
   const handleExportBackup = async (backupName: string) => {
     try {
       setExportProgress({ current: 0, total: 0 });
-      toast.info('Starting export...');
+      toast.info('Starting export... This may take a while for large backups.');
 
       // Get total count first using indexed backup_name filter
       const { count, error: countError } = await supabase
@@ -518,22 +518,31 @@ const ArticleBackups = () => {
 
       const batchSize = 500; // smaller batches to avoid timeouts
       const allRecords: any[] = [];
+      let lastId: string | null = null;
 
-      for (let from = 0; from < count; from += batchSize) {
-        const to = Math.min(from + batchSize - 1, count - 1);
-
-        const { data: batch, error } = await supabase
+      while (true) {
+        let query = supabase
           .from('article_backups')
           .select('*')
           .eq('backup_name', backupName)
-          .order('created_at', { ascending: true })
-          .range(from, to);
+          .order('id', { ascending: true })
+          .limit(batchSize);
+
+        if (lastId) {
+          query = query.gt('id', lastId);
+        }
+
+        const { data: batch, error } = await query;
 
         if (error) throw error;
-        if (batch && batch.length > 0) {
-          allRecords.push(...batch);
-          setExportProgress({ current: allRecords.length, total: count });
-        }
+        if (!batch || batch.length === 0) break;
+
+        allRecords.push(...batch);
+        lastId = batch[batch.length - 1].id;
+        setExportProgress({ current: allRecords.length, total: count });
+
+        // Yield to keep UI responsive
+        await new Promise((resolve) => setTimeout(resolve, 0));
       }
 
       if (allRecords.length === 0) {
