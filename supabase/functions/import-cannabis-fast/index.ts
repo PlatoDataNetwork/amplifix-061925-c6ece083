@@ -443,22 +443,45 @@ Deno.serve(async (req: Request): Promise<Response> => {
         })
         .eq("id", importHistoryId);
     } else {
-      // Check for the most recent import (any status) to find where we left off
-      console.log('Checking for most recent import to resume from...');
+      // Look across recent imports to find the highest lastProcessedPage
+      console.log('Scanning recent imports to find max lastProcessedPage...');
       
-      const { data: mostRecentImport } = await supabase
+      const { data: recentImports, error: recentError } = await supabase
         .from("import_history")
         .select('*')
         .eq('vertical_slug', 'cannabis')
         .order('started_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      
-      if (mostRecentImport) {
-        const metadata = mostRecentImport.metadata as any;
-        const lastPage = metadata?.lastProcessedPage || 0;
-        
-        // Cancel any other in-progress imports for this vertical
+        .limit(50);
+
+      if (recentError) {
+        console.error('Error loading recent imports, falling back to fresh start:', recentError);
+      }
+
+      let maxLastPage = 0;
+      let sourceImportId: string | null = null;
+      let sourceMetadata: any = null;
+
+      if (recentImports && recentImports.length > 0) {
+        for (const imp of recentImports) {
+          const m = imp.metadata as any;
+          const raw = m?.lastProcessedPage;
+          const lp =
+            typeof raw === 'number'
+              ? raw
+              : raw
+                ? parseInt(String(raw), 10) || 0
+                : 0;
+
+          if (lp > maxLastPage) {
+            maxLastPage = lp;
+            sourceImportId = imp.id;
+            sourceMetadata = m || {};
+          }
+        }
+      }
+
+      if (maxLastPage > 0 && sourceImportId) {
+        // Cancel any in-progress imports before starting the resume run
         await supabase
           .from("import_history")
           .update({
@@ -466,18 +489,18 @@ Deno.serve(async (req: Request): Promise<Response> => {
             cancelled: true,
             completed_at: new Date().toISOString(),
             metadata: {
-              ...metadata,
-              failureReason: 'Superseded by new import'
-            }
+              failureReason: 'Superseded by resume import from max lastProcessedPage',
+            },
           })
           .eq('vertical_slug', 'cannabis')
           .eq('status', 'in_progress');
-        
-        // Create a new import starting from where we left off
-        resumeFromPage = lastPage + 1;
-        
-        console.log(`Most recent import had lastProcessedPage: ${lastPage}, will resume from page ${resumeFromPage}`);
-        
+
+        resumeFromPage = maxLastPage + 1;
+
+        console.log(
+          `Resuming cannabis import from highest lastProcessedPage ${maxLastPage} (source import ${sourceImportId}), starting at page ${resumeFromPage}`,
+        );
+
         const { data: newImport, error: insertError } = await supabase
           .from("import_history")
           .insert({
@@ -485,11 +508,13 @@ Deno.serve(async (req: Request): Promise<Response> => {
             started_at: startedAt,
             status: "in_progress",
             imported_by: user.id,
-            metadata: { 
+            metadata: {
+              ...(sourceMetadata || {}),
               jsonUrl,
-              importType: 'resume',
+              importType: 'resume_from_max',
               resumedFromPage: resumeFromPage,
-              previousImportId: mostRecentImport.id
+              maxLastProcessedPage: maxLastPage,
+              sourceImportId,
             },
           })
           .select()
@@ -500,11 +525,15 @@ Deno.serve(async (req: Request): Promise<Response> => {
         }
 
         importHistoryId = newImport.id;
-        console.log(`New import created with ID: ${importHistoryId}, resuming from page ${resumeFromPage}`);
+        console.log(
+          `New resume import created with ID: ${importHistoryId}, will start from page ${resumeFromPage}`,
+        );
       } else {
-        // No previous import found - start fresh
-        console.log('No previous import found, creating NEW import (starting fresh from page 1)');
-        
+        // No usable lastProcessedPage found - start fresh
+        console.log(
+          'No previous lastProcessedPage found, creating NEW import (starting fresh from page 1)',
+        );
+
         const { data: newImport, error: insertError } = await supabase
           .from("import_history")
           .insert({
@@ -512,10 +541,10 @@ Deno.serve(async (req: Request): Promise<Response> => {
             started_at: startedAt,
             status: "in_progress",
             imported_by: user.id,
-            metadata: { 
+            metadata: {
               jsonUrl,
               importType: 'fresh',
-              startedFromPage: 1 
+              startedFromPage: 1,
             },
           })
           .select()
@@ -526,8 +555,10 @@ Deno.serve(async (req: Request): Promise<Response> => {
         }
 
         importHistoryId = newImport.id;
-        resumeFromPage = undefined; // Start from page 1
-        console.log(`New import created with ID: ${importHistoryId}, will start from page 1`);
+        resumeFromPage = undefined;
+        console.log(
+          `New import created with ID: ${importHistoryId}, will start from page 1`,
+        );
       }
     }
 
