@@ -1,6 +1,46 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 import { corsHeaders } from '../_shared/cors.ts';
 
+// Extract actual source URL from content before cleaning
+const extractSourceUrlFromContent = (content: string): string | null => {
+  if (!content) return null;
+
+  const priorityDomains = [
+    'reuters.com', 'bloomberg.com', 'cnbc.com', 'forbes.com',
+    'techcrunch.com', 'theverge.com', 'wired.com', 'cnet.com',
+    'businessinsider.com', 'wsj.com', 'nytimes.com', 'ft.com',
+    'marketwatch.com', 'seekingalpha.com', 'benzinga.com'
+  ];
+
+  const platoExcludeDomains = [
+    'platodata.ai', 'plato.network', 'platodata.network',
+    'zephyrnet.com', 'plato.ai', 'platoblockchain.net'
+  ];
+
+  // Find all URLs in content
+  const urlRegex = /https?:\/\/[^\s<>"]+/gi;
+  const urls = content.match(urlRegex) || [];
+
+  // Filter out Plato/internal URLs
+  const externalUrls = urls.filter(url => {
+    const lowerUrl = url.toLowerCase();
+    return !platoExcludeDomains.some(domain => lowerUrl.includes(domain));
+  });
+
+  if (externalUrls.length === 0) return null;
+
+  // Prioritize URLs from known news sources
+  for (const domain of priorityDomains) {
+    const priorityUrl = externalUrls.find(url => 
+      url.toLowerCase().includes(domain)
+    );
+    if (priorityUrl) return priorityUrl;
+  }
+
+  // Return first external URL found
+  return externalUrls[0] || null;
+};
+
 // Clean text by removing unwanted HTML and formatting
 const cleanText = (text?: string | null): string => {
   if (!text) return "";
@@ -380,25 +420,42 @@ Deno.serve(async (req) => {
             const articleNum = batchIdx * PARALLEL_BATCH_SIZE + idx + 1;
             try {
               console.log(`[${articleNum}/${articles.length}] Formatting article ${article.id}...`);
+              
+              // Extract source URL before cleaning (if not already set)
+              let sourceUrl = article.external_url;
+              if (!sourceUrl && article.content) {
+                sourceUrl = extractSourceUrlFromContent(article.content);
+                if (sourceUrl) {
+                  console.log(`Extracted source URL for article ${article.id}: ${sourceUrl}`);
+                }
+              }
+              
               const cleanedText = cleanText(article.content);
               // In fast mode, skip AI and use only fallback formatting
               const formattedContent = fastMode 
                 ? fallbackFormatting(cleanedText)
                 : await formatArticleWithAI(cleanedText, supabase, verticalSlug);
 
-              // Update article content and set ai_processed flag
+              // Update article content, source URL, and set ai_processed flag
               const currentMetadata = article.metadata || {};
+              const updateData: any = {
+                content: formattedContent,
+                updated_at: new Date().toISOString(),
+                metadata: {
+                  ...currentMetadata,
+                  ai_processed: true,
+                  ai_processed_at: new Date().toISOString()
+                }
+              };
+              
+              // Add source URL if extracted
+              if (sourceUrl) {
+                updateData.external_url = sourceUrl;
+              }
+              
               const { error: updateError } = await supabase
                 .from('articles')
-                .update({
-                  content: formattedContent,
-                  updated_at: new Date().toISOString(),
-                  metadata: {
-                    ...currentMetadata,
-                    ai_processed: true,
-                    ai_processed_at: new Date().toISOString()
-                  }
-                })
+                .update(updateData)
                 .eq('id', article.id);
 
               if (updateError) {
