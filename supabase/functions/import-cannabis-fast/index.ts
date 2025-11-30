@@ -47,6 +47,7 @@ async function runBackgroundImport(
   jsonUrl: string,
   importHistoryId: string,
   startedAt: string,
+  resumeFromPage?: number,
 ) {
   const supabase = createClient(supabaseUrl, supabaseKey);
   const channel = supabase.channel(`import-progress-cannabis`);
@@ -55,8 +56,27 @@ async function runBackgroundImport(
   let importedCount = 0;
   let skippedCount = 0;
   let errorCount = 0;
-  let page = 1;
+  let page = resumeFromPage || 1;
   const batchSize = 20;
+  
+  console.log(`Starting import from page ${page}${resumeFromPage ? ' (RESUMING)' : ' (NEW)'}`);
+  
+  // If resuming, load existing counts from import history
+  if (resumeFromPage) {
+    const { data: existingData } = await supabase
+      .from('import_history')
+      .select('total_processed, imported_count, skipped_count, error_count')
+      .eq('id', importHistoryId)
+      .single();
+    
+    if (existingData) {
+      totalProcessed = existingData.total_processed || 0;
+      importedCount = existingData.imported_count || 0;
+      skippedCount = existingData.skipped_count || 0;
+      errorCount = existingData.error_count || 0;
+      console.log(`Resuming with existing counts: ${importedCount} imported, ${skippedCount} skipped`);
+    }
+  }
 
   try {
     await channel.subscribe();
@@ -237,6 +257,10 @@ async function runBackgroundImport(
           imported_count: importedCount,
           skipped_count: skippedCount,
           error_count: errorCount,
+          metadata: {
+            jsonUrl,
+            lastProcessedPage: page,
+          },
         })
         .eq("id", importHistoryId);
 
@@ -382,6 +406,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     let importHistoryId: string;
+    let resumeFromPage: number | undefined = undefined;
 
     if (resumeImportId) {
       const { data: existingImport } = await supabase
@@ -400,6 +425,13 @@ Deno.serve(async (req: Request): Promise<Response> => {
           },
         );
       }
+
+      // Get the last processed page from metadata
+      const metadata = existingImport.metadata as any;
+      const lastPage = metadata?.lastProcessedPage || 0;
+      resumeFromPage = lastPage + 1; // Resume from next page
+      
+      console.log(`Resuming import from page ${resumeFromPage} (last processed: ${lastPage})`);
 
       importHistoryId = resumeImportId;
       await supabase
@@ -437,6 +469,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
         jsonUrl || "https://platodata.ai/cannabis/json/",
         importHistoryId,
         startedAt,
+        resumeFromPage,
       ),
     );
 
