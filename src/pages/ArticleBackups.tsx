@@ -95,72 +95,29 @@ const ArticleBackups = () => {
 
   const loadBackups = async () => {
     try {
-      // Get unique backup names directly with aggregation
-      const { data: backupData, error: backupError } = await supabase
-        .from('article_backups')
-        .select('backup_name, backup_description, created_at')
-        .order('created_at', { ascending: false });
+      // Use RPC to efficiently get backup summaries with counts
+      const { data, error } = await supabase.rpc('get_backup_summary');
 
-      if (backupError) {
-        console.error("Error loading backups:", backupError);
-        throw backupError;
+      if (error) {
+        console.error("Error loading backups:", error);
+        throw error;
       }
 
-      if (!backupData || backupData.length === 0) {
+      if (!data || data.length === 0) {
         setBackups([]);
         setIsLoading(false);
         return;
       }
 
-      // Group by backup_name and get the earliest created_at
-      const backupMap = new Map<string, { backup_description: string | null, created_at: string }>();
-      
-      backupData.forEach((item: any) => {
-        if (!backupMap.has(item.backup_name)) {
-          backupMap.set(item.backup_name, {
-            backup_description: item.backup_description,
-            created_at: item.created_at
-          });
-        } else {
-          // Keep the earliest created_at
-          const existing = backupMap.get(item.backup_name)!;
-          if (new Date(item.created_at) < new Date(existing.created_at)) {
-            backupMap.set(item.backup_name, {
-              backup_description: item.backup_description,
-              created_at: item.created_at
-            });
-          }
-        }
-      });
+      // Map the RPC results to our Backup interface
+      const backupsList = data.map((item: any) => ({
+        backup_name: item.backup_name,
+        backup_description: item.backup_description,
+        created_at: item.created_at,
+        article_count: item.article_count
+      }));
 
-      // Get count for each unique backup
-      const backupsWithCounts = await Promise.all(
-        Array.from(backupMap.entries()).map(async ([backupName, metadata]) => {
-          const { count, error: countError } = await supabase
-            .from('article_backups')
-            .select('*', { count: 'exact', head: true })
-            .eq('backup_name', backupName);
-
-          if (countError) {
-            console.error(`Error counting backup ${backupName}:`, countError);
-            return null;
-          }
-
-          return {
-            backup_name: backupName,
-            backup_description: metadata.backup_description,
-            created_at: metadata.created_at,
-            article_count: count || 0
-          };
-        })
-      );
-
-      // Sort by earliest created_at for each backup
-      const validBackups = backupsWithCounts
-        .filter((b): b is Backup => b !== null)
-        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-      setBackups(validBackups);
+      setBackups(backupsList);
     } catch (error) {
       console.error("Error loading backups:", error);
       toast.error("Failed to load backups");
