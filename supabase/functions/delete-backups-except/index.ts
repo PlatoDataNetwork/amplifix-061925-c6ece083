@@ -46,34 +46,52 @@ Deno.serve(async (req) => {
       console.error('Error deleting backup jobs:', jobsError);
     }
 
-    // Delete article backups in batches to avoid timeouts
-    const batchSize = 1000;
+    // Delete article backups in smaller batches with delays to avoid timeouts
+    const batchSize = 100; // Reduced from 1000 to avoid timeout
     let totalDeleted = 0;
     let hasMore = true;
+    let iteration = 0;
 
     while (hasMore) {
-      // Delete batch
-      const { data: deletedBatch, error: deleteError } = await supabase
+      iteration++;
+      
+      // First, fetch IDs to delete in this batch
+      const { data: toDelete, error: fetchError } = await supabase
+        .from('article_backups')
+        .select('id')
+        .neq('backup_name', keepBackupName)
+        .limit(batchSize);
+
+      if (fetchError) {
+        console.error('Error fetching backup IDs:', fetchError);
+        throw fetchError;
+      }
+
+      if (!toDelete || toDelete.length === 0) {
+        hasMore = false;
+        break;
+      }
+
+      // Delete by specific IDs
+      const idsToDelete = toDelete.map(item => item.id);
+      const { error: deleteError } = await supabase
         .from('article_backups')
         .delete()
-        .neq('backup_name', keepBackupName)
-        .limit(batchSize)
-        .select('id');
+        .in('id', idsToDelete);
 
       if (deleteError) {
         console.error('Error deleting backup batch:', deleteError);
         throw deleteError;
       }
 
-      if (!deletedBatch || deletedBatch.length === 0) {
+      totalDeleted += toDelete.length;
+      console.log(`Deleted ${totalDeleted} records so far (batch ${iteration})...`);
+      
+      // Add delay between batches to prevent overload (100ms)
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      if (toDelete.length < batchSize) {
         hasMore = false;
-      } else {
-        totalDeleted += deletedBatch.length;
-        console.log(`Deleted ${totalDeleted} records so far...`);
-        
-        if (deletedBatch.length < batchSize) {
-          hasMore = false;
-        }
       }
     }
 
