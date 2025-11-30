@@ -32,7 +32,16 @@ serve(async (req) => {
 
     if (fetchError) throw fetchError;
 
-    const articles = feedData || [];
+    // Handle different JSON structures
+    let articles = [];
+    if (Array.isArray(feedData)) {
+      articles = feedData;
+    } else if (feedData.posts && Array.isArray(feedData.posts)) {
+      articles = feedData.posts;
+    } else if (feedData.articles && Array.isArray(feedData.articles)) {
+      articles = feedData.articles;
+    }
+    
     console.log(`Fetched ${articles.length} autism articles`);
 
     let imported = 0;
