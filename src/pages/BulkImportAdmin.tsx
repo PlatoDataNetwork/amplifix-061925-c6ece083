@@ -303,6 +303,62 @@ export default function BulkImportAdmin() {
     return data;
   };
 
+  const handleFixStuck = async (slug: string) => {
+    try {
+      const history = await getLatestImportHistory(slug);
+      if (!history) {
+        toast.error('No import history found');
+        return;
+      }
+
+      // Mark the stuck import as failed
+      const { error } = await supabase
+        .from('import_history')
+        .update({
+          status: 'failed',
+          completed_at: new Date().toISOString(),
+          metadata: {
+            ...((history.metadata as any) || {}),
+            failureReason: 'Import stalled - manually fixed by admin',
+          },
+        })
+        .eq('id', history.id);
+
+      if (error) {
+        toast.error('Failed to mark import as failed', { description: error.message });
+        return;
+      }
+
+      // Clear the active tracking and reset state
+      setActiveImportSlug(null);
+      setVerticalStats(prev =>
+        prev.map(s =>
+          s.slug === slug
+            ? {
+                ...s,
+                importing: false,
+                importComplete: false,
+                importProgress: undefined,
+                duplicateOnlyMode: false,
+                stalled: false,
+                stalledPolls: 0,
+                lastProgressSignature: undefined,
+              }
+            : s,
+        ),
+      );
+
+      toast.success(`Fixed stuck import for ${slug}`, {
+        description: 'You can now start a fresh import',
+      });
+    } catch (error: any) {
+      console.error('Error fixing stuck import:', error);
+      toast.error('Failed to fix stuck import', {
+        description: error.message || 'Unknown error',
+      });
+    }
+  };
+
   const handleAIProcessing = async (slug: string) => {
     setVerticalStats(prev =>
       prev.map(s => s.slug === slug ? { ...s, aiProcessing: true } : s)
@@ -626,6 +682,15 @@ export default function BulkImportAdmin() {
                     size="sm"
                   >
                     Resume
+                  </Button>
+
+                  <Button
+                    onClick={() => handleFixStuck(stat.slug)}
+                    disabled={!stat.importing}
+                    variant="destructive"
+                    size="sm"
+                  >
+                    Fix Stuck
                   </Button>
 
                   <Button
