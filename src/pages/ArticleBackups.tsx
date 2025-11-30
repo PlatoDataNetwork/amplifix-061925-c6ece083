@@ -506,21 +506,44 @@ const ArticleBackups = () => {
     setIsDeleting(true);
 
     try {
-      toast.info('Deleting backups... This may take a few minutes.');
+      // Use the same direct table deletion that already works for single backups,
+      // but apply it to every other backup name instead of using the edge function
+      const backupsToDelete = backups.filter((b) => b.backup_name !== keepBackupName);
 
-      const { data, error } = await supabase.functions.invoke('delete-backups-except', {
-        body: { keepBackupName }
-      });
-
-      if (error) throw error;
-
-      if (data?.success) {
-        toast.success(
-          `Successfully deleted ${data.deletedCount.toLocaleString()} backup records. ` +
-          `Kept ${data.remainingCount.toLocaleString()} records from ${keepBackupName}.`
-        );
-        await loadBackups();
+      if (backupsToDelete.length === 0) {
+        toast.info('No other backups to delete.');
+        return;
       }
+
+      toast.info(`Deleting ${backupsToDelete.length} backup${backupsToDelete.length > 1 ? 's' : ''}... This may take a minute.`);
+
+      for (const backup of backupsToDelete) {
+        console.log('Deleting backup set', backup.backup_name);
+
+        // Delete backup records for this backup name
+        const { error: deleteBackupsError } = await (supabase as any)
+          .from('article_backups')
+          .delete()
+          .eq('backup_name', backup.backup_name);
+
+        if (deleteBackupsError) {
+          console.error('Error deleting backup records for', backup.backup_name, deleteBackupsError);
+          throw deleteBackupsError;
+        }
+
+        // Best-effort cleanup of associated backup_jobs records
+        const { error: deleteJobsError } = await supabase
+          .from('backup_jobs')
+          .delete()
+          .eq('backup_name', backup.backup_name);
+
+        if (deleteJobsError) {
+          console.warn('Error deleting backup job for', backup.backup_name, deleteJobsError);
+        }
+      }
+
+      toast.success(`Deleted all backups except "${keepBackupName}".`);
+      await loadBackups();
     } catch (error) {
       console.error('Error deleting backups:', error);
       toast.error('Failed to delete backups', {
