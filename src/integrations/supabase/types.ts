@@ -475,6 +475,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_backup_summary: {
+        Args: never
+        Returns: {
+          article_count: number
+          backup_description: string
+          backup_name: string
+          created_at: string
+        }[]
+      }
       get_vertical_article_counts: {
         Args: never
         Returns: {
