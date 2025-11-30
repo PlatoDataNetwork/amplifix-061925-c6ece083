@@ -199,7 +199,7 @@ export default function ImportAdminRefactored() {
       // Fetch the last 10 articles for this vertical
       const { data: articles } = await supabase
         .from('articles')
-        .select('title, post_id, published_at')
+        .select('id, title, post_id, published_at, vertical_slug')
         .eq('vertical_slug', testVertical)
         .order('created_at', { ascending: false })
         .limit(10);
@@ -414,7 +414,16 @@ export default function ImportAdminRefactored() {
                     <tbody>
                       {recentArticles.map((article, idx) => (
                         <tr key={idx} className="border-t">
-                          <td className="p-2 max-w-md truncate">{article.title}</td>
+                          <td className="p-2 max-w-md">
+                            <a
+                              href={`/intel/${article.vertical_slug}/${article.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline truncate block"
+                            >
+                              {article.title}
+                            </a>
+                          </td>
                           <td className="p-2">{article.post_id}</td>
                           <td className="p-2">
                             {new Date(article.published_at).toLocaleDateString()}
