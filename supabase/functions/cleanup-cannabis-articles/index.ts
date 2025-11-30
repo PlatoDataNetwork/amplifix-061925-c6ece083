@@ -119,18 +119,41 @@ Deno.serve(async (req) => {
         try {
           console.log('🧹 Starting cannabis articles cleanup...');
           
-          // Create cleanup tracking record
-          const { data: cleanupRecord } = await supabase
+          // Check for existing in-progress cleanup or create new one
+          let cleanupRecord;
+          const { data: existing } = await supabase
             .from('import_history')
-            .insert({
-              vertical_slug: 'cannabis',
-              status: 'in_progress',
-              metadata: { operation: 'cleanup' }
-            })
-            .select()
-            .single();
+            .select('*')
+            .eq('vertical_slug', 'cannabis')
+            .eq('metadata->>operation', 'cleanup')
+            .eq('status', 'in_progress')
+            .maybeSingle();
           
-          sendProgress({ type: 'status', message: 'Starting cleanup...' });
+          if (existing) {
+            console.log('📥 Resuming existing cleanup job:', existing.id);
+            cleanupRecord = existing;
+            sendProgress({ type: 'status', message: 'Resuming cleanup...' });
+          } else {
+            console.log('🆕 Creating new cleanup job');
+            const { data: newRecord } = await supabase
+              .from('import_history')
+              .insert({
+                vertical_slug: 'cannabis',
+                status: 'in_progress',
+                metadata: { 
+                  operation: 'cleanup',
+                  processedIds: [],
+                  lastBatchIndex: 0
+                }
+              })
+              .select()
+              .single();
+            cleanupRecord = newRecord;
+            sendProgress({ type: 'status', message: 'Starting cleanup...' });
+          }
+          
+          const processedIds = (cleanupRecord?.metadata as any)?.processedIds || [];
+          const lastBatchIndex = (cleanupRecord?.metadata as any)?.lastBatchIndex || 0;
 
           // Step 1: Delete garbage articles (empty content or title)
           console.log('Step 1: Deleting garbage articles...');
@@ -235,18 +258,36 @@ Deno.serve(async (req) => {
           console.log(`Found ${totalArticles} articles to reformat`);
           sendProgress({ type: 'reformat_start', total: totalArticles });
 
-          let reformatted = 0;
-          let skipped = 0;
+          let reformatted = (cleanupRecord?.metadata as any)?.reformatted || 0;
+          let skipped = (cleanupRecord?.metadata as any)?.skipped || 0;
           const batchSize = 20;
+          
+          // Start from the last batch that was being processed
+          const startIndex = lastBatchIndex * batchSize;
+          console.log(`📍 Resuming from batch ${lastBatchIndex}, article ${startIndex}/${totalArticles}`);
 
-          for (let i = 0; i < totalArticles; i += batchSize) {
+          for (let i = startIndex; i < totalArticles; i += batchSize) {
             if (await shouldCancel()) {
+              // Save progress before cancelling
+              await supabase
+                .from('import_history')
+                .update({ 
+                  metadata: { 
+                    operation: 'cleanup',
+                    processedIds,
+                    lastBatchIndex: Math.floor(i / batchSize),
+                    reformatted,
+                    skipped
+                  }
+                })
+                .eq('id', cleanupRecord?.id);
+              
               sendProgress({ type: 'cancelled', message: 'Cleanup cancelled by user' });
               controller.close();
               return;
             }
             
-            const batch = articles.slice(i, i + batchSize);
+            const batch = articles.slice(i, i + batchSize).filter(a => !processedIds.includes(a.id));
             
             await Promise.all(
               batch.map(async (article) => {
@@ -254,6 +295,7 @@ Deno.serve(async (req) => {
                 
                 if (cleanedText.length < 50) {
                   skipped++;
+                  processedIds.push(article.id);
                   return;
                 }
 
@@ -271,11 +313,29 @@ Deno.serve(async (req) => {
                 } else {
                   reformatted++;
                 }
+                
+                processedIds.push(article.id);
               })
             );
 
             const progress = i + batch.length;
-            console.log(`Batch complete. Progress: ${progress}/${totalArticles}. Reformatted: ${reformatted}, Skipped: ${skipped}`);
+            const currentBatchIndex = Math.floor(i / batchSize);
+            
+            // Save progress after each batch
+            await supabase
+              .from('import_history')
+              .update({ 
+                metadata: { 
+                  operation: 'cleanup',
+                  processedIds,
+                  lastBatchIndex: currentBatchIndex + 1,
+                  reformatted,
+                  skipped
+                }
+              })
+              .eq('id', cleanupRecord?.id);
+            
+            console.log(`Batch ${currentBatchIndex} complete. Progress: ${progress}/${totalArticles}. Reformatted: ${reformatted}, Skipped: ${skipped}`);
             sendProgress({
               type: 'reformat_progress',
               progress,
