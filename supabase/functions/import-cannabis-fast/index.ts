@@ -96,7 +96,29 @@ async function runBackgroundImport(
         break;
       }
 
-      const articles: CannabisArticle[] = await response.json();
+      const responseData = await response.json();
+      console.log(`Raw response type: ${Array.isArray(responseData) ? 'array' : typeof responseData}`);
+      
+      let articles: CannabisArticle[] = [];
+      
+      // Handle different response structures
+      if (Array.isArray(responseData)) {
+        articles = responseData;
+      } else if (responseData && typeof responseData === 'object') {
+        // Try different common field names
+        if (Array.isArray(responseData.articles)) {
+          articles = responseData.articles;
+        } else if (Array.isArray(responseData.posts)) {
+          articles = responseData.posts;
+        } else if (Array.isArray(responseData.data)) {
+          articles = responseData.data;
+        } else if (Array.isArray(responseData.items)) {
+          articles = responseData.items;
+        }
+      }
+      
+      console.log(`Parsed ${articles.length} articles from response`);
+
       if (!articles || articles.length === 0) {
         console.log(`No more articles found at page ${page}`);
         break;
