@@ -247,7 +247,7 @@ async function runBackgroundImport(
     await supabase
       .from("import_history")
       .update({
-        status: "completed",
+        status: "failed", // use allowed status value; cancellation is tracked via the "cancelled" boolean
         completed_at: completedAt,
         duration_ms: durationMs,
         total_processed: totalProcessed,
