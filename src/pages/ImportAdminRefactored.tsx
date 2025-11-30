@@ -7,11 +7,12 @@ import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { usePlatoVerticals } from '@/hooks/usePlatoVerticals';
 import { useVerticalOperations } from '@/hooks/useVerticalOperations';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Download, Zap, Database, Activity, TrendingUp, RefreshCw, StopCircle } from 'lucide-react';
+import { Loader2, Download, Zap, Database, Activity, TrendingUp, RefreshCw, StopCircle, TestTube } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 
 interface GlobalStats {
@@ -33,6 +34,8 @@ export default function ImportAdminRefactored() {
   const [activeJobs, setActiveJobs] = useState<number>(0);
   const [realtimeStatus, setRealtimeStatus] = useState<string>('Monitoring...');
   const [stoppingJobs, setStoppingJobs] = useState(false);
+  const [testVertical, setTestVertical] = useState<string>('');
+  const [testImporting, setTestImporting] = useState(false);
 
   // Timeout to prevent infinite loading
   useEffect(() => {
@@ -156,6 +159,41 @@ export default function ImportAdminRefactored() {
       });
     } finally {
       setStoppingJobs(false);
+    }
+  };
+
+  const testImportVertical = async (limit: number) => {
+    if (!testVertical) {
+      toast.error('Please select a vertical first');
+      return;
+    }
+
+    try {
+      setTestImporting(true);
+      toast.info(`Starting test import: ${limit} articles from ${testVertical}...`);
+
+      const { data, error } = await supabase.functions.invoke('import-articles', {
+        body: {
+          vertical: testVertical,
+          limit: limit,
+          offset: 0
+        }
+      });
+
+      if (error) throw error;
+
+      toast.success('Test import complete!', {
+        description: `Imported: ${data?.imported || 0}, Skipped: ${data?.skipped || 0}`,
+        duration: 5000
+      });
+
+      await loadGlobalStats();
+    } catch (error) {
+      toast.error('Test import failed', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setTestImporting(false);
     }
   };
 
@@ -284,6 +322,59 @@ export default function ImportAdminRefactored() {
             </Card>
           </div>
         </div>
+
+        {/* Test Import Section */}
+        <Card className="mb-6">
+          <CardHeader className="bg-muted/30">
+            <CardTitle className="flex items-center gap-2">
+              <TestTube className="h-5 w-5" />
+              Test Import Single Vertical
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6 space-y-4">
+            <div className="flex gap-4 items-end">
+              <div className="flex-1">
+                <label className="block text-sm font-medium mb-2">Select Vertical</label>
+                <Select value={testVertical} onValueChange={setTestVertical}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose a vertical..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {verticals.map((v) => (
+                      <SelectItem key={v.slug} value={v.slug}>
+                        {v.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button
+                onClick={() => testImportVertical(5)}
+                disabled={!testVertical || testImporting}
+                variant="outline"
+              >
+                {testImporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                Import 5 Test Articles
+              </Button>
+              <Button
+                onClick={() => testImportVertical(10)}
+                disabled={!testVertical || testImporting}
+                variant="outline"
+              >
+                {testImporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                Import 10 Test Articles
+              </Button>
+              <Button
+                onClick={() => testImportVertical(25)}
+                disabled={!testVertical || testImporting}
+                variant="outline"
+              >
+                {testImporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                Import 25 Test Articles
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Verticals List */}
         <div className="space-y-4">
