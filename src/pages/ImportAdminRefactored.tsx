@@ -597,10 +597,10 @@ function VerticalCard({ slug, name, defaultUrl, onStatsChange }: VerticalCardPro
             AI Process ({stats.remaining})
           </Button>
 
-          {stats.aiJobId && stats.aiJobStatus === 'in_progress' && (
+          {stats.aiJobId && (
             <Button
               onClick={handleResumeJob}
-              disabled={resuming || processing}
+              disabled={resuming || processing || stats.aiJobStatus !== 'in_progress'}
               variant="outline"
               className="flex-1 min-w-[180px]"
               title="Resume AI processing from where it stopped"
