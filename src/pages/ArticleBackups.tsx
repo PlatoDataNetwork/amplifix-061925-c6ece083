@@ -55,6 +55,7 @@ const ArticleBackups = () => {
   const [pausedJobs, setPausedJobs] = useState<BackupJob[]>([]);
   const [isPausing, setIsPausing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [exportProgress, setExportProgress] = useState<{ current: number; total: number } | null>(null);
 
   // Format bytes into human-readable size
   const formatBytes = (bytes: number): string => {
@@ -496,7 +497,8 @@ const ArticleBackups = () => {
 
   const handleExportBackup = async (backupName: string) => {
     try {
-      toast.info('Exporting backup... This may take a while for large backups. Please keep this tab open.');
+      setExportProgress({ current: 0, total: 0 });
+      toast.info('Starting export...');
 
       // Get total count first using indexed backup_name filter
       const { count, error: countError } = await supabase
@@ -508,8 +510,11 @@ const ArticleBackups = () => {
 
       if (!count || count === 0) {
         toast.error('No backup data found');
+        setExportProgress(null);
         return;
       }
+
+      setExportProgress({ current: 0, total: count });
 
       const batchSize = 500; // smaller batches to avoid timeouts
       const allRecords: any[] = [];
@@ -527,13 +532,17 @@ const ArticleBackups = () => {
         if (error) throw error;
         if (batch && batch.length > 0) {
           allRecords.push(...batch);
+          setExportProgress({ current: allRecords.length, total: count });
         }
       }
 
       if (allRecords.length === 0) {
         toast.error('No backup data found');
+        setExportProgress(null);
         return;
       }
+
+      toast.info('Creating JSON file...');
 
       const exportData = {
         backup_name: backupName,
@@ -567,11 +576,13 @@ const ArticleBackups = () => {
       URL.revokeObjectURL(url);
 
       toast.success(`Exported ${allRecords.length.toLocaleString()} articles to ${backupName}.json`);
+      setExportProgress(null);
     } catch (error) {
       console.error('Error exporting backup:', error);
       toast.error('Failed to export backup', {
         description: error instanceof Error ? error.message : 'Unknown error',
       });
+      setExportProgress(null);
     }
   };
 
@@ -906,12 +917,21 @@ const ArticleBackups = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => handleExportBackup(backup.backup_name)}
-                          disabled={processingBackup === backup.backup_name || isDeleting}
+                          disabled={processingBackup === backup.backup_name || isDeleting || exportProgress !== null}
                           className="gap-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-950"
                           title="Export this backup as a JSON file"
                         >
-                          <Download className="h-4 w-4" />
-                          Export JSON
+                          {exportProgress !== null ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              {exportProgress.current.toLocaleString()}/{exportProgress.total.toLocaleString()}
+                            </>
+                          ) : (
+                            <>
+                              <Download className="h-4 w-4" />
+                              Export JSON
+                            </>
+                          )}
                         </Button>
                         <Button
                           variant="outline"
