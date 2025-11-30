@@ -111,9 +111,10 @@ export const useVerticalOperations = (verticalSlug: string) => {
         importProgress = Math.round((totalProcessed / denominator) * 100);
       }
 
-      // AI job - only track actively in-progress jobs
+      // AI job - track in-progress jobs, or the most recent job if there are unprocessed articles
       let job: any = null;
 
+      // First try to get an in-progress job
       const { data: inProgressJob } = await supabase
         .from('ai_processing_jobs')
         .select('*')
@@ -125,6 +126,19 @@ export const useVerticalOperations = (verticalSlug: string) => {
 
       if (inProgressJob) {
         job = inProgressJob;
+      } else if ((total || 0) - (processed || 0) > 0) {
+        // If there are unprocessed articles but no in-progress job, get the most recent job
+        const { data: recentJob } = await supabase
+          .from('ai_processing_jobs')
+          .select('*')
+          .eq('vertical_slug', verticalSlug)
+          .order('started_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        
+        if (recentJob) {
+          job = recentJob;
+        }
       }
 
       let aiProgress = 0;
