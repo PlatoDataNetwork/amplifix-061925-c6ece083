@@ -200,12 +200,19 @@ const VerticalPage = () => {
             Stay updated with the latest {verticalInfo.name} news, insights, and intelligence.
           </p>
 
-          {/* Search Bar */}
-          <ArticleSearch 
-            verticalSlug={verticalInfo.slug}
-            onSearch={handleSearch}
-            onClear={handleClearSearch}
-          />
+          {/* Search Bar with View Toggle */}
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 max-w-4xl mx-auto">
+            <div className="flex-1 w-full">
+              <ArticleSearch 
+                verticalSlug={verticalInfo.slug}
+                onSearch={handleSearch}
+                onClear={handleClearSearch}
+              />
+            </div>
+            {!isLoading && displayPosts.length > 0 && (
+              <ViewToggle view={view} onViewChange={handleViewChange} />
+            )}
+          </div>
         </div>
 
         {/* Search Results Header */}
@@ -217,13 +224,6 @@ const VerticalPage = () => {
                 : `No results found for "${searchQuery}"`
               }
             </p>
-          </div>
-        )}
-
-        {/* View Toggle */}
-        {!isLoading && displayPosts.length > 0 && (
-          <div className="flex justify-end mb-8">
-            <ViewToggle view={view} onViewChange={handleViewChange} />
           </div>
         )}
 
