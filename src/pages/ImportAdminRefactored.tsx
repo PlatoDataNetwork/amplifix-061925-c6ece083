@@ -172,6 +172,11 @@ export default function ImportAdminRefactored() {
       setTestImporting(true);
       toast.info(`Starting test import: ${limit} articles from ${testVertical}...`);
 
+      const { count: beforeCount } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', testVertical);
+
       const { data, error } = await supabase.functions.invoke('import-articles', {
         body: {
           vertical: testVertical,
@@ -182,8 +187,13 @@ export default function ImportAdminRefactored() {
 
       if (error) throw error;
 
-      const imported = data?.insertedArticles ?? data?.processedArticles ?? 0;
-      const total = data?.totalArticles ?? 0;
+      const { count: afterCount } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true })
+        .eq('vertical_slug', testVertical);
+
+      const imported = (afterCount ?? 0) - (beforeCount ?? 0);
+      const total = afterCount ?? 0;
 
       toast.success('Test import complete!', {
         description: `Imported: ${imported} of ${total} articles`,
