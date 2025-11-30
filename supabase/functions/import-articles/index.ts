@@ -3,16 +3,56 @@ import { corsHeaders } from '../_shared/cors.ts'
 
 const BATCH_SIZE = 100;
 
+// Support multiple field naming conventions from different verticals
 interface PlatoDataArticle {
+  // ID fields (some use 'id', others use 'post_id')
+  id?: number;
+  post_id?: number;
+  
+  // Required fields
+  title: string;
+  content: string;
+  slug: string;
+  
+  // Date fields (some use 'date', others use 'published_at')
+  date?: string;
+  published_at?: string;
+  
+  // Optional fields
+  excerpt?: string;
+  author?: string;
+  source?: string;
+  categories?: string[];
+  
+  metadata?: {
+    sourceLink?: string[];
+    featuredImage?: string[];
+    [key: string]: any;
+  };
+}
+
+// Normalize article fields to standard format
+function normalizeArticle(article: PlatoDataArticle): {
   post_id: number;
   title: string;
   content: string;
   date: string;
   slug: string;
-  metadata?: {
-    sourceLink?: string[];
-    featuredImage?: string[];
-    [key: string]: any;
+  excerpt?: string;
+  author?: string;
+  source?: string;
+  metadata?: any;
+} {
+  return {
+    post_id: article.post_id || article.id || 0,
+    title: article.title,
+    content: article.content,
+    date: article.published_at || article.date || new Date().toISOString(),
+    slug: article.slug,
+    excerpt: article.excerpt,
+    author: article.author,
+    source: article.source,
+    metadata: article.metadata,
   };
 }
 
@@ -150,9 +190,17 @@ Deno.serve(async (req) => {
     // Handle both array and object responses
     let articles: PlatoDataArticle[] = Array.isArray(responseData) 
       ? responseData 
-      : responseData.articles || [];
+      : responseData.articles || responseData.posts || [];
 
     console.log(`Fetched ${articles.length} articles from API`);
+    
+    // Log field structure from first article for debugging
+    if (articles.length > 0) {
+      const sampleKeys = Object.keys(articles[0]);
+      console.log(`Article fields found: ${sampleKeys.join(', ')}`);
+      console.log(`Sample article ID field: ${articles[0].post_id || articles[0].id}`);
+      console.log(`Sample article date field: ${articles[0].published_at || articles[0].date}`);
+    }
 
     // Apply limit and offset if specified
     if (offset > 0) {
@@ -231,7 +279,10 @@ Deno.serve(async (req) => {
       console.log(`Processing batch ${batchNum}/${batchCount} (${batch.length} articles)`);
 
       // Transform articles to database format
-      const transformedArticles = batch.map(article => {
+      const transformedArticles = batch.map(rawArticle => {
+        // Normalize article fields to handle different naming conventions
+        const article = normalizeArticle(rawArticle);
+        
         // Calculate read time
         const wordCount = article.content?.split(/\s+/).length || 0;
         const readTime = Math.max(1, Math.ceil(wordCount / 200));
@@ -240,7 +291,7 @@ Deno.serve(async (req) => {
         const imageUrl = article.metadata?.featuredImage?.[0] || null;
 
         // Extract external URL - prioritize original source, not platodata.ai
-        let externalUrl = article.metadata?.sourceLink?.[0] || null;
+        let externalUrl = article.source || article.metadata?.sourceLink?.[0] || null;
         
         // If sourceLink is missing or is a platodata.ai URL, try to extract from content
         if (!externalUrl || externalUrl.includes('platodata.')) {
@@ -274,16 +325,18 @@ Deno.serve(async (req) => {
           }
         }
 
-        // Create excerpt from content
-        const plainContent = article.content?.replace(/<[^>]*>/g, '') || '';
-        const excerpt = plainContent.substring(0, 300).trim() || null;
+        // Create excerpt from content or use provided excerpt
+        const excerpt = article.excerpt || (() => {
+          const plainContent = article.content?.replace(/<[^>]*>/g, '') || '';
+          return plainContent.substring(0, 300).trim() || null;
+        })();
 
         return {
           post_id: article.post_id,
           title: article.title,
           excerpt,
           content: article.content,
-          author: 'PlatoData',
+          author: article.author || 'PlatoData',
           published_at: new Date(article.date).toISOString(),
           read_time: `${readTime} min read`,
           category: vertical === 'artificial-intelligence' ? 'AI' : vertical,

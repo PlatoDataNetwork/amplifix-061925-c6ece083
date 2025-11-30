@@ -6,15 +6,46 @@ const corsHeaders = {
 };
 
 interface PlatoDataArticle {
-  post_id: number;
+  // ID fields (some use 'id', others use 'post_id')
+  id?: number;
+  post_id?: number;
+  
+  // Required fields
   title: string;
-  content: string;
+  content?: string;
+  
+  // Date fields (some use 'date', others use 'published_at')
+  date?: string;
+  published_at?: string;
+  
+  // Optional fields
   excerpt?: string;
-  published_at: string;
   author?: string;
   image_url?: string;
   external_url?: string;
   tags?: string[];
+  slug?: string;
+  source?: string;
+  categories?: string[];
+}
+
+// Normalize article fields to check compatibility
+function normalizeArticle(article: any): {
+  hasId: boolean;
+  hasTitle: boolean;
+  hasContent: boolean;
+  hasDate: boolean;
+  mappedPostId: number | undefined;
+  mappedDate: string | undefined;
+} {
+  return {
+    hasId: !!(article.post_id || article.id),
+    hasTitle: !!article.title,
+    hasContent: !!article.content,
+    hasDate: !!(article.published_at || article.date),
+    mappedPostId: article.post_id || article.id,
+    mappedDate: article.published_at || article.date,
+  };
 }
 
 serve(async (req) => {
@@ -76,29 +107,27 @@ serve(async (req) => {
       totalArticles: articles.length,
       isArray: Array.isArray(articles),
       sampleArticle: articles[0],
-      structureCheck: {
-        hasPostId: articles[0]?.post_id !== undefined,
-        hasTitle: articles[0]?.title !== undefined,
-        hasContent: articles[0]?.content !== undefined,
-        hasPublishedAt: articles[0]?.published_at !== undefined,
-      },
+      structureCheck: normalizeArticle(articles[0] || {}),
       missingFields: [] as string[],
       validArticles: 0,
       invalidArticles: [] as any[],
     };
 
-    // Check all articles for required fields
+    // Check all articles for required fields using field mapping
     articles.forEach((article, index) => {
+      const normalized = normalizeArticle(article);
       const missing = [];
-      if (!article.post_id) missing.push('post_id');
-      if (!article.title) missing.push('title');
-      if (!article.published_at) missing.push('published_at');
+      
+      if (!normalized.hasId) missing.push('id/post_id');
+      if (!normalized.hasTitle) missing.push('title');
+      if (!normalized.hasDate) missing.push('date/published_at');
       
       if (missing.length > 0) {
         validation.invalidArticles.push({
           index,
           article: article,
           missingFields: missing,
+          normalized: normalized,
         });
       } else {
         validation.validArticles++;
@@ -113,10 +142,11 @@ serve(async (req) => {
       ...validation,
       metadata,
       allFieldsFound: allFields,
+      fieldMappingNote: "Import function now handles id→post_id and date→published_at mapping",
       status: validation.validArticles === articles.length ? 'PASS' : 'FAIL',
       message: validation.validArticles === articles.length 
-        ? 'All articles have required fields for import'
-        : `${validation.invalidArticles.length} articles are missing required fields`,
+        ? '✅ All articles are compatible with import (using field mapping)'
+        : `❌ ${validation.invalidArticles.length} articles are missing required fields`,
     }, null, 2), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
