@@ -400,7 +400,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const resumeImportId = body.resumeImportId;
     const startedAt = new Date().toISOString();
 
-    console.log(`Cannabis import - jsonUrl: ${jsonUrl}, resumeImportId: ${resumeImportId}`);
+    console.log(`Cannabis import - jsonUrl: ${jsonUrl}, resumeImportId: ${resumeImportId}, isResume: ${!!resumeImportId}`);
 
     // Create service role client for database operations
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -443,6 +443,31 @@ Deno.serve(async (req: Request): Promise<Response> => {
         })
         .eq("id", importHistoryId);
     } else {
+      console.log('Creating NEW import (starting fresh from page 1)');
+      
+      // First cancel any existing in-progress imports for this vertical to ensure clean state
+      const { data: existingInProgress } = await supabase
+        .from("import_history")
+        .select('id')
+        .eq('vertical_slug', 'cannabis')
+        .eq('status', 'in_progress');
+      
+      if (existingInProgress && existingInProgress.length > 0) {
+        console.log(`Found ${existingInProgress.length} existing in-progress imports, marking as cancelled`);
+        await supabase
+          .from("import_history")
+          .update({
+            status: 'failed',
+            cancelled: true,
+            completed_at: new Date().toISOString(),
+            metadata: {
+              failureReason: 'Superseded by new import'
+            }
+          })
+          .eq('vertical_slug', 'cannabis')
+          .eq('status', 'in_progress');
+      }
+      
       const { data: newImport, error: insertError } = await supabase
         .from("import_history")
         .insert({
@@ -450,7 +475,11 @@ Deno.serve(async (req: Request): Promise<Response> => {
           started_at: startedAt,
           status: "in_progress",
           imported_by: user.id,
-          metadata: { jsonUrl },
+          metadata: { 
+            jsonUrl,
+            importType: 'fresh',
+            startedFromPage: 1 
+          },
         })
         .select()
         .single();
@@ -460,6 +489,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
       }
 
       importHistoryId = newImport.id;
+      resumeFromPage = undefined; // Explicitly ensure we start from page 1
+      console.log(`New import created with ID: ${importHistoryId}, will start from page 1`);
     }
 
     EdgeRuntime.waitUntil(
