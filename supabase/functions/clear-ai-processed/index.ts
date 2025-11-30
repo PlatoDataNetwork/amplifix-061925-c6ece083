@@ -20,23 +20,10 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log(`🔄 Clearing ai_processed flag for ${verticalSlug}`);
+    console.log(`🔄 Clearing ai_processed flag for ${verticalSlug} (only articles missing source URLs)`);
 
-    // Count articles to be cleared
-    const { count: totalCount, error: countError } = await supabase
-      .from('articles')
-      .select('*', { count: 'exact', head: true })
-      .eq('vertical_slug', verticalSlug)
-      .eq('metadata->>ai_processed', 'true');
-
-    if (countError) {
-      throw countError;
-    }
-
-    console.log(`Found ${totalCount || 0} articles to clear`);
-
-    // Clear ai_processed flag by updating metadata
-    const { data: articles, error: fetchError } = await supabase
+    // First, get all articles to filter properly
+    const { data: allArticles, error: fetchError } = await supabase
       .from('articles')
       .select('id, metadata')
       .eq('vertical_slug', verticalSlug)
@@ -46,12 +33,37 @@ Deno.serve(async (req) => {
       throw fetchError;
     }
 
-    if (!articles || articles.length === 0) {
+    if (!allArticles || allArticles.length === 0) {
+      console.log('No ai_processed articles found');
       return new Response(
         JSON.stringify({ 
           success: true, 
           message: 'No articles found to clear',
           cleared: 0 
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Filter to only articles missing source_url or with empty source_url
+    const articles = allArticles.filter(article => {
+      const metadata = article.metadata || {};
+      const sourceUrl = metadata.source_url;
+      
+      // Only include if source_url is missing, null, or empty
+      return !sourceUrl || sourceUrl.trim() === '';
+    });
+
+    const totalCount = articles.length;
+    console.log(`Found ${totalCount} articles missing source URLs (out of ${allArticles.length} ai_processed articles)`);
+
+    if (articles.length === 0) {
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: 'All articles already have source URLs extracted',
+          cleared: 0,
+          alreadyProcessed: allArticles.length
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );

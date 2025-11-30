@@ -589,9 +589,10 @@ function VerticalCard({ slug, name, defaultUrl, onStatsChange }: VerticalCardPro
               disabled={processing || stats.loading}
               variant="outline"
               className="flex-1 min-w-[200px]"
+              title="Extract source URLs only from articles that don't have them yet"
             >
               <Zap className="mr-2 h-4 w-4" />
-              Reprocess & Extract Sources
+              Extract Missing Source URLs
             </Button>
           )}
 
