@@ -443,38 +443,67 @@ Deno.serve(async (req: Request): Promise<Response> => {
         })
         .eq("id", importHistoryId);
     } else {
-      // Check if there's an existing in-progress import that we should resume
-      console.log('Checking for existing in-progress imports...');
+      // Check for the most recent import (any status) to find where we left off
+      console.log('Checking for most recent import to resume from...');
       
-      const { data: existingInProgress } = await supabase
+      const { data: mostRecentImport } = await supabase
         .from("import_history")
         .select('*')
         .eq('vertical_slug', 'cannabis')
-        .eq('status', 'in_progress')
         .order('started_at', { ascending: false })
         .limit(1)
         .maybeSingle();
       
-      if (existingInProgress) {
-        // Found an existing import - resume it instead of starting new
-        const metadata = existingInProgress.metadata as any;
+      if (mostRecentImport) {
+        const metadata = mostRecentImport.metadata as any;
         const lastPage = metadata?.lastProcessedPage || 0;
-        resumeFromPage = lastPage + 1;
-        importHistoryId = existingInProgress.id;
         
-        console.log(`Found existing in-progress import ${importHistoryId}, resuming from page ${resumeFromPage} (last processed: ${lastPage})`);
-        
-        // Update the import to show it's being actively resumed
+        // Cancel any other in-progress imports for this vertical
         await supabase
           .from("import_history")
           .update({
-            started_at: startedAt, // Update start time to current
-            cancelled: false,
+            status: 'failed',
+            cancelled: true,
+            completed_at: new Date().toISOString(),
+            metadata: {
+              ...metadata,
+              failureReason: 'Superseded by new import'
+            }
           })
-          .eq('id', importHistoryId);
+          .eq('vertical_slug', 'cannabis')
+          .eq('status', 'in_progress');
+        
+        // Create a new import starting from where we left off
+        resumeFromPage = lastPage + 1;
+        
+        console.log(`Most recent import had lastProcessedPage: ${lastPage}, will resume from page ${resumeFromPage}`);
+        
+        const { data: newImport, error: insertError } = await supabase
+          .from("import_history")
+          .insert({
+            vertical_slug: "cannabis",
+            started_at: startedAt,
+            status: "in_progress",
+            imported_by: user.id,
+            metadata: { 
+              jsonUrl,
+              importType: 'resume',
+              resumedFromPage: resumeFromPage,
+              previousImportId: mostRecentImport.id
+            },
+          })
+          .select()
+          .single();
+
+        if (insertError || !newImport) {
+          throw new Error("Failed to create import history");
+        }
+
+        importHistoryId = newImport.id;
+        console.log(`New import created with ID: ${importHistoryId}, resuming from page ${resumeFromPage}`);
       } else {
-        // No existing import - create a new one
-        console.log('No existing import found, creating NEW import (starting fresh from page 1)');
+        // No previous import found - start fresh
+        console.log('No previous import found, creating NEW import (starting fresh from page 1)');
         
         const { data: newImport, error: insertError } = await supabase
           .from("import_history")
