@@ -31,6 +31,9 @@ interface VerticalStats {
   duplicateOnlyMode?: boolean;
   lastImportedCount?: number;
   noChangeCounter?: number;
+  stalled?: boolean;
+  stalledPolls?: number;
+  lastProgressSignature?: string;
 }
 
 interface GlobalStats {
@@ -95,39 +98,45 @@ export default function BulkImportAdmin() {
       setVerticalStats(prev =>
         prev.map(s => {
           if (s.slug !== activeImportSlug) return s;
-          
-          // Check if progress actually changed to avoid unnecessary updates
-          const hasProgressChanged = !s.importProgress ||
-            s.importProgress.totalProcessed !== data.total_processed ||
-            s.importProgress.importedCount !== data.imported_count ||
-            s.importProgress.skippedCount !== data.skipped_count ||
-            s.importProgress.errorCount !== data.error_count;
 
-          if (!hasProgressChanged && s.importing === (data.status === 'in_progress')) {
-            return s; // No changes, return same object
-          }
+          const isImporting = data.status === 'in_progress';
+          const isCompleted = data.status === 'completed';
 
-          // Detect if we're in "duplicate only" mode (no new imports for consecutive polls)
-          const lastImportedCount = s.lastImportedCount ?? data.imported_count;
-          const noChangeCounter = data.imported_count === lastImportedCount 
-            ? (s.noChangeCounter ?? 0) + 1 
-            : 0;
-          const duplicateOnlyMode = noChangeCounter >= 3; // After 3 polls (~9 seconds) with no new imports
+          const prevProgress = s.importProgress;
+          const prevSignature = s.lastProgressSignature ?? '';
+          const currentSignature = `${data.total_processed ?? 0}|${data.imported_count ?? 0}|${data.skipped_count ?? 0}|${data.error_count ?? 0}`;
+
+          const hasAnyProgress = currentSignature !== prevSignature;
+          const stalledPolls = hasAnyProgress ? 0 : (s.stalledPolls ?? 0) + 1;
+          const stalled = stalledPolls >= 5; // ~15 seconds with no progress
+
+          const previousImported = prevProgress?.importedCount ?? (data.imported_count ?? 0);
+          const previousTotal = prevProgress?.totalProcessed ?? (data.total_processed ?? 0);
+
+          const isDuplicateProgress =
+            (data.imported_count ?? 0) === previousImported &&
+            (data.total_processed ?? 0) > previousTotal;
+
+          const noChangeCounter = isDuplicateProgress ? (s.noChangeCounter ?? 0) + 1 : 0;
+          const duplicateOnlyMode = isDuplicateProgress && noChangeCounter >= 3;
 
           return {
             ...s,
-            importing: data.status === 'in_progress',
-            importComplete: data.status === 'completed',
+            importing: isImporting,
+            importComplete: isCompleted,
             importProgress: {
-              totalProcessed: data.total_processed,
-              importedCount: data.imported_count,
-              skippedCount: data.skipped_count,
-              errorCount: data.error_count,
-              currentPage: Math.max(1, Math.ceil(data.total_processed / 20)),
+              totalProcessed: data.total_processed ?? 0,
+              importedCount: data.imported_count ?? 0,
+              skippedCount: data.skipped_count ?? 0,
+              errorCount: data.error_count ?? 0,
+              currentPage: Math.max(1, Math.ceil((data.total_processed ?? 0) / 20)),
             },
             duplicateOnlyMode,
-            lastImportedCount: data.imported_count,
+            lastImportedCount: data.imported_count ?? 0,
             noChangeCounter,
+            stalled,
+            stalledPolls,
+            lastProgressSignature: currentSignature,
           };
         }),
       );
@@ -213,7 +222,22 @@ export default function BulkImportAdmin() {
 
   const handleImport = async (slug: string, resumeImportId?: string) => {
     setVerticalStats(prev =>
-      prev.map(s => s.slug === slug ? { ...s, importing: true } : s)
+      prev.map(s =>
+        s.slug === slug
+          ? {
+              ...s,
+              importing: true,
+              importComplete: false,
+              importProgress: undefined,
+              duplicateOnlyMode: false,
+              lastImportedCount: 0,
+              noChangeCounter: 0,
+              stalled: false,
+              stalledPolls: 0,
+              lastProgressSignature: undefined,
+            }
+          : s,
+      ),
     );
 
     // Track this slug as the active import for realtime polling
@@ -485,17 +509,34 @@ export default function BulkImportAdmin() {
                       <div className="flex items-center gap-2">
                         <span className="text-muted-foreground">Page {stat.importProgress.currentPage}</span>
                         {stat.importing && (
-                          <Loader2 className={`h-3 w-3 animate-spin ${stat.duplicateOnlyMode ? 'text-muted-foreground/50' : 'text-primary'}`} />
+                          <Loader2
+                            className={`h-3 w-3 ${stat.stalled
+                              ? 'text-destructive animate-pulse'
+                              : stat.duplicateOnlyMode
+                                ? 'text-muted-foreground/50 animate-spin'
+                                : 'text-primary animate-spin'
+                            }`}
+                          />
                         )}
                       </div>
                     </div>
                     
                     {/* Duplicate-only mode alert */}
-                    {stat.duplicateOnlyMode && stat.importing && (
+                    {stat.duplicateOnlyMode && stat.importing && !stat.stalled && (
                       <div className="flex items-center gap-2 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded text-xs">
                         <AlertCircle className="h-3 w-3 text-yellow-600 flex-shrink-0" />
                         <span className="text-yellow-600 font-medium">
                           No new articles found - only processing duplicates
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Stalled import alert */}
+                    {stat.stalled && stat.importing && (
+                      <div className="flex items-center gap-2 p-2 bg-destructive/10 border border-destructive/20 rounded text-xs">
+                        <AlertCircle className="h-3 w-3 text-destructive flex-shrink-0" />
+                        <span className="text-destructive font-medium">
+                          No progress detected – import may be stalled
                         </span>
                       </div>
                     )}
