@@ -200,7 +200,7 @@ const ArticleBackups = () => {
     if (!confirm(
       `Create a ${isVerticalBackup ? 'vertical-specific' : 'full'} backup of ${backupType} articles?\n\n` +
       "This will save the current state of " + (isVerticalBackup ? `all ${verticalSlug} articles` : "all articles in the database") + ".\n" +
-      "This may take several minutes for large datasets."
+      "This will run in the background. You can check progress by refreshing the page."
     )) {
       return;
     }
@@ -208,118 +208,37 @@ const ArticleBackups = () => {
     setIsCreatingBackup(true);
 
     try {
-      // Build query based on whether it's a vertical-specific backup
-      let query = supabase
-        .from('articles')
-        .select('*', { count: 'exact', head: true });
-      
-      if (isVerticalBackup) {
-        query = query.eq('vertical_slug', verticalSlug);
-      }
-
-      // First, get the total count
-      const { count: totalCount, error: countError } = await query;
-
-      if (countError) throw countError;
-
-      if (!totalCount || totalCount === 0) {
-        toast.error(`No ${isVerticalBackup ? verticalSlug : ''} articles found to backup`);
-        setIsCreatingBackup(false);
-        return;
-      }
-
-      toast.info(`Starting backup of ${totalCount.toLocaleString()} ${isVerticalBackup ? verticalSlug : ''} articles...`, {
-        duration: 5000
-      });
-
-      // Fetch all articles in batches (Supabase default limit is 1000)
-      const batchSize = 1000;
-      let allArticles: any[] = [];
-      let fetchedCount = 0;
-
-      for (let offset = 0; offset < totalCount; offset += batchSize) {
-        let fetchQuery = supabase
-          .from('articles')
-          .select('*')
-          .range(offset, offset + batchSize - 1);
-        
-        if (isVerticalBackup) {
-          fetchQuery = fetchQuery.eq('vertical_slug', verticalSlug);
-        }
-
-        const { data: batch, error: fetchError } = await fetchQuery;
-
-        if (fetchError) throw fetchError;
-
-        if (batch) {
-          allArticles = allArticles.concat(batch);
-          fetchedCount += batch.length;
-          
-          toast.info(`Fetching articles: ${fetchedCount.toLocaleString()} / ${totalCount.toLocaleString()}`, {
-            duration: 1000,
-            id: 'fetch-progress'
-          });
-        }
-      }
-
-      toast.success(`Fetched ${allArticles.length.toLocaleString()} articles. Starting backup...`);
-
-      // Create backup name with timestamp
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const backupName = isVerticalBackup 
         ? `${verticalSlug}-backup-${timestamp}`
         : `full-backup-${timestamp}`;
       const backupDescription = isVerticalBackup
-        ? `${verticalSlug.toUpperCase()} vertical backup of ${allArticles.length.toLocaleString()} articles created on ${new Date().toLocaleString()}`
-        : `Full backup of ${allArticles.length.toLocaleString()} articles created on ${new Date().toLocaleString()}`;
+        ? `${verticalSlug.toUpperCase()} vertical backup created on ${new Date().toLocaleString()}`
+        : `Full backup created on ${new Date().toLocaleString()}`;
 
-      // Prepare backup records
-      const backups = allArticles.map(article => ({
-        article_id: article.id,
-        title: article.title,
-        content: article.content,
-        excerpt: article.excerpt,
-        author: article.author,
-        published_at: article.published_at,
-        image_url: article.image_url,
-        vertical_slug: article.vertical_slug,
-        post_id: article.post_id,
-        metadata: article.metadata,
-        backup_name: backupName,
-        backup_description: backupDescription,
-      }));
+      toast.info(`Starting backup process...`);
 
-      // Insert in chunks to avoid timeout
-      const insertChunkSize = 1000;
-      let insertedCount = 0;
-      
-      for (let i = 0; i < backups.length; i += insertChunkSize) {
-        const chunk = backups.slice(i, i + insertChunkSize);
-        const { error: insertError } = await supabase
-          .from('article_backups')
-          .insert(chunk);
-
-        if (insertError) {
-          console.error("Insert error at chunk", i, insertError);
-          throw insertError;
+      // Use the edge function that handles large backups properly
+      const { data, error } = await supabase.functions.invoke('backup-articles', {
+        body: { 
+          backupName,
+          backupDescription,
+          verticalSlug: isVerticalBackup ? verticalSlug : undefined
         }
+      });
 
-        insertedCount += chunk.length;
-        toast.info(`Backing up: ${insertedCount.toLocaleString()} / ${backups.length.toLocaleString()}`, {
-          duration: 1000,
-          id: 'insert-progress'
-        });
-      }
+      if (error) throw error;
 
-      toast.success(`✅ Successfully backed up ${allArticles.length.toLocaleString()} ${isVerticalBackup ? verticalSlug : ''} articles!`, {
-        description: `Backup: ${backupName}`,
+      toast.success(`✅ Backup started successfully!`, {
+        description: `Backup name: ${backupName}. Refresh this page in a few minutes to see it.`,
         duration: 10000
       });
       
-      await loadBackups(); // Refresh the list
+      // Refresh after a short delay
+      setTimeout(() => loadBackups(), 2000);
     } catch (error) {
       console.error("Error creating backup:", error);
-      toast.error("Failed to create backup", {
+      toast.error("Failed to start backup", {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
     } finally {
