@@ -332,6 +332,45 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
             )}
           </Button>
 
+          {/* Reprocess with Source Extraction - Cannabis specific */}
+          {verticalSlug === 'cannabis' && stats.totalArticles > 0 && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  disabled={processing}
+                  variant="secondary"
+                  className="w-full"
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Reprocess & Extract Sources ({stats.totalArticles.toLocaleString()})
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reprocess with Source Extraction?</AlertDialogTitle>
+                  <AlertDialogDescription className="space-y-2">
+                    <p>This will:</p>
+                    <ul className="list-disc list-inside space-y-1 text-sm">
+                      <li>Clear AI processing flags for ALL {stats.totalArticles.toLocaleString()} Cannabis articles</li>
+                      <li>Reprocess them with the new source extraction feature</li>
+                      <li>Extract and store actual source URLs (not Plato links)</li>
+                      <li>Re-format content and update tags</li>
+                    </ul>
+                    <p className="font-semibold text-blue-600 dark:text-blue-400 mt-3">
+                      Use this to add source URLs to articles that were processed before this feature was added.
+                    </p>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => reprocessWithSourceExtraction(fastMode, skipTags)}>
+                    Reprocess {fastMode && '(Fast)'}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+
           {stats.aiProcessed > 0 && (
             <>
               <AlertDialog>
