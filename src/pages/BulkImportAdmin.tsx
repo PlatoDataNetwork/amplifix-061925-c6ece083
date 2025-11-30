@@ -565,19 +565,32 @@ export default function BulkImportAdmin() {
                     <div className="flex justify-between text-sm">
                       <span className="font-medium">Import Progress</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">Page {stat.importProgress.currentPage}</span>
+                        <span className="text-muted-foreground">
+                          Page {stat.importProgress.currentPage}
+                          {stat.importing && (
+                            <span className="ml-1 inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse" title="Live updates active" />
+                          )}
+                        </span>
                         {stat.importing && (
                           <Loader2
                             className={`h-3 w-3 ${stat.stalled
                               ? 'text-destructive animate-pulse'
                               : stat.duplicateOnlyMode
-                                ? 'text-muted-foreground/50 animate-spin'
+                                ? 'text-blue-600 animate-spin'
                                 : 'text-primary animate-spin'
                             }`}
                           />
                         )}
                       </div>
                     </div>
+                    
+                    {/* Live update timestamp */}
+                    {stat.importing && (
+                      <div className="text-[10px] text-muted-foreground/70 italic flex items-center gap-1">
+                        <span className="inline-block w-1 h-1 bg-green-500 rounded-full animate-pulse" />
+                        Live • Updates every 3s • {new Date().toLocaleTimeString()}
+                      </div>
+                    )}
                     
                     {/* Duplicate-only mode alert */}
                     {stat.duplicateOnlyMode && stat.importing && !stat.stalled && (
@@ -602,19 +615,19 @@ export default function BulkImportAdmin() {
                     <div className="grid grid-cols-4 gap-2 text-xs">
                       <div>
                         <span className="text-muted-foreground">Processed:</span>
-                        <p className="font-semibold">{stat.importProgress.totalProcessed.toLocaleString()}</p>
+                        <p className="font-semibold tabular-nums">{stat.importProgress.totalProcessed.toLocaleString()}</p>
                       </div>
                       <div>
                         <span className="text-green-600">Imported:</span>
-                        <p className="font-semibold text-green-600">{stat.importProgress.importedCount.toLocaleString()}</p>
+                        <p className="font-semibold text-green-600 tabular-nums">{stat.importProgress.importedCount.toLocaleString()}</p>
                       </div>
                       <div>
                         <span className="text-yellow-600">Skipped:</span>
-                        <p className="font-semibold text-yellow-600">{stat.importProgress.skippedCount.toLocaleString()}</p>
+                        <p className="font-semibold text-yellow-600 tabular-nums">{stat.importProgress.skippedCount.toLocaleString()}</p>
                       </div>
                       <div>
                         <span className="text-red-600">Errors:</span>
-                        <p className="font-semibold text-red-600">{stat.importProgress.errorCount.toLocaleString()}</p>
+                        <p className="font-semibold text-red-600 tabular-nums">{stat.importProgress.errorCount.toLocaleString()}</p>
                       </div>
                     </div>
                   </div>
