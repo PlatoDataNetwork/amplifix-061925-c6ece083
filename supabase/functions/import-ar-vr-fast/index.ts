@@ -297,6 +297,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const { jsonUrl, resumeImportId } = await req.json();
     const startedAt = new Date().toISOString();
 
+    // Create service role client for database operations
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
     let importHistoryId: string;
 
     if (resumeImportId) {
