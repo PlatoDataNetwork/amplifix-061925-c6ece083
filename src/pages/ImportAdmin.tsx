@@ -1946,11 +1946,24 @@ const ImportAdmin = () => {
                       setImporting('cannabis-test');
                       setTestingImport(true);
                       try {
+                        // Check authentication first
+                        const { data: { session } } = await supabase.auth.getSession();
+                        if (!session) {
+                          toast.error('Authentication required', {
+                            description: 'Please sign in to test imports'
+                          });
+                          setImporting(null);
+                          setTestingImport(false);
+                          return;
+                        }
+
                         const startCount = metrics['cannabis'] || 0;
                         
                         toast.info('Testing Cannabis import with 10 articles...', {
                           description: 'This will test the new field mapping (id→post_id, date→published_at)'
                         });
+                        
+                        console.log('Starting Cannabis import test...');
                         
                         const { data, error } = await supabase.functions.invoke('import-articles', {
                           body: { 
@@ -1960,7 +1973,12 @@ const ImportAdmin = () => {
                           }
                         });
 
-                        if (error) throw error;
+                        console.log('Import response:', data, error);
+
+                        if (error) {
+                          console.error('Import error:', error);
+                          throw error;
+                        }
 
                         // Fetch the recently imported articles
                         const { data: recentArticles } = await supabase
@@ -1997,7 +2015,8 @@ const ImportAdmin = () => {
                       } catch (error) {
                         console.error('Cannabis test error:', error);
                         toast.error('Failed to test Cannabis import', {
-                          description: error instanceof Error ? error.message : 'Unknown error'
+                          description: error instanceof Error ? error.message : 'Unknown error',
+                          duration: 5000
                         });
                       } finally {
                         setImporting(null);
