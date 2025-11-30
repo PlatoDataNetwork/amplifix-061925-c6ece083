@@ -37,6 +37,20 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
     reprocessWithSourceExtraction
   } = useVerticalOperations(verticalSlug);
   
+  const cancelImport = async () => {
+    const { error } = await supabase
+      .from('import_history')
+      .update({ cancelled: true, status: 'cancelled', completed_at: new Date().toISOString() })
+      .eq('vertical_slug', verticalSlug)
+      .eq('status', 'in_progress');
+    
+    if (error) {
+      console.error('Error cancelling import:', error);
+    } else {
+      loadStats();
+    }
+  };
+  
   const { resumeJob, resuming } = useResumeAIJob();
   const [fastMode, setFastMode] = useState(verticalSlug === 'cannabis');
   const [skipTags, setSkipTags] = useState(verticalSlug === 'cannabis');
@@ -203,24 +217,35 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
                 disabled={processing}
                 className="flex-1 h-12 text-base"
               />
-              <Button
-                onClick={startFastImport}
-                disabled={processing || !jsonUrl.trim()}
-                size="lg"
-                className="min-w-[140px] h-12"
-              >
-                {processing ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Importing...
-                  </>
-                ) : (
-                  <>
-                    <Download className="mr-2 h-5 w-5" />
-                    Import
-                  </>
-                )}
-              </Button>
+              {stats.importJobStatus === 'in_progress' ? (
+                <Button
+                  onClick={cancelImport}
+                  size="lg"
+                  variant="destructive"
+                  className="min-w-[140px] h-12"
+                >
+                  Stop Import
+                </Button>
+              ) : (
+                <Button
+                  onClick={startFastImport}
+                  disabled={processing || !jsonUrl.trim()}
+                  size="lg"
+                  className="min-w-[140px] h-12"
+                >
+                  {processing ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Importing...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="mr-2 h-5 w-5" />
+                      Import
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
             {stats.importJobStatus && (
               <div className="space-y-2 rounded-lg border bg-background p-3">
