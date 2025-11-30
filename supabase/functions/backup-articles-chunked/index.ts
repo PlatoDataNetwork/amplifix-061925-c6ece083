@@ -12,7 +12,7 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { backupName, backupDescription, chunkIndex, chunkSize = 5000, verticalSlug } = await req.json();
+    const { backupName, backupDescription, chunkIndex, chunkSize = 5000, verticalSlug, jobId } = await req.json();
 
     if (!backupName || chunkIndex === undefined) {
       return new Response(
@@ -104,6 +104,30 @@ Deno.serve(async (req) => {
     }
 
     console.log(`Successfully backed up ${totalInserted} articles for chunk ${chunkIndex}`);
+
+    // Update job state if jobId provided
+    if (jobId) {
+      const { data: job } = await supabase
+        .from('backup_jobs')
+        .select('completed_chunks, processed_articles')
+        .eq('id', jobId)
+        .single();
+
+      if (job) {
+        const newCompletedChunks = [...(job.completed_chunks || []), chunkIndex];
+        const newProcessedArticles = (job.processed_articles || 0) + totalInserted;
+
+        await supabase
+          .from('backup_jobs')
+          .update({
+            completed_chunks: newCompletedChunks,
+            processed_articles: newProcessedArticles,
+            current_chunk: chunkIndex + 1,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', jobId);
+      }
+    }
 
     return new Response(
       JSON.stringify({

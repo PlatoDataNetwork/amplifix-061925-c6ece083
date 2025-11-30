@@ -230,6 +230,60 @@ export type Database = {
         }
         Relationships: []
       }
+      backup_jobs: {
+        Row: {
+          backup_description: string | null
+          backup_name: string
+          completed_at: string | null
+          completed_chunks: number[] | null
+          created_at: string | null
+          created_by: string | null
+          current_chunk: number | null
+          id: string
+          paused_at: string | null
+          processed_articles: number | null
+          status: string
+          total_articles: number
+          total_chunks: number
+          updated_at: string | null
+          vertical_slug: string | null
+        }
+        Insert: {
+          backup_description?: string | null
+          backup_name: string
+          completed_at?: string | null
+          completed_chunks?: number[] | null
+          created_at?: string | null
+          created_by?: string | null
+          current_chunk?: number | null
+          id?: string
+          paused_at?: string | null
+          processed_articles?: number | null
+          status?: string
+          total_articles: number
+          total_chunks: number
+          updated_at?: string | null
+          vertical_slug?: string | null
+        }
+        Update: {
+          backup_description?: string | null
+          backup_name?: string
+          completed_at?: string | null
+          completed_chunks?: number[] | null
+          created_at?: string | null
+          created_by?: string | null
+          current_chunk?: number | null
+          id?: string
+          paused_at?: string | null
+          processed_articles?: number | null
+          status?: string
+          total_articles?: number
+          total_chunks?: number
+          updated_at?: string | null
+          vertical_slug?: string | null
+        }
+        Relationships: []
+      }
       import_history: {
         Row: {
           cancelled: boolean
