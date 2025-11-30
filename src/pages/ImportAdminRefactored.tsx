@@ -7,11 +7,12 @@ import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { usePlatoVerticals } from '@/hooks/usePlatoVerticals';
 import { useVerticalOperations } from '@/hooks/useVerticalOperations';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Download, Zap, Database, Activity, TrendingUp, RefreshCw } from 'lucide-react';
+import { Loader2, Download, Zap, Database, Activity, TrendingUp, RefreshCw, StopCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
+import { toast } from "sonner";
 
 interface GlobalStats {
   totalArticles: number;
@@ -31,6 +32,7 @@ export default function ImportAdminRefactored() {
   });
   const [activeJobs, setActiveJobs] = useState<number>(0);
   const [realtimeStatus, setRealtimeStatus] = useState<string>('Monitoring...');
+  const [stoppingJobs, setStoppingJobs] = useState(false);
 
   // Timeout to prevent infinite loading
   useEffect(() => {
@@ -133,6 +135,30 @@ export default function ImportAdminRefactored() {
     return () => clearInterval(interval);
   }, []);
 
+  const stopAllAIProcessing = async () => {
+    try {
+      setStoppingJobs(true);
+      toast.info('Stopping all AI processing jobs...');
+
+      const { data, error } = await supabase.functions.invoke('stop-all-ai-processing');
+
+      if (error) throw error;
+
+      toast.success('All AI processing stopped!', {
+        description: `Stopped ${data?.stoppedJobs || 0} jobs`,
+        duration: 5000
+      });
+
+      await loadGlobalStats();
+    } catch (error) {
+      toast.error('Failed to stop AI processing', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setStoppingJobs(false);
+    }
+  };
+
   if ((loading || verticalsLoading) && !loadingTimeout) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -174,13 +200,35 @@ export default function ImportAdminRefactored() {
                 Fast import articles and process them with AI
               </p>
             </div>
-            <Badge 
-              variant={realtimeStatus === 'Monitoring...' ? 'outline' : 'default'}
-              className="gap-2"
-            >
-              <Activity className={`h-3 w-3 ${realtimeStatus !== 'Monitoring...' ? 'animate-pulse' : ''}`} />
-              {realtimeStatus}
-            </Badge>
+            <div className="flex items-center gap-3">
+              {activeJobs > 0 && (
+                <Button
+                  onClick={stopAllAIProcessing}
+                  disabled={stoppingJobs}
+                  variant="destructive"
+                  size="sm"
+                >
+                  {stoppingJobs ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Stopping...
+                    </>
+                  ) : (
+                    <>
+                      <StopCircle className="mr-2 h-4 w-4" />
+                      Stop All AI Processing
+                    </>
+                  )}
+                </Button>
+              )}
+              <Badge 
+                variant={realtimeStatus === 'Monitoring...' ? 'outline' : 'default'}
+                className="gap-2"
+              >
+                <Activity className={`h-3 w-3 ${realtimeStatus !== 'Monitoring...' ? 'animate-pulse' : ''}`} />
+                {realtimeStatus}
+              </Badge>
+            </div>
           </div>
 
           {/* Global Stats */}

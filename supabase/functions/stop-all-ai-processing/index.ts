@@ -13,15 +13,17 @@ Deno.serve(async (req) => {
 
     console.log('Stopping all active AI processing jobs');
 
-    // Update all processing jobs to failed status
+    // Update all in_progress jobs to failed status
     const { data, error } = await supabase
       .from('ai_processing_jobs')
       .update({ 
         status: 'failed',
         completed_at: new Date().toISOString()
       })
-      .eq('status', 'processing')
+      .eq('status', 'in_progress')
       .select();
+
+    console.log(`Found ${data?.length || 0} jobs to stop`);
 
     if (error) {
       console.error('Error stopping jobs:', error);
