@@ -6,8 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { usePlatoVerticals } from '@/hooks/usePlatoVerticals';
 import { useVerticalOperations } from '@/hooks/useVerticalOperations';
+import { useResumeAIJob } from '@/hooks/useResumeAIJob';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Download, Zap, Database, Activity, TrendingUp, RefreshCw, StopCircle, TestTube } from 'lucide-react';
+import { Loader2, Download, Zap, Database, Activity, TrendingUp, RefreshCw, StopCircle, TestTube, Play } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -475,6 +476,7 @@ function VerticalCard({ slug, name, defaultUrl, onStatsChange }: VerticalCardPro
     loadStats,
     reprocessWithSourceExtraction
   } = useVerticalOperations(slug);
+  const { resumeJob, resuming } = useResumeAIJob();
 
   useEffect(() => {
     setJsonUrl(defaultUrl);
@@ -494,6 +496,18 @@ function VerticalCard({ slug, name, defaultUrl, onStatsChange }: VerticalCardPro
     await startAIProcessing(fastMode, false);
     onStatsChange();
     setTimeout(() => loadStats(), 1000);
+  };
+
+  const handleResumeJob = async () => {
+    if (!stats.aiJobId) return;
+    
+    try {
+      await resumeJob(stats.aiJobId);
+      onStatsChange();
+      setTimeout(() => loadStats(), 1000);
+    } catch (error) {
+      console.error('Error resuming job:', error);
+    }
   };
 
   return (
@@ -582,6 +596,28 @@ function VerticalCard({ slug, name, defaultUrl, onStatsChange }: VerticalCardPro
             <Zap className="mr-2 h-4 w-4" />
             AI Process ({stats.remaining})
           </Button>
+
+          {stats.aiJobId && stats.aiJobStatus === 'in_progress' && (
+            <Button
+              onClick={handleResumeJob}
+              disabled={resuming || processing}
+              variant="outline"
+              className="flex-1 min-w-[180px]"
+              title="Resume AI processing from where it stopped"
+            >
+              {resuming ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Resuming...
+                </>
+              ) : (
+                <>
+                  <Play className="mr-2 h-4 w-4" />
+                  Resume Processing
+                </>
+              )}
+            </Button>
+          )}
 
           {slug === 'cannabis' && (
             <Button
