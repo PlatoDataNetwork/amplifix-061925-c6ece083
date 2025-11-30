@@ -23,6 +23,7 @@ interface Backup {
   backup_description: string | null;
   created_at: string;
   article_count: number;
+  size_bytes: number;
 }
 
 interface BackupJob {
@@ -53,6 +54,15 @@ const ArticleBackups = () => {
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const [pausedJobs, setPausedJobs] = useState<BackupJob[]>([]);
   const [isPausing, setIsPausing] = useState(false);
+
+  // Format bytes into human-readable size
+  const formatBytes = (bytes: number): string => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
 
   useEffect(() => {
     loadBackups();
@@ -114,7 +124,8 @@ const ArticleBackups = () => {
         backup_name: item.backup_name,
         backup_description: item.backup_description,
         created_at: item.created_at,
-        article_count: item.article_count
+        article_count: item.article_count,
+        size_bytes: item.size_bytes || 0
       }));
 
       setBackups(backupsList);
@@ -707,11 +718,30 @@ const ArticleBackups = () => {
                           {backup.backup_description || 'No description'}
                         </CardDescription>
                         <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                          <span>{backup.article_count} articles</span>
+                          <span>{backup.article_count.toLocaleString()} articles</span>
+                          <span>•</span>
+                          <span className="font-semibold text-primary">
+                            {formatBytes(backup.size_bytes)}
+                          </span>
                           <span>•</span>
                           <span>
                             Created {formatDistanceToNow(new Date(backup.created_at), { addSuffix: true })}
                           </span>
+                        </div>
+                        {/* Visual size indicator */}
+                        <div className="mt-3 space-y-1">
+                          <div className="flex items-center justify-between text-xs text-muted-foreground">
+                            <span>Storage Used</span>
+                            <span className="font-mono">{formatBytes(backup.size_bytes)}</span>
+                          </div>
+                          <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-300"
+                              style={{ 
+                                width: `${Math.min(100, (backup.size_bytes / (1024 * 1024 * 1024)) * 10)}%` 
+                              }}
+                            />
+                          </div>
                         </div>
                       </div>
                       <div className="flex gap-2">

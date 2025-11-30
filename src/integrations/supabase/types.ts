@@ -482,6 +482,7 @@ export type Database = {
           backup_description: string
           backup_name: string
           created_at: string
+          size_bytes: number
         }[]
       }
       get_vertical_article_counts: {
