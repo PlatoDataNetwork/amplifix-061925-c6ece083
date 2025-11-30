@@ -620,16 +620,63 @@ function VerticalCard({ slug, name, defaultUrl, onStatsChange }: VerticalCardPro
           )}
 
           {slug === 'cannabis' && (
-            <Button
-              onClick={() => reprocessWithSourceExtraction(false, false)}
-              disabled={processing || stats.loading}
-              variant="outline"
-              className="flex-1 min-w-[200px]"
-              title="Extract source URLs only from articles that don't have them yet"
-            >
-              <Zap className="mr-2 h-4 w-4" />
-              Extract Missing Source URLs
-            </Button>
+            <>
+              <Button
+                onClick={() => reprocessWithSourceExtraction(false, false)}
+                disabled={processing || stats.loading}
+                variant="outline"
+                className="flex-1 min-w-[200px]"
+                title="Extract source URLs only from articles that don't have them yet"
+              >
+                <Zap className="mr-2 h-4 w-4" />
+                Extract Missing Source URLs
+              </Button>
+              
+              <Button
+                onClick={async () => {
+                  if (!confirm('This will clear AI processing flags for all Cannabis articles so they can be reprocessed. Continue?')) return;
+                  
+                  try {
+                    // Get all cannabis articles marked as AI processed
+                    const { data: articles, error } = await supabase
+                      .from('articles')
+                      .select('id')
+                      .eq('vertical_slug', 'cannabis')
+                      .eq('metadata->>ai_processed', 'true');
+                    
+                    if (error) throw error;
+                    
+                    if (!articles || articles.length === 0) {
+                      toast.info('No AI-processed cannabis articles found');
+                      return;
+                    }
+                    
+                    toast.info(`Clearing AI flags for ${articles.length} cannabis articles...`);
+                    
+                    const articleIds = articles.map(a => a.id);
+                    const { data, error: clearError } = await supabase.functions.invoke('clear-article-ai-flag', {
+                      body: { articleIds }
+                    });
+                    
+                    if (clearError) throw clearError;
+                    
+                    toast.success(`Cleared ${data.cleared} cannabis articles. Click Resume Processing to reprocess them.`);
+                    await loadStats();
+                    onStatsChange();
+                  } catch (error: any) {
+                    console.error('Error clearing cannabis AI flags:', error);
+                    toast.error(error.message || 'Failed to clear AI flags');
+                  }
+                }}
+                disabled={processing || stats.loading}
+                variant="destructive"
+                className="flex-1 min-w-[200px]"
+                title="Clear AI processing flags for all cannabis articles to allow reprocessing"
+              >
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Clear All AI Flags
+              </Button>
+            </>
           )}
 
           <Button
