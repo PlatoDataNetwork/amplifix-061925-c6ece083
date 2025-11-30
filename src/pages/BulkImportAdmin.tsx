@@ -68,74 +68,6 @@ export default function BulkImportAdmin() {
     return () => clearInterval(interval);
   }, [verticalStats]);
 
-  // Subscribe to realtime import progress for all verticals
-  useEffect(() => {
-    if (verticalStats.length === 0) return;
-
-    const channels = verticalStats.map(stat => {
-      const channel = supabase.channel(`import-progress-${stat.slug}`);
-      
-      channel
-        .on('broadcast', { event: 'import_progress' }, (payload) => {
-          console.log(`Import progress for ${stat.slug}:`, payload);
-          
-          setVerticalStats(prev =>
-            prev.map(s => s.slug === stat.slug 
-              ? { 
-                  ...s, 
-                  importProgress: payload.payload,
-                  currentCount: s.beforeCount + (payload.payload.importedCount || 0)
-                } 
-              : s
-            )
-          );
-        })
-        .on('broadcast', { event: 'import_complete' }, (payload) => {
-          console.log(`Import complete for ${stat.slug}:`, payload);
-          
-          toast.success(`Import complete for ${stat.slug}!`, {
-            description: `Imported ${payload.payload.importedCount || 0} articles`,
-            duration: 5000
-          });
-
-          setVerticalStats(prev =>
-            prev.map(s => s.slug === stat.slug 
-              ? { 
-                  ...s, 
-                  importing: false, 
-                  importComplete: true,
-                  importProgress: payload.payload
-                } 
-              : s
-            )
-          );
-
-          updateCurrentCounts();
-        })
-        .on('broadcast', { event: 'import_cancelled' }, (payload) => {
-          console.log(`Import cancelled for ${stat.slug}:`, payload);
-          
-          toast.warning(`Import cancelled for ${stat.slug}`);
-
-          setVerticalStats(prev =>
-            prev.map(s => s.slug === stat.slug 
-              ? { ...s, importing: false, importProgress: undefined } 
-              : s
-            )
-          );
-        })
-        .subscribe();
-
-      return channel;
-    });
-
-    return () => {
-      channels.forEach(channel => {
-        supabase.removeChannel(channel);
-      });
-    };
-  }, [verticalStats.length]);
-
   const initializeStats = async () => {
     setInitializing(true);
     
@@ -211,6 +143,63 @@ export default function BulkImportAdmin() {
       prev.map(s => s.slug === slug ? { ...s, importing: true } : s)
     );
 
+    // Create realtime channel for this specific import
+    const channel = supabase.channel(`import-progress-${slug}`);
+    
+    channel
+      .on('broadcast', { event: 'import_progress' }, (payload) => {
+        console.log(`Import progress for ${slug}:`, payload);
+        
+        setVerticalStats(prev =>
+          prev.map(s => s.slug === slug 
+            ? { 
+                ...s, 
+                importProgress: payload.payload,
+                currentCount: s.beforeCount + (payload.payload.importedCount || 0)
+              } 
+            : s
+          )
+        );
+      })
+      .on('broadcast', { event: 'import_complete' }, (payload) => {
+        console.log(`Import complete for ${slug}:`, payload);
+        
+        toast.success(`Import complete for ${slug}!`, {
+          description: `Imported ${payload.payload.importedCount || 0} articles`,
+          duration: 5000
+        });
+
+        setVerticalStats(prev =>
+          prev.map(s => s.slug === slug 
+            ? { 
+                ...s, 
+                importing: false, 
+                importComplete: true,
+                importProgress: payload.payload
+              } 
+            : s
+          )
+        );
+
+        updateCurrentCounts();
+        supabase.removeChannel(channel);
+      })
+      .on('broadcast', { event: 'import_cancelled' }, (payload) => {
+        console.log(`Import cancelled for ${slug}:`, payload);
+        
+        toast.warning(`Import cancelled for ${slug}`);
+
+        setVerticalStats(prev =>
+          prev.map(s => s.slug === slug 
+            ? { ...s, importing: false, importProgress: undefined } 
+            : s
+          )
+        );
+
+        supabase.removeChannel(channel);
+      })
+      .subscribe();
+
     try {
       // Ensure we have a valid session before making the call
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -249,6 +238,8 @@ export default function BulkImportAdmin() {
       setVerticalStats(prev =>
         prev.map(s => s.slug === slug ? { ...s, importing: false } : s)
       );
+      
+      supabase.removeChannel(channel);
     }
   };
 
