@@ -154,6 +154,25 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
               Enter the JSON feed URL from Plato Data Intelligence
             </p>
           </div>
+
+          {stats.importJobStatus && (
+            <div className="space-y-2 rounded-lg border bg-muted/60 p-4">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-medium">
+                  {stats.importJobStatus === 'in_progress'
+                    ? 'Import in progress'
+                    : `Import ${stats.importJobStatus}`}
+                </span>
+                <span className="font-semibold">
+                  {stats.importProgress.toFixed(0)}%
+                </span>
+              </div>
+              <Progress value={stats.importProgress} className="h-2" />
+              <p className="text-[11px] text-muted-foreground">
+                Imported {stats.importImported.toLocaleString()} · Skipped {stats.importSkipped.toLocaleString()} · Errors {stats.importErrors.toLocaleString()}
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 

@@ -9,6 +9,11 @@ export interface VerticalStats {
   duplicates: number;
   missingUrls: number;
   lastImport: string | null;
+  importJobStatus: string | null;
+  importProgress: number;
+  importImported: number;
+  importSkipped: number;
+  importErrors: number;
   aiJobId: string | null;
   aiJobStatus: string | null;
   aiProgress: number;
@@ -23,6 +28,11 @@ export const useVerticalOperations = (verticalSlug: string) => {
     duplicates: 0,
     missingUrls: 0,
     lastImport: null,
+    importJobStatus: null,
+    importProgress: 0,
+    importImported: 0,
+    importSkipped: 0,
+    importErrors: 0,
     aiJobId: null,
     aiJobStatus: null,
     aiProgress: 0,
@@ -54,8 +64,8 @@ export const useVerticalOperations = (verticalSlug: string) => {
         .eq('vertical_slug', verticalSlug)
         .or('external_url.is.null,external_url.eq.');
 
-      // Last import
-      const { data: lastImport } = await supabase
+      // Last completed import
+      const { data: lastCompletedImport } = await supabase
         .from('import_history')
         .select('completed_at')
         .eq('vertical_slug', verticalSlug)
@@ -63,6 +73,37 @@ export const useVerticalOperations = (verticalSlug: string) => {
         .order('completed_at', { ascending: false })
         .limit(1)
         .maybeSingle();
+
+      // Active import job (for progress)
+      const { data: activeImport } = await supabase
+        .from('import_history')
+        .select('id, status, imported_count, skipped_count, error_count, total_processed, metadata')
+        .eq('vertical_slug', verticalSlug)
+        .neq('status', 'completed')
+        .order('started_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      let importJobStatus: string | null = null;
+      let importProgress = 0;
+      let importImported = 0;
+      let importSkipped = 0;
+      let importErrors = 0;
+
+      if (activeImport) {
+        importJobStatus = activeImport.status;
+        importImported = activeImport.imported_count || 0;
+        importSkipped = activeImport.skipped_count || 0;
+        importErrors = activeImport.error_count || 0;
+
+        const totalFromFeed =
+          (activeImport.metadata as any)?.total_from_feed as number | undefined;
+        const totalProcessed = activeImport.total_processed || 0;
+        const denominator =
+          (totalFromFeed && totalFromFeed > 0 ? totalFromFeed : totalProcessed) || 1;
+
+        importProgress = Math.round((totalProcessed / denominator) * 100);
+      }
 
       // AI job - only track actively in-progress jobs
       let job: any = null;
@@ -80,10 +121,10 @@ export const useVerticalOperations = (verticalSlug: string) => {
         job = inProgressJob;
       }
 
-      let progress = 0;
+      let aiProgress = 0;
       if (job && job.total_chunks > 0) {
         const processedChunks = Array.from(new Set(job.processed_chunks || [])).length;
-        progress = Math.round((processedChunks / job.total_chunks) * 100);
+        aiProgress = Math.round((processedChunks / job.total_chunks) * 100);
       }
 
       setStats(prev => ({
@@ -92,10 +133,15 @@ export const useVerticalOperations = (verticalSlug: string) => {
         remaining: (total || 0) - (processed || 0),
         duplicates: 0,
         missingUrls: missing || 0,
-        lastImport: lastImport?.completed_at || null,
+        lastImport: lastCompletedImport?.completed_at || null,
+        importJobStatus,
+        importProgress,
+        importImported,
+        importSkipped,
+        importErrors,
         aiJobId: job?.id || null,
         aiJobStatus: job?.status || null,
-        aiProgress: progress,
+        aiProgress,
         loading: false
       }));
     } catch (error) {
