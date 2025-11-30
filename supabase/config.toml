@@ -123,3 +123,6 @@ verify_jwt = true
 [functions.clear-article-ai-flag]
 verify_jwt = true
 
+[functions.cleanup-cannabis-articles]
+verify_jwt = false
+
