@@ -37,18 +37,22 @@ Deno.serve(async (req) => {
     }
 
     // Check if job is eligible for resume
-    if (job.status === 'completed') {
+    // Allow resuming if there are remaining chunks, even if marked as completed
+    const processedChunks = job.processed_chunks || [];
+    const totalChunks = job.total_chunks;
+    const remainingChunks = totalChunks - processedChunks.length;
+
+    if (remainingChunks === 0) {
       return new Response(
         JSON.stringify({ 
           success: false, 
-          message: 'Job is already completed' 
+          message: 'All chunks have been processed' 
         }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    const processedChunks = job.processed_chunks || [];
-    const totalChunks = job.total_chunks;
+    console.log(`📦 ${remainingChunks} chunks remaining (${processedChunks.length}/${totalChunks} processed)`);
 
     // Find next unprocessed chunk
     let nextChunkIndex = 0;
@@ -57,25 +61,6 @@ Deno.serve(async (req) => {
         nextChunkIndex = i;
         break;
       }
-    }
-
-    if (nextChunkIndex === 0 && processedChunks.includes(0)) {
-      // All chunks processed, mark as complete
-      await supabase
-        .from('ai_processing_jobs')
-        .update({
-          status: 'completed',
-          completed_at: new Date().toISOString()
-        })
-        .eq('id', jobId);
-
-      return new Response(
-        JSON.stringify({ 
-          success: true, 
-          message: 'All chunks already processed, marked as complete' 
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
     }
 
     console.log(`📦 Resuming from chunk ${nextChunkIndex}/${totalChunks}`);
