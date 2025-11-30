@@ -12,7 +12,7 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { backupName, backupDescription, chunkIndex, chunkSize = 5000 } = await req.json();
+    const { backupName, backupDescription, chunkIndex, chunkSize = 5000, verticalSlug } = await req.json();
 
     if (!backupName || chunkIndex === undefined) {
       return new Response(
@@ -37,10 +37,16 @@ Deno.serve(async (req) => {
     const to = from + chunkSize - 1;
 
     // Fetch articles for this chunk
-    const { data: articles, error: fetchError } = await supabase
+    let query = supabase
       .from('articles')
       .select('*')
       .range(from, to);
+    
+    if (verticalSlug) {
+      query = query.eq('vertical_slug', verticalSlug);
+    }
+    
+    const { data: articles, error: fetchError } = await query;
 
     if (fetchError) {
       console.error('Error fetching articles:', fetchError);

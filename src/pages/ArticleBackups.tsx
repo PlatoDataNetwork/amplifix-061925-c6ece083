@@ -210,8 +210,7 @@ const ArticleBackups = () => {
     
     if (!confirm(
       `Create a ${isVerticalBackup ? 'vertical-specific' : 'full'} backup of ${backupType} articles?\n\n` +
-      "This will save the current state of " + (isVerticalBackup ? `all ${verticalSlug} articles` : "all articles in the database") + ".\n" +
-      "This will run in the background. You can check progress by refreshing the page."
+      "This will save the current state of " + (isVerticalBackup ? `all ${verticalSlug} articles` : "all articles in the database") + "."
     )) {
       return;
     }
@@ -227,32 +226,83 @@ const ArticleBackups = () => {
         ? `${verticalSlug.toUpperCase()} vertical backup created on ${new Date().toLocaleString()}`
         : `Full backup created on ${new Date().toLocaleString()}`;
 
-      toast.info(`Starting backup process...`);
-
-      // Use the edge function that handles large backups properly
-      const { data, error } = await supabase.functions.invoke('backup-articles', {
-        body: { 
-          backupName,
-          backupDescription,
-          verticalSlug: isVerticalBackup ? verticalSlug : undefined
-        }
-      });
-
-      if (error) throw error;
-
-      // Show live progress
       setActiveBackupName(backupName);
+
+      // Get total count first
+      let countQuery = supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true });
       
-      toast.success(`✅ Backup started successfully!`, {
-        description: `Backup name: ${backupName}. Watch the progress below.`,
-        duration: 5000
-      });
+      if (isVerticalBackup) {
+        countQuery = countQuery.eq('vertical_slug', verticalSlug);
+      }
+      
+      const { count: totalCount } = await countQuery;
+      
+      if (!totalCount || totalCount === 0) {
+        toast.error("No articles found to backup");
+        setIsCreatingBackup(false);
+        setActiveBackupName(null);
+        return;
+      }
+
+      toast.info(`Starting backup of ${totalCount.toLocaleString()} articles...`);
+
+      // Create a realtime channel for progress updates
+      const channel = supabase.channel(`backup-progress-${backupName}`);
+      await channel.subscribe();
+
+      // Process in chunks
+      const chunkSize = 5000;
+      const totalChunks = Math.ceil(totalCount / chunkSize);
+      let processedCount = 0;
+
+      for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+        const { data, error } = await supabase.functions.invoke('backup-articles-chunked', {
+          body: {
+            backupName,
+            backupDescription,
+            chunkIndex,
+            chunkSize,
+            verticalSlug: isVerticalBackup ? verticalSlug : undefined
+          }
+        });
+
+        if (error) {
+          console.error(`Error in chunk ${chunkIndex}:`, error);
+          throw error;
+        }
+
+        if (data?.success) {
+          processedCount += data.backedUp;
+          
+          // Broadcast progress update
+          await channel.send({
+            type: 'broadcast',
+            event: 'progress',
+            payload: {
+              backed: processedCount,
+              total: totalCount,
+              status: chunkIndex === totalChunks - 1 ? 'completed' : 'processing'
+            }
+          });
+
+          if (!data.hasMore) break;
+        }
+      }
+
+      await supabase.removeChannel(channel);
+
+      toast.success(`Backup completed: ${processedCount.toLocaleString()} articles backed up`);
+      setIsCreatingBackup(false);
+      setActiveBackupName(null);
+      await loadBackups();
     } catch (error) {
       console.error("Error creating backup:", error);
-      toast.error("Failed to start backup", {
+      toast.error("Failed to complete backup", {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
-    } finally {
+      setActiveBackupName(null);
       setIsCreatingBackup(false);
     }
   };
