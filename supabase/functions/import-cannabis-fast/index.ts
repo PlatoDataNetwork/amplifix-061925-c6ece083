@@ -398,9 +398,10 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const body = await req.json();
     const jsonUrl = body.jsonUrl || "https://platodata.ai/cannabis/json/";
     const resumeImportId = body.resumeImportId;
+    const manualStartPage = body.manualStartPage;
     const startedAt = new Date().toISOString();
 
-    console.log(`Cannabis import - jsonUrl: ${jsonUrl}, resumeImportId: ${resumeImportId}, isResume: ${!!resumeImportId}`);
+    console.log(`Cannabis import - jsonUrl: ${jsonUrl}, resumeImportId: ${resumeImportId}, manualStartPage: ${manualStartPage}, isResume: ${!!resumeImportId}`);
 
     // Create service role client for database operations
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -443,45 +444,88 @@ Deno.serve(async (req: Request): Promise<Response> => {
         })
         .eq("id", importHistoryId);
     } else {
-      // Look across recent imports to find the highest lastProcessedPage
-      console.log('Scanning recent imports to find max lastProcessedPage...');
-      
-      const { data: recentImports, error: recentError } = await supabase
-        .from("import_history")
-        .select('*')
-        .eq('vertical_slug', 'cannabis')
-        .order('started_at', { ascending: false })
-        .limit(50);
+      // Check if a manual start page was provided
+      if (manualStartPage && typeof manualStartPage === 'number' && manualStartPage > 1) {
+        console.log(`Manual start page ${manualStartPage} provided, using it as the starting point`);
+        
+        // Cancel any in-progress imports before starting the manual run
+        await supabase
+          .from("import_history")
+          .update({
+            status: 'failed',
+            cancelled: true,
+            completed_at: new Date().toISOString(),
+            metadata: {
+              failureReason: 'Superseded by manual start page import',
+            },
+          })
+          .eq('vertical_slug', 'cannabis')
+          .eq('status', 'in_progress');
 
-      if (recentError) {
-        console.error('Error loading recent imports, falling back to fresh start:', recentError);
-      }
+        resumeFromPage = manualStartPage;
 
-      let maxLastPage = 0;
-      let sourceImportId: string | null = null;
-      let sourceMetadata: any = null;
+        const { data: newImport, error: insertError } = await supabase
+          .from("import_history")
+          .insert({
+            vertical_slug: "cannabis",
+            started_at: startedAt,
+            status: "in_progress",
+            imported_by: user.id,
+            metadata: {
+              jsonUrl,
+              importType: 'manual_start_page',
+              manualStartPage,
+            },
+          })
+          .select()
+          .single();
 
-      if (recentImports && recentImports.length > 0) {
-        for (const imp of recentImports) {
-          const m = imp.metadata as any;
-          const raw = m?.lastProcessedPage;
-          const lp =
-            typeof raw === 'number'
-              ? raw
-              : raw
-                ? parseInt(String(raw), 10) || 0
-                : 0;
+        if (insertError || !newImport) {
+          throw new Error("Failed to create import history");
+        }
 
-          if (lp > maxLastPage) {
-            maxLastPage = lp;
-            sourceImportId = imp.id;
-            sourceMetadata = m || {};
+        importHistoryId = newImport.id;
+        console.log(`Manual import created with ID: ${importHistoryId}, starting from page ${resumeFromPage}`);
+      } else {
+        // Look across recent imports to find the highest lastProcessedPage
+        console.log('Scanning recent imports to find max lastProcessedPage...');
+        
+        const { data: recentImports, error: recentError } = await supabase
+          .from("import_history")
+          .select('*')
+          .eq('vertical_slug', 'cannabis')
+          .order('started_at', { ascending: false })
+          .limit(50);
+
+        if (recentError) {
+          console.error('Error loading recent imports, falling back to fresh start:', recentError);
+        }
+
+        let maxLastPage = 0;
+        let sourceImportId: string | null = null;
+        let sourceMetadata: any = null;
+
+        if (recentImports && recentImports.length > 0) {
+          for (const imp of recentImports) {
+            const m = imp.metadata as any;
+            const raw = m?.lastProcessedPage;
+            const lp =
+              typeof raw === 'number'
+                ? raw
+                : raw
+                  ? parseInt(String(raw), 10) || 0
+                  : 0;
+
+            if (lp > maxLastPage) {
+              maxLastPage = lp;
+              sourceImportId = imp.id;
+              sourceMetadata = m || {};
+            }
           }
         }
-      }
 
-      // Only resume if the page is within reasonable bounds (under 2000)
-      if (maxLastPage > 0 && maxLastPage < 2000 && sourceImportId) {
+        // Only resume if the page is within reasonable bounds (under 2000)
+        if (maxLastPage > 0 && maxLastPage < 2000 && sourceImportId) {
         // Cancel any in-progress imports before starting the resume run
         await supabase
           .from("import_history")
@@ -525,41 +569,42 @@ Deno.serve(async (req: Request): Promise<Response> => {
           throw new Error("Failed to create import history");
         }
 
-        importHistoryId = newImport.id;
-        console.log(
-          `New resume import created with ID: ${importHistoryId}, will start from page ${resumeFromPage}`,
-        );
-      } else {
-        // No usable lastProcessedPage found - start fresh
-        console.log(
-          'No previous lastProcessedPage found, creating NEW import (starting fresh from page 1)',
-        );
+          importHistoryId = newImport.id;
+          console.log(
+            `New resume import created with ID: ${importHistoryId}, will start from page ${resumeFromPage}`,
+          );
+        } else {
+          // No usable lastProcessedPage found - start fresh
+          console.log(
+            'No previous lastProcessedPage found, creating NEW import (starting fresh from page 1)',
+          );
 
-        const { data: newImport, error: insertError } = await supabase
-          .from("import_history")
-          .insert({
-            vertical_slug: "cannabis",
-            started_at: startedAt,
-            status: "in_progress",
-            imported_by: user.id,
-            metadata: {
-              jsonUrl,
-              importType: 'fresh',
-              startedFromPage: 1,
-            },
-          })
-          .select()
-          .single();
+          const { data: newImport, error: insertError } = await supabase
+            .from("import_history")
+            .insert({
+              vertical_slug: "cannabis",
+              started_at: startedAt,
+              status: "in_progress",
+              imported_by: user.id,
+              metadata: {
+                jsonUrl,
+                importType: 'fresh',
+                startedFromPage: 1,
+              },
+            })
+            .select()
+            .single();
 
-        if (insertError || !newImport) {
-          throw new Error("Failed to create import history");
+          if (insertError || !newImport) {
+            throw new Error("Failed to create import history");
+          }
+
+          importHistoryId = newImport.id;
+          resumeFromPage = undefined;
+          console.log(
+            `New import created with ID: ${importHistoryId}, will start from page 1`,
+          );
         }
-
-        importHistoryId = newImport.id;
-        resumeFromPage = undefined;
-        console.log(
-          `New import created with ID: ${importHistoryId}, will start from page 1`,
-        );
       }
     }
 
