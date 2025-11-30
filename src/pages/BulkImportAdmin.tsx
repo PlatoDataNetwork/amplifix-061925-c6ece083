@@ -49,6 +49,7 @@ export default function BulkImportAdmin() {
     verticalsAIProcessed: 0
   });
   const [initializing, setInitializing] = useState(true);
+  const [activeImportSlug, setActiveImportSlug] = useState<string | null>(null);
 
   // Initialize stats on load
   useEffect(() => {
@@ -57,16 +58,64 @@ export default function BulkImportAdmin() {
     }
   }, [verticals]);
 
-  // Real-time updates every 3 seconds
+  // Periodic refresh of article counts
   useEffect(() => {
     if (verticalStats.length === 0) return;
     
     const interval = setInterval(() => {
       updateCurrentCounts();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [verticalStats.length]);
+
+  // Poll import_history for the active import to show realtime stats
+  useEffect(() => {
+    if (!activeImportSlug) return;
+
+    const interval = setInterval(async () => {
+      const { data, error } = await supabase
+        .from('import_history')
+        .select('total_processed, imported_count, skipped_count, error_count, status, started_at')
+        .eq('vertical_slug', activeImportSlug)
+        .order('started_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error fetching import progress:', error);
+        return;
+      }
+
+      if (!data) return;
+
+      setVerticalStats(prev =>
+        prev.map(s =>
+          s.slug === activeImportSlug
+            ? {
+                ...s,
+                importing: data.status === 'in_progress',
+                importComplete: data.status === 'completed',
+                importProgress: {
+                  totalProcessed: data.total_processed,
+                  importedCount: data.imported_count,
+                  skippedCount: data.skipped_count,
+                  errorCount: data.error_count,
+                  currentPage: Math.max(1, Math.ceil(data.total_processed / 20)),
+                },
+              }
+            : s,
+        ),
+      );
+
+      if (['completed', 'failed', 'cancelled'].includes(data.status)) {
+        setActiveImportSlug(null);
+        updateCurrentCounts();
+      }
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [verticalStats]);
+  }, [activeImportSlug]);
 
   const initializeStats = async () => {
     setInitializing(true);
@@ -143,62 +192,8 @@ export default function BulkImportAdmin() {
       prev.map(s => s.slug === slug ? { ...s, importing: true } : s)
     );
 
-    // Create realtime channel for this specific import
-    const channel = supabase.channel(`import-progress-${slug}`);
-    
-    channel
-      .on('broadcast', { event: 'import_progress' }, (payload) => {
-        console.log(`Import progress for ${slug}:`, payload);
-        
-        setVerticalStats(prev =>
-          prev.map(s => s.slug === slug 
-            ? { 
-                ...s, 
-                importProgress: payload.payload,
-                currentCount: s.beforeCount + (payload.payload.importedCount || 0)
-              } 
-            : s
-          )
-        );
-      })
-      .on('broadcast', { event: 'import_complete' }, (payload) => {
-        console.log(`Import complete for ${slug}:`, payload);
-        
-        toast.success(`Import complete for ${slug}!`, {
-          description: `Imported ${payload.payload.importedCount || 0} articles`,
-          duration: 5000
-        });
-
-        setVerticalStats(prev =>
-          prev.map(s => s.slug === slug 
-            ? { 
-                ...s, 
-                importing: false, 
-                importComplete: true,
-                importProgress: payload.payload
-              } 
-            : s
-          )
-        );
-
-        updateCurrentCounts();
-        supabase.removeChannel(channel);
-      })
-      .on('broadcast', { event: 'import_cancelled' }, (payload) => {
-        console.log(`Import cancelled for ${slug}:`, payload);
-        
-        toast.warning(`Import cancelled for ${slug}`);
-
-        setVerticalStats(prev =>
-          prev.map(s => s.slug === slug 
-            ? { ...s, importing: false, importProgress: undefined } 
-            : s
-          )
-        );
-
-        supabase.removeChannel(channel);
-      })
-      .subscribe();
+    // Track this slug as the active import for realtime polling
+    setActiveImportSlug(slug);
 
     try {
       // Ensure we have a valid session before making the call
@@ -239,7 +234,7 @@ export default function BulkImportAdmin() {
         prev.map(s => s.slug === slug ? { ...s, importing: false } : s)
       );
       
-      supabase.removeChannel(channel);
+      setActiveImportSlug(null);
     }
   };
 
@@ -516,12 +511,13 @@ export default function BulkImportAdmin() {
                     onClick={async () => {
                       const history = await getLatestImportHistory(stat.slug);
                       if (history?.id) {
-                        await handleImport(stat.slug, history.id);
+                        setActiveImportSlug(stat.slug);
+                        toast.info(`Tracking latest import for ${stat.slug}...`);
                       } else {
                         toast.error('No import history found to resume');
                       }
                     }}
-                    disabled={stat.importing || !stat.importProgress}
+                    disabled={stat.importing}
                     variant="outline"
                     size="sm"
                   >
