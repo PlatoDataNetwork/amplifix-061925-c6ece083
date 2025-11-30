@@ -335,6 +335,42 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          metadata: Json | null
+          source: string | null
+          status: string
+          subscribed_at: string
+          updated_at: string
+          vertical_slug: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          metadata?: Json | null
+          source?: string | null
+          status?: string
+          subscribed_at?: string
+          updated_at?: string
+          vertical_slug?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          metadata?: Json | null
+          source?: string | null
+          status?: string
+          subscribed_at?: string
+          updated_at?: string
+          vertical_slug?: string | null
+        }
+        Relationships: []
+      }
       showcase_companies: {
         Row: {
           button_text: string
