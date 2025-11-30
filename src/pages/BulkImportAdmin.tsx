@@ -137,13 +137,29 @@ export default function BulkImportAdmin() {
     );
 
     try {
+      // Ensure we have a valid session before making the call
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        throw new Error('Authentication required. Please log in again.');
+      }
+
       toast.info(`Starting fast import for ${slug}...`);
 
       const { data, error } = await supabase.functions.invoke(`import-${slug}-fast`, {
-        body: {}
+        body: {},
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
       });
 
-      if (error) throw error;
+      if (error) {
+        // Handle specific auth errors
+        if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+          throw new Error('Session expired. Please refresh the page and log in again.');
+        }
+        throw error;
+      }
 
       toast.success(`Import complete for ${slug}!`, {
         description: `Imported ${data.imported || 0} articles`,
@@ -176,6 +192,13 @@ export default function BulkImportAdmin() {
     );
 
     try {
+      // Ensure we have a valid session before making the call
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        throw new Error('Authentication required. Please log in again.');
+      }
+
       toast.info(`Starting AI processing for ${slug}...`);
 
       const { data, error } = await supabase.functions.invoke('start-ai-processing', {
@@ -183,10 +206,19 @@ export default function BulkImportAdmin() {
           verticalSlug: slug,
           fastMode: false,
           skipTags: false
+        },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        // Handle specific auth errors
+        if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+          throw new Error('Session expired. Please refresh the page and log in again.');
+        }
+        throw error;
+      }
 
       toast.success(`AI processing started for ${slug}!`, {
         description: `Processing ${data.articlesToProcess || 0} articles`,
