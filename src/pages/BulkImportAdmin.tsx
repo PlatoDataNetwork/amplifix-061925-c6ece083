@@ -64,16 +64,6 @@ export default function BulkImportAdmin() {
     }
   }, [verticals]);
 
-  // Periodic refresh of article counts
-  useEffect(() => {
-    if (verticalStats.length === 0) return;
-    
-    const interval = setInterval(() => {
-      updateCurrentCounts();
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [verticalStats.length]);
 
   // Poll import_history for the active import to show realtime stats
   useEffect(() => {
