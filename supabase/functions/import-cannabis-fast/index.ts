@@ -63,8 +63,36 @@ serve(async (req) => {
     let imported = 0;
     let skipped = 0;
     let errors = 0;
+    let importHistoryId: string | null = null;
 
     const batchSize = 50;
+
+    const totalFromFeed = articles.length;
+
+    if (totalFromFeed > 0) {
+      const { data: historyRow, error: historyError } = await supabaseClient
+        .from('import_history')
+        .insert({
+          vertical_slug: 'cannabis',
+          status: 'in_progress',
+          imported_count: 0,
+          skipped_count: 0,
+          error_count: 0,
+          total_processed: 0,
+          metadata: {
+            json_url: jsonUrl,
+            total_from_feed: totalFromFeed,
+          },
+        })
+        .select('id')
+        .single();
+
+      if (historyError) {
+        console.error('Error creating cannabis import history:', historyError);
+      } else {
+        importHistoryId = historyRow?.id ?? null;
+      }
+    }
 
     for (let i = 0; i < articles.length; i += batchSize) {
       const batch = articles.slice(i, i + batchSize);
@@ -141,9 +169,48 @@ serve(async (req) => {
         }
       }
 
+      if (importHistoryId) {
+        const totalProcessed = imported + skipped + errors;
+        const { error: updateError } = await supabaseClient
+          .from('import_history')
+          .update({
+            imported_count: imported,
+            skipped_count: skipped,
+            error_count: errors,
+            total_processed: totalProcessed,
+            status: 'in_progress',
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', importHistoryId);
+
+        if (updateError) {
+          console.error('Error updating cannabis import history:', updateError);
+        }
+      }
+
       console.log(
         `Processed cannabis batch ${Math.floor(i / batchSize) + 1}: ${imported} imported, ${skipped} skipped, ${errors} errors`,
       );
+    }
+
+    if (importHistoryId) {
+      const totalProcessed = imported + skipped + errors;
+      const { error: finalizeError } = await supabaseClient
+        .from('import_history')
+        .update({
+          imported_count: imported,
+          skipped_count: skipped,
+          error_count: errors,
+          total_processed: totalProcessed,
+          status: 'completed',
+          completed_at: new Date().toISOString(),
+          cancelled: false,
+        })
+        .eq('id', importHistoryId);
+
+      if (finalizeError) {
+        console.error('Error finalizing cannabis import history:', finalizeError);
+      }
     }
 
     const message = `Cannabis import complete: ${imported} imported, ${skipped} skipped, ${errors} errors`;
