@@ -496,29 +496,47 @@ const ArticleBackups = () => {
 
   const handleExportBackup = async (backupName: string) => {
     try {
-      toast.info('Exporting backup...');
+      toast.info('Exporting backup... This may take a moment for large backups.');
 
-      // Fetch all backup records for this backup name
-      const { data: backupRecords, error } = await supabase
+      // First get the total count
+      const { count } = await supabase
         .from('article_backups')
-        .select('*')
-        .eq('backup_name', backupName)
-        .order('created_at', { ascending: true });
+        .select('*', { count: 'exact', head: true })
+        .eq('backup_name', backupName);
 
-      if (error) throw error;
-
-      if (!backupRecords || backupRecords.length === 0) {
+      if (!count || count === 0) {
         toast.error('No backup data found');
         return;
+      }
+
+      // Fetch all records in batches to avoid hitting limits
+      const batchSize = 1000;
+      const allRecords = [];
+      
+      for (let i = 0; i < count; i += batchSize) {
+        const { data: batch, error } = await supabase
+          .from('article_backups')
+          .select('*')
+          .eq('backup_name', backupName)
+          .order('created_at', { ascending: true })
+          .range(i, i + batchSize - 1);
+
+        if (error) throw error;
+        if (batch) allRecords.push(...batch);
+        
+        // Show progress for large exports
+        if (count > batchSize) {
+          toast.info(`Loading ${Math.min(i + batchSize, count)} of ${count} articles...`);
+        }
       }
 
       // Create export object with metadata
       const exportData = {
         backup_name: backupName,
-        backup_description: backupRecords[0]?.backup_description,
+        backup_description: allRecords[0]?.backup_description,
         exported_at: new Date().toISOString(),
-        total_articles: backupRecords.length,
-        articles: backupRecords.map(record => ({
+        total_articles: allRecords.length,
+        articles: allRecords.map(record => ({
           article_id: record.article_id,
           post_id: record.post_id,
           title: record.title,
@@ -546,7 +564,7 @@ const ArticleBackups = () => {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      toast.success(`Exported ${backupRecords.length.toLocaleString()} articles to ${backupName}.json`);
+      toast.success(`Exported ${allRecords.length.toLocaleString()} articles to ${backupName}.json`);
     } catch (error) {
       console.error('Error exporting backup:', error);
       toast.error('Failed to export backup', {
