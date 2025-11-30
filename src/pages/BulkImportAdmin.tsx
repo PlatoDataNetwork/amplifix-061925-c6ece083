@@ -581,10 +581,10 @@ export default function BulkImportAdmin() {
                     
                     {/* Duplicate-only mode alert */}
                     {stat.duplicateOnlyMode && stat.importing && !stat.stalled && (
-                      <div className="flex items-center gap-2 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded text-xs">
-                        <AlertCircle className="h-3 w-3 text-yellow-600 flex-shrink-0" />
-                        <span className="text-yellow-600 font-medium">
-                          No new articles found - only processing duplicates
+                      <div className="flex items-center gap-2 p-2 bg-blue-500/10 border border-blue-500/20 rounded text-xs">
+                        <AlertCircle className="h-3 w-3 text-blue-600 flex-shrink-0" />
+                        <span className="text-blue-600 font-medium">
+                          Processing duplicates - will continue to find new articles (don't stop!)
                         </span>
                       </div>
                     )}
@@ -691,6 +691,7 @@ export default function BulkImportAdmin() {
                     disabled={!stat.importing}
                     variant="destructive"
                     size="sm"
+                    title={stat.duplicateOnlyMode ? "Import is finding duplicates but making progress - let it continue to reach new articles" : "Stop stuck import"}
                   >
                     Fix Stuck
                   </Button>
