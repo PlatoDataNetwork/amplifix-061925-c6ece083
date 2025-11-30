@@ -620,16 +620,53 @@ function VerticalCard({ slug, name, defaultUrl, onStatsChange }: VerticalCardPro
           )}
 
           {slug === 'cannabis' && (
-            <Button
-              onClick={() => reprocessWithSourceExtraction(false, false)}
-              disabled={processing || stats.loading}
-              variant="outline"
-              className="flex-1 min-w-[200px]"
-              title="Extract source URLs only from articles that don't have them yet"
-            >
-              <Zap className="mr-2 h-4 w-4" />
-              Extract Missing Source URLs
-            </Button>
+            <>
+              <Button
+                onClick={() => reprocessWithSourceExtraction(false, false)}
+                disabled={processing || stats.loading}
+                variant="outline"
+                className="flex-1 min-w-[200px]"
+                title="Extract source URLs only from articles that don't have them yet"
+              >
+                <Zap className="mr-2 h-4 w-4" />
+                Extract Missing Source URLs
+              </Button>
+              
+              <Button
+                onClick={async () => {
+                  if (!confirm('Update all Zephyrnet.com source attributions to Plato Data Intelligence for Cannabis articles?')) return;
+                  
+                  try {
+                    toast.info('Updating source attributions...');
+                    
+                    const { data, error } = await supabase.functions.invoke('update-plato-sources', {
+                      body: { vertical: 'cannabis' }
+                    });
+                    
+                    if (error) throw error;
+                    
+                    if (data.success) {
+                      toast.success(`Updated ${data.stats.updated} cannabis articles`, {
+                        description: `Processed: ${data.stats.processed}, Skipped: ${data.stats.skipped}`,
+                        duration: 5000
+                      });
+                      await loadStats();
+                      onStatsChange();
+                    }
+                  } catch (error: any) {
+                    console.error('Error updating sources:', error);
+                    toast.error(error.message || 'Failed to update sources');
+                  }
+                }}
+                disabled={processing || stats.loading}
+                variant="secondary"
+                className="flex-1 min-w-[200px]"
+                title="Update Zephyrnet.com attributions to Plato Data Intelligence"
+              >
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Fix Zephyrnet Sources
+              </Button>
+            </>
           )}
 
           <Button
