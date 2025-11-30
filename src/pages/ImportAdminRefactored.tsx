@@ -348,6 +348,60 @@ export default function ImportAdminRefactored() {
           </div>
         </div>
 
+        {/* Global Operations */}
+        <Card className="mb-6">
+          <CardHeader className="bg-muted/30">
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              Global Operations
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <div className="flex gap-4 flex-wrap">
+              <Button
+                onClick={async () => {
+                  if (!confirm('Update all Plato/Osint/Zephyrnet source attributions to "Plato Data Intelligence" across ALL verticals? This will process thousands of articles.')) return;
+                  
+                  try {
+                    toast.info('Updating source attributions across all verticals...', {
+                      description: 'This may take 1-2 minutes',
+                      duration: 3000
+                    });
+                    
+                    const { data, error } = await supabase.functions.invoke('update-plato-sources', {
+                      body: {}  // No vertical = process all
+                    });
+                    
+                    if (error) throw error;
+                    
+                    if (data.success) {
+                      const verticalSummary = data.stats.verticals
+                        .filter((v: any) => v.updated > 0)
+                        .map((v: any) => `${v.vertical}: ${v.updated}`)
+                        .join(', ');
+                      
+                      toast.success(`Updated ${data.stats.updated} articles across ${data.stats.verticals.length} verticals`, {
+                        description: verticalSummary || `Processed: ${data.stats.processed}`,
+                        duration: 8000
+                      });
+                      await loadGlobalStats();
+                    }
+                  } catch (error: any) {
+                    console.error('Error updating sources:', error);
+                    toast.error(error.message || 'Failed to update sources');
+                  }
+                }}
+                variant="secondary"
+                className="flex-1 min-w-[250px]"
+                title="Update all Osint.platodata.io, PlatoData.ai, Zephyrnet.com sources to Plato Data Intelligence"
+              >
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Fix All Source Attributions
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Test Import Section */}
         <Card className="mb-6">
           <CardHeader className="bg-muted/30">
