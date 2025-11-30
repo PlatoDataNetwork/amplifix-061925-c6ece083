@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { MessageSquare, X, Send, Sparkles, Loader2 } from "lucide-react";
+import { MessageSquare, X, Send, Sparkles, Loader2, Copy, Download, RefreshCw, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Message {
@@ -20,8 +20,27 @@ const VerticalAIChat = ({ verticalSlug, verticalName }: VerticalAIChatProps) => 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  const copyToClipboard = async (text: string, index: number) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000);
+      toast({
+        title: "Copied!",
+        description: "Message copied to clipboard",
+      });
+    } catch (err) {
+      toast({
+        title: "Failed to copy",
+        description: "Could not copy message",
+        variant: "destructive",
+      });
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -165,18 +184,55 @@ const VerticalAIChat = ({ verticalSlug, verticalName }: VerticalAIChatProps) => 
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
               <div>
-                <h3 className="font-semibold text-sm">AI Intelligence Assistant</h3>
+                <h3 className="font-semibold text-sm">AI Intelligence</h3>
                 <p className="text-xs text-muted-foreground">{verticalName} Expert</p>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(false)}
-              className="h-8 w-8"
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  const conversationText = messages
+                    .map(m => `${m.role === 'user' ? 'You' : 'AI'}: ${m.content}`)
+                    .join('\n\n');
+                  const blob = new Blob([conversationText], { type: 'text/plain' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `${verticalName}-chat-${Date.now()}.txt`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="h-8 w-8"
+                title="Download conversation"
+              >
+                <Download className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  setMessages([]);
+                  toast({
+                    title: "Conversation cleared",
+                    description: "Chat has been reset",
+                  });
+                }}
+                className="h-8 w-8"
+                title="Clear conversation"
+              >
+                <RefreshCw className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsOpen(false)}
+                className="h-8 w-8"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Messages */}
@@ -202,9 +258,23 @@ const VerticalAIChat = ({ verticalSlug, verticalName }: VerticalAIChatProps) => 
                   }`}
                 >
                   {msg.role === "assistant" && (
-                    <div className="flex items-center gap-2 mb-1">
-                      <MessageSquare className="h-3 w-3 text-blue-500" />
-                      <span className="text-xs font-semibold text-blue-500">AI Assistant</span>
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="h-3 w-3 text-blue-500" />
+                        <span className="text-xs font-semibold text-blue-500">Plato AI</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => copyToClipboard(msg.content, idx)}
+                        className="h-6 w-6 hover:bg-blue-500/10"
+                      >
+                        {copiedIndex === idx ? (
+                          <Check className="h-3 w-3 text-green-500" />
+                        ) : (
+                          <Copy className="h-3 w-3 text-muted-foreground" />
+                        )}
+                      </Button>
                     </div>
                   )}
                   <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
