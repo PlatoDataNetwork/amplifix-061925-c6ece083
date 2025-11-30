@@ -54,6 +54,7 @@ const ArticleBackups = () => {
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const [pausedJobs, setPausedJobs] = useState<BackupJob[]>([]);
   const [isPausing, setIsPausing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Format bytes into human-readable size
   const formatBytes = (bytes: number): string => {
@@ -493,6 +494,43 @@ const ArticleBackups = () => {
     }
   };
 
+  const handleDeleteAllExcept = async (keepBackupName: string) => {
+    if (!confirm(
+      `⚠️ CRITICAL WARNING: This will permanently delete ALL backups except "${keepBackupName}".\n\n` +
+      `This action cannot be undone.\n\n` +
+      `Are you absolutely sure?`
+    )) {
+      return;
+    }
+
+    setIsDeleting(true);
+
+    try {
+      toast.info('Deleting backups... This may take a few minutes.');
+
+      const { data, error } = await supabase.functions.invoke('delete-backups-except', {
+        body: { keepBackupName }
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast.success(
+          `Successfully deleted ${data.deletedCount.toLocaleString()} backup records. ` +
+          `Kept ${data.remainingCount.toLocaleString()} records from ${keepBackupName}.`
+        );
+        await loadBackups();
+      }
+    } catch (error) {
+      console.error('Error deleting backups:', error);
+      toast.error('Failed to delete backups', {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <MainHeader />
@@ -749,7 +787,7 @@ const ArticleBackups = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => handleRestore(backup.backup_name)}
-                          disabled={processingBackup === backup.backup_name}
+                          disabled={processingBackup === backup.backup_name || isDeleting}
                           className="gap-2"
                         >
                           {processingBackup === backup.backup_name ? (
@@ -762,9 +800,25 @@ const ArticleBackups = () => {
                         <Button
                           variant="outline"
                           size="sm"
+                          onClick={() => handleDeleteAllExcept(backup.backup_name)}
+                          disabled={isDeleting || processingBackup !== null}
+                          className="gap-2 text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-950"
+                          title="Delete all other backups and keep only this one"
+                        >
+                          {isDeleting ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Database className="h-4 w-4" />
+                          )}
+                          Keep Only This
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
                           onClick={() => handleDelete(backup.backup_name)}
                           disabled={
                             processingBackup === backup.backup_name ||
+                            isDeleting ||
                             backup.backup_name.startsWith('pre-clear-') ||
                             backup.backup_name.startsWith('safety-backup-')
                           }
