@@ -551,6 +551,29 @@ export default function BulkImportAdmin() {
                     onClick={async () => {
                       const history = await getLatestImportHistory(stat.slug);
                       if (history?.id) {
+                        // Immediately show the latest known progress on this card
+                        setVerticalStats(prev =>
+                          prev.map(s =>
+                            s.slug === stat.slug
+                              ? {
+                                  ...s,
+                                  importing: history.status === 'in_progress',
+                                  importComplete: history.status === 'completed',
+                                  importProgress: {
+                                    totalProcessed: history.total_processed ?? 0,
+                                    importedCount: history.imported_count ?? 0,
+                                    skippedCount: history.skipped_count ?? 0,
+                                    errorCount: history.error_count ?? 0,
+                                    currentPage: Math.max(1, Math.ceil((history.total_processed ?? 0) / 20)),
+                                  },
+                                  duplicateOnlyMode: false,
+                                  lastImportedCount: history.imported_count ?? 0,
+                                  noChangeCounter: 0,
+                                }
+                              : s,
+                          ),
+                        );
+
                         setActiveImportSlug(stat.slug);
                         toast.info(`Tracking latest import for ${stat.slug}...`);
                       } else {
