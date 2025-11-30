@@ -305,51 +305,49 @@ export default function BulkImportAdmin() {
 
   const handleFixStuck = async (slug: string) => {
     try {
-      const history = await getLatestImportHistory(slug);
-      if (!history) {
-        toast.error('No import history found');
+      // Hard-stop: mark *all* in-progress imports for this vertical as cancelled/failed
+      const { data: inProgress, error: fetchError } = await supabase
+        .from('import_history')
+        .select('*')
+        .eq('vertical_slug', slug)
+        .eq('status', 'in_progress');
+
+      if (fetchError) {
+        console.error('Error fetching in-progress imports:', fetchError);
+        toast.error('Failed to check stuck imports', { description: fetchError.message });
         return;
       }
 
-      // Signal cancellation to stop the background Edge Function task
-      // Keep status as 'in_progress' so the should_cancel_import check works
-      const { error } = await supabase
-        .from('import_history')
-        .update({
-          cancelled: true,
-        })
-        .eq('id', history.id);
+      if (!inProgress || inProgress.length === 0) {
+        toast.info('No running imports found for this vertical');
+      } else {
+        const nowIso = new Date().toISOString();
+        const { error: cancelError } = await supabase
+          .from('import_history')
+          .update(row => ({
+            status: 'failed',
+            cancelled: true,
+            completed_at: row.completed_at ?? nowIso,
+            metadata: {
+              ...(row.metadata as any ?? {}),
+              failureReason: 'Import manually cancelled from Bulk Import Admin',
+            },
+          }))
+          .eq('vertical_slug', slug)
+          .eq('status', 'in_progress');
 
-      if (error) {
-        toast.error('Failed to cancel import', { description: error.message });
-        return;
+        if (cancelError) {
+          console.error('Error cancelling in-progress imports:', cancelError);
+          toast.error('Failed to cancel import', { description: cancelError.message });
+          return;
+        }
+
+        toast.success(`Stopped all running imports for ${slug}`, {
+          description: 'Background tasks will wind down shortly.',
+        });
       }
 
-      toast.info(`Cancelling background task for ${slug}...`, {
-        description: 'Please wait a moment for it to stop',
-      });
-
-      // Wait 5 seconds for the background task to detect cancellation
-      await new Promise(resolve => setTimeout(resolve, 5000));
-
-      // Now mark it as failed and clean up
-      const { error: updateError } = await supabase
-        .from('import_history')
-        .update({
-          status: 'failed',
-          completed_at: new Date().toISOString(),
-          metadata: {
-            ...((history.metadata as any) || {}),
-            failureReason: 'Import stalled - manually cancelled by admin',
-          },
-        })
-        .eq('id', history.id);
-
-      if (updateError) {
-        console.error('Error marking as failed:', updateError);
-      }
-
-      // Clear the active tracking and reset state
+      // Immediately clear any active polling + UI state for this vertical
       setActiveImportSlug(null);
       setVerticalStats(prev =>
         prev.map(s =>
@@ -367,10 +365,6 @@ export default function BulkImportAdmin() {
             : s,
         ),
       );
-
-      toast.success(`Stopped and fixed stuck import for ${slug}`, {
-        description: 'You can now start a fresh import',
-      });
     } catch (error: any) {
       console.error('Error fixing stuck import:', error);
       toast.error('Failed to fix stuck import', {
