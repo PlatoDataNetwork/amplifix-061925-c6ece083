@@ -28,6 +28,9 @@ interface VerticalStats {
     errorCount: number;
     currentPage: number;
   };
+  duplicateOnlyMode?: boolean;
+  lastImportedCount?: number;
+  noChangeCounter?: number;
 }
 
 interface GlobalStats {
@@ -104,6 +107,13 @@ export default function BulkImportAdmin() {
             return s; // No changes, return same object
           }
 
+          // Detect if we're in "duplicate only" mode (no new imports for consecutive polls)
+          const lastImportedCount = s.lastImportedCount ?? data.imported_count;
+          const noChangeCounter = data.imported_count === lastImportedCount 
+            ? (s.noChangeCounter ?? 0) + 1 
+            : 0;
+          const duplicateOnlyMode = noChangeCounter >= 3; // After 3 polls (~9 seconds) with no new imports
+
           return {
             ...s,
             importing: data.status === 'in_progress',
@@ -115,6 +125,9 @@ export default function BulkImportAdmin() {
               errorCount: data.error_count,
               currentPage: Math.max(1, Math.ceil(data.total_processed / 20)),
             },
+            duplicateOnlyMode,
+            lastImportedCount: data.imported_count,
+            noChangeCounter,
           };
         }),
       );
@@ -472,10 +485,21 @@ export default function BulkImportAdmin() {
                       <div className="flex items-center gap-2">
                         <span className="text-muted-foreground">Page {stat.importProgress.currentPage}</span>
                         {stat.importing && (
-                          <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                          <Loader2 className={`h-3 w-3 animate-spin ${stat.duplicateOnlyMode ? 'text-muted-foreground/50' : 'text-primary'}`} />
                         )}
                       </div>
                     </div>
+                    
+                    {/* Duplicate-only mode alert */}
+                    {stat.duplicateOnlyMode && stat.importing && (
+                      <div className="flex items-center gap-2 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded text-xs">
+                        <AlertCircle className="h-3 w-3 text-yellow-600 flex-shrink-0" />
+                        <span className="text-yellow-600 font-medium">
+                          No new articles found - only processing duplicates
+                        </span>
+                      </div>
+                    )}
+                    
                     <div className="grid grid-cols-4 gap-2 text-xs">
                       <div>
                         <span className="text-muted-foreground">Processed:</span>
