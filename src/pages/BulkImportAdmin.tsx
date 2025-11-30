@@ -260,6 +260,29 @@ export default function BulkImportAdmin() {
         throw error;
       }
 
+      // If the import returns but completed with errors, check the status
+      if (data.importHistoryId) {
+        setTimeout(async () => {
+          const { data: historyCheck } = await supabase
+            .from('import_history')
+            .select('status, error_count, metadata')
+            .eq('id', data.importHistoryId)
+            .single();
+
+          if (historyCheck?.status === 'failed') {
+            const errorMsg = (historyCheck.metadata as any)?.errorMessage || 'Import failed';
+            toast.error(`Import failed for ${slug}`, {
+              description: errorMsg,
+              duration: 8000
+            });
+            setVerticalStats(prev =>
+              prev.map(s => s.slug === slug ? { ...s, importing: false, stalled: false } : s)
+            );
+            setActiveImportSlug(null);
+          }
+        }, 1500);
+      }
+
       toast.success(resumeImportId ? `Import resumed for ${slug}!` : `Import started for ${slug}!`, {
         description: data.message,
         duration: 5000
@@ -311,7 +334,8 @@ export default function BulkImportAdmin() {
       }
 
       if (!inProgress || inProgress.length === 0) {
-        toast.info('No running imports found for this vertical');
+        // No stuck imports in DB, but UI might be stuck - just clear the UI state
+        toast.info(`No running imports found - clearing UI state for ${slug}`);
       } else {
         const nowIso = new Date().toISOString();
         
@@ -331,12 +355,12 @@ export default function BulkImportAdmin() {
             .eq('id', row.id);
         }
 
-        toast.success(`Stopped all running imports for ${slug}`, {
+        toast.success(`Stopped ${inProgress.length} running import(s) for ${slug}`, {
           description: 'Background tasks will wind down shortly.',
         });
       }
 
-      // Immediately clear any active polling + UI state for this vertical
+      // Always clear UI state for this vertical, regardless of DB state
       setActiveImportSlug(null);
       setVerticalStats(prev =>
         prev.map(s =>

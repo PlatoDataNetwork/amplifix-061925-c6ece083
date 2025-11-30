@@ -121,7 +121,27 @@ async function runBackgroundImport(
 
       const response = await fetch(pageUrl);
       if (!response.ok) {
-        console.error(`Failed to fetch page ${page}:`, response.status);
+        const errorMsg = `Failed to fetch page ${page}: ${response.status} ${response.statusText}`;
+        console.error(errorMsg);
+        
+        // If this is the very first page, mark as failed with error details
+        if (page === 1) {
+          await supabase
+            .from("import_history")
+            .update({
+              status: "failed",
+              completed_at: new Date().toISOString(),
+              error_count: 1,
+              metadata: {
+                ...((await supabase.from("import_history").select("metadata").eq("id", importHistoryId).single()).data?.metadata || {}),
+                errorMessage: errorMsg,
+                failureReason: `Source feed returned ${response.status} on initial request`,
+              },
+            })
+            .eq("id", importHistoryId);
+          
+          throw new Error(errorMsg);
+        }
         break;
       }
 
