@@ -472,7 +472,8 @@ function VerticalCard({ slug, name, defaultUrl, onStatsChange }: VerticalCardPro
     setJsonUrl,
     startFastImport,
     startAIProcessing,
-    loadStats
+    loadStats,
+    reprocessWithSourceExtraction
   } = useVerticalOperations(slug);
 
   useEffect(() => {
@@ -552,12 +553,12 @@ function VerticalCard({ slug, name, defaultUrl, onStatsChange }: VerticalCardPro
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap">
           <Button
             onClick={handleFastImport}
             disabled={!jsonUrl.trim() || processing || stats.loading}
             variant="default"
-            className="flex-1"
+            className="flex-1 min-w-[160px]"
           >
             {processing ? (
               <>
@@ -576,11 +577,23 @@ function VerticalCard({ slug, name, defaultUrl, onStatsChange }: VerticalCardPro
             onClick={() => handleAIProcessing(false)}
             disabled={stats.remaining === 0 || processing || stats.aiJobStatus === 'in_progress'}
             variant="secondary"
-            className="flex-1"
+            className="flex-1 min-w-[160px]"
           >
             <Zap className="mr-2 h-4 w-4" />
             AI Process ({stats.remaining})
           </Button>
+
+          {slug === 'cannabis' && (
+            <Button
+              onClick={() => reprocessWithSourceExtraction(false, false)}
+              disabled={processing || stats.loading}
+              variant="outline"
+              className="flex-1 min-w-[200px]"
+            >
+              <Zap className="mr-2 h-4 w-4" />
+              Reprocess & Extract Sources
+            </Button>
+          )}
 
           <Button
             onClick={() => loadStats()}
