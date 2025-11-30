@@ -723,24 +723,46 @@ export default function BulkImportAdmin() {
                 <Trash2 className="h-5 w-5" />
                 <CardTitle className="text-lg">Cannabis Articles Cleanup</CardTitle>
               </div>
-              <Button
-                onClick={handleCleanCannabisArticles}
-                disabled={cleaningCannabis}
-                variant="destructive"
-                size="sm"
-              >
-                {cleaningCannabis ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Cleaning...
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Clean Cannabis Articles
-                  </>
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleCleanCannabisArticles}
+                  disabled={cleaningCannabis}
+                  variant="destructive"
+                  size="sm"
+                >
+                  {cleaningCannabis ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Cleaning...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Clean Cannabis Articles
+                    </>
+                  )}
+                </Button>
+                {cleaningCannabis && (
+                  <Button
+                    onClick={async () => {
+                      try {
+                        await supabase.functions.invoke('cleanup-cannabis-articles', {
+                          body: { action: 'cancel' }
+                        });
+                        setCleaningCannabis(false);
+                        toast.success("Cleanup cancelled");
+                      } catch (error) {
+                        console.error('Error cancelling cleanup:', error);
+                        toast.error("Failed to cancel cleanup");
+                      }
+                    }}
+                    variant="outline"
+                    size="sm"
+                  >
+                    Stop Cleanup
+                  </Button>
                 )}
-              </Button>
+              </div>
             </div>
           </CardHeader>
           {(cannabisCleanupProgress || cannabisCleanupResult) && (
