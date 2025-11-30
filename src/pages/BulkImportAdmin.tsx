@@ -88,6 +88,14 @@ export default function BulkImportAdmin() {
     reformattedCount: number;
     skippedCount: number;
   } | null>(null);
+  const [cannabisCleanupProgress, setCannabisCleanupProgress] = useState<{
+    processed: number;
+    total: number;
+    reformatted: number;
+    skipped: number;
+    percent: number;
+    message: string;
+  } | null>(null);
 
   // Initialize stats on load
   useEffect(() => {
@@ -470,6 +478,7 @@ export default function BulkImportAdmin() {
   const handleCleanCannabisArticles = async () => {
     setCleaningCannabis(true);
     setCannabisCleanupResult(null);
+    setCannabisCleanupProgress(null);
     
     try {
       toast.info('Starting Cannabis articles cleanup...', {
@@ -477,30 +486,77 @@ export default function BulkImportAdmin() {
         duration: 5000
       });
 
-      const { data, error } = await supabase.functions.invoke('cleanup-cannabis-articles', {
-        body: {}
-      });
+      // Stream the cleanup progress
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/cleanup-cannabis-articles`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({})
+        }
+      );
 
-      if (error) {
-        throw error;
+      if (!response.ok || !response.body) {
+        throw new Error('Failed to start cleanup stream');
       }
 
-      if (data.success) {
-        setCannabisCleanupResult({
-          deletedCount: data.deletedCount || 0,
-          reformattedCount: data.reformattedCount || 0,
-          skippedCount: data.skippedCount || 0
-        });
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let textBuffer = '';
 
-        toast.success('Cannabis articles cleanup complete!', {
-          description: data.message,
-          duration: 8000
-        });
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        textBuffer += decoder.decode(value, { stream: true });
 
-        // Refresh the cannabis article count
-        updateCurrentCounts();
-      } else {
-        throw new Error(data.error || 'Cleanup failed');
+        // Process line-by-line
+        let newlineIndex: number;
+        while ((newlineIndex = textBuffer.indexOf('\n')) !== -1) {
+          let line = textBuffer.slice(0, newlineIndex);
+          textBuffer = textBuffer.slice(newlineIndex + 1);
+
+          if (line.endsWith('\r')) line = line.slice(0, -1);
+          if (line.startsWith(':') || line.trim() === '') continue;
+          if (!line.startsWith('data: ')) continue;
+
+          const jsonStr = line.slice(6).trim();
+          
+          try {
+            const parsed = JSON.parse(jsonStr);
+            
+            if (parsed.type === 'progress') {
+              setCannabisCleanupProgress({
+                processed: parsed.processed,
+                total: parsed.total,
+                reformatted: parsed.reformatted,
+                skipped: parsed.skipped,
+                percent: parsed.percent,
+                message: parsed.message
+              });
+            } else if (parsed.type === 'complete') {
+              setCannabisCleanupResult({
+                deletedCount: parsed.deletedCount || 0,
+                reformattedCount: parsed.reformattedCount || 0,
+                skippedCount: parsed.skippedCount || 0
+              });
+
+              toast.success('Cannabis articles cleanup complete!', {
+                description: parsed.message,
+                duration: 8000
+              });
+
+              // Refresh the cannabis article count
+              updateCurrentCounts();
+            } else if (parsed.type === 'error') {
+              throw new Error(parsed.error || 'Cleanup failed');
+            }
+          } catch (parseError) {
+            console.error('Error parsing progress:', parseError);
+          }
+        }
       }
     } catch (error: any) {
       console.error('Cannabis cleanup error:', error);
@@ -510,6 +566,7 @@ export default function BulkImportAdmin() {
       });
     } finally {
       setCleaningCannabis(false);
+      setCannabisCleanupProgress(null);
     }
   };
 
@@ -686,25 +743,57 @@ export default function BulkImportAdmin() {
               </Button>
             </div>
           </CardHeader>
-          {cannabisCleanupResult && (
+          {(cannabisCleanupProgress || cannabisCleanupResult) && (
             <CardContent>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center p-3 bg-red-500/10 rounded-lg">
-                  <p className="text-2xl font-bold text-red-600">{cannabisCleanupResult.deletedCount}</p>
-                  <p className="text-xs text-muted-foreground">Garbage Deleted</p>
+              {cannabisCleanupProgress && cleaningCannabis && (
+                <div className="mb-6 space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="font-medium">{cannabisCleanupProgress.message}</span>
+                    <span className="text-muted-foreground">{cannabisCleanupProgress.percent}%</span>
+                  </div>
+                  <Progress value={cannabisCleanupProgress.percent} className="h-2" />
+                  <div className="grid grid-cols-4 gap-2 text-xs">
+                    <div>
+                      <span className="text-muted-foreground">Processed:</span>
+                      <p className="font-semibold tabular-nums">{cannabisCleanupProgress.processed.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Total:</span>
+                      <p className="font-semibold tabular-nums">{cannabisCleanupProgress.total.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <span className="text-blue-600">Reformatted:</span>
+                      <p className="font-semibold text-blue-600 tabular-nums">{cannabisCleanupProgress.reformatted.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <span className="text-green-600">Skipped:</span>
+                      <p className="font-semibold text-green-600 tabular-nums">{cannabisCleanupProgress.skipped.toLocaleString()}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-center p-3 bg-blue-500/10 rounded-lg">
-                  <p className="text-2xl font-bold text-blue-600">{cannabisCleanupResult.reformattedCount}</p>
-                  <p className="text-xs text-muted-foreground">Reformatted</p>
+              )}
+              
+              {cannabisCleanupResult && !cleaningCannabis && (
+                <div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="text-center p-3 bg-red-500/10 rounded-lg">
+                      <p className="text-2xl font-bold text-red-600">{cannabisCleanupResult.deletedCount}</p>
+                      <p className="text-xs text-muted-foreground">Garbage Deleted</p>
+                    </div>
+                    <div className="text-center p-3 bg-blue-500/10 rounded-lg">
+                      <p className="text-2xl font-bold text-blue-600">{cannabisCleanupResult.reformattedCount}</p>
+                      <p className="text-xs text-muted-foreground">Reformatted</p>
+                    </div>
+                    <div className="text-center p-3 bg-green-500/10 rounded-lg">
+                      <p className="text-2xl font-bold text-green-600">{cannabisCleanupResult.skippedCount}</p>
+                      <p className="text-xs text-muted-foreground">Already Good</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-4 text-center">
+                    Cleanup removes empty articles and adds headers to articles missing them
+                  </p>
                 </div>
-                <div className="text-center p-3 bg-green-500/10 rounded-lg">
-                  <p className="text-2xl font-bold text-green-600">{cannabisCleanupResult.skippedCount}</p>
-                  <p className="text-xs text-muted-foreground">Already Good</p>
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground mt-4 text-center">
-                Cleanup removes empty articles and adds headers to articles missing them
-              </p>
+              )}
             </CardContent>
           )}
         </Card>

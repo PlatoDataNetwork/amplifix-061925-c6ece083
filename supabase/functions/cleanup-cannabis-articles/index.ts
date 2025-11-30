@@ -74,127 +74,184 @@ Deno.serve(async (req) => {
   }
 
   try {
-    console.log('🧹 Starting cannabis articles cleanup...');
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream({
+      async start(controller) {
+        const sendProgress = (data: any) => {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
+        };
 
-    // Step 1: Delete garbage articles (empty content or title)
-    console.log('Step 1: Deleting garbage articles...');
-    const { data: garbageArticles, error: findError } = await supabase
-      .from('articles')
-      .select('id, post_id, title')
-      .eq('vertical_slug', 'cannabis')
-      .or('content.is.null,content.eq.,title.is.null,title.eq.');
+        try {
+          console.log('🧹 Starting cannabis articles cleanup...');
+          sendProgress({ type: 'status', message: 'Starting cleanup...' });
 
-    if (findError) {
-      throw new Error(`Error finding garbage articles: ${findError.message}`);
-    }
-
-    console.log(`Found ${garbageArticles?.length || 0} garbage articles to delete`);
-
-    if (garbageArticles && garbageArticles.length > 0) {
-      const { error: deleteError } = await supabase
-        .from('articles')
-        .delete()
-        .eq('vertical_slug', 'cannabis')
-        .or('content.is.null,content.eq.,title.is.null,title.eq.');
-
-      if (deleteError) {
-        throw new Error(`Error deleting garbage articles: ${deleteError.message}`);
-      }
-      console.log(`✅ Deleted ${garbageArticles.length} garbage articles`);
-    }
-
-    // Step 2: Count total articles without headers
-    console.log('Step 2: Counting articles without headers...');
-    const { count: totalCount, error: countError } = await supabase
-      .from('articles')
-      .select('*', { count: 'exact', head: true })
-      .eq('vertical_slug', 'cannabis')
-      .not('content', 'is', null)
-      .not('content', 'eq', '');
-
-    if (countError) {
-      throw new Error(`Error counting articles: ${countError.message}`);
-    }
-
-    console.log(`Total cannabis articles to check: ${totalCount || 0}`);
-
-    // Process in batches of 50
-    const BATCH_SIZE = 50;
-    let reformattedCount = 0;
-    let skippedCount = 0;
-    let offset = 0;
-
-    while (offset < (totalCount || 0)) {
-      console.log(`Processing batch at offset ${offset}...`);
-      
-      const { data: batch, error: batchError } = await supabase
-        .from('articles')
-        .select('id, title, content, post_id')
-        .eq('vertical_slug', 'cannabis')
-        .not('content', 'is', null)
-        .not('content', 'eq', '')
-        .range(offset, offset + BATCH_SIZE - 1);
-
-      if (batchError) {
-        console.error(`Error fetching batch at offset ${offset}:`, batchError);
-        break;
-      }
-
-      if (!batch || batch.length === 0) break;
-
-      for (const article of batch) {
-        // Check if article needs headers
-        const hasHeaders = article.content?.includes('<h3>') || article.content?.includes('<h2>');
-        
-        if (!hasHeaders && article.content && article.content.length > 100) {
-          console.log(`Reformatting article ${article.post_id}: ${article.title?.substring(0, 50)}...`);
+          // Step 1: Delete garbage articles (empty content or title)
+          console.log('Step 1: Deleting garbage articles...');
+          sendProgress({ type: 'status', message: 'Finding garbage articles...' });
           
-          const cleanedText = cleanText(article.content);
-          const formattedContent = await formatArticleWithAI(cleanedText);
-          
-          const { error: updateError } = await supabase
+          const { data: garbageArticles, error: findError } = await supabase
             .from('articles')
-            .update({ 
-              content: formattedContent,
-              updated_at: new Date().toISOString()
-            })
-            .eq('id', article.id);
+            .select('id, post_id, title')
+            .eq('vertical_slug', 'cannabis')
+            .or('content.is.null,content.eq.,title.is.null,title.eq.');
 
-          if (updateError) {
-            console.error(`Error updating article ${article.id}:`, updateError);
-          } else {
-            reformattedCount++;
+          if (findError) {
+            throw new Error(`Error finding garbage articles: ${findError.message}`);
           }
+
+          console.log(`Found ${garbageArticles?.length || 0} garbage articles to delete`);
+          sendProgress({ 
+            type: 'garbage_found', 
+            count: garbageArticles?.length || 0,
+            message: `Found ${garbageArticles?.length || 0} garbage articles` 
+          });
+
+          if (garbageArticles && garbageArticles.length > 0) {
+            sendProgress({ type: 'status', message: 'Deleting garbage articles...' });
+            
+            const { error: deleteError } = await supabase
+              .from('articles')
+              .delete()
+              .eq('vertical_slug', 'cannabis')
+              .or('content.is.null,content.eq.,title.is.null,title.eq.');
+
+            if (deleteError) {
+              throw new Error(`Error deleting garbage articles: ${deleteError.message}`);
+            }
+            
+            console.log(`✅ Deleted ${garbageArticles.length} garbage articles`);
+            sendProgress({ 
+              type: 'garbage_deleted', 
+              count: garbageArticles.length,
+              message: `Deleted ${garbageArticles.length} garbage articles` 
+            });
+          }
+
+          // Step 2: Count total articles without headers
+          console.log('Step 2: Counting articles without headers...');
+          sendProgress({ type: 'status', message: 'Counting articles to reformat...' });
           
-          // Small delay to avoid rate limiting
-          await new Promise(resolve => setTimeout(resolve, 200));
-        } else {
-          skippedCount++;
+          const { count: totalCount, error: countError } = await supabase
+            .from('articles')
+            .select('*', { count: 'exact', head: true })
+            .eq('vertical_slug', 'cannabis')
+            .not('content', 'is', null)
+            .not('content', 'eq', '');
+
+          if (countError) {
+            throw new Error(`Error counting articles: ${countError.message}`);
+          }
+
+          console.log(`Total cannabis articles to check: ${totalCount || 0}`);
+          sendProgress({ 
+            type: 'total_count', 
+            total: totalCount || 0,
+            message: `Processing ${totalCount || 0} articles...` 
+          });
+
+          // Process in batches of 50
+          const BATCH_SIZE = 50;
+          let reformattedCount = 0;
+          let skippedCount = 0;
+          let offset = 0;
+
+          while (offset < (totalCount || 0)) {
+            console.log(`Processing batch at offset ${offset}...`);
+            
+            const { data: batch, error: batchError } = await supabase
+              .from('articles')
+              .select('id, title, content, post_id')
+              .eq('vertical_slug', 'cannabis')
+              .not('content', 'is', null)
+              .not('content', 'eq', '')
+              .range(offset, offset + BATCH_SIZE - 1);
+
+            if (batchError) {
+              console.error(`Error fetching batch at offset ${offset}:`, batchError);
+              break;
+            }
+
+            if (!batch || batch.length === 0) break;
+
+            for (const article of batch) {
+              // Check if article needs headers
+              const hasHeaders = article.content?.includes('<h3>') || article.content?.includes('<h2>');
+              
+              if (!hasHeaders && article.content && article.content.length > 100) {
+                console.log(`Reformatting article ${article.post_id}: ${article.title?.substring(0, 50)}...`);
+                
+                const cleanedText = cleanText(article.content);
+                const formattedContent = await formatArticleWithAI(cleanedText);
+                
+                const { error: updateError } = await supabase
+                  .from('articles')
+                  .update({ 
+                    content: formattedContent,
+                    updated_at: new Date().toISOString()
+                  })
+                  .eq('id', article.id);
+
+                if (updateError) {
+                  console.error(`Error updating article ${article.id}:`, updateError);
+                } else {
+                  reformattedCount++;
+                }
+                
+                // Small delay to avoid rate limiting
+                await new Promise(resolve => setTimeout(resolve, 200));
+              } else {
+                skippedCount++;
+              }
+            }
+
+            offset += BATCH_SIZE;
+            console.log(`Batch complete. Progress: ${offset}/${totalCount}. Reformatted: ${reformattedCount}, Skipped: ${skippedCount}`);
+            
+            // Send progress update
+            sendProgress({
+              type: 'progress',
+              processed: offset,
+              total: totalCount || 0,
+              reformatted: reformattedCount,
+              skipped: skippedCount,
+              percent: Math.round((offset / (totalCount || 1)) * 100),
+              message: `Processed ${offset}/${totalCount} articles`
+            });
+          }
+
+          const summary = {
+            type: 'complete',
+            success: true,
+            deletedCount: garbageArticles?.length || 0,
+            reformattedCount,
+            skippedCount,
+            totalProcessed: offset,
+            message: `Cleanup complete: deleted ${garbageArticles?.length || 0} garbage articles, reformatted ${reformattedCount} articles without headers, skipped ${skippedCount} articles with headers`
+          };
+
+          console.log('✅ Cleanup summary:', summary);
+          sendProgress(summary);
+          controller.close();
+        } catch (error) {
+          console.error('❌ Cleanup error:', error);
+          sendProgress({
+            type: 'error',
+            success: false,
+            error: error.message
+          });
+          controller.close();
         }
       }
+    });
 
-      offset += BATCH_SIZE;
-      console.log(`Batch complete. Progress: ${offset}/${totalCount}. Reformatted: ${reformattedCount}, Skipped: ${skippedCount}`);
-    }
-
-    const summary = {
-      success: true,
-      deletedCount: garbageArticles?.length || 0,
-      reformattedCount,
-      skippedCount,
-      totalProcessed: offset,
-      message: `Cleanup complete: deleted ${garbageArticles?.length || 0} garbage articles, reformatted ${reformattedCount} articles without headers, skipped ${skippedCount} articles with headers`
-    };
-
-    console.log('✅ Cleanup summary:', summary);
-
-    return new Response(
-      JSON.stringify(summary),
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200 
+    return new Response(stream, {
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
       }
-    );
+    });
 
   } catch (error) {
     console.error('❌ Cleanup error:', error);
