@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowLeft, Loader2, Database, Trash2, RotateCcw, AlertCircle, Save } from "lucide-react";
+import { ArrowLeft, Loader2, Database, Trash2, RotateCcw, AlertCircle, Save, Pause, Play } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import {
@@ -25,6 +25,22 @@ interface Backup {
   article_count: number;
 }
 
+interface BackupJob {
+  id: string;
+  backup_name: string;
+  backup_description: string | null;
+  vertical_slug: string | null;
+  total_articles: number;
+  processed_articles: number;
+  total_chunks: number;
+  completed_chunks: number[];
+  current_chunk: number;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  paused_at: string | null;
+}
+
 const ArticleBackups = () => {
   const navigate = useNavigate();
   const [backups, setBackups] = useState<Backup[]>([]);
@@ -34,10 +50,14 @@ const ArticleBackups = () => {
   const [selectedVertical, setSelectedVertical] = useState<string>("");
   const [verticals, setVerticals] = useState<Array<{ slug: string; count: number }>>([]);
   const [activeBackupName, setActiveBackupName] = useState<string | null>(null);
+  const [activeJobId, setActiveJobId] = useState<string | null>(null);
+  const [pausedJobs, setPausedJobs] = useState<BackupJob[]>([]);
+  const [isPausing, setIsPausing] = useState(false);
 
   useEffect(() => {
     loadBackups();
     loadVerticals();
+    loadPausedJobs();
   }, []);
 
   const loadVerticals = async () => {
@@ -54,6 +74,22 @@ const ArticleBackups = () => {
       }
     } catch (error) {
       console.error("Error loading verticals:", error);
+    }
+  };
+
+  const loadPausedJobs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('backup_jobs')
+        .select('*')
+        .eq('status', 'paused')
+        .order('updated_at', { ascending: false });
+
+      if (error) throw error;
+
+      setPausedJobs(data || []);
+    } catch (error) {
+      console.error("Error loading paused jobs:", error);
     }
   };
 
@@ -246,25 +282,58 @@ const ArticleBackups = () => {
         return;
       }
 
+      // Create backup job record
+      const chunkSize = 5000;
+      const totalChunks = Math.ceil(totalCount / chunkSize);
+
+      const { data: authData } = await supabase.auth.getUser();
+      
+      const { data: job, error: jobError } = await supabase
+        .from('backup_jobs')
+        .insert({
+          backup_name: backupName,
+          backup_description: backupDescription,
+          vertical_slug: isVerticalBackup ? verticalSlug : null,
+          total_articles: totalCount,
+          total_chunks: totalChunks,
+          created_by: authData.user?.id
+        })
+        .select()
+        .single();
+
+      if (jobError) throw jobError;
+
+      setActiveJobId(job.id);
       toast.info(`Starting backup of ${totalCount.toLocaleString()} articles...`);
 
-      // Create a realtime channel for progress updates
+      // Create realtime channel for progress updates
       const channel = supabase.channel(`backup-progress-${backupName}`);
       await channel.subscribe();
 
-      // Process in chunks
-      const chunkSize = 5000;
-      const totalChunks = Math.ceil(totalCount / chunkSize);
+      // Process chunks
       let processedCount = 0;
 
       for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+        // Check if job was paused
+        const { data: jobCheck } = await supabase
+          .from('backup_jobs')
+          .select('status')
+          .eq('id', job.id)
+          .single();
+
+        if (jobCheck?.status === 'paused') {
+          toast.info('Backup paused');
+          break;
+        }
+
         const { data, error } = await supabase.functions.invoke('backup-articles-chunked', {
           body: {
             backupName,
             backupDescription,
             chunkIndex,
             chunkSize,
-            verticalSlug: isVerticalBackup ? verticalSlug : undefined
+            verticalSlug: isVerticalBackup ? verticalSlug : undefined,
+            jobId: job.id
           }
         });
 
@@ -291,19 +360,168 @@ const ArticleBackups = () => {
         }
       }
 
+      // Check final status
+      const { data: finalJob } = await supabase
+        .from('backup_jobs')
+        .select('status, processed_articles')
+        .eq('id', job.id)
+        .single();
+
       await supabase.removeChannel(channel);
 
-      toast.success(`Backup completed: ${processedCount.toLocaleString()} articles backed up`);
-      setIsCreatingBackup(false);
-      setActiveBackupName(null);
-      await loadBackups();
+      if (finalJob?.status === 'paused') {
+        toast.info(`Backup paused at ${finalJob.processed_articles.toLocaleString()} articles`);
+        await loadPausedJobs();
+      } else {
+        // Mark as completed
+        await supabase
+          .from('backup_jobs')
+          .update({
+            status: 'completed',
+            completed_at: new Date().toISOString()
+          })
+          .eq('id', job.id);
+
+        toast.success(`Backup completed: ${processedCount.toLocaleString()} articles backed up`);
+        await loadBackups();
+      }
     } catch (error) {
       console.error("Error creating backup:", error);
       toast.error("Failed to complete backup", {
         description: error instanceof Error ? error.message : 'Unknown error'
       });
-      setActiveBackupName(null);
+    } finally {
       setIsCreatingBackup(false);
+      setActiveBackupName(null);
+      setActiveJobId(null);
+    }
+  };
+
+  const handlePauseBackup = async () => {
+    if (!activeJobId) return;
+
+    setIsPausing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('pause-backup', {
+        body: { jobId: activeJobId }
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast.success('Backup paused successfully');
+        await loadPausedJobs();
+      }
+    } catch (error) {
+      console.error('Error pausing backup:', error);
+      toast.error('Failed to pause backup');
+    } finally {
+      setIsPausing(false);
+    }
+  };
+
+  const handleResumeBackup = async (job: BackupJob) => {
+    try {
+      setIsCreatingBackup(true);
+      setActiveBackupName(job.backup_name);
+      setActiveJobId(job.id);
+
+      // Resume the backup
+      const { data, error } = await supabase.functions.invoke('resume-backup', {
+        body: { jobId: job.id }
+      });
+
+      if (error) throw error;
+
+      toast.info(`Resuming backup from chunk ${job.current_chunk}...`);
+
+      // Create realtime channel
+      const channel = supabase.channel(`backup-progress-${job.backup_name}`);
+      await channel.subscribe();
+
+      // Continue from last chunk
+      const chunkSize = 5000;
+      let processedCount = job.processed_articles;
+
+      for (let chunkIndex = job.current_chunk; chunkIndex < job.total_chunks; chunkIndex++) {
+        // Check if paused again
+        const { data: jobCheck } = await supabase
+          .from('backup_jobs')
+          .select('status')
+          .eq('id', job.id)
+          .single();
+
+        if (jobCheck?.status === 'paused') {
+          toast.info('Backup paused');
+          break;
+        }
+
+        const { data: chunkData, error: chunkError } = await supabase.functions.invoke('backup-articles-chunked', {
+          body: {
+            backupName: job.backup_name,
+            backupDescription: job.backup_description,
+            chunkIndex,
+            chunkSize,
+            verticalSlug: job.vertical_slug,
+            jobId: job.id
+          }
+        });
+
+        if (chunkError) {
+          console.error(`Error in chunk ${chunkIndex}:`, chunkError);
+          throw chunkError;
+        }
+
+        if (chunkData?.success) {
+          processedCount += chunkData.backedUp;
+          
+          await channel.send({
+            type: 'broadcast',
+            event: 'progress',
+            payload: {
+              backed: processedCount,
+              total: job.total_articles,
+              status: chunkIndex === job.total_chunks - 1 ? 'completed' : 'processing'
+            }
+          });
+
+          if (!chunkData.hasMore) break;
+        }
+      }
+
+      // Check final status
+      const { data: finalJob } = await supabase
+        .from('backup_jobs')
+        .select('status')
+        .eq('id', job.id)
+        .single();
+
+      await supabase.removeChannel(channel);
+
+      if (finalJob?.status === 'paused') {
+        toast.info('Backup paused');
+        await loadPausedJobs();
+      } else {
+        // Mark as completed
+        await supabase
+          .from('backup_jobs')
+          .update({
+            status: 'completed',
+            completed_at: new Date().toISOString()
+          })
+          .eq('id', job.id);
+
+        toast.success(`Backup completed: ${processedCount.toLocaleString()} articles`);
+        await loadBackups();
+        await loadPausedJobs();
+      }
+    } catch (error) {
+      console.error('Error resuming backup:', error);
+      toast.error('Failed to resume backup');
+    } finally {
+      setIsCreatingBackup(false);
+      setActiveBackupName(null);
+      setActiveJobId(null);
     }
   };
 
@@ -404,15 +622,90 @@ const ArticleBackups = () => {
 
           {/* Live Backup Progress */}
           {activeBackupName && (
-            <div className="mb-6">
+            <div className="mb-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold">Backup In Progress</h2>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handlePauseBackup}
+                  disabled={isPausing}
+                  className="gap-2"
+                >
+                  {isPausing ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Pause className="h-4 w-4" />
+                  )}
+                  Pause Backup
+                </Button>
+              </div>
               <BackupProgress 
                 backupName={activeBackupName} 
                 onComplete={() => {
                   setActiveBackupName(null);
+                  setActiveJobId(null);
                   loadBackups();
                 }}
               />
             </div>
+          )}
+
+          {/* Paused Backups */}
+          {pausedJobs.length > 0 && (
+            <Card className="mb-6 border-2 border-amber-500/30 bg-amber-500/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                  <Pause className="h-5 w-5" />
+                  Paused Backups
+                </CardTitle>
+                <CardDescription>
+                  Resume these backups to continue from where they left off
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {pausedJobs.map((job) => (
+                  <div
+                    key={job.id}
+                    className="flex items-center justify-between p-4 bg-background rounded-lg border border-border"
+                  >
+                    <div className="flex-1">
+                      <p className="font-semibold font-mono text-sm">
+                        {job.backup_name}
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {job.backup_description || 'No description'}
+                      </p>
+                      <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                        <span>
+                          {job.processed_articles.toLocaleString()} / {job.total_articles.toLocaleString()} articles
+                        </span>
+                        <span>•</span>
+                        <span>
+                          {Math.round((job.processed_articles / job.total_articles) * 100)}% complete
+                        </span>
+                        <span>•</span>
+                        <span>
+                          Paused {formatDistanceToNow(new Date(job.paused_at!), { addSuffix: true })}
+                        </span>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => handleResumeBackup(job)}
+                      disabled={isCreatingBackup}
+                      className="gap-2"
+                    >
+                      {isCreatingBackup && activeJobId === job.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Play className="h-4 w-4" />
+                      )}
+                      Resume
+                    </Button>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
           )}
 
           {/* Info Alert */}
