@@ -135,7 +135,7 @@ export default function BulkImportAdmin() {
     const interval = setInterval(async () => {
       const { data, error } = await supabase
         .from('import_history')
-        .select('total_processed, imported_count, skipped_count, error_count, status, started_at')
+        .select('total_processed, imported_count, skipped_count, error_count, status, started_at, metadata')
         .eq('vertical_slug', activeImportSlug)
         .order('started_at', { ascending: false })
         .limit(1)
@@ -173,6 +173,17 @@ export default function BulkImportAdmin() {
           const noChangeCounter = isDuplicateProgress ? (s.noChangeCounter ?? 0) + 1 : 0;
           const duplicateOnlyMode = isDuplicateProgress && noChangeCounter >= 3;
 
+          const meta = (data.metadata as any) || {};
+          const lastProcessedPageRaw = meta?.lastProcessedPage;
+          const lastProcessedPage = typeof lastProcessedPageRaw === 'number'
+            ? lastProcessedPageRaw
+            : lastProcessedPageRaw
+              ? parseInt(String(lastProcessedPageRaw), 10) || null
+              : null;
+
+          const fallbackPage = Math.max(1, Math.ceil((data.total_processed ?? 0) / 10));
+          const currentPage = lastProcessedPage ?? fallbackPage;
+
           return {
             ...s,
             // Keep importing=true while status is in_progress so the card can
@@ -184,7 +195,7 @@ export default function BulkImportAdmin() {
               importedCount: data.imported_count ?? 0,
               skippedCount: data.skipped_count ?? 0,
               errorCount: data.error_count ?? 0,
-              currentPage: Math.max(1, Math.ceil((data.total_processed ?? 0) / 20)),
+              currentPage,
             },
             duplicateOnlyMode,
             lastImportedCount: data.imported_count ?? 0,
@@ -1179,21 +1190,34 @@ export default function BulkImportAdmin() {
                         setVerticalStats(prev =>
                           prev.map(s =>
                             s.slug === stat.slug
-                              ? {
-                                  ...s,
-                                  importing: history.status === 'in_progress',
-                                  importComplete: history.status === 'completed',
-                                  importProgress: {
-                                    totalProcessed: history.total_processed ?? 0,
-                                    importedCount: history.imported_count ?? 0,
-                                    skippedCount: history.skipped_count ?? 0,
-                                    errorCount: history.error_count ?? 0,
-                                    currentPage: Math.max(1, Math.ceil((history.total_processed ?? 0) / 20)),
-                                  },
-                                  duplicateOnlyMode: false,
-                                  lastImportedCount: history.imported_count ?? 0,
-                                  noChangeCounter: 0,
-                                }
+                              ? (() => {
+                                  const meta = (history.metadata as any) || {};
+                                  const lastProcessedPageRaw = meta?.lastProcessedPage;
+                                  const lastProcessedPage = typeof lastProcessedPageRaw === 'number'
+                                    ? lastProcessedPageRaw
+                                    : lastProcessedPageRaw
+                                      ? parseInt(String(lastProcessedPageRaw), 10) || null
+                                      : null;
+
+                                  const fallbackPage = Math.max(1, Math.ceil((history.total_processed ?? 0) / 10));
+                                  const currentPage = lastProcessedPage ?? fallbackPage;
+
+                                  return {
+                                    ...s,
+                                    importing: history.status === 'in_progress',
+                                    importComplete: history.status === 'completed',
+                                    importProgress: {
+                                      totalProcessed: history.total_processed ?? 0,
+                                      importedCount: history.imported_count ?? 0,
+                                      skippedCount: history.skipped_count ?? 0,
+                                      errorCount: history.error_count ?? 0,
+                                      currentPage,
+                                    },
+                                    duplicateOnlyMode: false,
+                                    lastImportedCount: history.imported_count ?? 0,
+                                    noChangeCounter: 0,
+                                  };
+                                })()
                               : s,
                           ),
                         );
