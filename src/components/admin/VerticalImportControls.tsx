@@ -6,6 +6,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useVerticalOperations } from "@/hooks/useVerticalOperations";
 import { useResumeAIJob } from "@/hooks/useResumeAIJob";
 import { SourceAttributionMonitor } from "@/components/admin/SourceAttributionMonitor";
+import { SourceUrlStats } from "@/components/admin/SourceUrlStats";
 import { Loader2, Play, Sparkles, Trash2, Link2, History, AlertTriangle, FileText, ExternalLink, RefreshCcw, Zap } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -68,6 +69,9 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
 
   return (
     <div className="space-y-6">
+      {/* Source URL Extraction Stats */}
+      <SourceUrlStats verticalSlug={verticalSlug} />
+
       {/* Source Attribution Monitor */}
       <SourceAttributionMonitor 
         verticalSlug={verticalSlug} 
