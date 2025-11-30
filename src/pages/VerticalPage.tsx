@@ -5,6 +5,7 @@ import SEOHead from "@/components/SEOHead";
 import BlogPostCard from "@/components/BlogPostCard";
 import ArticleListItem from "@/components/ArticleListItem";
 import ViewToggle from "@/components/ViewToggle";
+import VerticalAIChat from "@/components/VerticalAIChat";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useMemo, useState, useEffect } from "react";
@@ -259,6 +260,14 @@ const VerticalPage = () => {
       </div>
 
       <Footer />
+      
+      {/* AI Chat Assistant */}
+      {verticalInfo && (
+        <VerticalAIChat 
+          verticalSlug={verticalInfo.slug} 
+          verticalName={verticalInfo.name} 
+        />
+      )}
     </div>
   );
 };

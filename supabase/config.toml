@@ -126,3 +126,6 @@ verify_jwt = true
 [functions.cleanup-cannabis-articles]
 verify_jwt = false
 
+[functions.vertical-ai-chat]
+verify_jwt = false
+
