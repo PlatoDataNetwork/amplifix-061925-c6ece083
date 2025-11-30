@@ -3,6 +3,8 @@ import Footer from "@/components/Footer";
 import MainHeader from "@/components/MainHeader";
 import SEOHead from "@/components/SEOHead";
 import BlogPostCard from "@/components/BlogPostCard";
+import ArticleListItem from "@/components/ArticleListItem";
+import ViewToggle from "@/components/ViewToggle";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useMemo, useState, useEffect } from "react";
@@ -20,6 +22,17 @@ const VerticalPage = () => {
   const location = useLocation();
   const { verticals } = usePlatoVerticals();
   useLanguage();
+  
+  // View preference state
+  const [view, setView] = useState<"card" | "list">(() => {
+    const saved = localStorage.getItem("vertical-view-preference");
+    return (saved as "card" | "list") || "card";
+  });
+
+  const handleViewChange = (newView: "card" | "list") => {
+    setView(newView);
+    localStorage.setItem("vertical-view-preference", newView);
+  };
   
   // Determine language prefix from current path (e.g. /uk/intel/...)
   const pathParts = location.pathname.split("/").filter(Boolean);
@@ -133,7 +146,7 @@ const VerticalPage = () => {
         </Button>
 
         {/* Hero Section */}
-        <div className="text-center mb-12 md:mb-16">
+        <div className="text-center mb-8 md:mb-12">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8">
             <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
               {verticalInfo.name}
@@ -144,6 +157,13 @@ const VerticalPage = () => {
             Stay updated with the latest {verticalInfo.name} news, insights, and intelligence.
           </p>
         </div>
+
+        {/* View Toggle */}
+        {!isLoading && allPosts.length > 0 && (
+          <div className="flex justify-end mb-8">
+            <ViewToggle view={view} onViewChange={handleViewChange} />
+          </div>
+        )}
 
         {/* Loading State */}
         {isLoading && (
@@ -170,22 +190,38 @@ const VerticalPage = () => {
           </div>
         )}
 
-        {/* Articles Grid */}
+        {/* Articles Grid/List */}
         {!isLoading && allPosts.length > 0 && (
           <section className="mb-12 md:mb-16">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {allPosts.map((post) => (
-                <BlogPostCard 
-                  key={post.id} 
-                  post={{
-                    ...post,
-                    readTime: post.read_time
-                  }} 
-                  articleLink={`${langPrefix}/intel/external/${post.id}`}
-                  buttonText="Read Full Article"
-                />
-              ))}
-            </div>
+            {view === "card" ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                {allPosts.map((post) => (
+                  <BlogPostCard 
+                    key={post.id} 
+                    post={{
+                      ...post,
+                      readTime: post.read_time
+                    }} 
+                    articleLink={`${langPrefix}/intel/external/${post.id}`}
+                    buttonText="Read Full Article"
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {allPosts.map((post) => (
+                  <ArticleListItem 
+                    key={post.id} 
+                    post={{
+                      ...post,
+                      readTime: post.read_time
+                    }} 
+                    articleLink={`${langPrefix}/intel/external/${post.id}`}
+                    buttonText="Read Full Article"
+                  />
+                ))}
+              </div>
+            )}
 
             {/* Show More Button */}
             {hasMorePosts && (
