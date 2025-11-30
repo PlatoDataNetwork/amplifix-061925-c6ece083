@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { usePlatoVerticals } from '@/hooks/usePlatoVerticals';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Database, Zap, Download, Play, CheckCircle2, AlertCircle, Activity, RefreshCw } from 'lucide-react';
+import { Loader2, Database, Zap, Download, Play, CheckCircle2, AlertCircle, Activity, RefreshCw, Trash2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -82,6 +82,12 @@ export default function BulkImportAdmin() {
   const [feedHealth, setFeedHealth] = useState<FeedHealthResponse | null>(null);
   const [checkingHealth, setCheckingHealth] = useState(false);
   const [showHealthDashboard, setShowHealthDashboard] = useState(false);
+  const [cleaningCannabis, setCleaningCannabis] = useState(false);
+  const [cannabisCleanupResult, setCannabisCleanupResult] = useState<{
+    deletedCount: number;
+    reformattedCount: number;
+    skippedCount: number;
+  } | null>(null);
 
   // Initialize stats on load
   useEffect(() => {
@@ -461,6 +467,52 @@ export default function BulkImportAdmin() {
     }
   };
 
+  const handleCleanCannabisArticles = async () => {
+    setCleaningCannabis(true);
+    setCannabisCleanupResult(null);
+    
+    try {
+      toast.info('Starting Cannabis articles cleanup...', {
+        description: 'This will delete garbage articles and reformat articles without headers',
+        duration: 5000
+      });
+
+      const { data, error } = await supabase.functions.invoke('cleanup-cannabis-articles', {
+        body: {}
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.success) {
+        setCannabisCleanupResult({
+          deletedCount: data.deletedCount || 0,
+          reformattedCount: data.reformattedCount || 0,
+          skippedCount: data.skippedCount || 0
+        });
+
+        toast.success('Cannabis articles cleanup complete!', {
+          description: data.message,
+          duration: 8000
+        });
+
+        // Refresh the cannabis article count
+        updateCurrentCounts();
+      } else {
+        throw new Error(data.error || 'Cleanup failed');
+      }
+    } catch (error: any) {
+      console.error('Cannabis cleanup error:', error);
+      toast.error('Cannabis cleanup failed', {
+        description: error.message || 'Unknown error',
+        duration: 8000
+      });
+    } finally {
+      setCleaningCannabis(false);
+    }
+  };
+
   const handleAIProcessing = async (slug: string) => {
     setVerticalStats(prev =>
       prev.map(s => s.slug === slug ? { ...s, aiProcessing: true } : s)
@@ -605,6 +657,57 @@ export default function BulkImportAdmin() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Cannabis Cleanup Section */}
+        <Card className="mb-6">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Trash2 className="h-5 w-5" />
+                <CardTitle className="text-lg">Cannabis Articles Cleanup</CardTitle>
+              </div>
+              <Button
+                onClick={handleCleanCannabisArticles}
+                disabled={cleaningCannabis}
+                variant="destructive"
+                size="sm"
+              >
+                {cleaningCannabis ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Cleaning...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Clean Cannabis Articles
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          {cannabisCleanupResult && (
+            <CardContent>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center p-3 bg-red-500/10 rounded-lg">
+                  <p className="text-2xl font-bold text-red-600">{cannabisCleanupResult.deletedCount}</p>
+                  <p className="text-xs text-muted-foreground">Garbage Deleted</p>
+                </div>
+                <div className="text-center p-3 bg-blue-500/10 rounded-lg">
+                  <p className="text-2xl font-bold text-blue-600">{cannabisCleanupResult.reformattedCount}</p>
+                  <p className="text-xs text-muted-foreground">Reformatted</p>
+                </div>
+                <div className="text-center p-3 bg-green-500/10 rounded-lg">
+                  <p className="text-2xl font-bold text-green-600">{cannabisCleanupResult.skippedCount}</p>
+                  <p className="text-xs text-muted-foreground">Already Good</p>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-4 text-center">
+                Cleanup removes empty articles and adds headers to articles missing them
+              </p>
+            </CardContent>
+          )}
+        </Card>
 
         {/* Feed Health Dashboard */}
         <Card className="mb-6">
