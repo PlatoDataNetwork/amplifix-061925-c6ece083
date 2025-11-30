@@ -96,6 +96,11 @@ export default function BulkImportAdmin() {
     percent: number;
     message: string;
   } | null>(null);
+  const [cannabisCleanupCheckpoint, setCannabisCleanupCheckpoint] = useState<{
+    processed: number;
+    batchIndex: number;
+  } | null>(null);
+  const [loadingCannabisCheckpoint, setLoadingCannabisCheckpoint] = useState(false);
 
   // Initialize stats on load
   useEffect(() => {
@@ -115,6 +120,11 @@ export default function BulkImportAdmin() {
     
     return () => clearInterval(interval);
   }, [showHealthDashboard]);
+
+  // Load cannabis cleanup resume checkpoint on mount
+  useEffect(() => {
+    loadCannabisCleanupCheckpoint();
+  }, []);
 
 
   // Poll import_history for the active import to show realtime stats
@@ -262,6 +272,44 @@ export default function BulkImportAdmin() {
       verticalsImported: imported,
       verticalsAIProcessed: aiProcessed
     }));
+  };
+
+  const loadCannabisCleanupCheckpoint = async () => {
+    try {
+      setLoadingCannabisCheckpoint(true);
+      const { data, error } = await supabase
+        .from('import_history')
+        .select('metadata')
+        .eq('vertical_slug', 'cannabis')
+        .eq('metadata->>operation', 'cleanup')
+        .eq('status', 'in_progress')
+        .order('started_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error loading cannabis cleanup checkpoint:', error);
+        setCannabisCleanupCheckpoint(null);
+        return;
+      }
+
+      if (!data || !data.metadata) {
+        setCannabisCleanupCheckpoint(null);
+        return;
+      }
+
+      const metadata = data.metadata as any;
+      const processedIds = Array.isArray(metadata.processedIds) ? metadata.processedIds : [];
+      const processed = processedIds.length;
+      const batchIndex = typeof metadata.lastBatchIndex === 'number' ? metadata.lastBatchIndex : 0;
+
+      setCannabisCleanupCheckpoint({ processed, batchIndex });
+    } catch (err) {
+      console.error('Unexpected error loading cannabis cleanup checkpoint:', err);
+      setCannabisCleanupCheckpoint(null);
+    } finally {
+      setLoadingCannabisCheckpoint(false);
+    }
   };
 
   const handleImport = async (slug: string, resumeImportId?: string) => {
@@ -567,6 +615,7 @@ export default function BulkImportAdmin() {
     } finally {
       setCleaningCannabis(false);
       setCannabisCleanupProgress(null);
+      loadCannabisCleanupCheckpoint();
     }
   };
 
@@ -718,10 +767,19 @@ export default function BulkImportAdmin() {
         {/* Cannabis Cleanup Section */}
         <Card className="mb-6">
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Trash2 className="h-5 w-5" />
-                <CardTitle className="text-lg">Cannabis Articles Cleanup</CardTitle>
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Trash2 className="h-5 w-5" />
+                  <CardTitle className="text-lg">Cannabis Articles Cleanup</CardTitle>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {loadingCannabisCheckpoint
+                    ? 'Checking for existing cleanup job...'
+                    : cannabisCleanupCheckpoint
+                      ? `Resume checkpoint: batch ${cannabisCleanupCheckpoint.batchIndex + 1} (~${cannabisCleanupCheckpoint.processed.toLocaleString()} articles processed)`
+                      : 'No in-progress cleanup job detected. Next run will start from the beginning.'}
+                </p>
               </div>
               <div className="flex gap-2">
                 <Button
@@ -751,6 +809,7 @@ export default function BulkImportAdmin() {
                         });
                         setCleaningCannabis(false);
                         toast.success("Cleanup cancelled");
+                        loadCannabisCleanupCheckpoint();
                       } catch (error) {
                         console.error('Error cancelling cleanup:', error);
                         toast.error("Failed to cancel cleanup");
