@@ -1,5 +1,14 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
+const supabaseUrlEnv = Deno.env.get("SUPABASE_URL");
+const supabaseServiceKeyEnv = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+// Global Supabase client to avoid ReferenceError in any execution path
+const supabase =
+  supabaseUrlEnv && supabaseServiceKeyEnv
+    ? createClient(supabaseUrlEnv, supabaseServiceKeyEnv)
+    : null;
+
 interface ArVrArticle {
   id: number;
   title: { rendered: string };
