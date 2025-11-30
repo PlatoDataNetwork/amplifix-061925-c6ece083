@@ -31,7 +31,8 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
     addSourceAttribution,
     removeSourceAttribution,
     resetAIProcessing,
-    resetAndRestartAI
+    resetAndRestartAI,
+    reprocessWithSourceExtraction
   } = useVerticalOperations(verticalSlug);
   
   const { resumeJob, resuming } = useResumeAIJob();
@@ -328,33 +329,71 @@ export const VerticalImportControls = ({ verticalSlug }: VerticalImportControlsP
           </Button>
 
           {stats.aiProcessed > 0 && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  disabled={processing}
-                  variant="outline"
-                  className="w-full"
-                >
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Reset AI Processing ({stats.aiProcessed.toLocaleString()})
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Reset AI Processing?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This will reset the AI processing flag for {stats.aiProcessed.toLocaleString()} processed articles in {formatVerticalName(verticalSlug)}, 
-                    allowing you to reprocess them with the improved formatting. This is useful after updating the AI processing prompt.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={resetAIProcessing}>
-                    Reset Processing
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    disabled={processing}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Reset AI Processing ({stats.aiProcessed.toLocaleString()})
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Reset AI Processing?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will reset the AI processing flag for {stats.aiProcessed.toLocaleString()} processed articles in {formatVerticalName(verticalSlug)}, 
+                      allowing you to reprocess them with the improved formatting. This is useful after updating the AI processing prompt.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={resetAIProcessing}>
+                      Reset Processing
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    disabled={processing}
+                    variant="secondary"
+                    className="w-full"
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Reprocess & Extract Sources ({stats.aiProcessed.toLocaleString()})
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Reprocess with Source Extraction?</AlertDialogTitle>
+                    <AlertDialogDescription className="space-y-2">
+                      <p>This will:</p>
+                      <ul className="list-disc list-inside space-y-1 text-sm">
+                        <li>Clear AI processing flags for {stats.aiProcessed.toLocaleString()} articles</li>
+                        <li>Reprocess them with the new source extraction feature</li>
+                        <li>Extract and store actual source URLs (not Plato links)</li>
+                        <li>Re-format content and update tags</li>
+                      </ul>
+                      <p className="font-semibold text-blue-600 dark:text-blue-400 mt-3">
+                        Use this to add source URLs to articles that were processed before this feature was added.
+                      </p>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => reprocessWithSourceExtraction(fastMode, skipTags)}>
+                      Reprocess {fastMode && '(Fast)'}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </>
           )}
 
           <p className="text-xs text-muted-foreground text-center">

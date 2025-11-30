@@ -117,3 +117,6 @@ verify_jwt = false
 [functions.import-cannabis-fast]
 verify_jwt = true
 
+[functions.clear-ai-processed]
+verify_jwt = true
+

@@ -449,6 +449,43 @@ export const useVerticalOperations = (verticalSlug: string) => {
     }
   };
 
+  const reprocessWithSourceExtraction = async (fastMode = false, skipTags = false) => {
+    try {
+      setProcessing(true);
+      const mode = fastMode ? ' (Fast Mode)' : '';
+      toast.info(`Clearing AI flags for ${verticalSlug}${mode}...`);
+
+      // Step 1: Clear AI processed flags
+      const { data: clearData, error: clearError } = await supabase.functions.invoke('clear-ai-processed', {
+        body: { verticalSlug }
+      });
+
+      if (clearError) throw clearError;
+
+      toast.info(`Cleared ${clearData.cleared} articles, starting reprocessing with source extraction${mode}...`);
+
+      // Step 2: Start fresh AI processing with source extraction
+      const { data, error } = await supabase.functions.invoke('reset-and-restart-ai', {
+        body: { verticalSlug, fastMode, skipTags }
+      });
+
+      if (error) throw error;
+
+      toast.success(`Reprocessing started with source extraction${mode}!`, {
+        description: `Processing ${data?.articlesToProcess || 0} articles to extract source URLs`,
+        duration: 6000
+      });
+
+      await loadStats();
+    } catch (error) {
+      toast.error(`Failed to reprocess articles`, {
+        description: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   return {
     stats,
     processing,
@@ -464,6 +501,7 @@ export const useVerticalOperations = (verticalSlug: string) => {
     addSourceAttribution,
     removeSourceAttribution,
     resetAIProcessing,
-    resetAndRestartAI
+    resetAndRestartAI,
+    reprocessWithSourceExtraction
   };
 };
