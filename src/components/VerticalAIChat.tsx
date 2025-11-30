@@ -38,13 +38,23 @@ const VerticalAIChat = ({ verticalSlug, verticalName }: VerticalAIChatProps) => 
     setIsLoading(true);
 
     try {
-      const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/vertical-ai-chat`;
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseKey) {
+        throw new Error("Supabase configuration missing");
+      }
+
+      const CHAT_URL = `${supabaseUrl}/functions/v1/vertical-ai-chat`;
+      
+      console.log("Sending chat request to:", CHAT_URL);
+      console.log("Vertical:", verticalSlug);
       
       const resp = await fetch(CHAT_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          Authorization: `Bearer ${supabaseKey}`,
         },
         body: JSON.stringify({ 
           messages: newMessages,
@@ -52,9 +62,12 @@ const VerticalAIChat = ({ verticalSlug, verticalName }: VerticalAIChatProps) => 
         }),
       });
 
+      console.log("Response status:", resp.status);
+
       if (!resp.ok) {
-        const errorData = await resp.json().catch(() => ({}));
-        throw new Error(errorData.error || "Failed to get response");
+        const errorData = await resp.json().catch(() => ({ error: "Unknown error" }));
+        console.error("API error:", errorData);
+        throw new Error(errorData.error || `Request failed with status ${resp.status}`);
       }
 
       if (!resp.body) throw new Error("No response body");
@@ -103,24 +116,26 @@ const VerticalAIChat = ({ verticalSlug, verticalName }: VerticalAIChatProps) => 
                 return newMsgs;
               });
             }
-          } catch {
+          } catch (e) {
+            console.warn("Failed to parse SSE chunk:", e);
             textBuffer = line + "\n" + textBuffer;
             break;
           }
         }
       }
 
+      console.log("Stream completed successfully");
       setIsLoading(false);
     } catch (error) {
       console.error("Chat error:", error);
       setIsLoading(false);
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to get response",
+        title: "Connection Error",
+        description: error instanceof Error ? error.message : "Failed to connect to AI service. Please try again.",
         variant: "destructive",
       });
       // Remove the empty assistant message on error
-      setMessages(prev => prev.slice(0, -1));
+      setMessages(prev => prev.filter((_, idx) => idx !== prev.length - 1));
     }
   };
 
