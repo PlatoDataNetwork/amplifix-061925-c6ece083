@@ -30,6 +30,7 @@ import { AerospaceImport } from "@/components/admin/AerospaceImport";
 import { AerospaceStatsDashboard } from "@/components/AerospaceStatsDashboard";
 import { ImportHistoryTable } from "@/components/ImportHistoryTable";
 import { AerospaceUrlBackfill } from "@/components/AerospaceUrlBackfill";
+import { DateRangeDeletionDialog } from "@/components/admin/DateRangeDeletionDialog";
 
 const ImportAdmin = () => {
   const navigate = useNavigate();
@@ -1500,40 +1501,7 @@ const ImportAdmin = () => {
                 <Database className="h-4 w-4 mr-2" />
                 Remove Zephyrnet Sources
               </Button>
-              <Button
-                variant="destructive"
-                onClick={async () => {
-                  const confirmed = window.confirm(
-                    'Are you sure you want to delete ALL articles posted after January 1, 2025? This action cannot be undone.'
-                  );
-                  
-                  if (!confirmed) return;
-                  
-                  try {
-                    toast.info('Deleting articles after Jan 1, 2025...');
-                    const { data, error } = await supabase.functions.invoke('delete-articles-after-date', {
-                      body: { cutoffDate: '2025-01-01' }
-                    });
-                    
-                    if (error) throw error;
-                    
-                    toast.success('Articles deleted successfully', {
-                      description: `${data.deleted} articles removed`,
-                      duration: 5000
-                    });
-                    
-                    await loadMetrics();
-                  } catch (error) {
-                    toast.error('Failed to delete articles', {
-                      description: error instanceof Error ? error.message : 'Unknown error'
-                    });
-                  }
-                }}
-                disabled={importing !== null}
-              >
-                <Database className="h-4 w-4 mr-2" />
-                Delete Posts After Jan 1, 2025
-              </Button>
+              <DateRangeDeletionDialog onSuccess={loadMetrics} />
               <Button
                 variant="outline"
                 onClick={() => navigate('/admin/backfill')}
