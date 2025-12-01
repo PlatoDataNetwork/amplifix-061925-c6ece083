@@ -402,9 +402,9 @@ const FGNexusShowcase = () => {
                 size="lg" 
                 variant="outline"
                 className="border-cyan-400 text-cyan-400 hover:bg-cyan-400/10"
-                onClick={() => window.open('https://finance.yahoo.com/quote/FGNX/', '_blank')}
+                onClick={() => window.open('https://fgnexus.io/investor-relations/', '_blank')}
               >
-                View Investor Relations
+                Investor Relations
               </Button>
               <Button 
                 size="lg" 
