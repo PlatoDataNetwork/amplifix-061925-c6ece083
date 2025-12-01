@@ -245,19 +245,10 @@ async function runBackgroundImport(
 
           const { data: existing } = await supabase
             .from("articles")
-            .select("id, title, content")
+            .select("id")
             .eq("post_id", postId)
             .eq("vertical_slug", "cannabis")
             .maybeSingle();
-
-          // Check if article exists with empty content/title - update it
-          const hasEmptyContent = existing && (!existing.title || !existing.content || existing.content.length === 0);
-          
-          if (existing && !hasEmptyContent) {
-            skippedCount++;
-            totalProcessed++;
-            continue;
-          }
 
           let imageUrl = null;
           if (article._embedded?.["wp:featuredmedia"]?.[0]?.source_url) {
@@ -332,8 +323,8 @@ async function runBackgroundImport(
             },
           };
 
-          // If article exists with empty content, update it
-          if (hasEmptyContent && existing) {
+          // If article exists, update it; otherwise, insert
+          if (existing) {
             const { error: updateError } = await supabase
               .from("articles")
               .update(articleData)
@@ -344,7 +335,7 @@ async function runBackgroundImport(
               errorCount++;
             } else {
               importedCount++;
-              console.log(`Updated empty article: ${postId}`);
+              console.log(`Updated existing article from JSON: ${postId}`);
             }
           } else {
             batch.push(articleData);
