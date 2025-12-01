@@ -535,6 +535,48 @@ export default function BulkImportAdmin() {
     }
   };
 
+  const handleClearCannabisArticles = async () => {
+    const confirmed = window.confirm(
+      'Are you sure you want to DELETE ALL cannabis articles and import history? This action cannot be undone!'
+    );
+
+    if (!confirmed) return;
+
+    try {
+      toast.info('Deleting all cannabis articles...', {
+        description: 'This may take a moment',
+        duration: 3000
+      });
+
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        throw new Error('Authentication required');
+      }
+
+      const { data, error } = await supabase.functions.invoke('clear-cannabis-articles', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (error) throw error;
+
+      toast.success('Cannabis articles cleared!', {
+        description: `Deleted ${data.deletedCount} articles`,
+        duration: 5000
+      });
+
+      // Refresh the stats
+      await updateCurrentCounts();
+    } catch (error: any) {
+      console.error('Clear cannabis articles error:', error);
+      toast.error('Failed to clear cannabis articles', {
+        description: error.message || 'Unknown error'
+      });
+    }
+  };
+
   const handleCleanCannabisArticles = async () => {
     setCleaningCannabis(true);
     setCannabisCleanupResult(null);
