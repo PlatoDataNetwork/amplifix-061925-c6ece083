@@ -4,13 +4,10 @@ import Footer from "@/components/Footer";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, TrendingUp, Shield, Wallet, Network, Award, Users, FileText, Building2 } from "lucide-react";
-import { useState, useRef } from "react";
 
 const FGNexusShowcase = () => {
   useGTranslateRefresh(true);
   const thumbnailImage = "/lovable-uploads/fgnexus-icon.jpeg";
-  const [showDeck, setShowDeck] = useState(false);
-  const deckRef = useRef<HTMLElement>(null);
 
   return (
     <>
@@ -77,12 +74,7 @@ const FGNexusShowcase = () => {
                   size="lg" 
                   variant="outline"
                   className="border-blue-400 text-blue-400 hover:bg-blue-400/10"
-                  onClick={() => {
-                    setShowDeck(true);
-                    setTimeout(() => {
-                      deckRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 100);
-                  }}
+                  onClick={() => window.open('/documents/fgnexus-investor-deck.pdf', '_blank')}
                 >
                   <FileText className="mr-2 h-5 w-5" />
                   View Investor Deck
@@ -425,41 +417,6 @@ const FGNexusShowcase = () => {
             </div>
           </div>
         </section>
-
-        {/* Investor Deck Section */}
-        {showDeck && (
-          <section ref={deckRef} className="py-20 px-6 bg-black/95">
-            <div className="max-w-7xl mx-auto">
-              <div className="flex justify-between items-center mb-8">
-                <h2 className="text-4xl md:text-5xl font-bold text-cyan-400">Investor Deck</h2>
-                <Button 
-                  variant="outline"
-                  className="border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10"
-                  onClick={() => setShowDeck(false)}
-                >
-                  Close Deck
-                </Button>
-              </div>
-              <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl overflow-hidden">
-                <iframe
-                  src="/documents/fgnexus-investor-deck.pdf"
-                  className="w-full h-[800px]"
-                  title="FG Nexus Investor Deck"
-                />
-              </div>
-              <div className="mt-6 text-center">
-                <Button 
-                  variant="outline"
-                  className="border-blue-400 text-blue-400 hover:bg-blue-400/10"
-                  onClick={() => window.open('/documents/fgnexus-investor-deck.pdf', '_blank')}
-                >
-                  <FileText className="mr-2 h-5 w-5" />
-                  Open in New Tab
-                </Button>
-              </div>
-            </div>
-          </section>
-        )}
 
         {/* Back to Showcase */}
         <section className="py-12 px-6 bg-black">
