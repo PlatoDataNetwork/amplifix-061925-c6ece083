@@ -284,74 +284,31 @@ async function runBackgroundImport(
             rawExcerpt = tempDiv.slice(0, 400);
           }
 
-          // Extract the actual source URL - try multiple possible fields
-          let externalUrl: string | null = null;
+          // Extract actual source URL (not PlatoData URL) - SAME AS AEROSPACE/AVIATION
+          let externalUrl = null;
           
-          // Try sourceLink first
-          if (article.metadata?.sourceLink) {
-            const sourceLink = article.metadata.sourceLink;
-            if (Array.isArray(sourceLink) && sourceLink.length > 0) {
-              externalUrl = sourceLink[0];
-              console.log(`Article ${postId} has sourceLink in metadata: ${externalUrl}`);
-            } else if (typeof sourceLink === "string") {
-              externalUrl = sourceLink;
-              console.log(`Article ${postId} has sourceLink (string) in metadata: ${externalUrl}`);
+          // Check multiple possible source URL locations
+          const possibleUrls = [
+            article.metadata?.sourceLink?.[0],
+            article.source_url,
+            article.link,
+            article.url
+          ].filter((url): url is string => url && typeof url === 'string');
+          
+          // Find first URL that is NOT a platodata.ai URL
+          for (const url of possibleUrls) {
+            if (url && !url.includes('platodata.ai') && !url.includes('platodata.io')) {
+              externalUrl = url;
+              console.log(`Article ${postId} source found: ${externalUrl}`);
+              break;
             }
           }
           
-          // Try source field
-          if (!externalUrl && article.metadata?.source) {
-            externalUrl = typeof article.metadata.source === 'string' 
-              ? article.metadata.source 
-              : article.metadata.source[0];
-            console.log(`Article ${postId} has source in metadata: ${externalUrl}`);
-          }
-          
-          // Try sourceURL field
-          if (!externalUrl && article.metadata?.sourceURL) {
-            externalUrl = typeof article.metadata.sourceURL === 'string'
-              ? article.metadata.sourceURL
-              : article.metadata.sourceURL[0];
-            console.log(`Article ${postId} has sourceURL in metadata: ${externalUrl}`);
-          }
-          
-          // Try to find links in content - look for actual article source links
-          if (!externalUrl && rawContent) {
-            // Look for common source patterns in content
-            const patterns = [
-              /<a[^>]+href=["']([^"']+)["'][^>]*>(?:Source|Read more|Original|Continue reading|Full article)/i,
-              /(?:Source|Read more at|Originally published at|Via)[:\s]*<a[^>]+href=["']([^"']+)["']/i,
-              /<a[^>]+href=["']([^"']+)["'][^>]*target=["']_blank["'][^>]*>(?!Plato)/i
-            ];
-            
-            for (const pattern of patterns) {
-              const match = rawContent.match(pattern);
-              if (match && match[1] && !match[1].includes('platodata')) {
-                externalUrl = match[1];
-                console.log(`Article ${postId} source extracted from content pattern: ${externalUrl}`);
-                break;
-              }
-            }
-          }
-          
-          // Only use article.link as last resort (it's the Plato link)
-          const platoLink = article.link || null;
-          const isPlatoLink = externalUrl && (
-            externalUrl.includes('platodata.ai') || 
-            externalUrl.includes('platodata.io') ||
-            externalUrl.includes('osint.platodata.io')
-          );
-          
-          // If we got a Plato link, discard it - we want external sources only
-          if (isPlatoLink) {
-            console.log(`Article ${postId} has Plato link, treating as original content`);
-            externalUrl = null;
-          }
-
-          // Final check - if no external source found, this is original Plato content
           if (!externalUrl) {
             console.log(`Article ${postId} is original Plato content (no external source)`);
           }
+
+          const platoLink = article.link || null;
 
           // Process content - keep HTML but remove footer links
           const contentWithLinks = removeFooterLinks(rawContent);
