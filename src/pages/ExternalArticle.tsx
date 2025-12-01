@@ -250,6 +250,9 @@ if (!article) {
                 <div className="flex items-center gap-2 notranslate">
                   <Calendar className="h-4 w-4" />
                   <span>{new Date(article.published_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}</span>
+                  {(article.post_id || article.id) && (
+                    <span className="text-muted-foreground/60">| ID: {article.post_id || article.id}</span>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 notranslate">
                   <Clock className="h-4 w-4" />
