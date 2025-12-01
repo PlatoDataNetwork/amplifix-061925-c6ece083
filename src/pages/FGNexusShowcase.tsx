@@ -3,7 +3,7 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, TrendingUp, Shield, Wallet, Network, Award, Users } from "lucide-react";
+import { ArrowRight, TrendingUp, Shield, Wallet, Network, Award, Users, Download, Building2 } from "lucide-react";
 
 const FGNexusShowcase = () => {
   useGTranslateRefresh(true);
@@ -70,6 +70,15 @@ const FGNexusShowcase = () => {
                 >
                   View Stock Price
                 </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="border-blue-400 text-blue-400 hover:bg-blue-400/10"
+                  onClick={() => window.open('/documents/fgnexus-investor-deck.pdf', '_blank')}
+                >
+                  <Download className="mr-2 h-5 w-5" />
+                  Investor Deck
+                </Button>
               </div>
             </div>
 
@@ -125,50 +134,58 @@ const FGNexusShowcase = () => {
           </div>
         </section>
 
-        {/* 5 Exponential Pillars */}
+        {/* 6 Exponential Pillars */}
         <section className="py-20 px-6 bg-black">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 text-center"><span className="text-cyan-400">5 Exponential</span> Pillars</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 text-center"><span className="text-cyan-400">6 Exponential</span> Pillars</h2>
             <p className="text-xl text-gray-400 mb-12 text-center">To compound ETH per share</p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-500/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20">
                 <TrendingUp className="h-12 w-12 text-cyan-400 mb-4" />
-                <h3 className="text-xl font-bold text-white mb-3">Accumulate & Stake</h3>
+                <h3 className="text-xl font-bold text-white mb-3">Strategic U.S. Reserve Asset</h3>
                 <p className="text-gray-300">
                   Provide a market-ready vehicle for U.S. institutions and policymakers to gain large-scale ETH exposure.
                 </p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-highlight-blue/50 transition-colors">
-                <Wallet className="h-12 w-12 text-highlight-blue mb-4" />
-                <h3 className="text-xl font-bold text-white mb-3">Gateway for Capital</h3>
+              <div className="bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/20 rounded-xl p-6 hover:border-blue-500/60 transition-all hover:shadow-lg hover:shadow-blue-500/20">
+                <Wallet className="h-12 w-12 text-blue-400 mb-4" />
+                <h3 className="text-xl font-bold text-white mb-3">Gateway for Institutional Capital</h3>
                 <p className="text-gray-300">
                   Offer compliant, yield-enhanced ETH exposure through a NASDAQ-listed vehicle.
                 </p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-highlight-blue/50 transition-colors">
-                <Shield className="h-12 w-12 text-highlight-blue mb-4" />
-                <h3 className="text-xl font-bold text-white mb-3">Stablecoin Settlement</h3>
+              <div className="bg-gradient-to-br from-purple-500/5 to-transparent border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/60 transition-all hover:shadow-lg hover:shadow-purple-500/20">
+                <Shield className="h-12 w-12 text-purple-400 mb-4" />
+                <h3 className="text-xl font-bold text-white mb-3">Stablecoin Settlement Layer</h3>
                 <p className="text-gray-300">
                   Support the rails behind billions in daily stablecoin transactions — reinforcing USD dominance.
                 </p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-highlight-blue/50 transition-colors">
-                <Network className="h-12 w-12 text-highlight-blue mb-4" />
+              <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-500/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20">
+                <Network className="h-12 w-12 text-cyan-400 mb-4" />
                 <h3 className="text-xl font-bold text-white mb-3">Infrastructure Layer</h3>
                 <p className="text-gray-300">
                   Capture value as trillions in bonds, equities, and real assets migrate to Ethereum.
                 </p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-highlight-blue/50 transition-colors">
-                <Award className="h-12 w-12 text-highlight-blue mb-4" />
-                <h3 className="text-xl font-bold text-white mb-3">Compound ETH</h3>
+              <div className="bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/20 rounded-xl p-6 hover:border-blue-500/60 transition-all hover:shadow-lg hover:shadow-blue-500/20">
+                <Award className="h-12 w-12 text-blue-400 mb-4" />
+                <h3 className="text-xl font-bold text-white mb-3">Compound ETH per Share</h3>
                 <p className="text-gray-300">
                   Stake & restake for yield. Reinvest to grow ETH per share through capital markets flywheel.
+                </p>
+              </div>
+
+              <div className="bg-gradient-to-br from-purple-500/5 to-transparent border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/60 transition-all hover:shadow-lg hover:shadow-purple-500/20">
+                <Building2 className="h-12 w-12 text-purple-400 mb-4" />
+                <h3 className="text-xl font-bold text-white mb-3">Tokenization Services</h3>
+                <p className="text-gray-300">
+                  Generate revenue from tokenizing financial services, insurance, and real-world assets on Ethereum infrastructure.
                 </p>
               </div>
             </div>
