@@ -1242,7 +1242,7 @@ export default function BulkImportAdmin() {
                       min="1"
                       value={cannabisManualStartPage}
                       onChange={(e) => setCannabisManualStartPage(Math.max(1, parseInt(e.target.value) || 1))}
-                      className="w-24 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-24 px-2 py-1 text-sm text-foreground bg-background border rounded focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="1"
                     />
                     <span className="text-xs text-muted-foreground">(default: auto-resume or 1)</span>
