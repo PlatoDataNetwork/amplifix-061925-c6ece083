@@ -7,7 +7,7 @@ import { ArrowRight, TrendingUp, Shield, Wallet, Network, Award, Users } from "l
 
 const FGNexusShowcase = () => {
   useGTranslateRefresh(true);
-  const thumbnailImage = "/lovable-uploads/fgnexus-logo.png";
+  const thumbnailImage = "/lovable-uploads/fgnexus-icon.jpeg";
 
   return (
     <>
@@ -27,27 +27,26 @@ const FGNexusShowcase = () => {
         <meta name="twitter:image" content={thumbnailImage} />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-[#0A1929] via-[#1a2f4a] to-[#0f1f33]">
+      <div className="min-h-screen bg-black">
         <MainHeader />
 
         {/* Hero Section */}
         <section className="relative pt-32 pb-20 px-6 overflow-hidden">
-          <div className="absolute inset-0 bg-[url('/lovable-uploads/fgnexus-hero.jpg')] bg-cover bg-center opacity-10" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A1929]/50 to-[#0A1929]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 via-transparent to-transparent" />
           
           <div className="max-w-7xl mx-auto relative z-10">
             <div className="text-center mb-12">
               <img 
-                src="/lovable-uploads/fgnexus-logo.png" 
+                src="/lovable-uploads/fgnexus-icon.jpeg" 
                 alt="FG Nexus Logo" 
-                className="h-16 mx-auto mb-6"
+                className="h-24 w-24 mx-auto mb-6 rounded-xl"
               />
-              <p className="text-highlight-blue text-sm font-semibold tracking-wider mb-4">NASDAQ: FGNX</p>
+              <p className="text-cyan-400 text-sm font-semibold tracking-widest mb-4">NASDAQ: FGNX</p>
               <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-                The Ethereum<br />Treasury Company
+                The <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Ethereum</span><br />Treasury Company
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-                ETH Accumulation. Yield Generation. Real-World Asset Tokenization.
+                <span className="text-cyan-400">ETH Accumulation.</span> <span className="text-blue-400">Yield Generation.</span> <span className="text-purple-400">Real-World Asset Tokenization.</span>
               </p>
               <p className="text-lg text-gray-400 mb-10 max-w-4xl mx-auto leading-relaxed">
                 We are building the leading capital market vehicle dedicated to accumulation and on-chain yield generation 
@@ -57,7 +56,7 @@ const FGNexusShowcase = () => {
               <div className="flex flex-wrap gap-4 justify-center">
                 <Button 
                   size="lg" 
-                  className="bg-highlight-blue hover:bg-highlight-blue/90 text-white px-8"
+                  className="bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-8 shadow-lg shadow-cyan-500/50"
                   onClick={() => window.open('https://fgnexus.io/', '_blank')}
                 >
                   Visit Website
@@ -66,7 +65,7 @@ const FGNexusShowcase = () => {
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="border-highlight-blue text-highlight-blue hover:bg-highlight-blue/10"
+                  className="border-cyan-400 text-cyan-400 hover:bg-cyan-400/10"
                   onClick={() => window.open('https://finance.yahoo.com/quote/FGNX/', '_blank')}
                 >
                   View Stock Price
@@ -76,16 +75,16 @@ const FGNexusShowcase = () => {
 
             {/* Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center">
-                <div className="text-4xl font-bold text-highlight-blue mb-2">$270B</div>
+              <div className="bg-gradient-to-br from-cyan-500/10 to-transparent border border-cyan-500/30 rounded-xl p-6 text-center hover:border-cyan-500/60 transition-colors">
+                <div className="text-4xl font-bold text-cyan-400 mb-2">$270B</div>
                 <div className="text-gray-300">Stablecoin Market on Ethereum</div>
               </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center">
-                <div className="text-4xl font-bold text-highlight-blue mb-2">3-4%</div>
+              <div className="bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/30 rounded-xl p-6 text-center hover:border-blue-500/60 transition-colors">
+                <div className="text-4xl font-bold text-blue-400 mb-2">3-4%</div>
                 <div className="text-gray-300">Native Staking Yield</div>
               </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center">
-                <div className="text-4xl font-bold text-highlight-blue mb-2">66M+</div>
+              <div className="bg-gradient-to-br from-purple-500/10 to-transparent border border-purple-500/30 rounded-xl p-6 text-center hover:border-purple-500/60 transition-colors">
+                <div className="text-4xl font-bold text-purple-400 mb-2">66M+</div>
                 <div className="text-gray-300">ETH Staked on Network</div>
               </div>
             </div>
@@ -93,12 +92,12 @@ const FGNexusShowcase = () => {
         </section>
 
         {/* About Section */}
-        <section className="py-20 px-6 bg-[#0f1f33]/50">
+        <section className="py-20 px-6 bg-black/95">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">About FG Nexus</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">About <span className="text-cyan-400">FG Nexus</span></h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8">
-                <h3 className="text-2xl font-bold text-highlight-blue mb-4">Our Mission</h3>
+              <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-8 hover:border-cyan-500/40 transition-colors">
+                <h3 className="text-2xl font-bold text-cyan-400 mb-4">Our Mission</h3>
                 <p className="text-gray-300 leading-relaxed">
                   FG Nexus (Nasdaq: FGNX) was created to give investors institutional access to ETH, 
                   the most productive reserve asset of the digital economy. Unlike static holdings of Bitcoin, 
@@ -106,8 +105,8 @@ const FGNexusShowcase = () => {
                   settlement of tokenized assets and AI-driven applications.
                 </p>
               </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8">
-                <h3 className="text-2xl font-bold text-highlight-blue mb-4">Our Strategy</h3>
+              <div className="bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/20 rounded-xl p-8 hover:border-blue-500/40 transition-colors">
+                <h3 className="text-2xl font-bold text-blue-400 mb-4">Our Strategy</h3>
                 <p className="text-gray-300 leading-relaxed">
                   Our strategy is disciplined and long-term: accumulate ETH, stake conservatively, and grow ETH per share. 
                   By leveraging capital markets, institutional custody, and deep domain expertise, we provide shareholders 
@@ -116,7 +115,7 @@ const FGNexusShowcase = () => {
                 </p>
               </div>
             </div>
-            <div className="bg-gradient-to-r from-highlight-blue/20 to-transparent border border-highlight-blue/30 rounded-xl p-8 text-center">
+            <div className="bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10 border border-cyan-500/30 rounded-xl p-8 text-center">
               <p className="text-xl text-white leading-relaxed">
                 FGNX is more than a treasury. We are a bridge between Ethereum and Wall Street, securing a growing share 
                 of the network while positioning investors to benefit from the transformation of money, capital markets, 
@@ -127,14 +126,14 @@ const FGNexusShowcase = () => {
         </section>
 
         {/* 5 Exponential Pillars */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-6 bg-black">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 text-center">5 Exponential Pillars</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 text-center"><span className="text-cyan-400">5 Exponential</span> Pillars</h2>
             <p className="text-xl text-gray-400 mb-12 text-center">To compound ETH per share</p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-highlight-blue/50 transition-colors">
-                <TrendingUp className="h-12 w-12 text-highlight-blue mb-4" />
+              <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-500/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20">
+                <TrendingUp className="h-12 w-12 text-cyan-400 mb-4" />
                 <h3 className="text-xl font-bold text-white mb-3">Accumulate & Stake</h3>
                 <p className="text-gray-300">
                   Provide a market-ready vehicle for U.S. institutions and policymakers to gain large-scale ETH exposure.
@@ -177,65 +176,65 @@ const FGNexusShowcase = () => {
         </section>
 
         {/* Leadership Section */}
-        <section className="py-20 px-6 bg-[#0f1f33]/50">
+        <section className="py-20 px-6 bg-black/95">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 text-center">Leadership Team</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 text-center"><span className="text-cyan-400">Leadership</span> Team</h2>
             <p className="text-xl text-gray-400 mb-12 text-center">Digital asset pioneers and Wall Street dealmakers</p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-                <Users className="h-10 w-10 text-highlight-blue mb-4" />
+              <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-500/40 transition-colors">
+                <Users className="h-10 w-10 text-cyan-400 mb-4" />
                 <h3 className="text-xl font-bold text-white mb-2">Kyle Cerminara, CFA</h3>
-                <p className="text-highlight-blue text-sm mb-3">Co-Founder, Chairman & CEO</p>
+                <p className="text-cyan-400 text-sm mb-3">Co-Founder, Chairman & CEO</p>
                 <p className="text-gray-300 text-sm">
                   Former portfolio manager at T. Rowe Price and SAC. Public company CEO with decades of experience 
                   in fintech and financial services.
                 </p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-                <Users className="h-10 w-10 text-highlight-blue mb-4" />
+              <div className="bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/20 rounded-xl p-6 hover:border-blue-500/40 transition-colors">
+                <Users className="h-10 w-10 text-blue-400 mb-4" />
                 <h3 className="text-xl font-bold text-white mb-2">Maja Vujinovic</h3>
-                <p className="text-highlight-blue text-sm mb-3">CEO, Digital Assets</p>
+                <p className="text-blue-400 text-sm mb-3">CEO, Digital Assets</p>
                 <p className="text-gray-300 text-sm">
                   Pioneer in mobile payments and early Bitcoin (since 2010). Led Tether's first bank acquisition. 
                   Former CIO of Emerging Tech at GE, launched blockchain pilots with JPMorgan.
                 </p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-                <Users className="h-10 w-10 text-highlight-blue mb-4" />
+              <div className="bg-gradient-to-br from-purple-500/5 to-transparent border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/40 transition-colors">
+                <Users className="h-10 w-10 text-purple-400 mb-4" />
                 <h3 className="text-xl font-bold text-white mb-2">Joe Moglia</h3>
-                <p className="text-highlight-blue text-sm mb-3">Co-Founder & Executive Advisor</p>
+                <p className="text-purple-400 text-sm mb-3">Co-Founder & Executive Advisor</p>
                 <p className="text-gray-300 text-sm">
                   Former Chairman and CEO of TD Ameritrade. Grew TD Ameritrade from $700M to $20B+ market cap 
                   and sold to Charles Schwab.
                 </p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-                <Users className="h-10 w-10 text-highlight-blue mb-4" />
+              <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-500/40 transition-colors">
+                <Users className="h-10 w-10 text-cyan-400 mb-4" />
                 <h3 className="text-xl font-bold text-white mb-2">Larry Swets, CFA</h3>
-                <p className="text-highlight-blue text-sm mb-3">CEO, Merchant Banking</p>
+                <p className="text-cyan-400 text-sm mb-3">CEO, Merchant Banking</p>
                 <p className="text-gray-300 text-sm">
                   Hedge fund manager with 5+ years of industry leading returns. Advisor to $2B+ in family office capital.
                 </p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-                <Users className="h-10 w-10 text-highlight-blue mb-4" />
+              <div className="bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/20 rounded-xl p-6 hover:border-blue-500/40 transition-colors">
+                <Users className="h-10 w-10 text-blue-400 mb-4" />
                 <h3 className="text-xl font-bold text-white mb-2">Theodore Rosenthal</h3>
-                <p className="text-highlight-blue text-sm mb-3">President, Digital Assets</p>
+                <p className="text-blue-400 text-sm mb-3">President, Digital Assets</p>
                 <p className="text-gray-300 text-sm">
                   30+ years in insurance industry. Founded Itasca Financial and sold to Kingsway Financial Services. 
                   Merchant banker and investor.
                 </p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-                <Users className="h-10 w-10 text-highlight-blue mb-4" />
+              <div className="bg-gradient-to-br from-purple-500/5 to-transparent border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/40 transition-colors">
+                <Users className="h-10 w-10 text-purple-400 mb-4" />
                 <h3 className="text-xl font-bold text-white mb-2">Jose Vargas</h3>
-                <p className="text-highlight-blue text-sm mb-3">Director, Senior Advisor</p>
+                <p className="text-purple-400 text-sm mb-3">Director, Senior Advisor</p>
                 <p className="text-gray-300 text-sm">
                   Early investor in AI and crypto projects like Monero, Aave, Hyperliquid, and Maker. Frequent speaker 
                   at MOI Global.
@@ -246,45 +245,45 @@ const FGNexusShowcase = () => {
         </section>
 
         {/* Why Ethereum Section */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-6 bg-black">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">Why Ethereum</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">Why <span className="text-cyan-400">Ethereum</span></h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 text-center">
-                <div className="text-5xl font-bold text-highlight-blue mb-3">60%</div>
+              <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-8 text-center hover:border-cyan-500/40 transition-colors">
+                <div className="text-5xl font-bold text-cyan-400 mb-3">60%</div>
                 <div className="text-gray-300">Of stablecoins run on Ethereum</div>
                 <div className="text-sm text-gray-500 mt-2">$270B market</div>
               </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 text-center">
-                <div className="text-5xl font-bold text-highlight-blue mb-3">90%+</div>
+              <div className="bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/20 rounded-xl p-8 text-center hover:border-blue-500/40 transition-colors">
+                <div className="text-5xl font-bold text-blue-400 mb-3">90%+</div>
                 <div className="text-gray-300">Of tokenized assets on Ethereum</div>
                 <div className="text-sm text-gray-500 mt-2">Trillions moving on-chain</div>
               </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 text-center">
-                <div className="text-5xl font-bold text-highlight-blue mb-3">750K+</div>
+              <div className="bg-gradient-to-br from-purple-500/5 to-transparent border border-purple-500/20 rounded-xl p-8 text-center hover:border-purple-500/40 transition-colors">
+                <div className="text-5xl font-bold text-purple-400 mb-3">750K+</div>
                 <div className="text-gray-300">Weekly stablecoin users</div>
                 <div className="text-sm text-gray-500 mt-2">New all-time high</div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-white/5 to-transparent border border-white/10 rounded-xl p-8">
+            <div className="bg-gradient-to-r from-cyan-500/10 to-transparent border border-cyan-500/30 rounded-xl p-8">
               <blockquote className="text-2xl text-white italic text-center">
-                "Bitcoin is digital gold; Ethereum is digital infrastructure with cash flows."
+                "<span className="text-cyan-400">Bitcoin</span> is digital gold; <span className="text-blue-400">Ethereum</span> is digital infrastructure with cash flows."
               </blockquote>
             </div>
           </div>
         </section>
 
         {/* Investor Highlights */}
-        <section className="py-20 px-6 bg-[#0f1f33]/50">
+        <section className="py-20 px-6 bg-black/95">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">Investor Highlights</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center"><span className="text-cyan-400">Investor</span> Highlights</h2>
             
             <div className="space-y-6">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 flex items-start gap-4">
-                <div className="bg-highlight-blue/20 p-3 rounded-lg">
-                  <TrendingUp className="h-6 w-6 text-highlight-blue" />
+              <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-6 flex items-start gap-4 hover:border-cyan-500/40 transition-colors">
+                <div className="bg-cyan-500/20 p-3 rounded-lg">
+                  <TrendingUp className="h-6 w-6 text-cyan-400" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">Pure ETH Exposure with Capital Markets Edge</h3>
@@ -295,9 +294,9 @@ const FGNexusShowcase = () => {
                 </div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 flex items-start gap-4">
-                <div className="bg-highlight-blue/20 p-3 rounded-lg">
-                  <Shield className="h-6 w-6 text-highlight-blue" />
+              <div className="bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/20 rounded-xl p-6 flex items-start gap-4 hover:border-blue-500/40 transition-colors">
+                <div className="bg-blue-500/20 p-3 rounded-lg">
+                  <Shield className="h-6 w-6 text-blue-400" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">Staking Yield + DeFi Strategies</h3>
@@ -308,9 +307,9 @@ const FGNexusShowcase = () => {
                 </div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 flex items-start gap-4">
-                <div className="bg-highlight-blue/20 p-3 rounded-lg">
-                  <Network className="h-6 w-6 text-highlight-blue" />
+              <div className="bg-gradient-to-br from-purple-500/5 to-transparent border border-purple-500/20 rounded-xl p-6 flex items-start gap-4 hover:border-purple-500/40 transition-colors">
+                <div className="bg-purple-500/20 p-3 rounded-lg">
+                  <Network className="h-6 w-6 text-purple-400" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">Network-Aligned Growth</h3>
@@ -321,9 +320,9 @@ const FGNexusShowcase = () => {
                 </div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 flex items-start gap-4">
-                <div className="bg-highlight-blue/20 p-3 rounded-lg">
-                  <Award className="h-6 w-6 text-highlight-blue" />
+              <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-6 flex items-start gap-4 hover:border-cyan-500/40 transition-colors">
+                <div className="bg-cyan-500/20 p-3 rounded-lg">
+                  <Award className="h-6 w-6 text-cyan-400" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">Tokenization Upside</h3>
@@ -334,9 +333,9 @@ const FGNexusShowcase = () => {
                 </div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 flex items-start gap-4">
-                <div className="bg-highlight-blue/20 p-3 rounded-lg">
-                  <Users className="h-6 w-6 text-highlight-blue" />
+              <div className="bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/20 rounded-xl p-6 flex items-start gap-4 hover:border-blue-500/40 transition-colors">
+                <div className="bg-blue-500/20 p-3 rounded-lg">
+                  <Users className="h-6 w-6 text-blue-400" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">Proven Leadership</h3>
@@ -351,20 +350,20 @@ const FGNexusShowcase = () => {
         </section>
 
         {/* Partners Section */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-6 bg-black">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">Our Partners</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center"><span className="text-cyan-400">Our</span> Partners</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center">
+              <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-6 text-center hover:border-cyan-500/40 transition-colors">
                 <p className="text-white font-semibold">Anchorage Digital</p>
               </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center">
+              <div className="bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/20 rounded-xl p-6 text-center hover:border-blue-500/40 transition-colors">
                 <p className="text-white font-semibold">BitGo</p>
               </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center">
+              <div className="bg-gradient-to-br from-purple-500/5 to-transparent border border-purple-500/20 rounded-xl p-6 text-center hover:border-purple-500/40 transition-colors">
                 <p className="text-white font-semibold">Galaxy Digital</p>
               </div>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center">
+              <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-6 text-center hover:border-cyan-500/40 transition-colors">
                 <p className="text-white font-semibold">Kraken</p>
               </div>
             </div>
@@ -372,10 +371,10 @@ const FGNexusShowcase = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 px-6 bg-gradient-to-r from-highlight-blue/20 to-transparent">
+        <section className="py-20 px-6 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Join Us in Owning Ethereum's Next Decade
+              Join Us in Owning <span className="text-cyan-400">Ethereum's</span> Next Decade
             </h2>
             <p className="text-xl text-gray-300 mb-10">
               FGNX delivers active ETH exposure with staking yield, tokenization upside, and capital markets execution, 
@@ -384,7 +383,7 @@ const FGNexusShowcase = () => {
             <div className="flex flex-wrap gap-4 justify-center">
               <Button 
                 size="lg" 
-                className="bg-highlight-blue hover:bg-highlight-blue/90 text-white px-8"
+                className="bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-8 shadow-lg shadow-cyan-500/50"
                 onClick={() => window.open('https://fgnexus.io/', '_blank')}
               >
                 Explore FG Nexus
@@ -393,7 +392,7 @@ const FGNexusShowcase = () => {
               <Button 
                 size="lg" 
                 variant="outline"
-                className="border-white text-white hover:bg-white/10"
+                className="border-cyan-400 text-cyan-400 hover:bg-cyan-400/10"
                 onClick={() => window.open('https://finance.yahoo.com/quote/FGNX/', '_blank')}
               >
                 View Investor Relations
@@ -401,7 +400,7 @@ const FGNexusShowcase = () => {
               <Button 
                 size="lg" 
                 variant="outline"
-                className="border-white text-white hover:bg-white/10"
+                className="border-blue-400 text-blue-400 hover:bg-blue-400/10"
                 onClick={() => window.open('/contact', '_self')}
               >
                 Contact Us
@@ -411,11 +410,11 @@ const FGNexusShowcase = () => {
         </section>
 
         {/* Back to Showcase */}
-        <section className="py-12 px-6">
+        <section className="py-12 px-6 bg-black">
           <div className="max-w-7xl mx-auto text-center">
             <Button 
               variant="outline" 
-              className="border-white/20 text-white hover:bg-white/10"
+              className="border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10"
               onClick={() => window.location.href = '/showcase'}
             >
               ← Back to Showcase
