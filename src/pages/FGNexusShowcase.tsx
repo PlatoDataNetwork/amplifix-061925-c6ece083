@@ -74,10 +74,10 @@ const FGNexusShowcase = () => {
                   size="lg" 
                   variant="outline"
                   className="border-blue-400 text-blue-400 hover:bg-blue-400/10"
-                  onClick={() => window.open('/documents/fgnexus-investor-deck.pdf', '_blank')}
+                  onClick={() => window.open('https://fgnexus.io/investor-relations/', '_blank')}
                 >
                   <FileText className="mr-2 h-5 w-5" />
-                  View Investor Deck
+                  Investor Deck
                 </Button>
               </div>
             </div>
