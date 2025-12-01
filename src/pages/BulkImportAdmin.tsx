@@ -577,6 +577,48 @@ export default function BulkImportAdmin() {
     }
   };
 
+  const handleDeleteEmptyCannabisArticles = async () => {
+    const confirmed = window.confirm(
+      'Are you sure you want to DELETE all cannabis articles with empty content or titles? This action cannot be undone!'
+    );
+
+    if (!confirmed) return;
+
+    try {
+      toast.info('Deleting empty cannabis articles...', {
+        description: 'This may take a moment',
+        duration: 3000
+      });
+
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        throw new Error('Authentication required');
+      }
+
+      const { data, error } = await supabase.functions.invoke('delete-empty-cannabis-articles', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (error) throw error;
+
+      toast.success('Empty cannabis articles deleted!', {
+        description: `Deleted ${data.deletedCount} articles with empty content`,
+        duration: 5000
+      });
+
+      // Refresh the stats
+      await updateCurrentCounts();
+    } catch (error: any) {
+      console.error('Delete empty cannabis articles error:', error);
+      toast.error('Failed to delete empty cannabis articles', {
+        description: error.message || 'Unknown error'
+      });
+    }
+  };
+
   const handleCleanCannabisArticles = async () => {
     setCleaningCannabis(true);
     setCannabisCleanupResult(null);
@@ -853,6 +895,15 @@ export default function BulkImportAdmin() {
                       Clean Cannabis Articles
                     </>
                   )}
+                </Button>
+                <Button
+                  onClick={handleDeleteEmptyCannabisArticles}
+                  disabled={cleaningCannabis}
+                  variant="outline"
+                  size="sm"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete Empty Articles
                 </Button>
                 {cleaningCannabis && (
                   <Button
