@@ -103,7 +103,7 @@ const FGNexusShowcase = () => {
         {/* About Section */}
         <section className="py-20 px-6 bg-black/95">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">About <span className="text-cyan-400">FG Nexus</span></h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-cyan-400 mb-12 text-center">About FG Nexus</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
               <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-8 hover:border-cyan-500/40 transition-colors">
                 <h3 className="text-2xl font-bold text-cyan-400 mb-4">Our Mission</h3>
@@ -137,7 +137,7 @@ const FGNexusShowcase = () => {
         {/* 6 Exponential Pillars */}
         <section className="py-20 px-6 bg-black">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 text-center"><span className="text-cyan-400">6 Exponential</span> Pillars</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-cyan-400 mb-4 text-center">6 Exponential Pillars</h2>
             <p className="text-xl text-gray-400 mb-12 text-center">To compound ETH per share</p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -195,7 +195,7 @@ const FGNexusShowcase = () => {
         {/* Leadership Section */}
         <section className="py-20 px-6 bg-black/95">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 text-center"><span className="text-cyan-400">Leadership</span> Team</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-cyan-400 mb-4 text-center">Leadership Team</h2>
             <p className="text-xl text-gray-400 mb-12 text-center">Digital asset pioneers and Wall Street dealmakers</p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -264,7 +264,7 @@ const FGNexusShowcase = () => {
         {/* Why Ethereum Section */}
         <section className="py-20 px-6 bg-black">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">Why <span className="text-cyan-400">Ethereum</span></h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-cyan-400 mb-12 text-center">Why Ethereum</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
               <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-8 text-center hover:border-cyan-500/40 transition-colors">
@@ -295,7 +295,7 @@ const FGNexusShowcase = () => {
         {/* Investor Highlights */}
         <section className="py-20 px-6 bg-black/95">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center"><span className="text-cyan-400">Investor</span> Highlights</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-cyan-400 mb-12 text-center">Investor Highlights</h2>
             
             <div className="space-y-6">
               <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-6 flex items-start gap-4 hover:border-cyan-500/40 transition-colors">
@@ -369,7 +369,7 @@ const FGNexusShowcase = () => {
         {/* Partners Section */}
         <section className="py-20 px-6 bg-black">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center"><span className="text-cyan-400">Our</span> Partners</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-cyan-400 mb-12 text-center">Our Partners</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center">
               <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl p-6 text-center hover:border-cyan-500/40 transition-colors">
                 <p className="text-white font-semibold">Anchorage Digital</p>
