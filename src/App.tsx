@@ -71,6 +71,7 @@ import Signup from "./pages/Signup";
 import SitemapGenerator from "./pages/SitemapGenerator";
 import FynnAIShowcase from "./pages/FynnAIShowcase";
 import VseeHealthShowcase from "./pages/VseeHealthShowcase";
+import FGNexusShowcase from "./pages/FGNexusShowcase";
 import ShowcaseAdmin from "./pages/ShowcaseAdmin";
 import SecurityDashboard from "./pages/SecurityDashboard";
 import JsonTester from "./pages/JsonTester";
@@ -132,6 +133,7 @@ const App = () => (
               <Route path="/showcase/versatv" element={<VersaTVShowcase />} />
               <Route path="/showcase/vsee-health" element={<VseeHealthShowcase />} />
               <Route path="/showcase/kedalion" element={<KedalionShowcase />} />
+              <Route path="/showcase/fg-nexus" element={<FGNexusShowcase />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/solutions/ipo-preparation" element={<IPOPreparation />} />
@@ -203,6 +205,7 @@ const App = () => (
               <Route path="/:lang/showcase/versatv" element={<VersaTVShowcase />} />
               <Route path="/:lang/showcase/vsee-health" element={<VseeHealthShowcase />} />
               <Route path="/:lang/showcase/kedalion" element={<KedalionShowcase />} />
+              <Route path="/:lang/showcase/fg-nexus" element={<FGNexusShowcase />} />
               <Route path="/:lang/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/:lang/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/:lang/solutions/ipo-preparation" element={<IPOPreparation />} />
