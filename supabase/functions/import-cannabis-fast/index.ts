@@ -287,18 +287,15 @@ async function runBackgroundImport(
           // Extract the actual source URL - try multiple possible fields
           let externalUrl: string | null = null;
           
-          // Log metadata to debug
-          if (article.metadata) {
-            console.log(`Article ${postId} metadata:`, JSON.stringify(article.metadata));
-          }
-          
           // Try sourceLink first
           if (article.metadata?.sourceLink) {
             const sourceLink = article.metadata.sourceLink;
             if (Array.isArray(sourceLink) && sourceLink.length > 0) {
               externalUrl = sourceLink[0];
+              console.log(`Article ${postId} has sourceLink in metadata: ${externalUrl}`);
             } else if (typeof sourceLink === "string") {
               externalUrl = sourceLink;
+              console.log(`Article ${postId} has sourceLink (string) in metadata: ${externalUrl}`);
             }
           }
           
@@ -307,6 +304,7 @@ async function runBackgroundImport(
             externalUrl = typeof article.metadata.source === 'string' 
               ? article.metadata.source 
               : article.metadata.source[0];
+            console.log(`Article ${postId} has source in metadata: ${externalUrl}`);
           }
           
           // Try sourceURL field
@@ -314,13 +312,25 @@ async function runBackgroundImport(
             externalUrl = typeof article.metadata.sourceURL === 'string'
               ? article.metadata.sourceURL
               : article.metadata.sourceURL[0];
+            console.log(`Article ${postId} has sourceURL in metadata: ${externalUrl}`);
           }
           
-          // Extract from content if it has "Source Link:" or similar patterns
+          // Try to find links in content - look for actual article source links
           if (!externalUrl && rawContent) {
-            const sourceLinkMatch = rawContent.match(/(?:Source|Read more|Original):?\s*<a[^>]+href=["']([^"']+)["']/i);
-            if (sourceLinkMatch && sourceLinkMatch[1]) {
-              externalUrl = sourceLinkMatch[1];
+            // Look for common source patterns in content
+            const patterns = [
+              /<a[^>]+href=["']([^"']+)["'][^>]*>(?:Source|Read more|Original|Continue reading|Full article)/i,
+              /(?:Source|Read more at|Originally published at|Via)[:\s]*<a[^>]+href=["']([^"']+)["']/i,
+              /<a[^>]+href=["']([^"']+)["'][^>]*target=["']_blank["'][^>]*>(?!Plato)/i
+            ];
+            
+            for (const pattern of patterns) {
+              const match = rawContent.match(pattern);
+              if (match && match[1] && !match[1].includes('platodata')) {
+                externalUrl = match[1];
+                console.log(`Article ${postId} source extracted from content pattern: ${externalUrl}`);
+                break;
+              }
             }
           }
           
@@ -332,13 +342,16 @@ async function runBackgroundImport(
             externalUrl.includes('osint.platodata.io')
           );
           
-          // If we got a Plato link or no link at all, try harder to find source
-          if (!externalUrl || isPlatoLink) {
-            console.log(`Warning: Article ${postId} has no valid external source, using Plato link`);
-            externalUrl = platoLink;
+          // If we got a Plato link, discard it - we want external sources only
+          if (isPlatoLink) {
+            console.log(`Article ${postId} has Plato link, treating as original content`);
+            externalUrl = null;
           }
 
-          console.log(`Article ${postId} external_url: ${externalUrl}`);
+          // Final check - if no external source found, this is original Plato content
+          if (!externalUrl) {
+            console.log(`Article ${postId} is original Plato content (no external source)`);
+          }
 
           // Process content - keep HTML but remove footer links
           const contentWithLinks = removeFooterLinks(rawContent);
@@ -348,7 +361,7 @@ async function runBackgroundImport(
             title: cleanText(rawTitle),
             excerpt: excerptClean,
             content: contentWithLinks,
-            external_url: externalUrl,
+            external_url: externalUrl, // null for original Plato content
             published_at: article.date || new Date().toISOString(),
             author: article.author || null,
             image_url: imageUrl,
@@ -356,8 +369,9 @@ async function runBackgroundImport(
             post_id: postId,
             metadata: {
               ...article.metadata,
-              source: externalUrl, // Store source in metadata for display
-              original_link: platoLink, // Store Plato link for reference
+              source: externalUrl, // Store for display
+              original_link: platoLink, // Always store Plato link
+              is_original: !externalUrl, // Flag original content
             },
           };
 

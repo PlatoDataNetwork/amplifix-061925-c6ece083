@@ -391,15 +391,16 @@ if (!article) {
                   }
                 }
                 
-                // Check if it's a Plato link (should not be used as source)
+                // Check if it's a Plato link (should not be used as external source)
                 const isPlatoLink = sourceUrl && (
                   sourceUrl.includes('platodata.ai') ||
                   sourceUrl.includes('platodata.io') ||
                   sourceUrl.includes('osint.platodata.io')
                 );
                 
-                // If we have a valid non-Plato source URL, show it as a link
+                // Display logic based on source availability
                 const sourceNode = sourceUrl && !isPlatoLink ? (
+                  // Has external source - show as link with hostname
                   <a
                     href={sourceUrl}
                     target="_blank"
@@ -415,9 +416,15 @@ if (!article) {
                     })()}
                   </a>
                 ) : (
-                  <span className="text-muted-foreground">
-                    Source not available
-                  </span>
+                  // Original Plato content - show as Plato Data Intelligence
+                  <a
+                    href="https://platodata.io"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-400 transition-colors font-medium"
+                  >
+                    Plato Data Intelligence
+                  </a>
                 );
 
                 return (
