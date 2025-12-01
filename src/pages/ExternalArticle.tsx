@@ -77,7 +77,7 @@ const ExternalArticle = () => {
         const isUUID = id.includes('-');
         
         // Load directly from database
-        let dbArticle;
+        let dbArticle: any;
         if (isUUID) {
           // Fetch by UUID
           const { data } = await supabase
@@ -96,13 +96,32 @@ const ExternalArticle = () => {
           dbArticle = data;
         }
 
+        // If we loaded by post_id but this record has no external_url, try to
+        // find a duplicate cannabis article (same title & vertical) that DOES
+        // have external_url populated and prefer that for display so we can
+        // show the true external source instead of Plato.
+        if (!isUUID && dbArticle && !dbArticle.external_url) {
+          const { data: altArticles } = await supabase
+            .from('articles')
+            .select('*')
+            .eq('vertical_slug', dbArticle.vertical_slug)
+            .eq('title', dbArticle.title)
+            .not('external_url', 'is', null)
+            .limit(1);
+
+          if (altArticles && altArticles.length > 0) {
+            const alt = altArticles[0];
+            dbArticle = { ...alt, post_id: dbArticle.post_id ?? alt.post_id };
+          }
+        }
+
         if (!dbArticle) {
           console.warn(`No matching article found in database for ${isUUID ? 'id' : 'post_id'}:`, id);
           setIsLoading(false);
           return;
         }
 
-        // Use the fresh data from database
+        // Use the fresh data from database (possibly swapped to the alt record)
         setArticle(dbArticle);
         const articleUuid = dbArticle.id;
         
