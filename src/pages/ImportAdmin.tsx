@@ -1476,6 +1476,32 @@ const ImportAdmin = () => {
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
+                onClick={async () => {
+                  try {
+                    toast.info('Removing Zephyrnet source references...');
+                    const { data, error } = await supabase.functions.invoke('remove-zephyrnet-source');
+                    
+                    if (error) throw error;
+                    
+                    toast.success('Zephyrnet sources removed successfully', {
+                      description: `${data.articlesUpdated} articles updated`,
+                      duration: 5000
+                    });
+                    
+                    await loadMetrics();
+                  } catch (error) {
+                    toast.error('Failed to remove Zephyrnet sources', {
+                      description: error instanceof Error ? error.message : 'Unknown error'
+                    });
+                  }
+                }}
+                disabled={importing !== null}
+              >
+                <Database className="h-4 w-4 mr-2" />
+                Remove Zephyrnet Sources
+              </Button>
+              <Button
+                variant="outline"
                 onClick={() => navigate('/admin/backfill')}
               >
                 <RotateCcw className="h-4 w-4 mr-2" />
