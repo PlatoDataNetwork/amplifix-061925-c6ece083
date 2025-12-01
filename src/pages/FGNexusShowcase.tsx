@@ -3,11 +3,14 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, TrendingUp, Shield, Wallet, Network, Award, Users, Download, Building2 } from "lucide-react";
+import { ArrowRight, TrendingUp, Shield, Wallet, Network, Award, Users, FileText, Building2 } from "lucide-react";
+import { useState, useRef } from "react";
 
 const FGNexusShowcase = () => {
   useGTranslateRefresh(true);
   const thumbnailImage = "/lovable-uploads/fgnexus-icon.jpeg";
+  const [showDeck, setShowDeck] = useState(false);
+  const deckRef = useRef<HTMLElement>(null);
 
   return (
     <>
@@ -43,7 +46,7 @@ const FGNexusShowcase = () => {
               />
               <p className="text-cyan-400 text-sm font-semibold tracking-widest mb-4">NASDAQ: FGNX</p>
               <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-                The <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Ethereum</span><br />Treasury Company
+                The <span className="text-blue-500">Ethereum</span><br />Treasury Company
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
                 <span className="text-cyan-400">ETH Accumulation.</span> <span className="text-blue-400">Yield Generation.</span> <span className="text-purple-400">Real-World Asset Tokenization.</span>
@@ -74,27 +77,24 @@ const FGNexusShowcase = () => {
                   size="lg" 
                   variant="outline"
                   className="border-blue-400 text-blue-400 hover:bg-blue-400/10"
-                  onClick={() => window.open('/documents/fgnexus-investor-deck.pdf', '_blank')}
+                  onClick={() => {
+                    setShowDeck(true);
+                    setTimeout(() => {
+                      deckRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                  }}
                 >
-                  <Download className="mr-2 h-5 w-5" />
-                  Investor Deck
+                  <FileText className="mr-2 h-5 w-5" />
+                  View Investor Deck
                 </Button>
               </div>
             </div>
 
             {/* Key Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mt-16 max-w-md mx-auto">
               <div className="bg-gradient-to-br from-cyan-500/10 to-transparent border border-cyan-500/30 rounded-xl p-6 text-center hover:border-cyan-500/60 transition-colors">
                 <div className="text-4xl font-bold text-cyan-400 mb-2">$270B</div>
                 <div className="text-gray-300">Stablecoin Market on Ethereum</div>
-              </div>
-              <div className="bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/30 rounded-xl p-6 text-center hover:border-blue-500/60 transition-colors">
-                <div className="text-4xl font-bold text-blue-400 mb-2">3-4%</div>
-                <div className="text-gray-300">Native Staking Yield</div>
-              </div>
-              <div className="bg-gradient-to-br from-purple-500/10 to-transparent border border-purple-500/30 rounded-xl p-6 text-center hover:border-purple-500/60 transition-colors">
-                <div className="text-4xl font-bold text-purple-400 mb-2">66M+</div>
-                <div className="text-gray-300">ETH Staked on Network</div>
               </div>
             </div>
           </div>
@@ -425,6 +425,41 @@ const FGNexusShowcase = () => {
             </div>
           </div>
         </section>
+
+        {/* Investor Deck Section */}
+        {showDeck && (
+          <section ref={deckRef} className="py-20 px-6 bg-black/95">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-4xl md:text-5xl font-bold text-cyan-400">Investor Deck</h2>
+                <Button 
+                  variant="outline"
+                  className="border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10"
+                  onClick={() => setShowDeck(false)}
+                >
+                  Close Deck
+                </Button>
+              </div>
+              <div className="bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20 rounded-xl overflow-hidden">
+                <iframe
+                  src="/documents/fgnexus-investor-deck.pdf"
+                  className="w-full h-[800px]"
+                  title="FG Nexus Investor Deck"
+                />
+              </div>
+              <div className="mt-6 text-center">
+                <Button 
+                  variant="outline"
+                  className="border-blue-400 text-blue-400 hover:bg-blue-400/10"
+                  onClick={() => window.open('/documents/fgnexus-investor-deck.pdf', '_blank')}
+                >
+                  <FileText className="mr-2 h-5 w-5" />
+                  Open in New Tab
+                </Button>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Back to Showcase */}
         <section className="py-12 px-6 bg-black">
