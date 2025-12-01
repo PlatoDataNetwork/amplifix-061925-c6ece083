@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { usePlatoVerticals } from '@/hooks/usePlatoVerticals';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Database, Zap, Download, Play, CheckCircle2, AlertCircle, Activity, RefreshCw, Trash2 } from 'lucide-react';
+import { Loader2, Database, Zap, Download, Play, CheckCircle2, AlertCircle, Activity, RefreshCw, Trash2, Link as LinkIcon } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -619,6 +619,42 @@ export default function BulkImportAdmin() {
     }
   };
 
+  const handleFixCannabisSources = async () => {
+    try {
+      toast.info('Fixing cannabis article sources...', {
+        description: 'Extracting source URLs from content',
+        duration: 3000
+      });
+
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        throw new Error('Authentication required');
+      }
+
+      const { data, error } = await supabase.functions.invoke('fix-cannabis-sources', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (error) throw error;
+
+      toast.success('Cannabis sources fixed!', {
+        description: `Fixed ${data.fixed} articles, ${data.failed} failed`,
+        duration: 5000
+      });
+
+      // Refresh the stats
+      await updateCurrentCounts();
+    } catch (error: any) {
+      console.error('Fix cannabis sources error:', error);
+      toast.error('Failed to fix cannabis sources', {
+        description: error.message || 'Unknown error'
+      });
+    }
+  };
+
   const handleCleanCannabisArticles = async () => {
     setCleaningCannabis(true);
     setCannabisCleanupResult(null);
@@ -904,6 +940,15 @@ export default function BulkImportAdmin() {
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
                   Delete Empty Articles
+                </Button>
+                <Button
+                  onClick={handleFixCannabisSources}
+                  disabled={cleaningCannabis}
+                  variant="outline"
+                  size="sm"
+                >
+                  <LinkIcon className="mr-2 h-4 w-4" />
+                  Fix Source Links
                 </Button>
                 {cleaningCannabis && (
                   <Button

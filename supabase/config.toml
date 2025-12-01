@@ -129,3 +129,12 @@ verify_jwt = false
 [functions.vertical-ai-chat]
 verify_jwt = false
 
+[functions.fix-cannabis-sources]
+verify_jwt = true
+
+[functions.clear-cannabis-articles]
+verify_jwt = true
+
+[functions.delete-empty-cannabis-articles]
+verify_jwt = true
+

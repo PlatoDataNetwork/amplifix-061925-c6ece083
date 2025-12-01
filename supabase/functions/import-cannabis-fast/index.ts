@@ -284,8 +284,15 @@ async function runBackgroundImport(
             rawExcerpt = tempDiv.slice(0, 400);
           }
 
-          // Extract the actual source URL - prioritize sourceLink from metadata
+          // Extract the actual source URL - try multiple possible fields
           let externalUrl: string | null = null;
+          
+          // Log metadata to debug
+          if (article.metadata) {
+            console.log(`Article ${postId} metadata:`, JSON.stringify(article.metadata));
+          }
+          
+          // Try sourceLink first
           if (article.metadata?.sourceLink) {
             const sourceLink = article.metadata.sourceLink;
             if (Array.isArray(sourceLink) && sourceLink.length > 0) {
@@ -294,10 +301,44 @@ async function runBackgroundImport(
               externalUrl = sourceLink;
             }
           }
-          // Fall back to article link only if no sourceLink found
-          if (!externalUrl && article.link) {
-            externalUrl = article.link;
+          
+          // Try source field
+          if (!externalUrl && article.metadata?.source) {
+            externalUrl = typeof article.metadata.source === 'string' 
+              ? article.metadata.source 
+              : article.metadata.source[0];
           }
+          
+          // Try sourceURL field
+          if (!externalUrl && article.metadata?.sourceURL) {
+            externalUrl = typeof article.metadata.sourceURL === 'string'
+              ? article.metadata.sourceURL
+              : article.metadata.sourceURL[0];
+          }
+          
+          // Extract from content if it has "Source Link:" or similar patterns
+          if (!externalUrl && rawContent) {
+            const sourceLinkMatch = rawContent.match(/(?:Source|Read more|Original):?\s*<a[^>]+href=["']([^"']+)["']/i);
+            if (sourceLinkMatch && sourceLinkMatch[1]) {
+              externalUrl = sourceLinkMatch[1];
+            }
+          }
+          
+          // Only use article.link as last resort (it's the Plato link)
+          const platoLink = article.link || null;
+          const isPlatoLink = externalUrl && (
+            externalUrl.includes('platodata.ai') || 
+            externalUrl.includes('platodata.io') ||
+            externalUrl.includes('osint.platodata.io')
+          );
+          
+          // If we got a Plato link or no link at all, try harder to find source
+          if (!externalUrl || isPlatoLink) {
+            console.log(`Warning: Article ${postId} has no valid external source, using Plato link`);
+            externalUrl = platoLink;
+          }
+
+          console.log(`Article ${postId} external_url: ${externalUrl}`);
 
           // Process content - keep HTML but remove footer links
           const contentWithLinks = removeFooterLinks(rawContent);
@@ -315,7 +356,8 @@ async function runBackgroundImport(
             post_id: postId,
             metadata: {
               ...article.metadata,
-              original_link: article.link, // Store Plato link for reference
+              source: externalUrl, // Store source in metadata for display
+              original_link: platoLink, // Store Plato link for reference
             },
           };
 
