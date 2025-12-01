@@ -43,13 +43,22 @@ interface CannabisArticle {
 function cleanText(text?: string | null): string {
   if (!text) return "";
   return text
-    .replace(/<[^>]*>/g, "")
-    .replace(/https?:\/\/[^\s]+/g, "")
     .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
+    .trim();
+}
+
+function removeFooterLinks(html?: string | null): string {
+  if (!html) return "";
+  // Remove only Plato footer links and source attribution sections
+  return html
+    .replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/gi, '')
+    .replace(/<div class="plato-post-bottom-links">[\s\S]*?<\/div>/gi, '')
+    .replace(/Source Link:[\s\S]*?<\/a>/gi, '')
+    .replace(/<p[^>]*>.*?Published:.*?Source:.*?<\/p>/gi, '')
     .trim();
 }
 
@@ -236,12 +245,15 @@ async function runBackgroundImport(
 
           const { data: existing } = await supabase
             .from("articles")
-            .select("id")
+            .select("id, title, content")
             .eq("post_id", postId)
             .eq("vertical_slug", "cannabis")
             .maybeSingle();
 
-          if (existing) {
+          // Check if article exists with empty content/title - update it
+          const hasEmptyContent = existing && (!existing.title || !existing.content || existing.content.length === 0);
+          
+          if (existing && !hasEmptyContent) {
             skippedCount++;
             totalProcessed++;
             continue;
@@ -268,11 +280,13 @@ async function runBackgroundImport(
 
           if (!rawExcerpt && rawContent) {
             // Derive a short excerpt from the content when none is provided
-            rawExcerpt = rawContent.slice(0, 400);
+            const tempDiv = rawContent.replace(/<[^>]*>/g, " ");
+            rawExcerpt = tempDiv.slice(0, 400);
           }
 
-          let externalUrl: string | null = article.link || null;
-          if (!externalUrl && article.metadata?.sourceLink) {
+          // Extract the actual source URL - prioritize sourceLink from metadata
+          let externalUrl: string | null = null;
+          if (article.metadata?.sourceLink) {
             const sourceLink = article.metadata.sourceLink;
             if (Array.isArray(sourceLink) && sourceLink.length > 0) {
               externalUrl = sourceLink[0];
@@ -280,19 +294,48 @@ async function runBackgroundImport(
               externalUrl = sourceLink;
             }
           }
+          // Fall back to article link only if no sourceLink found
+          if (!externalUrl && article.link) {
+            externalUrl = article.link;
+          }
 
-          batch.push({
+          // Process content - keep HTML but remove footer links
+          const contentWithLinks = removeFooterLinks(rawContent);
+          const excerptClean = removeFooterLinks(rawExcerpt);
+
+          const articleData = {
             title: cleanText(rawTitle),
-            excerpt: cleanText(rawExcerpt),
-            content: cleanText(rawContent),
+            excerpt: excerptClean,
+            content: contentWithLinks,
             external_url: externalUrl,
             published_at: article.date || new Date().toISOString(),
             author: article.author || null,
             image_url: imageUrl,
             vertical_slug: "cannabis",
             post_id: postId,
-            metadata: article.metadata || {},
-          });
+            metadata: {
+              ...article.metadata,
+              original_link: article.link, // Store Plato link for reference
+            },
+          };
+
+          // If article exists with empty content, update it
+          if (hasEmptyContent && existing) {
+            const { error: updateError } = await supabase
+              .from("articles")
+              .update(articleData)
+              .eq("id", existing.id);
+            
+            if (updateError) {
+              console.error("Update error:", updateError);
+              errorCount++;
+            } else {
+              importedCount++;
+              console.log(`Updated empty article: ${postId}`);
+            }
+          } else {
+            batch.push(articleData);
+          }
         } catch (articleError) {
           console.error("Error processing article:", articleError);
           errorCount++;
