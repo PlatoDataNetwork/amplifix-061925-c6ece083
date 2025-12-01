@@ -16,9 +16,14 @@ interface CannabisArticle {
   post_id?: number;
   slug?: string;
   date?: string;
+  published_at?: string;
   title?: string | { rendered: string };
   excerpt?: string | { rendered: string };
   content?: string | { rendered: string };
+  // Legacy WordPress-style fields seen on older pages
+  post_title?: string;
+  post_excerpt?: string;
+  post_content?: string;
   link?: string;
   author?: string;
   featured_media?: string;
@@ -194,6 +199,23 @@ async function runBackgroundImport(
       }
       
       console.log(`Parsed ${articles.length} articles from response`);
+
+      // Normalize legacy WordPress-style fields (post_title, post_content, post_excerpt)
+      articles = articles.map((article) => {
+        const normalized: CannabisArticle = { ...article };
+
+        const wpTitle = (article as any).post_title;
+        const wpContent = (article as any).post_content;
+        const wpExcerpt = (article as any).post_excerpt;
+        const wpPublishedAt = (article as any).published_at;
+
+        if (!normalized.title && wpTitle) normalized.title = wpTitle;
+        if (!normalized.content && wpContent) normalized.content = wpContent;
+        if (!normalized.excerpt && wpExcerpt) normalized.excerpt = wpExcerpt;
+        if (!normalized.published_at && wpPublishedAt) normalized.published_at = wpPublishedAt;
+
+        return normalized;
+      });
 
       if (!articles || articles.length === 0) {
         console.log(`No more articles found at page ${page}`);
