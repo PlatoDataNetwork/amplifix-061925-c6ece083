@@ -275,35 +275,62 @@ async function runBackgroundImport(
             rawExcerpt = tempDiv.slice(0, 400);
           }
 
-          // Extract actual source URL (not PlatoData URL) - SAME AS AEROSPACE/AVIATION
-          let externalUrl = null;
-          
-          // DEBUG: Log the entire article metadata structure
+          // Extract actual source URL (not PlatoData URL)
+          let externalUrl: string | null = null;
+
+          // DEBUG: Log the article metadata and link fields
           console.log(`Article ${postId} metadata:`, JSON.stringify(article.metadata, null, 2));
-          console.log(`Article ${postId} sourceLink:`, article.metadata?.sourceLink);
-          console.log(`Article ${postId} source_url:`, article.source_url);
-          console.log(`Article ${postId} link:`, article.link);
-          console.log(`Article ${postId} url:`, article.url);
-          
-          // Check multiple possible source URL locations
-          const possibleUrls = [
-            article.metadata?.sourceLink?.[0],
-            article.source_url,
-            article.link,
-            article.url
-          ].filter((url): url is string => url && typeof url === 'string');
-          
-          console.log(`Article ${postId} possibleUrls:`, possibleUrls);
-          
-          // Find first URL that is NOT a platodata.ai URL
-          for (const url of possibleUrls) {
-            if (url && !url.includes('platodata.ai') && !url.includes('platodata.io')) {
-              externalUrl = url;
-              console.log(`Article ${postId} source found: ${externalUrl}`);
-              break;
+          console.log(`Article ${postId} sourceLink:`, (article as any).metadata?.sourceLink);
+          console.log(`Article ${postId} source_url:`, (article as any).source_url);
+          console.log(`Article ${postId} link:`, (article as any).link);
+          console.log(`Article ${postId} url:`, (article as any).url);
+
+          // Try to extract source from metadata.sourceLink which may be a string OR array
+          let metadataSourceUrl: string | null = null;
+          if (article.metadata) {
+            const src: unknown = (article.metadata as any).sourceLink;
+            if (Array.isArray(src) && src.length > 0 && typeof src[0] === 'string') {
+              metadataSourceUrl = src[0];
+            } else if (typeof src === 'string') {
+              metadataSourceUrl = src;
             }
           }
-          
+
+          // Try to extract source URL from the "Source Link" footer inside the HTML content
+          let footerSourceUrl: string | null = null;
+          if (rawContent) {
+            const footerMatch = rawContent.match(/Source Link:[\s\S]*?<a[^>]+href=\"([^\"]+)\"/i);
+            if (footerMatch && footerMatch[1]) {
+              footerSourceUrl = footerMatch[1].trim();
+              console.log(`Article ${postId} footer source candidate: ${footerSourceUrl}`);
+            }
+          }
+
+          // Build list of candidate URLs in priority order
+          const possibleUrls = [
+            metadataSourceUrl,
+            (article as any).source_url,
+            (article as any).link,
+            (article as any).url,
+            footerSourceUrl,
+          ].filter((url): url is string => !!url && typeof url === 'string');
+
+          console.log(`Article ${postId} possibleUrls:`, possibleUrls);
+
+          // Find first URL that is NOT a PlatoData URL
+          for (const url of possibleUrls) {
+            if (
+              url.includes('platodata.ai') ||
+              url.includes('platodata.io') ||
+              url.includes('osint.platodata.io')
+            ) {
+              continue;
+            }
+            externalUrl = url;
+            console.log(`Article ${postId} source found: ${externalUrl}`);
+            break;
+          }
+
           if (!externalUrl) {
             console.log(`Article ${postId} is original Plato content (no external source)`);
           }
