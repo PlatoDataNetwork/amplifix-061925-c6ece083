@@ -370,19 +370,36 @@ if (!article) {
                     })
                   : null;
 
-                // Check for source URL in metadata first, then external_url
-                const sourceUrl = article.metadata?.source || article.metadata?.original_url || article.external_url;
+                // Check for source URL - try multiple fields
+                let sourceUrl = null;
                 
-                // Treat any Platodata/OSINT domains as Plato Data Intelligence
-                const isPlatoArticle = (
-                  typeof sourceUrl === 'string' && (
-                    sourceUrl.includes('platodata.ai') ||
-                    sourceUrl.includes('platodata.io') ||
-                    sourceUrl.includes('osint.platodata.io')
-                  )
+                // Try external_url first (should be the actual source)
+                if (article.external_url) {
+                  sourceUrl = article.external_url;
+                }
+                
+                // Try metadata fields
+                if (!sourceUrl && article.metadata) {
+                  sourceUrl = article.metadata.source || 
+                             article.metadata.sourceLink || 
+                             article.metadata.sourceURL ||
+                             article.metadata.original_url;
+                  
+                  // Handle arrays
+                  if (Array.isArray(sourceUrl)) {
+                    sourceUrl = sourceUrl[0];
+                  }
+                }
+                
+                // Check if it's a Plato link (should not be used as source)
+                const isPlatoLink = sourceUrl && (
+                  sourceUrl.includes('platodata.ai') ||
+                  sourceUrl.includes('platodata.io') ||
+                  sourceUrl.includes('osint.platodata.io')
                 );
                 
-                const sourceNode = sourceUrl && !isPlatoArticle ? (
+                // If we have a valid non-Plato source URL, show it as a link
+                const sourceNode = sourceUrl && !isPlatoLink ? (
                   <a
                     href={sourceUrl}
                     target="_blank"
@@ -391,21 +408,16 @@ if (!article) {
                   >
                     {(() => {
                       try {
-                        return new URL(sourceUrl).hostname;
+                        return new URL(sourceUrl).hostname.replace('www.', '');
                       } catch {
                         return sourceUrl;
                       }
                     })()}
                   </a>
                 ) : (
-                  <a
-                    href="https://platodata.io"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:text-blue-400 transition-colors font-medium"
-                  >
-                    Plato Data Intelligence
-                  </a>
+                  <span className="text-muted-foreground">
+                    Source not available
+                  </span>
                 );
 
                 return (
