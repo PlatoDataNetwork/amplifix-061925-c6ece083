@@ -12,12 +12,14 @@ const supabase =
     : null;
 
 interface CannabisArticle {
-  id: number;
-  title: { rendered: string };
-  excerpt: { rendered: string };
-  content?: { rendered: string };
-  link?: string;
+  id?: number;
+  post_id?: number;
+  slug?: string;
   date?: string;
+  title?: string | { rendered: string };
+  excerpt?: string | { rendered: string };
+  content?: string | { rendered: string };
+  link?: string;
   author?: string;
   featured_media?: string;
   yoast_head_json?: {
@@ -25,6 +27,11 @@ interface CannabisArticle {
   };
   _embedded?: {
     "wp:featuredmedia"?: Array<{ source_url: string }>;
+  };
+  metadata?: {
+    sourceLink?: string[] | string;
+    sourceNode?: number;
+    [key: string]: unknown;
   };
 }
 
@@ -196,7 +203,15 @@ async function runBackgroundImport(
       const batch = [];
       for (const article of articles) {
         try {
-          const postId = article.id;
+          const postId = article.post_id ?? article.id;
+
+          if (!postId) {
+            // If we don't have any kind of ID, skip this article
+            skippedCount++;
+            totalProcessed++;
+            continue;
+          }
+
           const { data: existing } = await supabase
             .from("articles")
             .select("id")
@@ -217,17 +232,44 @@ async function runBackgroundImport(
             imageUrl = article.yoast_head_json.og_image[0].url;
           }
 
+          const rawTitle = typeof article.title === "string"
+            ? article.title
+            : article.title?.rendered ?? "";
+
+          const rawContent = typeof article.content === "string"
+            ? article.content
+            : article.content?.rendered ?? "";
+
+          let rawExcerpt = typeof article.excerpt === "string"
+            ? article.excerpt
+            : article.excerpt?.rendered ?? "";
+
+          if (!rawExcerpt && rawContent) {
+            // Derive a short excerpt from the content when none is provided
+            rawExcerpt = rawContent.slice(0, 400);
+          }
+
+          let externalUrl: string | null = article.link || null;
+          if (!externalUrl && article.metadata?.sourceLink) {
+            const sourceLink = article.metadata.sourceLink;
+            if (Array.isArray(sourceLink) && sourceLink.length > 0) {
+              externalUrl = sourceLink[0];
+            } else if (typeof sourceLink === "string") {
+              externalUrl = sourceLink;
+            }
+          }
+
           batch.push({
-            title: cleanText(article.title?.rendered),
-            excerpt: cleanText(article.excerpt?.rendered),
-            content: cleanText(article.content?.rendered),
-            external_url: article.link || null,
+            title: cleanText(rawTitle),
+            excerpt: cleanText(rawExcerpt),
+            content: cleanText(rawContent),
+            external_url: externalUrl,
             published_at: article.date || new Date().toISOString(),
             author: article.author || null,
             image_url: imageUrl,
             vertical_slug: "cannabis",
             post_id: postId,
-            metadata: {},
+            metadata: article.metadata || {},
           });
         } catch (articleError) {
           console.error("Error processing article:", articleError);
