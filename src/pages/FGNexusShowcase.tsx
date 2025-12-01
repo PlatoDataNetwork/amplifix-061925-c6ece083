@@ -43,7 +43,7 @@ const FGNexusShowcase = () => {
               />
               <p className="text-cyan-400 text-sm font-semibold tracking-widest mb-4">NASDAQ: FGNX</p>
               <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-                The <span className="text-blue-500">Ethereum</span><br />Treasury Company
+                <span className="text-blue-500">The Ethereum</span><br />Treasury Company
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
                 <span className="text-cyan-400">ETH Accumulation.</span> <span className="text-blue-400">Yield Generation.</span> <span className="text-purple-400">Real-World Asset Tokenization.</span>
