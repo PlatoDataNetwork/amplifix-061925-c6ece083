@@ -278,6 +278,13 @@ async function runBackgroundImport(
           // Extract actual source URL (not PlatoData URL) - SAME AS AEROSPACE/AVIATION
           let externalUrl = null;
           
+          // DEBUG: Log the entire article metadata structure
+          console.log(`Article ${postId} metadata:`, JSON.stringify(article.metadata, null, 2));
+          console.log(`Article ${postId} sourceLink:`, article.metadata?.sourceLink);
+          console.log(`Article ${postId} source_url:`, article.source_url);
+          console.log(`Article ${postId} link:`, article.link);
+          console.log(`Article ${postId} url:`, article.url);
+          
           // Check multiple possible source URL locations
           const possibleUrls = [
             article.metadata?.sourceLink?.[0],
@@ -285,6 +292,8 @@ async function runBackgroundImport(
             article.link,
             article.url
           ].filter((url): url is string => url && typeof url === 'string');
+          
+          console.log(`Article ${postId} possibleUrls:`, possibleUrls);
           
           // Find first URL that is NOT a platodata.ai URL
           for (const url of possibleUrls) {
