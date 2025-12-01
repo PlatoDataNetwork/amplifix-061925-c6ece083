@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,15 +22,25 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 
 interface DateRangeDeletionDialogProps {
   onSuccess?: () => void;
 }
 
 export function DateRangeDeletionDialog({ onSuccess }: DateRangeDeletionDialogProps) {
+  const { verticals } = usePlatoVerticals();
   const [open, setOpen] = useState(false);
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
+  const [selectedVertical, setSelectedVertical] = useState<string>("");
   const [previewData, setPreviewData] = useState<{
     count: number;
     samples: Array<{ title: string; date: string; vertical: string }>;
@@ -50,6 +60,7 @@ export function DateRangeDeletionDialog({ onSuccess }: DateRangeDeletionDialogPr
         body: {
           startDate: startDate ? format(startDate, 'yyyy-MM-dd') : null,
           endDate: endDate ? format(endDate, 'yyyy-MM-dd') : null,
+          verticalSlug: selectedVertical || null,
           previewOnly: true
         }
       });
@@ -97,6 +108,7 @@ export function DateRangeDeletionDialog({ onSuccess }: DateRangeDeletionDialogPr
         body: {
           startDate: startDate ? format(startDate, 'yyyy-MM-dd') : null,
           endDate: endDate ? format(endDate, 'yyyy-MM-dd') : null,
+          verticalSlug: selectedVertical || null,
           previewOnly: false
         }
       });
@@ -111,6 +123,7 @@ export function DateRangeDeletionDialog({ onSuccess }: DateRangeDeletionDialogPr
       // Reset state
       setStartDate(undefined);
       setEndDate(undefined);
+      setSelectedVertical("");
       setPreviewData(null);
       setOpen(false);
 
@@ -131,6 +144,7 @@ export function DateRangeDeletionDialog({ onSuccess }: DateRangeDeletionDialogPr
   const handleReset = () => {
     setStartDate(undefined);
     setEndDate(undefined);
+    setSelectedVertical("");
     setPreviewData(null);
   };
 
@@ -154,6 +168,27 @@ export function DateRangeDeletionDialog({ onSuccess }: DateRangeDeletionDialogPr
         </DialogHeader>
 
         <div className="space-y-6 py-4">
+          {/* Vertical Filter */}
+          <div className="space-y-2">
+            <Label htmlFor="vertical-select">Filter by Vertical (Optional)</Label>
+            <Select value={selectedVertical} onValueChange={setSelectedVertical}>
+              <SelectTrigger id="vertical-select">
+                <SelectValue placeholder="All verticals" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">All verticals</SelectItem>
+                {verticals.map((vertical) => (
+                  <SelectItem key={vertical.slug} value={vertical.slug}>
+                    {vertical.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Leave empty to delete from all verticals, or select a specific vertical
+            </p>
+          </div>
+
           {/* Date Range Selection */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Start Date */}
@@ -263,6 +298,12 @@ export function DateRangeDeletionDialog({ onSuccess }: DateRangeDeletionDialogPr
                   {!startDate && endDate && (
                     <p className="text-sm text-muted-foreground">
                       Up to: {format(endDate, "MMM dd, yyyy")}
+                    </p>
+                  )}
+                  
+                  {selectedVertical && (
+                    <p className="text-sm text-muted-foreground">
+                      Vertical: <span className="font-semibold">{verticals.find(v => v.slug === selectedVertical)?.name || selectedVertical}</span>
                     </p>
                   )}
 
