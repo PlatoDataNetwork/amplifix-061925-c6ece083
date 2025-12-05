@@ -90,8 +90,8 @@ const GridAIShowcase = () => {
         <section className="py-20 bg-card/50">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
-                About <span className="text-blue-500">Grid AI Corp</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center text-white">
+                About Grid AI Corp
               </h2>
               
               <p className="text-lg text-muted-foreground mb-8 text-center">
@@ -125,7 +125,7 @@ const GridAIShowcase = () => {
               </div>
 
               <div className="mt-8 p-6 bg-blue-500/10 rounded-xl border border-blue-500/20 text-center">
-                <p className="text-xl italic text-blue-500 font-medium">
+                <p className="text-xl italic text-white font-medium">
                   "One platform. All scales. Orchestration across the grid."
                 </p>
               </div>
@@ -137,8 +137,8 @@ const GridAIShowcase = () => {
         <section className="py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
-                The <span className="text-blue-500">Challenge</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">
+                The Challenge
               </h2>
               <p className="text-lg text-muted-foreground mb-12 text-center">
                 Today's grid is under unprecedented pressure
@@ -187,8 +187,8 @@ const GridAIShowcase = () => {
         <section className="py-20 bg-card/50">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
-                Our <span className="text-blue-500">Solutions</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">
+                Our Solutions
               </h2>
               <p className="text-lg text-muted-foreground mb-12 text-center">
                 Grid AI Corp. at every scale
@@ -266,8 +266,8 @@ const GridAIShowcase = () => {
         <section className="py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
-                Technology & <span className="text-blue-500">Innovation</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">
+                Technology & Innovation
               </h2>
               <p className="text-lg text-muted-foreground mb-12 text-center">
                 Built on a foundation of advanced technology that brings intelligence and infrastructure together
@@ -346,8 +346,8 @@ const GridAIShowcase = () => {
         <section className="py-20 bg-card/50">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
-                Our <span className="text-blue-500">Impact</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-white">
+                Our Impact
               </h2>
 
               <div className="grid md:grid-cols-3 gap-8">
@@ -393,8 +393,8 @@ const GridAIShowcase = () => {
         <section className="py-20 bg-gradient-to-br from-blue-500/10 via-background to-cyan-500/5">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Shape the Future of <span className="text-blue-500">Energy</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+                Shape the Future of Energy
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
                 Partner with us to build the future of flexible, reliable, and sustainable energy.
