@@ -224,6 +224,28 @@ const Showcase = () => {
       });
     }
 
+    // Ensure Grid AI appears in the showcase even if not in DB/JSON
+    if (!normalized.some((s) => s.company_name === 'Grid AI Corp')) {
+      normalized.push({
+        company_name: 'Grid AI Corp',
+        ticker: 'Nasdaq: GRDX',
+        subtitle: 'End-to-End Energy Orchestration',
+        description:
+          'AI-powered energy orchestration platform delivering Dynamic Load Shaping for homes, AI-native orchestration for fleets, and multi-GW resilience for hyperscale campuses.',
+        tags: ['AI', 'Cleantech', 'Energy'],
+        button_text: 'View Showcase',
+        link: '/showcase/gridai',
+        website: 'https://grid-ai.com',
+        stock_url: 'https://stockanalysis.com/stocks/grdx/',
+        search_url:
+          'https://www.bing.com/search?q=Grid+AI+Corp+GRDX+energy',
+        thumbnail: '/lovable-uploads/gridai-logo.svg',
+        type: 'stock',
+        disabled: false,
+        main_sector: 'ENERGY',
+      });
+    }
+
     return normalized;
   }, [loading, dbShowcases, showcaseData]);
 
