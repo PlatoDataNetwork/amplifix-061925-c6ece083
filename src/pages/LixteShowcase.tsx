@@ -48,7 +48,7 @@ const LixteShowcase = () => {
                   Stock Price
                 </a>
                 <a 
-                  href="/documents/lixte-factsheet.pdf" 
+                  href="https://d1io3yog0oux5.cloudfront.net/_c61ea0cac8a91a7d71e057f25bc5e9c6/lixte/db/1285/10976/file/2024_08_19_Lixte_Fact+sheet.pdf" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center gap-1 text-teal-500 hover:text-teal-400 text-sm"
@@ -82,7 +82,7 @@ const LixteShowcase = () => {
                   asChild
                   className="border-teal-500/30 hover:bg-teal-500/10"
                 >
-                  <a href="/documents/lixte-factsheet.pdf" target="_blank" rel="noopener noreferrer">
+                  <a href="https://d1io3yog0oux5.cloudfront.net/_c61ea0cac8a91a7d71e057f25bc5e9c6/lixte/db/1285/10976/file/2024_08_19_Lixte_Fact+sheet.pdf" target="_blank" rel="noopener noreferrer">
                     <FileText className="mr-2 h-4 w-4" />
                     View Fact Sheet
                   </a>
@@ -433,7 +433,7 @@ const LixteShowcase = () => {
                   asChild
                   className="border-teal-500/30 hover:bg-teal-500/10"
                 >
-                  <a href="/documents/lixte-factsheet.pdf" target="_blank" rel="noopener noreferrer">
+                  <a href="https://d1io3yog0oux5.cloudfront.net/_c61ea0cac8a91a7d71e057f25bc5e9c6/lixte/db/1285/10976/file/2024_08_19_Lixte_Fact+sheet.pdf" target="_blank" rel="noopener noreferrer">
                     <FileText className="mr-2 h-4 w-4" />
                     Download Fact Sheet
                   </a>
