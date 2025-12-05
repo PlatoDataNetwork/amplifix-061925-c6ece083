@@ -64,16 +64,6 @@ const LixteShowcase = () => {
                   asChild
                   className="border-teal-500/30 hover:bg-teal-500/10"
                 >
-                  <a href="https://d1io3yog0oux5.cloudfront.net/_c61ea0cac8a91a7d71e057f25bc5e9c6/lixte/db/1285/10976/file/2024_08_19_Lixte_Fact+sheet.pdf" target="_blank" rel="noopener noreferrer">
-                    <FileText className="mr-2 h-4 w-4" />
-                    View Fact Sheet
-                  </a>
-                </Button>
-                <Button 
-                  variant="outline" 
-                  asChild
-                  className="border-teal-500/30 hover:bg-teal-500/10"
-                >
                   <a href="https://finance.yahoo.com/quote/LIXT/" target="_blank" rel="noopener noreferrer">
                     <TrendingUp className="mr-2 h-4 w-4" />
                     View Stock
