@@ -223,7 +223,7 @@ const LixteShowcase = () => {
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="bg-card p-6 rounded-xl border border-border/50">
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="px-3 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full font-medium border border-purple-500/30">LB-100 + Immunotherapy</span>
+                    <span className="px-3 py-1 bg-teal-500/20 text-teal-400 text-xs rounded-full font-medium border border-teal-500/30">LB-100 + Immunotherapy</span>
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-white">Ovarian Clear Cell Cancer</h3>
                   <p className="text-sm text-muted-foreground mb-6">Phase 1b/2 trial in collaboration with GSK at MD Anderson Cancer Center</p>
@@ -235,7 +235,7 @@ const LixteShowcase = () => {
 
                 <div className="bg-card p-6 rounded-xl border border-border/50">
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="px-3 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full font-medium border border-purple-500/30">LB-100 + Immunotherapy</span>
+                    <span className="px-3 py-1 bg-teal-500/20 text-teal-400 text-xs rounded-full font-medium border border-teal-500/30">LB-100 + Immunotherapy</span>
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-white">Metastatic MSS Colon Cancer</h3>
                   <p className="text-sm text-muted-foreground mb-6">Phase 1b trial targeting microsatellite stable colorectal cancer</p>
