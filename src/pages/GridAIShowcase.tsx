@@ -196,22 +196,22 @@ const GridAIShowcase = () => {
 
               <div className="space-y-8">
                 {/* VPP for Residential */}
-                <div className="bg-gradient-to-br from-card to-green-500/5 p-8 rounded-xl border border-green-500/20">
+                <div className="bg-gradient-to-br from-card to-blue-500/5 p-8 rounded-xl border border-blue-500/20">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-3 bg-green-500/15 rounded-lg">
-                      <Home className="h-6 w-6 text-green-500" />
+                    <div className="p-3 bg-blue-500/15 rounded-lg">
+                      <Home className="h-6 w-6 text-blue-500" />
                     </div>
                     <div>
-                      <span className="text-xs text-green-500 font-medium uppercase tracking-wide">VPP Solution</span>
+                      <span className="text-xs text-blue-500 font-medium uppercase tracking-wide">VPP Solution</span>
                       <h3 className="text-xl font-semibold">Residential & Small Business</h3>
                     </div>
                   </div>
                   <p className="text-muted-foreground mb-4">
                     A consumer energy manager that makes flexibility effortless. The Alice product lowers bills, reduces carbon footprints, and simplifies participation in demand response programs.
                   </p>
-                  <div className="bg-green-500/10 p-4 rounded-lg">
+                  <div className="bg-blue-500/10 p-4 rounded-lg">
                     <p className="text-sm">
-                      <span className="font-semibold text-green-500">Key benefits:</span> Grid AI Corp. helps households and small businesses save money while living more sustainably. With Alice managing energy devices in the background, consumers enjoy cheaper energy, a greener lifestyle, and seamless automation.
+                      <span className="font-semibold text-blue-500">Key benefits:</span> Grid AI Corp. helps households and small businesses save money while living more sustainably. With Alice managing energy devices in the background, consumers enjoy cheaper energy, a greener lifestyle, and seamless automation.
                     </p>
                   </div>
                 </div>
