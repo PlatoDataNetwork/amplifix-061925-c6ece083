@@ -86,9 +86,11 @@ const Showcase = () => {
     let mergedShowcases: any[];
     
     if (!loading && dbShowcases.length > 0) {
-      const dbCompanyNames = new Set(dbShowcases.map((s) => s.company_name));
+      // Filter out duplicate "Grid AI" entry (we use "Grid AI Corp" instead)
+      const filteredDbShowcases = dbShowcases.filter((s) => s.company_name !== 'Grid AI');
+      const dbCompanyNames = new Set(filteredDbShowcases.map((s) => s.company_name));
       const jsonOnlyShowcases = jsonShowcases.filter((s) => !dbCompanyNames.has(s.company_name));
-      mergedShowcases = [...dbShowcases, ...jsonOnlyShowcases];
+      mergedShowcases = [...filteredDbShowcases, ...jsonOnlyShowcases];
     } else {
       mergedShowcases = jsonShowcases;
     }
@@ -228,7 +230,7 @@ const Showcase = () => {
     if (!normalized.some((s) => s.company_name === 'Grid AI Corp')) {
       normalized.push({
         company_name: 'Grid AI Corp',
-        ticker: 'Nasdaq: GRDX',
+        ticker: 'NAS:GRDX',
         subtitle: 'End-to-End Energy Orchestration',
         description:
           'AI-powered energy orchestration platform delivering Dynamic Load Shaping for homes, AI-native orchestration for fleets, and multi-GW resilience for hyperscale campuses.',
@@ -250,7 +252,7 @@ const Showcase = () => {
     if (!normalized.some((s) => s.company_name === 'Lixte Biotechnology')) {
       normalized.push({
         company_name: 'Lixte Biotechnology',
-        ticker: 'Nasdaq: LIXT',
+        ticker: 'NAS:LIXT',
         subtitle: 'PP2A Inhibitors for Cancer Treatment',
         description:
           'Clinical-stage pharmaceutical company developing first-in-class PP2A inhibitors to enhance chemotherapy and immunotherapy efficacy for cancer patients.',
@@ -559,11 +561,11 @@ const Showcase = () => {
                           {showcase.company_name}
                         </h3>
                         {showcase.type === 'stock' && showcase.ticker && (
-                          <p className={`text-xs font-bold mt-0.5 ${colors.text}`}>
-                            {showcase.ticker}
+                          <p className={`text-xl font-bold mt-0.5 ${colors.text}`}>
+                            {showcase.ticker.includes(':') ? showcase.ticker : `NAS:${showcase.ticker}`}
                           </p>
                         )}
-                        <p className={`text-sm font-medium mt-1 text-muted-foreground`}>
+                        <p className={`text-sm font-medium mt-1 ${colors.text}`}>
                           {showcase.company_name === 'FAIM'
                             ? 'AI Powered Fan Engagement'
                             : (showcase.subtitle || (showcase.type !== 'stock' ? showcase.ticker : ''))}
