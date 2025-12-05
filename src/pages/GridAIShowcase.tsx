@@ -141,7 +141,7 @@ const GridAIShowcase = () => {
                 The Challenge
               </h2>
               <p className="text-lg text-muted-foreground mb-12 text-center">
-                Today's grid is under unprecedented pressure
+                Today's grid is under unprecedented pressure.
               </p>
 
               <div className="grid md:grid-cols-3 gap-6">
@@ -191,7 +191,7 @@ const GridAIShowcase = () => {
                 Our Solutions
               </h2>
               <p className="text-lg text-muted-foreground mb-12 text-center">
-                Grid AI Corp. at every scale
+                Grid AI Corp. at every scale.
               </p>
 
               <div className="space-y-8">
@@ -270,7 +270,7 @@ const GridAIShowcase = () => {
                 Technology & Innovation
               </h2>
               <p className="text-lg text-muted-foreground mb-12 text-center">
-                Built on a foundation of advanced technology that brings intelligence and infrastructure together
+                Built on a foundation of advanced technology that brings intelligence and infrastructure together.
               </p>
 
               <div className="grid md:grid-cols-3 gap-6">
