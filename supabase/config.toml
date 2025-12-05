@@ -63,9 +63,6 @@ verify_jwt = true
 [functions.format-all-articles]
 verify_jwt = true
 
-[functions.reformat-single-article]
-verify_jwt = true
-
 [functions.auto-resume-imports]
 verify_jwt = false
 
@@ -88,10 +85,10 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.add-blockwell-company]
-verify_jwt = false
+verify_jwt = true
 
 [functions.update-showcase-data]
-verify_jwt = false
+verify_jwt = true
 
 [functions.start-ai-processing]
 verify_jwt = true
@@ -103,7 +100,7 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.fix-stuck-ai-jobs]
-verify_jwt = false
+verify_jwt = true
 
 [functions.resume-ai-job]
 verify_jwt = true
@@ -124,7 +121,7 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.cleanup-cannabis-articles]
-verify_jwt = false
+verify_jwt = true
 
 [functions.vertical-ai-chat]
 verify_jwt = false
@@ -137,4 +134,3 @@ verify_jwt = true
 
 [functions.delete-empty-cannabis-articles]
 verify_jwt = true
-

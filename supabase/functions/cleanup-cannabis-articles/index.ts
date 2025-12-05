@@ -2,12 +2,37 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+async function verifyAdmin(req: Request): Promise<{ authorized: boolean; error?: string }> {
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader) {
+    return { authorized: false, error: 'Missing authorization header' };
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const token = authHeader.replace('Bearer ', '');
+  
+  const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+  if (userError || !user) {
+    return { authorized: false, error: 'Invalid or expired token' };
+  }
+
+  const { data: roles, error: rolesError } = await supabase
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', user.id);
+
+  if (rolesError || !roles?.some(r => r.role === 'admin')) {
+    return { authorized: false, error: 'Admin access required' };
+  }
+
+  return { authorized: true };
+}
 
 // Clean text by removing HTML tags and artifacts
 function cleanText(text?: string | null): string {
@@ -69,7 +94,7 @@ function fallbackFormatting(text: string): string {
 }
 
 // Check if operation should be cancelled
-async function shouldCancel(): Promise<boolean> {
+async function shouldCancel(supabase: any): Promise<boolean> {
   const { data, error } = await supabase
     .from('import_history')
     .select('cancelled')
@@ -87,6 +112,20 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Verify admin authorization
+    const { authorized, error: authError } = await verifyAdmin(req);
+    if (!authorized) {
+      console.error('Authorization failed:', authError);
+      return new Response(
+        JSON.stringify({ error: authError }),
+        {
+          status: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const { action } = await req.json().catch(() => ({ action: 'start' }));
     
     // Handle cancel request
@@ -159,7 +198,7 @@ Deno.serve(async (req) => {
           console.log('Step 1: Deleting garbage articles...');
           sendProgress({ type: 'status', message: 'Finding garbage articles...' });
           
-          if (await shouldCancel()) {
+          if (await shouldCancel(supabase)) {
             sendProgress({ type: 'cancelled', message: 'Cleanup cancelled by user' });
             controller.close();
             return;
@@ -195,7 +234,7 @@ Deno.serve(async (req) => {
           }
 
           // Step 2: Remove duplicates
-          if (await shouldCancel()) {
+          if (await shouldCancel(supabase)) {
             sendProgress({ type: 'cancelled', message: 'Cleanup cancelled by user' });
             controller.close();
             return;
@@ -233,7 +272,7 @@ Deno.serve(async (req) => {
           }
 
           // Step 3: Reformat remaining articles
-          if (await shouldCancel()) {
+          if (await shouldCancel(supabase)) {
             sendProgress({ type: 'cancelled', message: 'Cleanup cancelled by user' });
             controller.close();
             return;
@@ -267,7 +306,7 @@ Deno.serve(async (req) => {
           console.log(`📍 Resuming from batch ${lastBatchIndex}, article ${startIndex}/${totalArticles}`);
 
           for (let i = startIndex; i < totalArticles; i += batchSize) {
-            if (await shouldCancel()) {
+            if (await shouldCancel(supabase)) {
               // Save progress before cancelling
               await supabase
                 .from('import_history')
