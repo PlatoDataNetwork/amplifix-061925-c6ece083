@@ -50,7 +50,7 @@ const LixteShowcase = () => {
               </h1>
               
               <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-                Unveiling the first of a novel class of therapeutic agents that enhance both chemotherapy and immunotherapy efficacy
+                Unveiling the first of a novel class of therapeutic agents that enhance both chemotherapy and immunotherapy efficacy.
               </p>
 
               <div className="flex flex-wrap justify-center gap-4">
@@ -137,26 +137,26 @@ const LixteShowcase = () => {
                 LB-100 - Lead Compound
               </h2>
               <p className="text-lg text-muted-foreground mb-12 text-center">
-                A first-in-class PP2A inhibitor with demonstrated safety and anti-cancer activity
+                A first-in-class PP2A inhibitor with demonstrated safety and anti-cancer activity.
               </p>
 
               <div className="grid md:grid-cols-3 gap-6 mb-12">
                 <div className="bg-card p-6 rounded-xl border border-border hover:border-teal-500/40 transition-colors text-center">
                   <CheckCircle className="h-8 w-8 text-teal-500 mx-auto mb-4" />
                   <h3 className="font-semibold mb-2">FDA IND Status</h3>
-                  <p className="text-sm text-muted-foreground">Investigational New Drug status approved</p>
+                  <p className="text-sm text-muted-foreground">Investigational New Drug status approved.</p>
                 </div>
 
                 <div className="bg-card p-6 rounded-xl border border-border hover:border-teal-500/40 transition-colors text-center">
                   <CheckCircle className="h-8 w-8 text-teal-500 mx-auto mb-4" />
                   <h3 className="font-semibold mb-2">EMA Approval</h3>
-                  <p className="text-sm text-muted-foreground">Investigational Medicinal Product Dossier approved in Europe (2022)</p>
+                  <p className="text-sm text-muted-foreground">Investigational Medicinal Product Dossier approved in Europe (2022).</p>
                 </div>
 
                 <div className="bg-card p-6 rounded-xl border border-border hover:border-teal-500/40 transition-colors text-center">
                   <CheckCircle className="h-8 w-8 text-teal-500 mx-auto mb-4" />
                   <h3 className="font-semibold mb-2">25+ Publications</h3>
-                  <p className="text-sm text-muted-foreground">Demonstrated anti-cancer activity in peer-reviewed research</p>
+                  <p className="text-sm text-muted-foreground">Demonstrated anti-cancer activity in peer-reviewed research.</p>
                 </div>
               </div>
 
@@ -171,15 +171,15 @@ const LixteShowcase = () => {
                     <ul className="space-y-2 text-sm text-muted-foreground">
                       <li className="flex items-start gap-2">
                         <span className="text-teal-500">•</span>
-                        Stimulates cell cycle progression
+                        Stimulates cell cycle progression.
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-teal-500">•</span>
-                        Inhibits DNA repair mechanisms in cancer cells
+                        Inhibits DNA repair mechanisms in cancer cells.
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-teal-500">•</span>
-                        Potentiates effectiveness without enhancing toxicity
+                        Potentiates effectiveness without enhancing toxicity.
                       </li>
                     </ul>
                   </div>
@@ -191,15 +191,15 @@ const LixteShowcase = () => {
                     <ul className="space-y-2 text-sm text-muted-foreground">
                       <li className="flex items-start gap-2">
                         <span className="text-teal-500">•</span>
-                        Enhances T cell proliferation
+                        Enhances T cell proliferation.
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-teal-500">•</span>
-                        Increases release of cytokines
+                        Increases release of cytokines.
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-teal-500">•</span>
-                        Promotes production of neoantigens
+                        Promotes production of neoantigens.
                       </li>
                     </ul>
                   </div>
@@ -217,7 +217,7 @@ const LixteShowcase = () => {
                 Clinical Pipeline
               </h2>
               <p className="text-lg text-muted-foreground mb-12 text-center">
-                Multiple clinical trials targeting solid tumors with unmet medical needs
+                Multiple clinical trials targeting solid tumors with unmet medical needs.
               </p>
 
               <div className="grid md:grid-cols-3 gap-6">
@@ -226,7 +226,7 @@ const LixteShowcase = () => {
                     <span className="px-3 py-1 bg-teal-500/20 text-teal-400 text-xs rounded-full font-medium border border-teal-500/30">LB-100 + Immunotherapy</span>
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-white">Ovarian Clear Cell Cancer</h3>
-                  <p className="text-sm text-muted-foreground mb-6">Phase 1b/2 trial in collaboration with GSK at MD Anderson Cancer Center</p>
+                  <p className="text-sm text-muted-foreground mb-6">Phase 1b/2 trial in collaboration with GSK at MD Anderson Cancer Center.</p>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">NCT06065462</span>
                     <span className="text-green-400 font-medium">Recruiting</span>
@@ -238,7 +238,7 @@ const LixteShowcase = () => {
                     <span className="px-3 py-1 bg-teal-500/20 text-teal-400 text-xs rounded-full font-medium border border-teal-500/30">LB-100 + Immunotherapy</span>
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-white">Metastatic MSS Colon Cancer</h3>
-                  <p className="text-sm text-muted-foreground mb-6">Phase 1b trial targeting microsatellite stable colorectal cancer</p>
+                  <p className="text-sm text-muted-foreground mb-6">Phase 1b trial targeting microsatellite stable colorectal cancer.</p>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">NCT06012734</span>
                     <span className="text-green-400 font-medium">Recruiting</span>
@@ -250,7 +250,7 @@ const LixteShowcase = () => {
                     <span className="px-3 py-1 bg-teal-500/20 text-teal-400 text-xs rounded-full font-medium border border-teal-500/30">LB-100 + Chemotherapy</span>
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-white">Advanced Soft Tissue Sarcoma</h3>
-                  <p className="text-sm text-muted-foreground mb-6">Phase 1b/2 trial for advanced soft tissue sarcoma patients</p>
+                  <p className="text-sm text-muted-foreground mb-6">Phase 1b/2 trial for advanced soft tissue sarcoma patients.</p>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">NCT05809830</span>
                     <span className="text-amber-400 font-medium">Data Analysis</span>
@@ -269,7 +269,7 @@ const LixteShowcase = () => {
                 Experienced Leadership
               </h2>
               <p className="text-lg text-muted-foreground mb-12 text-center">
-                Decades of collective expertise in clinical and drug development
+                Decades of collective expertise in clinical and drug development.
               </p>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -279,7 +279,7 @@ const LixteShowcase = () => {
                   </div>
                   <h3 className="font-semibold mb-1">Bas van der Baan</h3>
                   <p className="text-teal-500 text-sm mb-2">CEO & President</p>
-                  <p className="text-xs text-muted-foreground">20+ years biotech experience, Former CCO of Agendia</p>
+                  <p className="text-xs text-muted-foreground">20+ years biotech experience, Former CCO of Agendia.</p>
                 </div>
 
                 <div className="bg-card p-6 rounded-xl border border-border text-center">
@@ -288,7 +288,7 @@ const LixteShowcase = () => {
                   </div>
                   <h3 className="font-semibold mb-1">Jan Schellens, MD PhD</h3>
                   <p className="text-teal-500 text-sm mb-2">CMO</p>
-                  <p className="text-xs text-muted-foreground">25+ years clinical oncology, pharmacologist</p>
+                  <p className="text-xs text-muted-foreground">25+ years clinical oncology, pharmacologist.</p>
                 </div>
 
                 <div className="bg-card p-6 rounded-xl border border-border text-center">
@@ -297,7 +297,7 @@ const LixteShowcase = () => {
                   </div>
                   <h3 className="font-semibold mb-1">Eric Forman, Esq</h3>
                   <p className="text-teal-500 text-sm mb-2">COO & VP</p>
-                  <p className="text-xs text-muted-foreground">IP, licensing, corporate transactions expert</p>
+                  <p className="text-xs text-muted-foreground">IP, licensing, corporate transactions expert.</p>
                 </div>
 
                 <div className="bg-card p-6 rounded-xl border border-border text-center">
@@ -306,7 +306,7 @@ const LixteShowcase = () => {
                   </div>
                   <h3 className="font-semibold mb-1">Robert Weingarten</h3>
                   <p className="text-teal-500 text-sm mb-2">CFO & VP</p>
-                  <p className="text-xs text-muted-foreground">30+ years finance and SEC compliance</p>
+                  <p className="text-xs text-muted-foreground">30+ years finance and SEC compliance.</p>
                 </div>
               </div>
             </div>
@@ -325,25 +325,25 @@ const LixteShowcase = () => {
                 <div className="bg-card p-6 rounded-xl border border-teal-500/20 hover:border-teal-500/40 transition-colors">
                   <FlaskConical className="h-8 w-8 text-teal-500 mb-4" />
                   <h3 className="font-semibold mb-2">Clinical-Stage</h3>
-                  <p className="text-sm text-muted-foreground">Developing a new class of cancer therapy called PP2A inhibitors</p>
+                  <p className="text-sm text-muted-foreground">Developing a new class of cancer therapy called PP2A inhibitors.</p>
                 </div>
 
                 <div className="bg-card p-6 rounded-xl border border-teal-500/20 hover:border-teal-500/40 transition-colors">
                   <Dna className="h-8 w-8 text-teal-500 mb-4" />
                   <h3 className="font-semibold mb-2">Innovative Approach</h3>
-                  <p className="text-sm text-muted-foreground">Enhancing chemo- and immunotherapy efficacy with new treatment options</p>
+                  <p className="text-sm text-muted-foreground">Enhancing chemo- and immunotherapy efficacy with new treatment options.</p>
                 </div>
 
                 <div className="bg-card p-6 rounded-xl border border-teal-500/20 hover:border-teal-500/40 transition-colors">
                   <Beaker className="h-8 w-8 text-teal-500 mb-4" />
                   <h3 className="font-semibold mb-2">Unique Mechanism</h3>
-                  <p className="text-sm text-muted-foreground">Proprietary LB-100 compound as a safe and potent PP2A inhibitor</p>
+                  <p className="text-sm text-muted-foreground">Proprietary LB-100 compound as a safe and potent PP2A inhibitor.</p>
                 </div>
 
                 <div className="bg-card p-6 rounded-xl border border-teal-500/20 hover:border-teal-500/40 transition-colors">
                   <Target className="h-8 w-8 text-teal-500 mb-4" />
                   <h3 className="font-semibold mb-2">Broad Impact</h3>
-                  <p className="text-sm text-muted-foreground">Multiple clinical trials for solid tumors including sarcoma, ovarian, and colon cancer</p>
+                  <p className="text-sm text-muted-foreground">Multiple clinical trials for solid tumors including sarcoma, ovarian, and colon cancer.</p>
                 </div>
               </div>
             </div>
@@ -362,19 +362,19 @@ const LixteShowcase = () => {
                 <div className="bg-card p-6 rounded-xl border border-border hover:border-teal-500/40 transition-colors">
                   <span className="text-xs text-muted-foreground">November 2025</span>
                   <h3 className="font-semibold mt-1 mb-2">Acquires Liora Technologies' Proton Therapy Platform</h3>
-                  <p className="text-sm text-muted-foreground">Acquisition of proprietary proton therapy platform for cancer treatment</p>
+                  <p className="text-sm text-muted-foreground">Acquisition of proprietary proton therapy platform for cancer treatment.</p>
                 </div>
 
                 <div className="bg-card p-6 rounded-xl border border-border hover:border-teal-500/40 transition-colors">
                   <span className="text-xs text-muted-foreground">September 2025</span>
                   <h3 className="font-semibold mt-1 mb-2">$2.6M Digital Currency Treasury Purchase</h3>
-                  <p className="text-sm text-muted-foreground">Diversifying treasury and positioning for potential acquisitions</p>
+                  <p className="text-sm text-muted-foreground">Diversifying treasury and positioning for potential acquisitions.</p>
                 </div>
 
                 <div className="bg-card p-6 rounded-xl border border-border hover:border-teal-500/40 transition-colors">
                   <span className="text-xs text-muted-foreground">Ongoing</span>
                   <h3 className="font-semibold mt-1 mb-2">DOSTAR LB-100 Study at MD Anderson</h3>
-                  <p className="text-sm text-muted-foreground">Ovarian clear cell carcinoma trial supported by GSK</p>
+                  <p className="text-sm text-muted-foreground">Ovarian clear cell carcinoma trial supported by GSK.</p>
                 </div>
               </div>
             </div>
