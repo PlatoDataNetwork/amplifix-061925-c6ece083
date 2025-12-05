@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, TrendingUp, Zap, Building, Globe, Cpu, Leaf, Shield, DollarSign, Home, Factory, Server, Battery, Car, Sun } from "lucide-react";
+import { ExternalLink, TrendingUp, Zap, Building, Globe, Cpu, Leaf, Shield, DollarSign, Home, Factory, Server, Battery, Car, Sun, Search } from "lucide-react";
 
 const GridAIShowcase = () => {
   return (
@@ -78,6 +78,16 @@ const GridAIShowcase = () => {
                   <a href="https://stockanalysis.com/stocks/grdx/" target="_blank" rel="noopener noreferrer">
                     <TrendingUp className="mr-2 h-4 w-4" />
                     View Stock
+                  </a>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  asChild
+                  className="border-blue-500/30 hover:bg-blue-500/10"
+                >
+                  <a href="https://www.bing.com/copilotsearch?q=Grid+AI+Corp+GRDX+energy&FORM=CSSCOP" target="_blank" rel="noopener noreferrer">
+                    <Search className="mr-2 h-4 w-4" />
+                    AmplifiX
                   </a>
                 </Button>
               </div>

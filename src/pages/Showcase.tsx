@@ -238,11 +238,33 @@ const Showcase = () => {
         website: 'https://grid-ai.com',
         stock_url: 'https://stockanalysis.com/stocks/grdx/',
         search_url:
-          'https://www.bing.com/search?q=Grid+AI+Corp+GRDX+energy',
+          'https://www.bing.com/copilotsearch?q=Grid+AI+Corp+GRDX+energy&FORM=CSSCOP',
         thumbnail: '/lovable-uploads/gridai-logo.svg',
         type: 'stock',
         disabled: false,
         main_sector: 'ENERGY',
+      });
+    }
+
+    // Ensure Lixte appears in the showcase even if not in DB/JSON
+    if (!normalized.some((s) => s.company_name === 'Lixte Biotechnology')) {
+      normalized.push({
+        company_name: 'Lixte Biotechnology',
+        ticker: 'Nasdaq: LIXT',
+        subtitle: 'PP2A Inhibitors for Cancer Treatment',
+        description:
+          'Clinical-stage pharmaceutical company developing first-in-class PP2A inhibitors to enhance chemotherapy and immunotherapy efficacy for cancer patients.',
+        tags: ['Biotech', 'Pharmaceutical', 'Oncology'],
+        button_text: 'View Showcase',
+        link: '/showcase/lixte',
+        website: 'https://lixte.com',
+        stock_url: 'https://finance.yahoo.com/quote/LIXT/',
+        search_url:
+          'https://www.bing.com/copilotsearch?q=Lixte+Biotechnology+LIXT+cancer&FORM=CSSCOP',
+        thumbnail: null,
+        type: 'stock',
+        disabled: false,
+        main_sector: 'BIOTECH',
       });
     }
 

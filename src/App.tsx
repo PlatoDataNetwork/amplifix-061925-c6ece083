@@ -73,6 +73,7 @@ import FynnAIShowcase from "./pages/FynnAIShowcase";
 import VseeHealthShowcase from "./pages/VseeHealthShowcase";
 import FGNexusShowcase from "./pages/FGNexusShowcase";
 import GridAIShowcase from "./pages/GridAIShowcase";
+import LixteShowcase from "./pages/LixteShowcase";
 import ShowcaseAdmin from "./pages/ShowcaseAdmin";
 import SecurityDashboard from "./pages/SecurityDashboard";
 import JsonTester from "./pages/JsonTester";
@@ -136,6 +137,7 @@ const App = () => (
               <Route path="/showcase/kedalion" element={<KedalionShowcase />} />
               <Route path="/showcase/fg-nexus" element={<FGNexusShowcase />} />
               <Route path="/showcase/gridai" element={<GridAIShowcase />} />
+              <Route path="/showcase/lixte" element={<LixteShowcase />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/solutions/ipo-preparation" element={<IPOPreparation />} />
@@ -209,6 +211,7 @@ const App = () => (
               <Route path="/:lang/showcase/kedalion" element={<KedalionShowcase />} />
               <Route path="/:lang/showcase/fg-nexus" element={<FGNexusShowcase />} />
               <Route path="/:lang/showcase/gridai" element={<GridAIShowcase />} />
+              <Route path="/:lang/showcase/lixte" element={<LixteShowcase />} />
               <Route path="/:lang/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/:lang/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/:lang/solutions/ipo-preparation" element={<IPOPreparation />} />
