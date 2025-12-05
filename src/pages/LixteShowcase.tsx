@@ -20,15 +20,15 @@ const LixteShowcase = () => {
 
         {/* Hero Section */}
         <section className="relative pt-24 pb-20 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-background to-cyan-500/5" />
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-background to-blue-500/5" />
           <div className="absolute inset-0 bg-[url('https://lixte.com/wp-content/uploads/2023/10/bg-1-2.jpg')] bg-cover bg-center opacity-10" />
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
               <div className="flex justify-center mb-8">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-teal-500/20 blur-xl rounded-full" />
-                  <div className="relative z-10 ring-4 ring-teal-500/30 rounded-lg p-4 bg-background">
+                  <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
+                  <div className="relative z-10 ring-4 ring-blue-500/30 rounded-lg p-4 bg-background">
                     <img 
                       src="/lovable-uploads/lixte-logo.png" 
                       alt="Lixte Biotechnology Logo" 
@@ -39,13 +39,13 @@ const LixteShowcase = () => {
               </div>
               
               <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
-                <span className="px-3 py-1 bg-teal-500/15 text-teal-500 border border-teal-500/30 rounded-full text-sm font-medium">
+                <span className="px-3 py-1 bg-blue-500/15 text-blue-500 border border-blue-500/30 rounded-full text-sm font-medium">
                   Nasdaq: LIXT
                 </span>
               </div>
 
               <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                <span className="text-teal-500">Transforming Cancer</span><br />
+                <span className="text-blue-500">Transforming Cancer</span><br />
                 Treatment with PP2A Inhibitors
               </h1>
               
@@ -56,7 +56,7 @@ const LixteShowcase = () => {
               <div className="flex flex-wrap justify-center gap-4">
                 <Button 
                   asChild
-                  className="bg-teal-500 hover:bg-teal-600 text-white"
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
                 >
                   <a href="https://lixte.com" target="_blank" rel="noopener noreferrer">
                     <Globe className="mr-2 h-4 w-4" />
@@ -66,7 +66,7 @@ const LixteShowcase = () => {
                 <Button 
                   variant="outline" 
                   asChild
-                  className="border-teal-500/30 hover:bg-teal-500/10"
+                  className="border-blue-500/30 hover:bg-blue-500/10"
                 >
                   <a href="https://finance.yahoo.com/quote/LIXT/" target="_blank" rel="noopener noreferrer">
                     <TrendingUp className="mr-2 h-4 w-4" />
@@ -76,7 +76,7 @@ const LixteShowcase = () => {
                 <Button 
                   variant="outline" 
                   asChild
-                  className="border-teal-500/30 hover:bg-teal-500/10"
+                  className="border-blue-500/30 hover:bg-blue-500/10"
                 >
                   <a href="https://www.bing.com/copilotsearch?q=Lixte+Biotechnology+LIXT&FORM=CSSCOP" target="_blank" rel="noopener noreferrer">
                     <Search className="mr-2 h-4 w-4" />
@@ -101,10 +101,10 @@ const LixteShowcase = () => {
               </p>
 
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-gradient-to-br from-card to-teal-500/5 p-6 rounded-xl border border-teal-500/20">
+                <div className="bg-gradient-to-br from-card to-blue-500/5 p-6 rounded-xl border border-blue-500/20">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-teal-500/15 rounded-lg">
-                      <FlaskConical className="h-5 w-5 text-teal-500" />
+                    <div className="p-2 bg-blue-500/15 rounded-lg">
+                      <FlaskConical className="h-5 w-5 text-blue-500" />
                     </div>
                     <h3 className="font-semibold text-lg">First-in-Class</h3>
                   </div>
@@ -113,10 +113,10 @@ const LixteShowcase = () => {
                   </p>
                 </div>
 
-                <div className="bg-gradient-to-br from-card to-teal-500/5 p-6 rounded-xl border border-teal-500/20">
+                <div className="bg-gradient-to-br from-card to-blue-500/5 p-6 rounded-xl border border-blue-500/20">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-teal-500/15 rounded-lg">
-                      <Shield className="h-5 w-5 text-teal-500" />
+                    <div className="p-2 bg-blue-500/15 rounded-lg">
+                      <Shield className="h-5 w-5 text-blue-500" />
                     </div>
                     <h3 className="font-semibold text-lg">No Known Competitors</h3>
                   </div>
@@ -141,64 +141,64 @@ const LixteShowcase = () => {
               </p>
 
               <div className="grid md:grid-cols-3 gap-6 mb-12">
-                <div className="bg-card p-6 rounded-xl border border-border hover:border-teal-500/40 transition-colors text-center">
-                  <CheckCircle className="h-8 w-8 text-teal-500 mx-auto mb-4" />
+                <div className="bg-card p-6 rounded-xl border border-border hover:border-blue-500/40 transition-colors text-center">
+                  <CheckCircle className="h-8 w-8 text-blue-500 mx-auto mb-4" />
                   <h3 className="font-semibold mb-2">FDA IND Status</h3>
                   <p className="text-sm text-muted-foreground">Investigational New Drug status approved.</p>
                 </div>
 
-                <div className="bg-card p-6 rounded-xl border border-border hover:border-teal-500/40 transition-colors text-center">
-                  <CheckCircle className="h-8 w-8 text-teal-500 mx-auto mb-4" />
+                <div className="bg-card p-6 rounded-xl border border-border hover:border-blue-500/40 transition-colors text-center">
+                  <CheckCircle className="h-8 w-8 text-blue-500 mx-auto mb-4" />
                   <h3 className="font-semibold mb-2">EMA Approval</h3>
                   <p className="text-sm text-muted-foreground">Investigational Medicinal Product Dossier approved in Europe (2022).</p>
                 </div>
 
-                <div className="bg-card p-6 rounded-xl border border-border hover:border-teal-500/40 transition-colors text-center">
-                  <CheckCircle className="h-8 w-8 text-teal-500 mx-auto mb-4" />
+                <div className="bg-card p-6 rounded-xl border border-border hover:border-blue-500/40 transition-colors text-center">
+                  <CheckCircle className="h-8 w-8 text-blue-500 mx-auto mb-4" />
                   <h3 className="font-semibold mb-2">25+ Publications</h3>
                   <p className="text-sm text-muted-foreground">Demonstrated anti-cancer activity in peer-reviewed research.</p>
                 </div>
               </div>
 
-              <div className="bg-teal-500/10 p-8 rounded-xl border border-teal-500/20">
+              <div className="bg-blue-500/10 p-8 rounded-xl border border-blue-500/20">
                 <h3 className="text-xl font-semibold mb-6 text-center">How LB-100 Works</h3>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
-                    <h4 className="font-semibold text-teal-500 mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-blue-500 mb-3 flex items-center gap-2">
                       <Pill className="h-5 w-5" />
                       Enhanced Chemotherapy
                     </h4>
                     <ul className="space-y-2 text-sm text-muted-foreground">
                       <li className="flex items-start gap-2">
-                        <span className="text-teal-500">•</span>
+                        <span className="text-blue-500">•</span>
                         Stimulates cell cycle progression.
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-teal-500">•</span>
+                        <span className="text-blue-500">•</span>
                         Inhibits DNA repair mechanisms in cancer cells.
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-teal-500">•</span>
+                        <span className="text-blue-500">•</span>
                         Potentiates effectiveness without enhancing toxicity.
                       </li>
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-teal-500 mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-blue-500 mb-3 flex items-center gap-2">
                       <Activity className="h-5 w-5" />
                       Enhanced Immunotherapy
                     </h4>
                     <ul className="space-y-2 text-sm text-muted-foreground">
                       <li className="flex items-start gap-2">
-                        <span className="text-teal-500">•</span>
+                        <span className="text-blue-500">•</span>
                         Enhances T cell proliferation.
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-teal-500">•</span>
+                        <span className="text-blue-500">•</span>
                         Increases release of cytokines.
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-teal-500">•</span>
+                        <span className="text-blue-500">•</span>
                         Promotes production of neoantigens.
                       </li>
                     </ul>
@@ -223,7 +223,7 @@ const LixteShowcase = () => {
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="bg-card p-6 rounded-xl border border-border/50">
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="px-3 py-1 bg-teal-500/20 text-teal-400 text-xs rounded-full font-medium border border-teal-500/30">LB-100 + Immunotherapy</span>
+                    <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full font-medium border border-blue-500/30">LB-100 + Immunotherapy</span>
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-white">Ovarian Clear Cell Cancer</h3>
                   <p className="text-sm text-muted-foreground mb-6">Phase 1b/2 trial in collaboration with GSK at MD Anderson Cancer Center.</p>
@@ -235,7 +235,7 @@ const LixteShowcase = () => {
 
                 <div className="bg-card p-6 rounded-xl border border-border/50">
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="px-3 py-1 bg-teal-500/20 text-teal-400 text-xs rounded-full font-medium border border-teal-500/30">LB-100 + Immunotherapy</span>
+                    <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full font-medium border border-blue-500/30">LB-100 + Immunotherapy</span>
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-white">Metastatic MSS Colon Cancer</h3>
                   <p className="text-sm text-muted-foreground mb-6">Phase 1b trial targeting microsatellite stable colorectal cancer.</p>
@@ -247,7 +247,7 @@ const LixteShowcase = () => {
 
                 <div className="bg-card p-6 rounded-xl border border-border/50">
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="px-3 py-1 bg-teal-500/20 text-teal-400 text-xs rounded-full font-medium border border-teal-500/30">LB-100 + Chemotherapy</span>
+                    <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full font-medium border border-blue-500/30">LB-100 + Chemotherapy</span>
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-white">Advanced Soft Tissue Sarcoma</h3>
                   <p className="text-sm text-muted-foreground mb-6">Phase 1b/2 trial for advanced soft tissue sarcoma patients.</p>
@@ -274,38 +274,38 @@ const LixteShowcase = () => {
 
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="bg-card p-6 rounded-xl border border-border text-center">
-                  <div className="p-3 bg-teal-500/15 rounded-full w-fit mx-auto mb-4">
-                    <Users className="h-6 w-6 text-teal-500" />
+                  <div className="p-3 bg-blue-500/15 rounded-full w-fit mx-auto mb-4">
+                    <Users className="h-6 w-6 text-blue-500" />
                   </div>
                   <h3 className="font-semibold mb-1">Bas van der Baan</h3>
-                  <p className="text-teal-500 text-sm mb-2">CEO & President</p>
+                  <p className="text-blue-500 text-sm mb-2">CEO & President</p>
                   <p className="text-xs text-muted-foreground">20+ years biotech experience, Former CCO of Agendia.</p>
                 </div>
 
                 <div className="bg-card p-6 rounded-xl border border-border text-center">
-                  <div className="p-3 bg-teal-500/15 rounded-full w-fit mx-auto mb-4">
-                    <Microscope className="h-6 w-6 text-teal-500" />
+                  <div className="p-3 bg-blue-500/15 rounded-full w-fit mx-auto mb-4">
+                    <Microscope className="h-6 w-6 text-blue-500" />
                   </div>
                   <h3 className="font-semibold mb-1">Jan Schellens, MD PhD</h3>
-                  <p className="text-teal-500 text-sm mb-2">CMO</p>
+                  <p className="text-blue-500 text-sm mb-2">CMO</p>
                   <p className="text-xs text-muted-foreground">25+ years clinical oncology, pharmacologist.</p>
                 </div>
 
                 <div className="bg-card p-6 rounded-xl border border-border text-center">
-                  <div className="p-3 bg-teal-500/15 rounded-full w-fit mx-auto mb-4">
-                    <Shield className="h-6 w-6 text-teal-500" />
+                  <div className="p-3 bg-blue-500/15 rounded-full w-fit mx-auto mb-4">
+                    <Shield className="h-6 w-6 text-blue-500" />
                   </div>
                   <h3 className="font-semibold mb-1">Eric Forman, Esq</h3>
-                  <p className="text-teal-500 text-sm mb-2">COO & VP</p>
+                  <p className="text-blue-500 text-sm mb-2">COO & VP</p>
                   <p className="text-xs text-muted-foreground">IP, licensing, corporate transactions expert.</p>
                 </div>
 
                 <div className="bg-card p-6 rounded-xl border border-border text-center">
-                  <div className="p-3 bg-teal-500/15 rounded-full w-fit mx-auto mb-4">
-                    <Target className="h-6 w-6 text-teal-500" />
+                  <div className="p-3 bg-blue-500/15 rounded-full w-fit mx-auto mb-4">
+                    <Target className="h-6 w-6 text-blue-500" />
                   </div>
                   <h3 className="font-semibold mb-1">Robert Weingarten</h3>
-                  <p className="text-teal-500 text-sm mb-2">CFO & VP</p>
+                  <p className="text-blue-500 text-sm mb-2">CFO & VP</p>
                   <p className="text-xs text-muted-foreground">30+ years finance and SEC compliance.</p>
                 </div>
               </div>
@@ -322,26 +322,26 @@ const LixteShowcase = () => {
               </h2>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-card p-6 rounded-xl border border-teal-500/20 hover:border-teal-500/40 transition-colors">
-                  <FlaskConical className="h-8 w-8 text-teal-500 mb-4" />
+                <div className="bg-card p-6 rounded-xl border border-blue-500/20 hover:border-blue-500/40 transition-colors">
+                  <FlaskConical className="h-8 w-8 text-blue-500 mb-4" />
                   <h3 className="font-semibold mb-2">Clinical-Stage</h3>
                   <p className="text-sm text-muted-foreground">Developing a new class of cancer therapy called PP2A inhibitors.</p>
                 </div>
 
-                <div className="bg-card p-6 rounded-xl border border-teal-500/20 hover:border-teal-500/40 transition-colors">
-                  <Dna className="h-8 w-8 text-teal-500 mb-4" />
+                <div className="bg-card p-6 rounded-xl border border-blue-500/20 hover:border-blue-500/40 transition-colors">
+                  <Dna className="h-8 w-8 text-blue-500 mb-4" />
                   <h3 className="font-semibold mb-2">Innovative Approach</h3>
                   <p className="text-sm text-muted-foreground">Enhancing chemo- and immunotherapy efficacy with new treatment options.</p>
                 </div>
 
-                <div className="bg-card p-6 rounded-xl border border-teal-500/20 hover:border-teal-500/40 transition-colors">
-                  <Beaker className="h-8 w-8 text-teal-500 mb-4" />
+                <div className="bg-card p-6 rounded-xl border border-blue-500/20 hover:border-blue-500/40 transition-colors">
+                  <Beaker className="h-8 w-8 text-blue-500 mb-4" />
                   <h3 className="font-semibold mb-2">Unique Mechanism</h3>
                   <p className="text-sm text-muted-foreground">Proprietary LB-100 compound as a safe and potent PP2A inhibitor.</p>
                 </div>
 
-                <div className="bg-card p-6 rounded-xl border border-teal-500/20 hover:border-teal-500/40 transition-colors">
-                  <Target className="h-8 w-8 text-teal-500 mb-4" />
+                <div className="bg-card p-6 rounded-xl border border-blue-500/20 hover:border-blue-500/40 transition-colors">
+                  <Target className="h-8 w-8 text-blue-500 mb-4" />
                   <h3 className="font-semibold mb-2">Broad Impact</h3>
                   <p className="text-sm text-muted-foreground">Multiple clinical trials for solid tumors including sarcoma, ovarian, and colon cancer.</p>
                 </div>
@@ -359,19 +359,19 @@ const LixteShowcase = () => {
               </h2>
 
               <div className="space-y-4">
-                <div className="bg-card p-6 rounded-xl border border-border hover:border-teal-500/40 transition-colors">
+                <div className="bg-card p-6 rounded-xl border border-border hover:border-blue-500/40 transition-colors">
                   <span className="text-xs text-muted-foreground">November 2025</span>
                   <h3 className="font-semibold mt-1 mb-2">Acquires Liora Technologies' Proton Therapy Platform</h3>
                   <p className="text-sm text-muted-foreground">Acquisition of proprietary proton therapy platform for cancer treatment.</p>
                 </div>
 
-                <div className="bg-card p-6 rounded-xl border border-border hover:border-teal-500/40 transition-colors">
+                <div className="bg-card p-6 rounded-xl border border-border hover:border-blue-500/40 transition-colors">
                   <span className="text-xs text-muted-foreground">September 2025</span>
                   <h3 className="font-semibold mt-1 mb-2">$2.6M Digital Currency Treasury Purchase</h3>
                   <p className="text-sm text-muted-foreground">Diversifying treasury and positioning for potential acquisitions.</p>
                 </div>
 
-                <div className="bg-card p-6 rounded-xl border border-border hover:border-teal-500/40 transition-colors">
+                <div className="bg-card p-6 rounded-xl border border-border hover:border-blue-500/40 transition-colors">
                   <span className="text-xs text-muted-foreground">Ongoing</span>
                   <h3 className="font-semibold mt-1 mb-2">DOSTAR LB-100 Study at MD Anderson</h3>
                   <p className="text-sm text-muted-foreground">Ovarian clear cell carcinoma trial supported by GSK.</p>
@@ -382,7 +382,7 @@ const LixteShowcase = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 bg-gradient-to-br from-teal-500/10 via-background to-cyan-500/5">
+        <section className="py-20 bg-gradient-to-br from-blue-500/10 via-background to-blue-500/5">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
@@ -396,7 +396,7 @@ const LixteShowcase = () => {
                 <Button 
                   asChild
                   size="lg"
-                  className="bg-teal-500 hover:bg-teal-600 text-white"
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
                 >
                   <a href="https://lixte.com" target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="mr-2 h-4 w-4" />
@@ -407,7 +407,7 @@ const LixteShowcase = () => {
                   variant="outline" 
                   size="lg"
                   asChild
-                  className="border-teal-500/30 hover:bg-teal-500/10"
+                  className="border-blue-500/30 hover:bg-blue-500/10"
                 >
                   <a href="https://ir.lixte.com" target="_blank" rel="noopener noreferrer">
                     <TrendingUp className="mr-2 h-4 w-4" />
