@@ -274,70 +274,82 @@ const Showcase = () => {
   }, [loading, dbShowcases, showcaseData]);
 
   // Determine color theme based on tags and company name
-  const getColorClasses = (showcase: any) => {
-    // Special case: ForexGPT gets hot pink
-    if (showcase.company_name === 'ForexGPT') {
-      return {
-        gradient: 'from-card via-card to-pink-500/5 border-pink-500/20 hover:border-pink-500/40',
-        badge: 'bg-pink-500/15 text-pink-500 border border-pink-500/30',
-        icon: 'bg-gradient-to-br from-pink-500/10 to-pink-500/30 border-pink-500/50',
-        text: 'text-pink-500',
-        button: 'bg-pink-500 hover:bg-pink-500/90 text-white'
-      };
-    }
-    
-    // Special case: StorageBlue gets blue theme
-    if (showcase.company_name === 'StorageBlue') {
-      return {
-        gradient: 'from-card via-card to-blue-500/5 border-blue-500/20 hover:border-blue-500/40',
-        badge: 'bg-blue-500/15 text-blue-500 border border-blue-500/30',
-        icon: 'bg-gradient-to-br from-blue-500/10 to-blue-500/30 border-blue-500/50',
-        text: 'text-blue-500',
-        button: 'bg-blue-500 hover:bg-blue-500/90 text-white'
-      };
-    }
-    
-    // Special case: Kedalion gets amber/gold theme
-    if (showcase.company_name === 'Kedalion') {
-      return {
-        gradient: 'from-card via-card to-amber-500/5 border-amber-500/20 hover:border-amber-500/40',
-        badge: 'bg-amber-500/15 text-amber-500 border border-amber-500/30',
-        icon: 'bg-gradient-to-br from-amber-500/10 to-amber-500/30 border-amber-500/50',
-        text: 'text-amber-500',
-        button: 'bg-amber-500 hover:bg-amber-600 text-black'
-      };
-    }
-    
-    // Priority: Carbon > AI > default
-    if (showcase.tags && Array.isArray(showcase.tags)) {
-      if (showcase.tags.includes('Carbon')) {
-        return {
-          gradient: 'from-card via-card to-green-500/5 border-green-500/20 hover:border-green-500/40',
-          badge: 'bg-green-500/15 text-green-500 border border-green-500/30',
-          icon: 'bg-gradient-to-br from-green-500/10 to-green-500/30 border-green-500/50',
-          text: 'text-green-500',
-          button: 'bg-green-500 hover:bg-green-600 text-white'
-        };
-      }
-      if (showcase.tags.includes('AI')) {
-        return {
-          gradient: 'from-card via-card to-highlight-blue/5 border-highlight-blue/20 hover:border-highlight-blue/40',
-          badge: 'bg-highlight-blue/15 text-highlight-blue border border-highlight-blue/30',
-          icon: 'bg-gradient-to-br from-highlight-blue/10 to-highlight-blue/30 border-highlight-blue/50',
-          text: 'text-highlight-blue',
-          button: 'bg-highlight-blue hover:bg-highlight-blue/90 text-white'
-        };
-      }
-    }
-    
-    // Default colors for non-AI, non-Carbon companies
-    return {
+  // Color palette for variety - rotates to ensure no adjacent duplicates
+  const colorPalette = [
+    { // Blue
+      gradient: 'from-card via-card to-blue-500/5 border-blue-500/20 hover:border-blue-500/40',
+      badge: 'bg-blue-500/15 text-blue-500 border border-blue-500/30',
+      icon: 'bg-gradient-to-br from-blue-500/10 to-blue-500/30 border-blue-500/50',
+      text: 'text-blue-500',
+      button: 'bg-blue-500 hover:bg-blue-500/90 text-white'
+    },
+    { // Purple
       gradient: 'from-card via-card to-purple-500/5 border-purple-500/20 hover:border-purple-500/40',
       badge: 'bg-purple-500/15 text-purple-500 border border-purple-500/30',
       icon: 'bg-gradient-to-br from-purple-500/10 to-purple-500/30 border-purple-500/50',
       text: 'text-purple-500',
       button: 'bg-purple-500 hover:bg-purple-600 text-white'
-    };
+    },
+    { // Emerald
+      gradient: 'from-card via-card to-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/40',
+      badge: 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30',
+      icon: 'bg-gradient-to-br from-emerald-500/10 to-emerald-500/30 border-emerald-500/50',
+      text: 'text-emerald-500',
+      button: 'bg-emerald-500 hover:bg-emerald-600 text-white'
+    },
+    { // Rose/Pink
+      gradient: 'from-card via-card to-rose-500/5 border-rose-500/20 hover:border-rose-500/40',
+      badge: 'bg-rose-500/15 text-rose-500 border border-rose-500/30',
+      icon: 'bg-gradient-to-br from-rose-500/10 to-rose-500/30 border-rose-500/50',
+      text: 'text-rose-500',
+      button: 'bg-rose-500 hover:bg-rose-600 text-white'
+    },
+    { // Amber
+      gradient: 'from-card via-card to-amber-500/5 border-amber-500/20 hover:border-amber-500/40',
+      badge: 'bg-amber-500/15 text-amber-500 border border-amber-500/30',
+      icon: 'bg-gradient-to-br from-amber-500/10 to-amber-500/30 border-amber-500/50',
+      text: 'text-amber-500',
+      button: 'bg-amber-500 hover:bg-amber-600 text-black'
+    },
+    { // Cyan
+      gradient: 'from-card via-card to-cyan-500/5 border-cyan-500/20 hover:border-cyan-500/40',
+      badge: 'bg-cyan-500/15 text-cyan-500 border border-cyan-500/30',
+      icon: 'bg-gradient-to-br from-cyan-500/10 to-cyan-500/30 border-cyan-500/50',
+      text: 'text-cyan-500',
+      button: 'bg-cyan-500 hover:bg-cyan-600 text-white'
+    },
+    { // Indigo
+      gradient: 'from-card via-card to-indigo-500/5 border-indigo-500/20 hover:border-indigo-500/40',
+      badge: 'bg-indigo-500/15 text-indigo-500 border border-indigo-500/30',
+      icon: 'bg-gradient-to-br from-indigo-500/10 to-indigo-500/30 border-indigo-500/50',
+      text: 'text-indigo-500',
+      button: 'bg-indigo-500 hover:bg-indigo-600 text-white'
+    },
+    { // Orange
+      gradient: 'from-card via-card to-orange-500/5 border-orange-500/20 hover:border-orange-500/40',
+      badge: 'bg-orange-500/15 text-orange-500 border border-orange-500/30',
+      icon: 'bg-gradient-to-br from-orange-500/10 to-orange-500/30 border-orange-500/50',
+      text: 'text-orange-500',
+      button: 'bg-orange-500 hover:bg-orange-600 text-white'
+    },
+    { // Teal
+      gradient: 'from-card via-card to-teal-500/5 border-teal-500/20 hover:border-teal-500/40',
+      badge: 'bg-teal-500/15 text-teal-500 border border-teal-500/30',
+      icon: 'bg-gradient-to-br from-teal-500/10 to-teal-500/30 border-teal-500/50',
+      text: 'text-teal-500',
+      button: 'bg-teal-500 hover:bg-teal-600 text-white'
+    },
+    { // Fuchsia
+      gradient: 'from-card via-card to-fuchsia-500/5 border-fuchsia-500/20 hover:border-fuchsia-500/40',
+      badge: 'bg-fuchsia-500/15 text-fuchsia-500 border border-fuchsia-500/30',
+      icon: 'bg-gradient-to-br from-fuchsia-500/10 to-fuchsia-500/30 border-fuchsia-500/50',
+      text: 'text-fuchsia-500',
+      button: 'bg-fuchsia-500 hover:bg-fuchsia-600 text-white'
+    },
+  ];
+
+  const getColorClasses = (index: number) => {
+    return colorPalette[index % colorPalette.length];
   };
 
 
@@ -503,7 +515,7 @@ const Showcase = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {filteredShowcases.map((showcase, index) => {
-                const colors = getColorClasses(showcase);
+                const colors = getColorClasses(index);
                 return (
                 <div key={index} className={`relative bg-gradient-to-br ${
                   showcase.disabled 
