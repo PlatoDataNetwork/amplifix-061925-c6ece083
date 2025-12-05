@@ -553,9 +553,13 @@ const Showcase = () => {
                            <Building className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : colors.text}`} />
                          )}
                        </div>
-                       {(showcase.company_name === 'Grid AI Corp' || showcase.company_name === 'Lixte Biotechnology') && (
+                       {['Grid AI Corp', 'Lixte Biotechnology', 'FG Nexus', 'Karbon-X', 'Micropolis'].includes(showcase.company_name) && (
                          <span className={`text-[10px] font-bold ${colors.text} whitespace-nowrap`}>
-                           {showcase.company_name === 'Grid AI Corp' ? 'NAS:GRDX' : 'NAS:LIXT'}
+                           {showcase.company_name === 'Grid AI Corp' ? 'NAS:GRDX' 
+                             : showcase.company_name === 'Lixte Biotechnology' ? 'NAS:LIXT'
+                             : showcase.company_name === 'FG Nexus' ? 'NAS:FGNX'
+                             : showcase.company_name === 'Karbon-X' ? 'OTC:KARX'
+                             : 'MCRP'}
                          </span>
                        )}
                      </div>
