@@ -104,7 +104,7 @@ const GridAIShowcase = () => {
                     <div className="p-2 bg-blue-500/15 rounded-lg">
                       <Server className="h-5 w-5 text-blue-500" />
                     </div>
-                    <h3 className="font-semibold text-lg">Controlling Infrastructure</h3>
+                    <h3 className="font-semibold text-lg text-blue-500">Controlling Infrastructure</h3>
                   </div>
                   <p className="text-muted-foreground">
                     Large-scale AI data center power campuses and grid-ready assets designed for resilience and growth.
@@ -116,7 +116,7 @@ const GridAIShowcase = () => {
                     <div className="p-2 bg-blue-500/15 rounded-lg">
                       <Home className="h-5 w-5 text-blue-500" />
                     </div>
-                    <h3 className="font-semibold text-lg">Delivering Intelligence</h3>
+                    <h3 className="font-semibold text-lg text-blue-500">Delivering Intelligence</h3>
                   </div>
                   <p className="text-muted-foreground">
                     Orchestrating behind-the-meter devices, renewable assets, and providing consumer energy management at scale.
@@ -149,7 +149,7 @@ const GridAIShowcase = () => {
                   <div className="p-3 bg-blue-500/15 rounded-lg w-fit mb-4">
                     <Zap className="h-6 w-6 text-blue-500" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">Growing Demand</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-blue-500">Growing Demand</h3>
                   <p className="text-muted-foreground">
                     AI data centers, EVs, and electrification are driving massive new loads with global capacity needs projected to increase by over 50 GW by 2028.
                   </p>
@@ -159,7 +159,7 @@ const GridAIShowcase = () => {
                   <div className="p-3 bg-blue-500/15 rounded-lg w-fit mb-4">
                     <Building className="h-6 w-6 text-blue-500" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">Ageing Infrastructure</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-blue-500">Ageing Infrastructure</h3>
                   <p className="text-muted-foreground">
                     Grid upgrades require billions in investment, yet supply chain delays and slow deployment timelines are creating critical bottlenecks.
                   </p>
@@ -169,7 +169,7 @@ const GridAIShowcase = () => {
                   <div className="p-3 bg-blue-500/15 rounded-lg w-fit mb-4">
                     <Shield className="h-6 w-6 text-blue-500" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">Rising Risks</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-blue-500">Rising Risks</h3>
                   <p className="text-muted-foreground">
                     More variable demand and supply patterns increase the risk of grid instability, widespread outages, and catastrophic blackouts.
                   </p>
@@ -203,7 +203,7 @@ const GridAIShowcase = () => {
                     </div>
                     <div>
                       <span className="text-xs text-blue-500 font-medium uppercase tracking-wide">VPP Solution</span>
-                      <h3 className="text-xl font-semibold">Residential & Small Business</h3>
+                      <h3 className="text-xl font-semibold text-blue-500">Residential & Small Business</h3>
                     </div>
                   </div>
                   <p className="text-muted-foreground mb-4">
@@ -224,7 +224,7 @@ const GridAIShowcase = () => {
                     </div>
                     <div>
                       <span className="text-xs text-blue-500 font-medium uppercase tracking-wide">Commercial Solution</span>
-                      <h3 className="text-xl font-semibold">Commercial & Utility</h3>
+                      <h3 className="text-xl font-semibold text-blue-500">Commercial & Utility</h3>
                     </div>
                   </div>
                   <p className="text-muted-foreground mb-4">
@@ -238,22 +238,22 @@ const GridAIShowcase = () => {
                 </div>
 
                 {/* Hyperscale & Industrial */}
-                <div className="bg-gradient-to-br from-card to-purple-500/5 p-8 rounded-xl border border-purple-500/20">
+                <div className="bg-gradient-to-br from-card to-blue-500/5 p-8 rounded-xl border border-blue-500/20">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-3 bg-purple-500/15 rounded-lg">
-                      <Server className="h-6 w-6 text-purple-500" />
+                    <div className="p-3 bg-blue-500/15 rounded-lg">
+                      <Server className="h-6 w-6 text-blue-500" />
                     </div>
                     <div>
-                      <span className="text-xs text-purple-500 font-medium uppercase tracking-wide">Enterprise Solution</span>
-                      <h3 className="text-xl font-semibold">Hyperscale & Industrial</h3>
+                      <span className="text-xs text-blue-500 font-medium uppercase tracking-wide">Enterprise Solution</span>
+                      <h3 className="text-xl font-semibold text-blue-500">Hyperscale & Industrial</h3>
                     </div>
                   </div>
                   <p className="text-muted-foreground mb-4">
                     Orchestration of multi-GW campuses with integrated generation, storage, and dispatch. Grid AI provides orchestration, scheduling and optimisation for energy-intensive industries and AI data centers.
                   </p>
-                  <div className="bg-purple-500/10 p-4 rounded-lg">
+                  <div className="bg-blue-500/10 p-4 rounded-lg">
                     <p className="text-sm">
-                      <span className="font-semibold text-purple-500">Key benefits:</span> Ensures reliability and cost-optimized uptime for AI data centers and industrial campuses. Integrated orchestration provides future-proof flexibility to meet rising demand without compromising performance.
+                      <span className="font-semibold text-blue-500">Key benefits:</span> Ensures reliability and cost-optimized uptime for AI data centers and industrial campuses. Integrated orchestration provides future-proof flexibility to meet rising demand without compromising performance.
                     </p>
                   </div>
                 </div>
@@ -278,7 +278,7 @@ const GridAIShowcase = () => {
                   <div className="p-3 bg-blue-500/15 rounded-lg w-fit mb-4">
                     <Cpu className="h-6 w-6 text-blue-500" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">AI-Native Orchestration</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-blue-500">AI-Native Orchestration</h3>
                   <p className="text-muted-foreground">
                     Real-time AI scheduling and optimisation to orchestrate devices, fleets, and grid-scale assets for reliable performance.
                   </p>
@@ -288,7 +288,7 @@ const GridAIShowcase = () => {
                   <div className="p-3 bg-blue-500/15 rounded-lg w-fit mb-4">
                     <Zap className="h-6 w-6 text-blue-500" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">Dynamic Load Shaping</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-blue-500">Dynamic Load Shaping</h3>
                   <p className="text-muted-foreground">
                     Alice manages behind-the-meter devices like EVs, batteries, and HVAC for seamless demand response automation.
                   </p>
@@ -298,7 +298,7 @@ const GridAIShowcase = () => {
                   <div className="p-3 bg-blue-500/15 rounded-lg w-fit mb-4">
                     <Battery className="h-6 w-6 text-blue-500" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">Future-Proof Design</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-blue-500">Future-Proof Design</h3>
                   <p className="text-muted-foreground">
                     Scalable, modular architecture evolving with new technologies, emerging markets, and global power complexity.
                   </p>
