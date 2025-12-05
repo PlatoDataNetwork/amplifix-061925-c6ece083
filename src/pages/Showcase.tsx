@@ -553,32 +553,20 @@ const Showcase = () => {
                            <Building className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : colors.text}`} />
                          )}
                        </div>
-                       {['Grid AI Corp', 'Lixte Biotechnology', 'FG Nexus', 'Karbon-X', 'Micropolis'].includes(showcase.company_name) && (
-                         <span className={`text-[10px] font-bold ${colors.text} whitespace-nowrap`}>
-                           {showcase.company_name === 'Grid AI Corp' ? 'NAS:GRDX' 
-                             : showcase.company_name === 'Lixte Biotechnology' ? 'NAS:LIXT'
-                             : showcase.company_name === 'FG Nexus' ? 'NAS:FGNX'
-                             : showcase.company_name === 'Karbon-X' ? 'OTC:KARX'
-                             : 'MCRP'}
-                         </span>
-                       )}
                      </div>
                       <div className="flex-1 min-w-0">
                         <h3 className={`text-xl font-bold whitespace-nowrap ${showcase.disabled ? 'text-muted-foreground' : ''}`}>
                           {showcase.company_name}
                         </h3>
-                        <p className={`text-sm font-semibold mt-1 ${
-                          showcase.disabled 
-                            ? 'text-muted-foreground'
-                            : colors.text
-                        }`}>
+                        {showcase.type === 'stock' && showcase.ticker && (
+                          <p className={`text-xs font-bold mt-0.5 ${colors.text}`}>
+                            {showcase.ticker}
+                          </p>
+                        )}
+                        <p className={`text-sm font-medium mt-1 text-muted-foreground`}>
                           {showcase.company_name === 'FAIM'
                             ? 'AI Powered Fan Engagement'
-                            : showcase.company_name === 'Grid AI Corp'
-                            ? 'AI-Powered Energy Orchestration'
-                            : showcase.company_name === 'Lixte Biotechnology'
-                            ? 'PP2A Inhibitors for Cancer Treatment'
-                            : (showcase.subtitle || showcase.ticker)}
+                            : (showcase.subtitle || (showcase.type !== 'stock' ? showcase.ticker : ''))}
                         </p>
                        {showcase.tags && showcase.tags.length > 0 && (
                          <div className="flex flex-wrap gap-1.5 mt-2">
