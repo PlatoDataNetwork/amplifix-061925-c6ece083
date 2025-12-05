@@ -384,15 +384,15 @@ const Showcase = () => {
   return (
     <>
       <Helmet>
-        <title>Client Showcase - AmplifiX AI-Powered Corporate Communications</title>
+        <title>Innovation Showcase - AmplifiX AI-Powered Corporate Communications</title>
         <meta name="description" content="Explore successful case studies and showcases of companies using AmplifiX's AI-driven corporate communications and investor relations solutions. See how we help businesses amplify their message and accelerate growth." />
         <meta name="keywords" content="AmplifiX showcase, corporate communications case studies, investor relations success stories, AI-powered communications, client testimonials, business growth solutions" />
-        <meta property="og:title" content="Client Showcase - AmplifiX Success Stories" />
+        <meta property="og:title" content="Innovation Showcase - AmplifiX Success Stories" />
         <meta property="og:description" content="Discover how leading companies leverage AmplifiX's AI-powered platform to enhance their corporate communications and investor relations strategies." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://amplifix.ai/showcase" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="AmplifiX Client Showcase - Success Stories" />
+        <meta name="twitter:title" content="AmplifiX Innovation Showcase - Success Stories" />
         <meta name="twitter:description" content="See how companies achieve exceptional results with AmplifiX's AI-driven corporate communications platform." />
         <link rel="canonical" href="https://amplifix.ai/showcase" />
       </Helmet>
