@@ -38,24 +38,6 @@ const LixteShowcase = () => {
                 <span className="px-3 py-1 bg-teal-500/15 text-teal-500 border border-teal-500/30 rounded-full text-sm font-medium">
                   Nasdaq: LIXT
                 </span>
-                <a 
-                  href="https://finance.yahoo.com/quote/LIXT/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-teal-500 hover:text-teal-400 text-sm"
-                >
-                  <TrendingUp className="h-4 w-4" />
-                  Stock Price
-                </a>
-                <a 
-                  href="https://d1io3yog0oux5.cloudfront.net/_c61ea0cac8a91a7d71e057f25bc5e9c6/lixte/db/1285/10976/file/2024_08_19_Lixte_Fact+sheet.pdf" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-teal-500 hover:text-teal-400 text-sm"
-                >
-                  <FileText className="h-4 w-4" />
-                  Fact Sheet
-                </a>
               </div>
 
               <h1 className="text-4xl md:text-6xl font-bold mb-6">
