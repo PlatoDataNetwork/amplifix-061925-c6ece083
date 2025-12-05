@@ -1,0 +1,1 @@
+UPDATE showcase_companies SET company_name = 'Blockwell AI' WHERE company_name = 'Blockwell';
