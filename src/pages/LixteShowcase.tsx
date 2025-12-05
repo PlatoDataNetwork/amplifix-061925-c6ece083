@@ -213,8 +213,8 @@ const LixteShowcase = () => {
         <section className="py-20 bg-card/50">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
-                Clinical <span className="text-teal-500">Pipeline</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">
+                Clinical Pipeline
               </h2>
               <p className="text-lg text-muted-foreground mb-12 text-center">
                 Multiple clinical trials targeting solid tumors with unmet medical needs
@@ -265,8 +265,8 @@ const LixteShowcase = () => {
         <section className="py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
-                Experienced <span className="text-teal-500">Leadership</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">
+                Experienced Leadership
               </h2>
               <p className="text-lg text-muted-foreground mb-12 text-center">
                 Decades of collective expertise in clinical and drug development
@@ -317,8 +317,8 @@ const LixteShowcase = () => {
         <section className="py-20 bg-card/50">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
-                Key Investment <span className="text-teal-500">Considerations</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-white">
+                Key Investment Considerations
               </h2>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -354,8 +354,8 @@ const LixteShowcase = () => {
         <section className="py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
-                Recent <span className="text-teal-500">Developments</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center text-white">
+                Recent Developments
               </h2>
 
               <div className="space-y-4">
@@ -385,8 +385,8 @@ const LixteShowcase = () => {
         <section className="py-20 bg-gradient-to-br from-teal-500/10 via-background to-cyan-500/5">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Pioneering the Future of <span className="text-teal-500">Cancer Treatment</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+                Pioneering the Future of Cancer Treatment
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
                 Learn more about how Lixte is transforming cancer care with first-in-class PP2A inhibitors.
@@ -401,17 +401,6 @@ const LixteShowcase = () => {
                   <a href="https://lixte.com" target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="mr-2 h-4 w-4" />
                     Visit Lixte
-                  </a>
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="lg"
-                  asChild
-                  className="border-teal-500/30 hover:bg-teal-500/10"
-                >
-                  <a href="https://d1io3yog0oux5.cloudfront.net/_c61ea0cac8a91a7d71e057f25bc5e9c6/lixte/db/1285/10976/file/2024_08_19_Lixte_Fact+sheet.pdf" target="_blank" rel="noopener noreferrer">
-                    <FileText className="mr-2 h-4 w-4" />
-                    Download Fact Sheet
                   </a>
                 </Button>
                 <Button 
