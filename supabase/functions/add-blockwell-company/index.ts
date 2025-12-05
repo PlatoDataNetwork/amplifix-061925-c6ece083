@@ -4,12 +4,51 @@ import { corsHeaders } from '../_shared/cors.ts';
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
+async function verifyAdmin(req: Request): Promise<{ authorized: boolean; error?: string }> {
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader) {
+    return { authorized: false, error: 'Missing authorization header' };
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+  const token = authHeader.replace('Bearer ', '');
+  
+  const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+  if (userError || !user) {
+    return { authorized: false, error: 'Invalid or expired token' };
+  }
+
+  const { data: roles, error: rolesError } = await supabase
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', user.id);
+
+  if (rolesError || !roles?.some(r => r.role === 'admin')) {
+    return { authorized: false, error: 'Admin access required' };
+  }
+
+  return { authorized: true };
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Verify admin authorization
+    const { authorized, error: authError } = await verifyAdmin(req);
+    if (!authorized) {
+      console.error('Authorization failed:', authError);
+      return new Response(
+        JSON.stringify({ error: authError }),
+        {
+          status: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
     const supabase = createClient(supabaseUrl, supabaseKey);
     
     // Check if Blockwell already exists
