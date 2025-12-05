@@ -221,39 +221,39 @@ const LixteShowcase = () => {
               </p>
 
               <div className="grid md:grid-cols-3 gap-6">
-                <div className="bg-gradient-to-br from-card to-purple-500/5 p-6 rounded-xl border border-purple-500/20">
+                <div className="bg-card p-6 rounded-xl border border-border/50">
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="px-2 py-1 bg-purple-500/15 text-purple-500 text-xs rounded font-medium">LB-100 + Immunotherapy</span>
+                    <span className="px-3 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full font-medium border border-purple-500/30">LB-100 + Immunotherapy</span>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">Ovarian Clear Cell Cancer</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Phase 1b/2 trial in collaboration with GSK at MD Anderson Cancer Center</p>
-                  <div className="flex items-center justify-between text-xs">
+                  <h3 className="text-xl font-bold mb-3">Ovarian Clear Cell Cancer</h3>
+                  <p className="text-sm text-muted-foreground mb-6">Phase 1b/2 trial in collaboration with GSK at MD Anderson Cancer Center</p>
+                  <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">NCT06065462</span>
-                    <span className="text-green-500 font-medium">Recruiting</span>
+                    <span className="text-green-400 font-medium">Recruiting</span>
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-card to-blue-500/5 p-6 rounded-xl border border-blue-500/20">
+                <div className="bg-card p-6 rounded-xl border border-border/50">
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="px-2 py-1 bg-blue-500/15 text-blue-500 text-xs rounded font-medium">LB-100 + Immunotherapy</span>
+                    <span className="px-3 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full font-medium border border-purple-500/30">LB-100 + Immunotherapy</span>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">Metastatic MSS Colon Cancer</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Phase 1b trial targeting microsatellite stable colorectal cancer</p>
-                  <div className="flex items-center justify-between text-xs">
+                  <h3 className="text-xl font-bold mb-3">Metastatic MSS Colon Cancer</h3>
+                  <p className="text-sm text-muted-foreground mb-6">Phase 1b trial targeting microsatellite stable colorectal cancer</p>
+                  <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">NCT06012734</span>
-                    <span className="text-green-500 font-medium">Recruiting</span>
+                    <span className="text-green-400 font-medium">Recruiting</span>
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-card to-teal-500/5 p-6 rounded-xl border border-teal-500/20">
+                <div className="bg-card p-6 rounded-xl border border-border/50">
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="px-2 py-1 bg-teal-500/15 text-teal-500 text-xs rounded font-medium">LB-100 + Chemotherapy</span>
+                    <span className="px-3 py-1 bg-teal-500/20 text-teal-400 text-xs rounded-full font-medium border border-teal-500/30">LB-100 + Chemotherapy</span>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">Advanced Soft Tissue Sarcoma</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Phase 1b/2 trial for advanced soft tissue sarcoma patients</p>
-                  <div className="flex items-center justify-between text-xs">
+                  <h3 className="text-xl font-bold mb-3">Advanced Soft Tissue Sarcoma</h3>
+                  <p className="text-sm text-muted-foreground mb-6">Phase 1b/2 trial for advanced soft tissue sarcoma patients</p>
+                  <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">NCT05809830</span>
-                    <span className="text-amber-500 font-medium">Data Analysis</span>
+                    <span className="text-amber-400 font-medium">Data Analysis</span>
                   </div>
                 </div>
               </div>
