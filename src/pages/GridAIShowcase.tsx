@@ -40,15 +40,6 @@ const GridAIShowcase = () => {
                 <span className="px-3 py-1 bg-blue-500/15 text-blue-500 border border-blue-500/30 rounded-full text-sm font-medium">
                   Nasdaq: GRDX
                 </span>
-                <a 
-                  href="https://stockanalysis.com/stocks/grdx/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-blue-500 hover:text-blue-400 text-sm"
-                >
-                  <TrendingUp className="h-4 w-4" />
-                  Stock Price
-                </a>
               </div>
 
               <h1 className="text-4xl md:text-6xl font-bold mb-6">
