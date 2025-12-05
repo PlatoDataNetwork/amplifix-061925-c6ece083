@@ -1,0 +1,1 @@
+UPDATE showcase_companies SET link = '/showcase/gridai' WHERE company_name = 'Grid AI';
