@@ -87,6 +87,11 @@ const SEOHead = ({ title, description }: SEOHeadProps) => {
   
   const finalTitle = title || defaultTitle;
   const finalDescription = description || defaultDescription;
+  
+  // Show full URL path for og:site_name on non-home pages
+  const displayUrl = pathWithoutLang === '/' || pathWithoutLang === '' 
+    ? 'amplifix.net' 
+    : `amplifix.net${pathWithoutLang}`;
 
   return (
     <Helmet>
@@ -106,7 +111,7 @@ const SEOHead = ({ title, description }: SEOHeadProps) => {
       <meta property="og:image" content={`${baseUrl}/lovable-uploads/amplifix-social-logo.png`} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="1200" />
-      <meta property="og:site_name" content="AmplifiX" />
+      <meta property="og:site_name" content={displayUrl} />
       <meta property="og:locale" content={currentLocale} />
       
       {/* OG Alternate Locales */}
