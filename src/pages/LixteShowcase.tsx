@@ -59,7 +59,7 @@ const LixteShowcase = () => {
               </div>
 
               <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                <span className="text-teal-500">Transforming</span> Cancer<br />
+                <span className="text-teal-500">Transforming Cancer</span><br />
                 Treatment with PP2A Inhibitors
               </h1>
               
