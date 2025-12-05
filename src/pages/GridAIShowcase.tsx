@@ -160,7 +160,7 @@ const GridAIShowcase = () => {
                   </div>
                   <h3 className="text-xl font-semibold mb-3">Growing Demand</h3>
                   <p className="text-muted-foreground">
-                    AI data centers, electric vehicles, and electrification are driving massive new loads - with global capacity needs projected to increase by over 50 GW by 2028.
+                    AI data centers, EVs, and electrification are driving massive new loads with global capacity needs projected to increase by over 50 GW by 2028.
                   </p>
                 </div>
 
@@ -170,7 +170,7 @@ const GridAIShowcase = () => {
                   </div>
                   <h3 className="text-xl font-semibold mb-3">Ageing Infrastructure</h3>
                   <p className="text-muted-foreground">
-                    Grid upgrades require billions in investment, yet supply chain delays and slow deployment are creating bottlenecks.
+                    Grid upgrades require billions in investment, yet supply chain delays and slow deployment timelines are creating critical bottlenecks.
                   </p>
                 </div>
 
@@ -180,7 +180,7 @@ const GridAIShowcase = () => {
                   </div>
                   <h3 className="text-xl font-semibold mb-3">Rising Risks</h3>
                   <p className="text-muted-foreground">
-                    More variable demand and supply increase the risk of instability, outages, and blackouts.
+                    More variable demand and supply patterns increase the risk of grid instability, widespread outages, and catastrophic blackouts.
                   </p>
                 </div>
               </div>
@@ -287,9 +287,9 @@ const GridAIShowcase = () => {
                   <div className="p-3 bg-blue-500/15 rounded-lg w-fit mb-4">
                     <Cpu className="h-6 w-6 text-blue-500" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-3">AI-Native Orchestration</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Real-time AI scheduling and optimisation to orchestrate devices, fleets, and grid-scale assets. Ensures reliable, flexible performance even under volatile demand.
+                  <h3 className="text-xl font-semibold mb-3">AI-Native Orchestration</h3>
+                  <p className="text-muted-foreground">
+                    Real-time AI scheduling and optimisation to orchestrate devices, fleets, and grid-scale assets for reliable performance.
                   </p>
                 </div>
 
@@ -297,9 +297,9 @@ const GridAIShowcase = () => {
                   <div className="p-3 bg-blue-500/15 rounded-lg w-fit mb-4">
                     <Zap className="h-6 w-6 text-blue-500" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-3">Dynamic Load Shaping</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Alice manages behind-the-meter devices such as EVs, batteries, HVAC, and appliances. Delivers seamless load shaping and demand response without disrupting daily life.
+                  <h3 className="text-xl font-semibold mb-3">Dynamic Load Shaping</h3>
+                  <p className="text-muted-foreground">
+                    Alice manages behind-the-meter devices like EVs, batteries, and HVAC for seamless demand response automation.
                   </p>
                 </div>
 
@@ -307,9 +307,9 @@ const GridAIShowcase = () => {
                   <div className="p-3 bg-blue-500/15 rounded-lg w-fit mb-4">
                     <Battery className="h-6 w-6 text-blue-500" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-3">Future-Proof Design</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Scalable, modular architecture capable of evolving with new technologies, emerging energy markets, and the growing complexity of global power needs.
+                  <h3 className="text-xl font-semibold mb-3">Future-Proof Design</h3>
+                  <p className="text-muted-foreground">
+                    Scalable, modular architecture evolving with new technologies, emerging markets, and global power complexity.
                   </p>
                 </div>
               </div>
