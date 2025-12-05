@@ -560,9 +560,13 @@ const Showcase = () => {
                         <h3 className={`text-xl font-bold whitespace-nowrap ${showcase.disabled ? 'text-muted-foreground' : ''}`}>
                           {showcase.company_name}
                         </h3>
-                        {showcase.type === 'stock' && showcase.ticker && (
+                        {showcase.type === 'stock' && showcase.ticker ? (
                           <p className={`text-xl font-bold mt-0.5 ${colors.text}`}>
                             {showcase.ticker.includes(':') ? showcase.ticker : `NAS:${showcase.ticker}`}
+                          </p>
+                        ) : (
+                          <p className={`text-xl font-bold mt-0.5 ${colors.text}`}>
+                            PRIVATE
                           </p>
                         )}
                         <p className={`text-sm font-medium mt-1 ${colors.text}`}>
