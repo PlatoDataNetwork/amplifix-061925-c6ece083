@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, TrendingUp, Globe, FileText, Pill, FlaskConical, Users, Microscope, TestTube, Shield, Target, Activity, Dna, Beaker, CheckCircle } from "lucide-react";
+import { ExternalLink, TrendingUp, Globe, FileText, Pill, FlaskConical, Users, Microscope, TestTube, Shield, Target, Activity, Dna, Beaker, CheckCircle, Search } from "lucide-react";
 
 const LixteShowcase = () => {
   return (
@@ -95,6 +95,16 @@ const LixteShowcase = () => {
                   <a href="https://finance.yahoo.com/quote/LIXT/" target="_blank" rel="noopener noreferrer">
                     <TrendingUp className="mr-2 h-4 w-4" />
                     View Stock
+                  </a>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  asChild
+                  className="border-teal-500/30 hover:bg-teal-500/10"
+                >
+                  <a href="https://www.bing.com/copilotsearch?q=Lixte+Biotechnology+LIXT&FORM=CSSCOP" target="_blank" rel="noopener noreferrer">
+                    <Search className="mr-2 h-4 w-4" />
+                    AmplifiX
                   </a>
                 </Button>
               </div>
