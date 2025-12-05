@@ -590,22 +590,6 @@ const Showcase = () => {
                   
                   {/* Action Buttons */}
                   <div className="flex flex-col sm:flex-row gap-2 mb-4">
-                    {/* Live Stock/Token Price Button */}
-                    {showcase.stock_url && (
-                      <a 
-                        href={showcase.stock_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex-1"
-                      >
-                        <Button variant="outline" className="w-full min-h-[44px]">
-                          <BarChart3 className="h-4 w-4 mr-2" />
-                          <span className="hidden sm:inline">{showcase.type === 'token' ? (showcaseData?.showcase.cta.stock_button_labels.live_token_price || 'Live Token Price') : (showcaseData?.showcase.cta.stock_button_labels.live_stock_price || 'Live Stock Price')}</span>
-                          <span className="sm:hidden">{showcase.type === 'token' ? (showcaseData?.showcase.cta.stock_button_labels.token_short || 'Token') : (showcaseData?.showcase.cta.stock_button_labels.stock_short || 'Stock')}</span>
-                        </Button>
-                      </a>
-                    )}
-                    
                     {/* Website Button */}
                     {showcase.website && (
                       <a 
