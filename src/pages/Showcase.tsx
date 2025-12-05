@@ -521,35 +521,42 @@ const Showcase = () => {
                     </div>
                   )}
                   
-                   {/* Header with company info */}
+   {/* Header with company info */}
                    <div className="flex items-center gap-4 mb-6">
-                     <div className={`w-12 h-12 rounded-full ${
-                       showcase.disabled 
-                         ? 'bg-muted' 
-                         : colors.icon
-                     } flex items-center justify-center flex-shrink-0 shadow-sm border overflow-hidden`}>
-                       {showcase.company_name === 'Naoris Protocol' && showcase.thumbnail ? (
-                         <img 
-                           src={showcase.thumbnail} 
-                           alt={showcase.company_name} 
-                           className="w-full h-full object-contain p-1"
-                         />
-                       ) : showcase.company_name === 'SILO Pharma Inc.' ? (
-                         <Pill className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : colors.text}`} />
-                       ) : showcase.company_name === 'Int\'l Land Alliance' ? (
-                         <Home className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : colors.text}`} />
-                       ) : showcase.company_name === 'Karbon-X' ? (
-                         <span className={`${showcase.disabled ? 'text-muted-foreground' : colors.text} text-2xl font-bold`}>K</span>
-                       ) : showcase.company_name === 'Micropolis' ? (
-                         <span className={`${showcase.disabled ? 'text-muted-foreground' : colors.text} text-2xl font-bold`}>M</span>
-                       ) : showcase.company_name === 'Synbio Int\'l' ? (
-                         <ScanFace className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : colors.text}`} />
-                       ) : showcase.company_name === 'Abatis' ? (
-                         <span className={`${showcase.disabled ? 'text-muted-foreground' : colors.text} text-2xl font-bold`}>A</span>
-                       ) : showcase.company_name === 'FacialDX' ? (
-                         <ScanFace className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : colors.text}`} />
-                       ) : (
-                         <Building className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : colors.text}`} />
+                     <div className="flex flex-col items-center gap-1">
+                       <div className={`w-12 h-12 rounded-full ${
+                         showcase.disabled 
+                           ? 'bg-muted' 
+                           : colors.icon
+                       } flex items-center justify-center flex-shrink-0 shadow-sm border overflow-hidden`}>
+                         {showcase.company_name === 'Naoris Protocol' && showcase.thumbnail ? (
+                           <img 
+                             src={showcase.thumbnail} 
+                             alt={showcase.company_name} 
+                             className="w-full h-full object-contain p-1"
+                           />
+                         ) : showcase.company_name === 'SILO Pharma Inc.' ? (
+                           <Pill className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : colors.text}`} />
+                         ) : showcase.company_name === 'Int\'l Land Alliance' ? (
+                           <Home className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : colors.text}`} />
+                         ) : showcase.company_name === 'Karbon-X' ? (
+                           <span className={`${showcase.disabled ? 'text-muted-foreground' : colors.text} text-2xl font-bold`}>K</span>
+                         ) : showcase.company_name === 'Micropolis' ? (
+                           <span className={`${showcase.disabled ? 'text-muted-foreground' : colors.text} text-2xl font-bold`}>M</span>
+                         ) : showcase.company_name === 'Synbio Int\'l' ? (
+                           <ScanFace className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : colors.text}`} />
+                         ) : showcase.company_name === 'Abatis' ? (
+                           <span className={`${showcase.disabled ? 'text-muted-foreground' : colors.text} text-2xl font-bold`}>A</span>
+                         ) : showcase.company_name === 'FacialDX' ? (
+                           <ScanFace className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : colors.text}`} />
+                         ) : (
+                           <Building className={`h-6 w-6 ${showcase.disabled ? 'text-muted-foreground' : colors.text}`} />
+                         )}
+                       </div>
+                       {(showcase.company_name === 'Grid AI Corp' || showcase.company_name === 'Lixte Biotechnology') && (
+                         <span className={`text-[10px] font-bold ${colors.text} whitespace-nowrap`}>
+                           {showcase.company_name === 'Grid AI Corp' ? 'NAS:GRDX' : 'NAS:LIXT'}
+                         </span>
                        )}
                      </div>
                       <div className="flex-1 min-w-0">
@@ -563,6 +570,10 @@ const Showcase = () => {
                         }`}>
                           {showcase.company_name === 'FAIM'
                             ? 'AI Powered Fan Engagement'
+                            : showcase.company_name === 'Grid AI Corp'
+                            ? 'AI-Powered Energy Orchestration'
+                            : showcase.company_name === 'Lixte Biotechnology'
+                            ? 'PP2A Inhibitors for Cancer Treatment'
                             : (showcase.subtitle || showcase.ticker)}
                         </p>
                        {showcase.tags && showcase.tags.length > 0 && (
