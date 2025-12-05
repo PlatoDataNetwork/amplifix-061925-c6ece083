@@ -225,7 +225,7 @@ const LixteShowcase = () => {
                   <div className="flex items-center gap-2 mb-4">
                     <span className="px-3 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full font-medium border border-purple-500/30">LB-100 + Immunotherapy</span>
                   </div>
-                  <h3 className="text-xl font-bold mb-3">Ovarian Clear Cell Cancer</h3>
+                  <h3 className="text-xl font-bold mb-3 text-white">Ovarian Clear Cell Cancer</h3>
                   <p className="text-sm text-muted-foreground mb-6">Phase 1b/2 trial in collaboration with GSK at MD Anderson Cancer Center</p>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">NCT06065462</span>
@@ -237,7 +237,7 @@ const LixteShowcase = () => {
                   <div className="flex items-center gap-2 mb-4">
                     <span className="px-3 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full font-medium border border-purple-500/30">LB-100 + Immunotherapy</span>
                   </div>
-                  <h3 className="text-xl font-bold mb-3">Metastatic MSS Colon Cancer</h3>
+                  <h3 className="text-xl font-bold mb-3 text-white">Metastatic MSS Colon Cancer</h3>
                   <p className="text-sm text-muted-foreground mb-6">Phase 1b trial targeting microsatellite stable colorectal cancer</p>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">NCT06012734</span>
@@ -249,7 +249,7 @@ const LixteShowcase = () => {
                   <div className="flex items-center gap-2 mb-4">
                     <span className="px-3 py-1 bg-teal-500/20 text-teal-400 text-xs rounded-full font-medium border border-teal-500/30">LB-100 + Chemotherapy</span>
                   </div>
-                  <h3 className="text-xl font-bold mb-3">Advanced Soft Tissue Sarcoma</h3>
+                  <h3 className="text-xl font-bold mb-3 text-white">Advanced Soft Tissue Sarcoma</h3>
                   <p className="text-sm text-muted-foreground mb-6">Phase 1b/2 trial for advanced soft tissue sarcoma patients</p>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">NCT05809830</span>
