@@ -561,11 +561,11 @@ const Showcase = () => {
                           {showcase.company_name}
                         </h3>
                         {showcase.type === 'stock' && showcase.ticker ? (
-                          <p className={`text-xl font-bold mt-0.5 ${colors.text}`}>
+                          <p className="text-xl font-bold mt-0.5 text-white">
                             {showcase.ticker.includes(':') ? showcase.ticker : `NAS:${showcase.ticker}`}
                           </p>
                         ) : (
-                          <p className={`text-xl font-bold mt-0.5 ${colors.text}`}>
+                          <p className="text-xl font-bold mt-0.5 text-white">
                             PRIVATE
                           </p>
                         )}
