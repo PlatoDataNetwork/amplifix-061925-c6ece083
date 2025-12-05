@@ -28,8 +28,12 @@ const LixteShowcase = () => {
               <div className="flex justify-center mb-8">
                 <div className="relative">
                   <div className="absolute inset-0 bg-teal-500/20 blur-xl rounded-full" />
-                  <div className="relative z-10 ring-4 ring-teal-500/30 rounded-lg p-4 bg-white">
-                    <span className="text-3xl font-bold text-teal-600">LIXTE</span>
+                  <div className="relative z-10 ring-4 ring-teal-500/30 rounded-lg p-4 bg-background">
+                    <img 
+                      src="/lovable-uploads/lixte-logo.png" 
+                      alt="Lixte Biotechnology Logo" 
+                      className="h-12"
+                    />
                   </div>
                 </div>
               </div>
