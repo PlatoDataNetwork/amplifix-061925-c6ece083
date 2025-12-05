@@ -1,0 +1,5 @@
+UPDATE showcase_companies SET description = 'Revolutionizing global health and wellness with AI-powered facial analysis to screen for head injury, PTSD, depression, and despair. Their proprietary technology enables rapid, non-invasive screening at scale.' WHERE company_name = 'FacialDX';
+
+UPDATE showcase_companies SET description = 'International Land Alliance is a land investment and development company focused on acquiring and developing strategic real estate properties. Specializing in high-growth markets across the U.S. and Mexico.' WHERE company_name = 'Int''l Land Alliance';
+
+UPDATE showcase_companies SET description = 'Pioneering neuropsychiatric drug development through AI-driven research and innovative therapeutic approaches for mental health conditions. Leading breakthrough treatments for PTSD, Alzheimer''s, and fibromyalgia.' WHERE company_name = 'SILO Pharma Inc.';
