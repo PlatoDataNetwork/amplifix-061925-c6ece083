@@ -95,7 +95,7 @@ const Showcase = () => {
       mergedShowcases = jsonShowcases;
     }
 
-    // Hard-code certain companies as private and ensure Naoris subtitle + Blockwell entry
+    // Hard-code certain companies as private and ensure Naoris subtitle
     const privateNames = new Set([
       'FAIM',
       'ForexGPT',
@@ -103,7 +103,7 @@ const Showcase = () => {
       'Naoris Protocol',
       'FacialDX',
       'Abatis',
-      'Blockwell',
+      'Blockwell AI',
       'StorageBlue',
       'Versa TV',
       'Kedalion',
@@ -141,27 +141,6 @@ const Showcase = () => {
 
       return updated;
     });
-
-    // Ensure Blockwell appears in the showcase even if not in DB/JSON
-    if (!normalized.some((s) => s.company_name === 'Blockwell')) {
-      normalized.push({
-        company_name: 'Blockwell',
-        ticker: 'Private',
-        subtitle: 'AI-Powered Blockchain Security',
-        description:
-          'Pioneering blockchain technology company specializing in AI-powered cybersecurity solutions and decentralized systems for the next generation of digital infrastructure.',
-        tags: ['AI', 'Blockchain', 'Cyber'],
-        button_text: 'View Showcase',
-        link: '/showcase/blockwell',
-        website: 'https://blockwell.ai',
-        search_url:
-          'https://www.bing.com/copilotsearch?q=Blockwell%20Blockchain%20Crypto&FORM=CSSCOP',
-        thumbnail: '/lovable-uploads/blockwell-thumbnail.png',
-        type: 'private',
-        disabled: false,
-        main_sector: 'CYBERSECURITY',
-      });
-    }
 
     // Ensure StorageBlue appears in the showcase even if not in DB/JSON
     if (!normalized.some((s) => s.company_name === 'StorageBlue')) {
