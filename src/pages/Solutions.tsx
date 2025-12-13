@@ -8,6 +8,7 @@ import {
   Megaphone, 
   Share2,
   Code,
+  TrendingUp,
   ArrowRight,
   LucideIcon
 } from "lucide-react";
@@ -35,6 +36,12 @@ const platformCards: SolutionCard[] = [
     description: "Strategic communications and stakeholder engagement solutions tailored for private companies preparing for growth or exit.",
     link: "/solutions/private-companies",
     icon: Users,
+  },
+  {
+    title: "Market Intelligence",
+    description: "Real-time market insights, news aggregation, and intelligence across key verticals to inform strategic decisions.",
+    link: "/intel",
+    icon: TrendingUp,
   },
 ];
 
