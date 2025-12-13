@@ -1,0 +1,66 @@
+{
+  "research": {
+    "hero": {
+      "title": "Research",
+      "title_highlight": "Services",
+      "description": "Deep-dive analysis and comprehensive research to inform strategic decision-making and uncover market opportunities.",
+      "cta_button": "Schedule Consultation"
+    },
+    "key_features": {
+      "title": "Research Capabilities",
+      "features": [
+        {
+          "title": "Market Analysis",
+          "description": "Comprehensive market research and competitive landscape analysis to identify opportunities and threats.",
+          "icon": "BarChart3"
+        },
+        {
+          "title": "Industry Reports",
+          "description": "Custom industry reports with actionable insights tailored to your sector and business objectives.",
+          "icon": "FileText"
+        },
+        {
+          "title": "Competitive Intelligence",
+          "description": "Track competitor activities, strategies, and market positioning to stay ahead of the curve.",
+          "icon": "Target"
+        },
+        {
+          "title": "Trend Forecasting",
+          "description": "Identify emerging trends and market shifts before they impact your business.",
+          "icon": "TrendingUp"
+        },
+        {
+          "title": "Due Diligence",
+          "description": "Thorough research and analysis for investment decisions, partnerships, and strategic initiatives.",
+          "icon": "Shield"
+        },
+        {
+          "title": "Data Analytics",
+          "description": "Transform raw data into meaningful insights with advanced analytics and visualization.",
+          "icon": "Search"
+        }
+      ]
+    },
+    "benefits": {
+      "title": "Why Choose Our Research",
+      "items": [
+        {
+          "title": "Data-Driven Decisions",
+          "description": "Make informed strategic decisions backed by comprehensive research and analysis."
+        },
+        {
+          "title": "Expert Analysts",
+          "description": "Access to experienced research professionals with deep industry knowledge."
+        },
+        {
+          "title": "Custom Solutions",
+          "description": "Research tailored to your specific business needs and objectives."
+        },
+        {
+          "title": "Actionable Insights",
+          "description": "Clear, actionable recommendations that drive measurable business outcomes."
+        }
+      ]
+    }
+  }
+}

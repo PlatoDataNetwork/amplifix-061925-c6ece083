@@ -53,6 +53,7 @@ const Footer = () => {
             <h3 className="text-lg font-medium mb-4">{t('footer.solutions')}</h3>
             <ul className="space-y-2">
               <li><LanguageAwareLink to="/solutions/advisory" className="text-muted-foreground hover:text-highlight-blue">Advisory</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/research" className="text-muted-foreground hover:text-highlight-blue">Research</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/development" className="text-muted-foreground hover:text-highlight-blue">Development</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/ir-pr" className="text-muted-foreground hover:text-highlight-blue">Investor Relations</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/public-companies" className="text-muted-foreground hover:text-highlight-blue">{t('footer.publicCompanies')}</LanguageAwareLink></li>
