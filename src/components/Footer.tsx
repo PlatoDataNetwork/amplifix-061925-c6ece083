@@ -41,11 +41,10 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-medium mb-4">{t('footer.platform')}</h3>
             <ul className="space-y-2">
-              <li><LanguageAwareLink to="/" className="text-muted-foreground hover:text-highlight-blue">{t('footer.home')}</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/intel" className="text-muted-foreground hover:text-highlight-blue">{t('nav.intel')}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/showcase" className="text-muted-foreground hover:text-highlight-blue">{t('nav.showcase')}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/intel" className="text-muted-foreground hover:text-highlight-blue">Intelligence</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/public-companies" className="text-muted-foreground hover:text-highlight-blue">{t('footer.publicCompanies')}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/private-companies" className="text-muted-foreground hover:text-highlight-blue">{t('footer.privateCompanies')}</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/showcase" className="text-muted-foreground hover:text-highlight-blue">{t('nav.showcase')}</LanguageAwareLink></li>
             </ul>
           </div>
           
