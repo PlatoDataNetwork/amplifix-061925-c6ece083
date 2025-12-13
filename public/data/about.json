@@ -1,43 +1,85 @@
 {
   "about": {
     "hero": {
-      "title": "About AmplifiX",
-      "description": "AmplifiX is a Global Press Release and Content Syndication Network. SEO Optimized and indexed across 35 Languages. Distribution and Syndication to over 2000+ Publications.",
-      "cta_primary": "Amplifi Your Brand →",
+      "title": "We're Redefining How Companies Communicate",
+      "subtitle": "The Future of Corporate Intelligence",
+      "description": "In a world drowning in noise, we help you cut through. AmplifiX combines artificial intelligence with deep market expertise to transform how companies connect with investors, media, and stakeholders.",
+      "cta_primary": "Start Your Journey",
       "cta_secondary": "Book A Demo"
     },
-    "mission": {
-      "cards": [
+    "story": {
+      "title": "Our Story",
+      "paragraphs": [
+        "AmplifiX was born from a simple observation: the companies with the best stories often struggle the most to tell them. In boardrooms and trading floors, we watched brilliant innovations get lost in translation, groundbreaking research go unnoticed, and market-moving developments fail to reach the audiences that matter most.",
+        "We believed there had to be a better way. So we built it.",
+        "Today, AmplifiX powers corporate communications for companies across every stage—from pre-revenue startups preparing for their first institutional raise to public companies navigating complex regulatory landscapes. Our AI-driven platform doesn't just distribute content; it crafts narratives that resonate, identifies opportunities others miss, and measures impact with precision."
+      ]
+    },
+    "philosophy": {
+      "title": "Our Philosophy",
+      "tagline": "Intelligence Amplified",
+      "description": "We don't believe in one-size-fits-all solutions. Every company has a unique story, and every market has its own language. Our approach combines the analytical power of AI with the nuanced understanding that only comes from deep industry expertise.",
+      "principles": [
         {
-          "title": "Our Mission",
-          "description": "To revolutionize corporate communications through AI-powered solutions that help companies tell their story more effectively and connect with stakeholders."
+          "title": "Data-Driven, Human-Centered",
+          "description": "AI handles the heavy lifting—analyzing sentiment, optimizing timing, identifying patterns. But strategy remains fundamentally human. We augment your capabilities; we don't replace your judgment."
         },
         {
-          "title": "Our Vision", 
-          "description": "A world where every company, regardless of size, has access to sophisticated communication tools that amplify their impact and drive meaningful connections."
+          "title": "Transparency Over Everything",
+          "description": "In an era of manufactured narratives and algorithmic manipulation, we believe in radical transparency. Every insight is traceable, every recommendation is explainable, and every outcome is measurable."
         },
         {
-          "title": "Our Values",
-          "description": "Innovation, transparency, and excellence drive everything we do as we help companies achieve their communication and growth objectives."
+          "title": "Long-Term Thinking",
+          "description": "Quick wins are easy. Building lasting relationships with investors and stakeholders takes patience, consistency, and strategic vision. We optimize for decades, not quarters."
         }
       ]
     },
-    "features": {
-      "title": "Why Choose AmplifiX",
+    "capabilities": {
+      "title": "What We Do",
+      "subtitle": "End-to-end corporate communications infrastructure",
       "items": [
         {
-          "title": "AI-Powered Content Creation",
-          "description": "Generate compelling press releases, investor updates, and corporate communications with our advanced AI technology."
+          "title": "AI-Powered Content Intelligence",
+          "description": "Our proprietary algorithms analyze millions of data points to craft messaging that resonates with your target audience, optimized for timing, sentiment, and market conditions."
         },
         {
-          "title": "Comprehensive IR Solutions", 
-          "description": "From IPO preparation to ongoing investor relations, we provide end-to-end solutions for public and private companies."
+          "title": "Global Press Syndication",
+          "description": "Reach 2,000+ publications across 35 languages. From tier-one financial media to specialized industry outlets, we ensure your message reaches the right eyes at the right time."
         },
         {
-          "title": "Expert Guidance",
-          "description": "Our team of communications and finance experts ensures your message resonates with the right audience at the right time."
+          "title": "Investor Relations Suite",
+          "description": "From earnings communications to shareholder engagement, our platform provides the tools and intelligence needed to build lasting investor relationships."
+        },
+        {
+          "title": "Market Intelligence",
+          "description": "Stay ahead of market movements with real-time analysis of competitor activity, sentiment shifts, and emerging trends that could impact your positioning."
+        },
+        {
+          "title": "IPO & Fundraising Support",
+          "description": "Navigate the complexities of going public or raising capital with strategic communications that build credibility and drive valuation."
+        },
+        {
+          "title": "Regulatory Compliance",
+          "description": "Ensure every communication meets the highest standards of regulatory compliance across jurisdictions, with built-in safeguards and audit trails."
         }
       ]
+    },
+    "stats": [
+      { "value": "2,000+", "label": "Media Partners" },
+      { "value": "35", "label": "Languages" },
+      { "value": "$50B+", "label": "Market Cap Served" },
+      { "value": "99.9%", "label": "Uptime" }
+    ],
+    "vision": {
+      "title": "The Vision",
+      "description": "We envision a world where every company—regardless of size or resources—has access to the same caliber of communications infrastructure that was once reserved for the Fortune 500. Where market-moving information flows freely and fairly. Where investors can trust the signals they receive, and companies can focus on what they do best: building.",
+      "closing": "That future isn't coming. We're building it now."
+    },
+    "cta": {
+      "title": "Ready to Amplifi Your Strategy?",
+      "description": "Join the companies that are already transforming their communications with AmplifiX.",
+      "primary_button": "Get Started",
+      "secondary_button": "Schedule a Demo"
     }
   }
 }
