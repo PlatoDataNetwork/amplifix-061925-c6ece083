@@ -47,6 +47,7 @@ import Syndication from "./pages/Syndication";
 import Development from "./pages/Development";
 import Blockchain from "./pages/Blockchain";
 import InfluencerMarketing from "./pages/InfluencerMarketing";
+import VideoDistribution from "./pages/VideoDistribution";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
@@ -154,6 +155,7 @@ const App = () => (
               <Route path="/solutions/development" element={<Development />} />
               <Route path="/solutions/blockchain" element={<Blockchain />} />
               <Route path="/solutions/influencer-marketing" element={<InfluencerMarketing />} />
+              <Route path="/solutions/video-distribution" element={<VideoDistribution />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/solutions/ipo-preparation" element={<IPOPreparation />} />

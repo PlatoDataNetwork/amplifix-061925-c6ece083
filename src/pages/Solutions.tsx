@@ -10,6 +10,7 @@ import {
   Code,
   TrendingUp,
   ArrowRight,
+  Tv,
   LucideIcon
 } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
@@ -75,6 +76,12 @@ const solutionCards: SolutionCard[] = [
     description: "Premium content distribution network to amplify your message across targeted channels and maximize reach.",
     link: "/solutions/syndication",
     icon: Share2,
+  },
+  {
+    title: "Video Distribution",
+    description: "Streaming TV and digital video distribution with AI-powered targeting to reach audiences across every screen.",
+    link: "/solutions/video-distribution",
+    icon: Tv,
   },
 ];
 
