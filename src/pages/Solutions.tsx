@@ -98,7 +98,7 @@ const Solutions = () => {
             Solutions for Every Stage
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            Comprehensive corporate communications solutions designed to amplify your strategy at every stage of growth.
+            Comprehensive solutions designed to amplify your communication strategy at every stage of growth.
           </p>
         </div>
       </div>
