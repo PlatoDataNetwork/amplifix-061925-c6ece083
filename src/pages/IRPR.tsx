@@ -80,7 +80,7 @@ const IRPR = () => {
       {/* Hero Section */}
       <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-5xl font-bold mb-6 text-foreground">
+          <h1 className="text-5xl font-bold mb-6 pb-2 bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
             {data.ir_pr.hero.title} {data.ir_pr.hero.title_highlight}
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
