@@ -70,6 +70,9 @@ const MainHeader = () => {
           <LanguageAwareLink to="/about#process" className="text-foreground hover:text-highlight-blue transition-colors">
             Process
           </LanguageAwareLink>
+          <LanguageAwareLink to="/solutions/research" className="text-foreground hover:text-highlight-blue transition-colors">
+            Research
+          </LanguageAwareLink>
           <LanguageAwareLink to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">
             {t('nav.solutions')}
           </LanguageAwareLink>
@@ -105,6 +108,11 @@ const MainHeader = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <LanguageSwitcher />
+          </div>
+
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -126,9 +134,6 @@ const MainHeader = () => {
               </LanguageAwareLink>
             </Button>
           )}
-
-          <ThemeToggle />
-          <LanguageSwitcher />
         </div>
 
         {/* Mobile Navigation */}

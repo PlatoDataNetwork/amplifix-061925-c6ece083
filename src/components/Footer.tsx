@@ -1,19 +1,32 @@
 
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { Linkedin, Twitter, Mail, ExternalLink } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 
 const Footer = () => {
   const { t } = useTranslation('common');
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isAdmin } = useAdminCheck();
+
+  const handleLogoClick = () => {
+    if (isAdmin) {
+      navigate('/admin');
+    }
+  };
+
   return (
     <footer className="bg-card border-t border-border py-12">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 flex items-center justify-center">
+              <div 
+                className={`w-10 h-10 flex items-center justify-center ${isAdmin ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
+                onClick={handleLogoClick}
+              >
                 <img 
                   src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
                   alt="AmplifiX Logo" 
@@ -42,7 +55,7 @@ const Footer = () => {
             <h3 className="text-lg font-medium mb-4">{t('footer.platform')}</h3>
             <ul className="space-y-2">
               <li><LanguageAwareLink to="/intel" className="text-muted-foreground hover:text-highlight-blue">Market Intelligence</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/analytics" className="text-muted-foreground hover:text-highlight-blue">Research & Analytics</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/analytics" className="text-muted-foreground hover:text-highlight-blue">Data Analytics</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/syndication" className="text-muted-foreground hover:text-highlight-blue">Syndication / IR / PR</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/blockchain" className="text-muted-foreground hover:text-highlight-blue">Blockchain / Web3</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/influencer-marketing" className="text-muted-foreground hover:text-highlight-blue">Influencer Marketing</LanguageAwareLink></li>
