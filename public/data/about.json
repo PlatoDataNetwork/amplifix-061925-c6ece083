@@ -48,6 +48,65 @@
         }
       ]
     },
+    "process": {
+      "title": "Our Process",
+      "subtitle": "AI-enhanced methodology that optimizes your campaign",
+      "description": "Transform your marketing, PR and communications using real-time intelligence. Our AI sifts through large data volumes, manages misinformation and high content demands—whether for crisis response or leveraging opportunities.",
+      "capabilities": [
+        {
+          "title": "Disinformation Detection",
+          "description": "Proactively identifies and neutralizes disinformation campaigns, safeguarding your organization's reputation.",
+          "icon": "ShieldAlert"
+        },
+        {
+          "title": "Anomaly Detection",
+          "description": "Strengthens enterprise security by pinpointing irregularities in media narratives for swift responses.",
+          "icon": "AlertTriangle"
+        },
+        {
+          "title": "Bot & Fake Account Detection",
+          "description": "Protects your digital presence by uncovering fake accounts and bot-driven activity.",
+          "icon": "Bot"
+        },
+        {
+          "title": "Real-Time Monitoring",
+          "description": "Provides continuous updates on critical issues, empowering strategic decision-making.",
+          "icon": "Activity"
+        },
+        {
+          "title": "Sentiment Analysis",
+          "description": "Delivers actionable insights into public and stakeholder sentiment to maintain trust.",
+          "icon": "MessageCircle"
+        },
+        {
+          "title": "Executive Intelligence",
+          "description": "Real-time intelligence to defend against brand risks and impersonation threats.",
+          "icon": "UserCheck"
+        }
+      ],
+      "steps": [
+        {
+          "title": "Content Distribution",
+          "description": "Leverage unique distribution channels globally in 20+ languages."
+        },
+        {
+          "title": "Amplification",
+          "description": "Amplify your message between news releases for continuous engagement."
+        },
+        {
+          "title": "Surveillance",
+          "description": "AI-powered detection of disinformation and manipulation for risk mitigation."
+        },
+        {
+          "title": "Assessment",
+          "description": "Data-driven assessment to dynamically react to live campaigns."
+        },
+        {
+          "title": "Re-Target",
+          "description": "Re-target and reach your audience with precision."
+        }
+      ]
+    },
     "why_amplifix": {
       "title": "Why AmplifiX",
       "items": [
