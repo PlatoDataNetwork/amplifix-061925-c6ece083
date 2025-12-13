@@ -35,8 +35,13 @@
           "icon": "Smartphone"
         },
         {
-          "title": "AI-Powered Tools",
-          "description": "Custom AI solutions for content generation, sentiment analysis, and predictive analytics.",
+          "title": "Blockchain / Web3",
+          "description": "Decentralized solutions, smart contracts, and Web3 integrations for next-generation corporate infrastructure.",
+          "icon": "Blocks"
+        },
+        {
+          "title": "Custom AI Solutions",
+          "description": "Bespoke AI models and intelligent automation tailored to your specific business requirements.",
           "icon": "Brain"
         }
       ]
