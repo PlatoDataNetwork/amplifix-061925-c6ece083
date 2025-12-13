@@ -169,7 +169,7 @@ const About = () => {
       </div>
 
       {/* Process Section */}
-      <section id="process" className="container mx-auto py-16 px-4 bg-muted/30">
+      <section id="process" className="container mx-auto py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">{data.about.process.title}</h2>
