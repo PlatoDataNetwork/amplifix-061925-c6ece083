@@ -43,6 +43,11 @@
           "title": "Custom AI Solutions",
           "description": "Bespoke AI models and intelligent automation tailored to your specific business requirements.",
           "icon": "Brain"
+        },
+        {
+          "title": "Tokenization",
+          "description": "Asset tokenization solutions for securities, equity, and real-world assets on blockchain infrastructure.",
+          "icon": "Coins"
         }
       ]
     },
