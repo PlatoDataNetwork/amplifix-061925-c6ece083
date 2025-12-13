@@ -65,13 +65,13 @@ const solutionCards: SolutionCard[] = [
     icon: Code,
   },
   {
-    title: "IR / PR",
+    title: "Investor Relations",
     description: "Integrated investor relations and public relations platform to streamline communications and enhance stakeholder engagement.",
     link: "/solutions/ir-pr",
     icon: Megaphone,
   },
   {
-    title: "Syndication & Distribution",
+    title: "Syndication / IR / PR",
     description: "Premium content distribution network to amplify your message across targeted channels and maximize reach.",
     link: "/solutions/syndication",
     icon: Share2,
