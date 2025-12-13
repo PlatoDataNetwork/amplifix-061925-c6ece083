@@ -1,8 +1,8 @@
 {
   "development": {
     "hero": {
-      "title": "Custom",
-      "title_highlight": "Development",
+      "title": "Development",
+      "title_highlight": "Services",
       "description": "Tailored software solutions and platform integrations to power your corporate communications infrastructure.",
       "cta_button": "Start Your Project"
     },
