@@ -44,7 +44,7 @@ const Footer = () => {
               <li><LanguageAwareLink to="/" className="text-muted-foreground hover:text-highlight-blue">{t('footer.home')}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/intel" className="text-muted-foreground hover:text-highlight-blue">{t('nav.intel')}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/showcase" className="text-muted-foreground hover:text-highlight-blue">{t('nav.showcase')}</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/faq" className="text-muted-foreground hover:text-highlight-blue">{t('nav.faq')}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/contact" className="text-muted-foreground hover:text-highlight-blue">{t('nav.contact')}</LanguageAwareLink></li>
             </ul>
           </div>
           
@@ -60,6 +60,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-medium mb-4">{t('footer.company')}</h3>
             <ul className="space-y-2">
+              <li><LanguageAwareLink to="/faq" className="text-muted-foreground hover:text-highlight-blue">{t('nav.faq')}</LanguageAwareLink></li>
               <li className="text-muted-foreground">support@amplifix.net</li>
             </ul>
             <div className="flex items-center mt-4 p-3 bg-background rounded-lg border border-border">
