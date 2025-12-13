@@ -213,7 +213,7 @@ const Blog = () => {
       <div className="pt-24 container mx-auto py-8 md:py-12 px-4">
         {/* Hero Section */}
         <div className="text-center mb-12 md:mb-16">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 pb-2 bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
             AmplifiX Intelligence
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4 mb-8">
@@ -231,7 +231,7 @@ const Blog = () => {
                     <ChevronDown className="h-4 w-4 ml-2 flex-shrink-0" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 max-h-80 overflow-y-auto bg-popover z-50" align="start" side="bottom">
+                <DropdownMenuContent className="w-56 max-h-80 overflow-y-auto bg-popover z-50" align="start" side="bottom" sideOffset={8}>
                   <DropdownMenuItem 
                     onClick={() => {
                       setSelectedVerticalFilter('All');
