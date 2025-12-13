@@ -46,9 +46,6 @@ const MobileMenu = () => {
               <LanguageAwareLink to="/showcase" className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800" onClick={closeMenu}>
                 {t('nav.showcase')}
               </LanguageAwareLink>
-              <LanguageAwareLink to="/intel" className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800" onClick={closeMenu}>
-                {t('nav.intel')}
-              </LanguageAwareLink>
               <LanguageAwareLink to="/faq" className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800" onClick={closeMenu}>
                 {t('nav.faq')}
               </LanguageAwareLink>
