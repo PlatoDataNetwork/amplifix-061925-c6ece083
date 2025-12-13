@@ -67,7 +67,6 @@ const Footer = () => {
               <li><LanguageAwareLink to="/about" className="text-muted-foreground hover:text-highlight-blue">{t('nav.about')}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/about#process" className="text-muted-foreground hover:text-highlight-blue">Process</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/showcase" className="text-muted-foreground hover:text-highlight-blue">{t('nav.showcase')}</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/faq" className="text-muted-foreground hover:text-highlight-blue">{t('nav.faq')}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/contact" className="text-muted-foreground hover:text-highlight-blue">{t('nav.contact')}</LanguageAwareLink></li>
             </ul>
             <div className="flex items-center mt-4 p-3 bg-background rounded-lg border border-border">
@@ -85,6 +84,7 @@ const Footer = () => {
             <LanguageAwareLink to="/privacy-policy" className="text-muted-foreground hover:text-highlight-blue text-sm">{t('footer.privacyPolicy')}</LanguageAwareLink>
             <LanguageAwareLink to="/compliance" className="text-muted-foreground hover:text-highlight-blue text-sm">{t('footer.compliance')}</LanguageAwareLink>
             <LanguageAwareLink to="/terms-of-service" className="text-muted-foreground hover:text-highlight-blue text-sm">{t('footer.termsOfService')}</LanguageAwareLink>
+            <LanguageAwareLink to="/faq" className="text-muted-foreground hover:text-highlight-blue text-sm">{t('nav.faq')}</LanguageAwareLink>
             <LanguageAwareLink to="/data-processing" className="text-muted-foreground hover:text-highlight-blue text-sm">{t('footer.dataProcessing')}</LanguageAwareLink>
           </div>
         </div>
