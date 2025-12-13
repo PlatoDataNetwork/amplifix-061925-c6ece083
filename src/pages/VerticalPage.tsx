@@ -190,11 +190,8 @@ const VerticalPage = () => {
 
         {/* Hero Section */}
         <div className="text-center mb-8 md:mb-12">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
-              {verticalInfo.name}
-            </span>
-            {' '}Intelligence
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 pb-2 bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
+            {verticalInfo.name} Intelligence
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4 mb-8">
             Stay updated with the latest {verticalInfo.name} news, insights, and intelligence.
