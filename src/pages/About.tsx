@@ -51,7 +51,7 @@ interface AboutData {
 }
 
 const About = () => {
-  const { data, isLoading, error } = useJsonData<AboutData>('/data/about.json');
+  const { data, isLoading, error } = useJsonData<AboutData>('about.json');
   useLanguage();
 
   const getIconComponent = (iconName: string) => {
