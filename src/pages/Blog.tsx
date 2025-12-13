@@ -231,7 +231,7 @@ const Blog = () => {
                     <ChevronDown className="h-4 w-4 ml-2 flex-shrink-0" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 max-h-80 overflow-y-auto bg-popover z-50" align="start">
+                <DropdownMenuContent className="w-56 max-h-80 overflow-y-auto bg-popover z-50" align="start" side="bottom">
                   <DropdownMenuItem 
                     onClick={() => {
                       setSelectedVerticalFilter('All');
@@ -336,24 +336,6 @@ const Blog = () => {
           </section>
         )}
 
-        {/* Categories */}
-        {!showSearchResults && (
-          <section className="mb-8 md:mb-12">
-            <div className="flex flex-wrap gap-2 md:gap-3">
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => handleCategoryClick(category)}
-                  className={selectedCategory === category ? "bg-gradient-to-r from-blue-500 to-blue-500 text-xs md:text-sm" : "text-xs md:text-sm"}
-                >
-                  {category}
-                </Button>
-              ))}
-            </div>
-          </section>
-        )}
 
         {!showSearchResults && <FeaturedPost />}
 
