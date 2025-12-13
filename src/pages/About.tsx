@@ -98,7 +98,7 @@ const About = () => {
       <MainHeader />
       
       {/* Hero Section */}
-      <div className="pt-24 container mx-auto py-20 px-4">
+      <div className="pt-24 container mx-auto py-12 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6 pb-2 bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
             {data.about.hero.title}
@@ -137,7 +137,7 @@ const About = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-border">
             {data.about.stats.map((stat, index) => (
-              <div key={index} className="py-8 md:py-12 text-center">
+              <div key={index} className="py-6 md:py-8 text-center">
                 <div className="text-3xl md:text-4xl font-bold text-highlight-blue mb-2">
                   {stat.value}
                 </div>
@@ -151,10 +151,10 @@ const About = () => {
       </section>
 
       {/* Who We Are */}
-      <section className="container mx-auto py-16 px-4">
+      <section className="container mx-auto py-12 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8">{data.about.who_we_are.title}</h2>
-          <div className="space-y-6">
+          <h2 className="text-3xl font-bold text-center mb-6">{data.about.who_we_are.title}</h2>
+          <div className="space-y-4">
             {data.about.who_we_are.paragraphs.map((paragraph, index) => (
               <p key={index} className="text-lg text-muted-foreground leading-relaxed text-center">
                 {paragraph}
@@ -164,46 +164,8 @@ const About = () => {
         </div>
       </section>
 
-      {/* What We Do */}
-      <section className="container mx-auto py-16 px-4 bg-accent/10">
-        <h2 className="text-3xl font-bold text-center mb-12">{data.about.what_we_do.title}</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {data.about.what_we_do.features.map((feature, index) => {
-            const IconComponent = getIconComponent(feature.icon);
-            
-            return (
-              <div key={index} className="bg-card p-6 rounded-xl border border-border hover:border-highlight-blue/50 transition-all duration-300">
-                <IconComponent className="h-12 w-12 text-highlight-blue mb-4" />
-                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Why AmplifiX */}
-      <section className="container mx-auto py-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">{data.about.why_amplifix.title}</h2>
-          
-          <div className="space-y-6">
-            {data.about.why_amplifix.items.map((item, index) => (
-              <div key={index} className="flex items-start gap-4">
-                <CheckCircle className="h-6 w-6 text-highlight-blue mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                  <p className="text-muted-foreground">{item.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
-      <section className="container mx-auto py-16 px-4">
+      <section className="container mx-auto py-12 px-4">
         <div className="max-w-4xl mx-auto bg-highlight-blue rounded-2xl p-8 md:p-12 text-center text-white">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Ready to Amplifi Your Strategy?
