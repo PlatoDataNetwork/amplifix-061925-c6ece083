@@ -1,0 +1,66 @@
+{
+  "influencer_marketing": {
+    "hero": {
+      "title": "Influencer",
+      "title_highlight": "Marketing",
+      "description": "Strategic influencer partnerships and KOL campaigns to amplify your brand reach and credibility.",
+      "cta_button": "Launch Your Campaign"
+    },
+    "key_features": {
+      "title": "Influencer Services",
+      "features": [
+        {
+          "title": "KOL Identification",
+          "description": "Data-driven identification of key opinion leaders aligned with your brand and target audience.",
+          "icon": "Search"
+        },
+        {
+          "title": "Campaign Strategy",
+          "description": "Comprehensive campaign planning from content themes to engagement tactics and timelines.",
+          "icon": "Target"
+        },
+        {
+          "title": "Content Creation",
+          "description": "Collaborative content development ensuring authentic messaging and brand alignment.",
+          "icon": "PenTool"
+        },
+        {
+          "title": "Multi-Platform Reach",
+          "description": "Coordinated campaigns across Twitter, LinkedIn, YouTube, and emerging platforms.",
+          "icon": "Share2"
+        },
+        {
+          "title": "Performance Analytics",
+          "description": "Real-time tracking of engagement, reach, sentiment, and ROI across all campaigns.",
+          "icon": "BarChart3"
+        },
+        {
+          "title": "Relationship Management",
+          "description": "Long-term influencer relationship building for sustained brand advocacy.",
+          "icon": "Handshake"
+        }
+      ]
+    },
+    "benefits": {
+      "title": "Why Choose AmplifiX Influencer Marketing",
+      "items": [
+        {
+          "title": "Verified Network",
+          "description": "Access to vetted influencers with authentic audiences and proven engagement."
+        },
+        {
+          "title": "Industry Focus",
+          "description": "Specialized expertise in fintech, crypto, biotech, and emerging technology sectors."
+        },
+        {
+          "title": "Compliance Ready",
+          "description": "All campaigns structured with proper disclosures and regulatory compliance."
+        },
+        {
+          "title": "Measurable Results",
+          "description": "Clear KPIs and transparent reporting to demonstrate campaign impact."
+        }
+      ]
+    }
+  }
+}
