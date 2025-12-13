@@ -40,6 +40,7 @@ import PrivateCompanies from "./pages/PrivateCompanies";
 import IPOPreparation from "./pages/IPOPreparation";
 import Fundraising from "./pages/Fundraising";
 import Advisory from "./pages/Advisory";
+import Research from "./pages/Research";
 import AnalyticsSolutions from "./pages/AnalyticsSolutions";
 import IRPR from "./pages/IRPR";
 import Syndication from "./pages/Syndication";
@@ -146,6 +147,7 @@ const App = () => (
               <Route path="/showcase/gridai" element={<GridAIShowcase />} />
               <Route path="/showcase/lixte" element={<LixteShowcase />} />
               <Route path="/solutions/advisory" element={<Advisory />} />
+              <Route path="/solutions/research" element={<Research />} />
               <Route path="/solutions/analytics" element={<AnalyticsSolutions />} />
               <Route path="/solutions/ir-pr" element={<IRPR />} />
               <Route path="/solutions/syndication" element={<Syndication />} />
@@ -227,6 +229,7 @@ const App = () => (
               <Route path="/:lang/showcase/gridai" element={<GridAIShowcase />} />
               <Route path="/:lang/showcase/lixte" element={<LixteShowcase />} />
               <Route path="/:lang/solutions/advisory" element={<Advisory />} />
+              <Route path="/:lang/solutions/research" element={<Research />} />
               <Route path="/:lang/solutions/analytics" element={<AnalyticsSolutions />} />
               <Route path="/:lang/solutions/ir-pr" element={<IRPR />} />
               <Route path="/:lang/solutions/syndication" element={<Syndication />} />
