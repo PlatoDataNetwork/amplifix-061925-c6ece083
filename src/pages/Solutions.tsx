@@ -67,7 +67,7 @@ const solutionCards: SolutionCard[] = [
 const SolutionCardComponent = ({ card }: { card: SolutionCard }) => {
   const Icon = card.icon;
   return (
-    <div className="bg-card p-8 rounded-xl border border-border hover:border-highlight-blue/50 transition-all duration-300 h-full flex flex-col">
+    <div className="bg-card p-8 rounded-xl border border-border hover:border-highlight-blue/50 transition-all duration-300 h-full flex flex-col hover:scale-105">
       <Icon className="h-12 w-12 text-highlight-blue mb-4" />
       <h3 className="text-2xl font-bold mb-4">{card.title}</h3>
       <p className="text-muted-foreground mb-6 flex-grow">{card.description}</p>
