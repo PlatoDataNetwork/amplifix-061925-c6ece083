@@ -1,0 +1,66 @@
+{
+  "development": {
+    "hero": {
+      "title": "Custom",
+      "title_highlight": "Development",
+      "description": "Tailored software solutions and platform integrations to power your corporate communications infrastructure.",
+      "cta_button": "Start Your Project"
+    },
+    "key_features": {
+      "title": "Development Services",
+      "features": [
+        {
+          "title": "Custom Platforms",
+          "description": "Bespoke investor relations and corporate communications platforms built to your exact specifications.",
+          "icon": "Code"
+        },
+        {
+          "title": "API Integrations",
+          "description": "Seamless integration with your existing tools, CRMs, and data sources for unified workflows.",
+          "icon": "Plug"
+        },
+        {
+          "title": "Data Dashboards",
+          "description": "Interactive analytics dashboards providing real-time insights into stakeholder engagement.",
+          "icon": "LayoutDashboard"
+        },
+        {
+          "title": "Automation Solutions",
+          "description": "Workflow automation to streamline reporting, compliance, and stakeholder communications.",
+          "icon": "Zap"
+        },
+        {
+          "title": "Mobile Applications",
+          "description": "Native and cross-platform mobile apps for on-the-go access to critical communications.",
+          "icon": "Smartphone"
+        },
+        {
+          "title": "AI-Powered Tools",
+          "description": "Custom AI solutions for content generation, sentiment analysis, and predictive analytics.",
+          "icon": "Brain"
+        }
+      ]
+    },
+    "benefits": {
+      "title": "Why Choose AmplifiX Development",
+      "items": [
+        {
+          "title": "Domain Expertise",
+          "description": "Deep understanding of investor relations and corporate communications requirements."
+        },
+        {
+          "title": "Agile Methodology",
+          "description": "Iterative development with continuous feedback and rapid delivery cycles."
+        },
+        {
+          "title": "Scalable Architecture",
+          "description": "Solutions built to grow with your organization and handle enterprise-scale demands."
+        },
+        {
+          "title": "Ongoing Support",
+          "description": "Dedicated support and maintenance to ensure your solutions evolve with your needs."
+        }
+      ]
+    }
+  }
+}
