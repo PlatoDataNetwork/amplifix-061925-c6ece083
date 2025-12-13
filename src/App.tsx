@@ -39,6 +39,10 @@ import PublicCompanies from "./pages/PublicCompanies";
 import PrivateCompanies from "./pages/PrivateCompanies";
 import IPOPreparation from "./pages/IPOPreparation";
 import Fundraising from "./pages/Fundraising";
+import Advisory from "./pages/Advisory";
+import AnalyticsSolutions from "./pages/AnalyticsSolutions";
+import IRPR from "./pages/IRPR";
+import Syndication from "./pages/Syndication";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
@@ -138,6 +142,10 @@ const App = () => (
               <Route path="/showcase/fg-nexus" element={<FGNexusShowcase />} />
               <Route path="/showcase/gridai" element={<GridAIShowcase />} />
               <Route path="/showcase/lixte" element={<LixteShowcase />} />
+              <Route path="/solutions/advisory" element={<Advisory />} />
+              <Route path="/solutions/analytics" element={<AnalyticsSolutions />} />
+              <Route path="/solutions/ir-pr" element={<IRPR />} />
+              <Route path="/solutions/syndication" element={<Syndication />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/solutions/ipo-preparation" element={<IPOPreparation />} />
@@ -212,6 +220,10 @@ const App = () => (
               <Route path="/:lang/showcase/fg-nexus" element={<FGNexusShowcase />} />
               <Route path="/:lang/showcase/gridai" element={<GridAIShowcase />} />
               <Route path="/:lang/showcase/lixte" element={<LixteShowcase />} />
+              <Route path="/:lang/solutions/advisory" element={<Advisory />} />
+              <Route path="/:lang/solutions/analytics" element={<AnalyticsSolutions />} />
+              <Route path="/:lang/solutions/ir-pr" element={<IRPR />} />
+              <Route path="/:lang/solutions/syndication" element={<Syndication />} />
               <Route path="/:lang/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/:lang/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/:lang/solutions/ipo-preparation" element={<IPOPreparation />} />

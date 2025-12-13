@@ -1,0 +1,66 @@
+{
+  "analytics": {
+    "hero": {
+      "title": "AI-Powered",
+      "title_highlight": "Analytics",
+      "description": "Transform data into actionable insights with advanced analytics and real-time intelligence dashboards.",
+      "cta_button": "Explore Analytics"
+    },
+    "key_features": {
+      "title": "Comprehensive Analytics Suite",
+      "features": [
+        {
+          "title": "Market Sentiment",
+          "description": "Real-time sentiment analysis across news, social media, and investor communications.",
+          "icon": "TrendingUp"
+        },
+        {
+          "title": "Investor Intelligence",
+          "description": "Track investor behavior, ownership changes, and institutional activity patterns.",
+          "icon": "Users"
+        },
+        {
+          "title": "Competitive Analysis",
+          "description": "Monitor competitor communications, market positioning, and share of voice metrics.",
+          "icon": "BarChart3"
+        },
+        {
+          "title": "Media Monitoring",
+          "description": "Comprehensive coverage tracking across traditional media, digital, and broadcast channels.",
+          "icon": "FileText"
+        },
+        {
+          "title": "Performance Metrics",
+          "description": "Measure IR/PR campaign effectiveness with detailed attribution and ROI analysis.",
+          "icon": "Target"
+        },
+        {
+          "title": "Predictive Insights",
+          "description": "AI-powered forecasting and trend detection to anticipate market movements.",
+          "icon": "Lightbulb"
+        }
+      ]
+    },
+    "benefits": {
+      "title": "Why AmplifiX Analytics",
+      "items": [
+        {
+          "title": "Real-Time Intelligence",
+          "description": "Live dashboards with instant alerts on material events and market shifts."
+        },
+        {
+          "title": "AI-Powered Insights",
+          "description": "Machine learning models trained on financial communications and market data."
+        },
+        {
+          "title": "Custom Reporting",
+          "description": "Tailored reports and visualizations for board presentations and investor meetings."
+        },
+        {
+          "title": "Data Integration",
+          "description": "Seamless integration with your existing tools, CRM, and data infrastructure."
+        }
+      ]
+    }
+  }
+}

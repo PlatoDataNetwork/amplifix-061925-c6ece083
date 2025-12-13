@@ -1,0 +1,66 @@
+{
+  "ir_pr": {
+    "hero": {
+      "title": "Integrated",
+      "title_highlight": "IR / PR Solutions",
+      "description": "Unified investor relations and public relations platform to amplify your corporate narrative and stakeholder engagement.",
+      "cta_button": "Start Your Campaign"
+    },
+    "key_features": {
+      "title": "Complete IR/PR Platform",
+      "features": [
+        {
+          "title": "Press Release Distribution",
+          "description": "Global distribution network reaching journalists, investors, and key stakeholders worldwide.",
+          "icon": "Globe"
+        },
+        {
+          "title": "Investor Targeting",
+          "description": "AI-powered investor identification and targeting based on investment criteria and history.",
+          "icon": "Target"
+        },
+        {
+          "title": "Media Relations",
+          "description": "Build and manage journalist relationships with integrated outreach and tracking tools.",
+          "icon": "Users"
+        },
+        {
+          "title": "Content Creation",
+          "description": "AI-assisted creation of press releases, investor presentations, and corporate materials.",
+          "icon": "FileText"
+        },
+        {
+          "title": "Event Management",
+          "description": "Investor days, earnings calls, and roadshow coordination with integrated scheduling.",
+          "icon": "Calendar"
+        },
+        {
+          "title": "Reputation Management",
+          "description": "Monitor and protect your corporate reputation across all media channels.",
+          "icon": "Shield"
+        }
+      ]
+    },
+    "benefits": {
+      "title": "Why AmplifiX IR/PR",
+      "items": [
+        {
+          "title": "Unified Platform",
+          "description": "Single platform for all IR and PR activities with seamless workflow integration."
+        },
+        {
+          "title": "Global Reach",
+          "description": "Distribution to 170+ countries with localized content and multi-language support."
+        },
+        {
+          "title": "Measurable Impact",
+          "description": "Track every engagement with detailed analytics and attribution reporting."
+        },
+        {
+          "title": "Expert Support",
+          "description": "Dedicated IR/PR specialists to guide strategy and execution."
+        }
+      ]
+    }
+  }
+}
