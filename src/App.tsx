@@ -44,6 +44,8 @@ import AnalyticsSolutions from "./pages/AnalyticsSolutions";
 import IRPR from "./pages/IRPR";
 import Syndication from "./pages/Syndication";
 import Development from "./pages/Development";
+import Blockchain from "./pages/Blockchain";
+import InfluencerMarketing from "./pages/InfluencerMarketing";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
@@ -148,6 +150,8 @@ const App = () => (
               <Route path="/solutions/ir-pr" element={<IRPR />} />
               <Route path="/solutions/syndication" element={<Syndication />} />
               <Route path="/solutions/development" element={<Development />} />
+              <Route path="/solutions/blockchain" element={<Blockchain />} />
+              <Route path="/solutions/influencer-marketing" element={<InfluencerMarketing />} />
               <Route path="/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/solutions/ipo-preparation" element={<IPOPreparation />} />
@@ -227,6 +231,8 @@ const App = () => (
               <Route path="/:lang/solutions/ir-pr" element={<IRPR />} />
               <Route path="/:lang/solutions/syndication" element={<Syndication />} />
               <Route path="/:lang/solutions/development" element={<Development />} />
+              <Route path="/:lang/solutions/blockchain" element={<Blockchain />} />
+              <Route path="/:lang/solutions/influencer-marketing" element={<InfluencerMarketing />} />
               <Route path="/:lang/solutions/public-companies" element={<PublicCompanies />} />
               <Route path="/:lang/solutions/private-companies" element={<PrivateCompanies />} />
               <Route path="/:lang/solutions/ipo-preparation" element={<IPOPreparation />} />

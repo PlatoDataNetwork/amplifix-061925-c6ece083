@@ -1,0 +1,66 @@
+{
+  "blockchain": {
+    "hero": {
+      "title": "Blockchain /",
+      "title_highlight": "Web3",
+      "description": "Next-generation decentralized solutions, smart contracts, and Web3 integrations for corporate infrastructure.",
+      "cta_button": "Explore Web3 Solutions"
+    },
+    "key_features": {
+      "title": "Web3 Services",
+      "features": [
+        {
+          "title": "Smart Contracts",
+          "description": "Custom smart contract development for automated, transparent, and secure business operations.",
+          "icon": "FileCode"
+        },
+        {
+          "title": "Token Development",
+          "description": "Design and launch utility tokens, security tokens, and governance tokens for your ecosystem.",
+          "icon": "Coins"
+        },
+        {
+          "title": "DeFi Integration",
+          "description": "Integrate decentralized finance protocols for staking, lending, and liquidity solutions.",
+          "icon": "Wallet"
+        },
+        {
+          "title": "NFT Solutions",
+          "description": "Create and manage NFT collections for digital assets, memberships, and exclusive access.",
+          "icon": "Image"
+        },
+        {
+          "title": "DAO Infrastructure",
+          "description": "Build decentralized autonomous organizations for community governance and decision-making.",
+          "icon": "Users"
+        },
+        {
+          "title": "Blockchain Analytics",
+          "description": "On-chain analytics and reporting tools for transparency and regulatory compliance.",
+          "icon": "BarChart3"
+        }
+      ]
+    },
+    "benefits": {
+      "title": "Why Choose AmplifiX Web3",
+      "items": [
+        {
+          "title": "Multi-Chain Expertise",
+          "description": "Experience across Ethereum, Solana, Polygon, and other leading blockchain networks."
+        },
+        {
+          "title": "Security First",
+          "description": "Rigorous smart contract auditing and security best practices for all deployments."
+        },
+        {
+          "title": "Regulatory Compliance",
+          "description": "Navigate complex regulatory landscapes with compliant tokenization solutions."
+        },
+        {
+          "title": "End-to-End Support",
+          "description": "From concept to launch and beyond, comprehensive support for your Web3 journey."
+        }
+      ]
+    }
+  }
+}
