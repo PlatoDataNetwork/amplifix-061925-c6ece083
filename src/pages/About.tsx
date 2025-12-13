@@ -172,7 +172,7 @@ const About = () => {
       <section id="process" className="container mx-auto py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">{data.about.process.title}</h2>
+            <h2 className="text-5xl font-bold mb-4">{data.about.process.title}</h2>
             <p className="text-xl text-highlight-blue font-medium mb-4">{data.about.process.subtitle}</p>
             <p className="text-muted-foreground max-w-3xl mx-auto">{data.about.process.description}</p>
           </div>
@@ -221,7 +221,7 @@ const About = () => {
 
       {/* Features Section */}
       <section className="container mx-auto py-12 px-4">
-        <h2 className="text-3xl font-bold text-center mb-10">Platform Capabilities</h2>
+        <h2 className="text-5xl font-bold text-center mb-10">Platform Capabilities</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {data.about.what_we_do.features.map((feature, index) => {
             const IconComponent = getIconComponent(feature.icon);
@@ -244,7 +244,7 @@ const About = () => {
       {/* CTA Section */}
       <section className="py-12 px-4 bg-background">
         <div className="container mx-auto max-w-4xl p-8 md:p-12 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+          <h2 className="text-5xl font-bold mb-4 text-foreground">
             Ready to Amplifi Your Strategy?
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
