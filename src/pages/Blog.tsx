@@ -14,7 +14,13 @@ import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { useMemo, useState, useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Input } from "@/components/ui/input";
-import { Search, X } from "lucide-react";
+import { Search, X, ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
@@ -76,6 +82,8 @@ const Blog = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  
+  const [selectedVerticalFilter, setSelectedVerticalFilter] = useState<string>('All');
   
   const selectedTag = searchParams.get('tag');
   const selectedCategory = 'All'; // Main page always shows "All"
@@ -212,37 +220,73 @@ const Blog = () => {
             Insights on AI, corporate communications, investor relations, and business intelligence.
           </p>
           
-          {/* Search Bar */}
+          {/* Search Bar with Vertical Filter */}
           <div className="max-w-3xl mx-auto px-4">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Search articles..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  if (e.target.value.trim()) {
-                    handleSearch(e.target.value);
-                  } else {
-                    clearSearch();
-                  }
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && searchQuery.trim()) {
-                    handleSearch(searchQuery);
-                  }
-                }}
-                className="pl-12 pr-12 h-14 text-lg rounded-full border-2 focus:border-primary"
-              />
-              {searchQuery && (
-                <button
-                  onClick={clearSearch}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              )}
+            <div className="flex gap-3">
+              {/* Vertical Dropdown Filter */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="h-14 px-4 rounded-full border-2 min-w-[140px] justify-between">
+                    <span className="truncate">{selectedVerticalFilter}</span>
+                    <ChevronDown className="h-4 w-4 ml-2 flex-shrink-0" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 max-h-80 overflow-y-auto bg-popover z-50" align="start">
+                  <DropdownMenuItem 
+                    onClick={() => {
+                      setSelectedVerticalFilter('All');
+                      navigate(`${langPrefix}/intel`);
+                    }}
+                    className={selectedVerticalFilter === 'All' ? 'bg-accent' : ''}
+                  >
+                    All Verticals
+                  </DropdownMenuItem>
+                  {verticals.map((vertical) => (
+                    <DropdownMenuItem 
+                      key={vertical.slug}
+                      onClick={() => {
+                        setSelectedVerticalFilter(vertical.name);
+                        navigate(`${langPrefix}/intel/${vertical.slug}`);
+                      }}
+                      className={selectedVerticalFilter === vertical.name ? 'bg-accent' : ''}
+                    >
+                      {vertical.name}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
+              {/* Search Input */}
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search articles..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    if (e.target.value.trim()) {
+                      handleSearch(e.target.value);
+                    } else {
+                      clearSearch();
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && searchQuery.trim()) {
+                      handleSearch(searchQuery);
+                    }
+                  }}
+                  className="pl-12 pr-12 h-14 text-lg rounded-full border-2 focus:border-primary"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={clearSearch}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
