@@ -1,0 +1,66 @@
+{
+  "syndication": {
+    "hero": {
+      "title": "Content",
+      "title_highlight": "Syndication",
+      "description": "Amplify your message with intelligent content syndication across premium financial and news networks.",
+      "cta_button": "Explore Syndication"
+    },
+    "key_features": {
+      "title": "Powerful Syndication Network",
+      "features": [
+        {
+          "title": "Premium Network",
+          "description": "Distribution to 500+ premium financial news sites, portals, and media outlets.",
+          "icon": "Globe"
+        },
+        {
+          "title": "Targeted Distribution",
+          "description": "Reach specific investor segments and geographic regions with precision targeting.",
+          "icon": "Target"
+        },
+        {
+          "title": "SEO Optimization",
+          "description": "Content optimized for search engines to maximize organic visibility and reach.",
+          "icon": "Search"
+        },
+        {
+          "title": "Social Amplification",
+          "description": "Automated social media distribution across LinkedIn, Twitter, and financial communities.",
+          "icon": "Share2"
+        },
+        {
+          "title": "Compliance Ready",
+          "description": "SEC-compliant distribution with proper disclaimers and regulatory adherence.",
+          "icon": "Shield"
+        },
+        {
+          "title": "Performance Tracking",
+          "description": "Real-time analytics on reach, engagement, and content performance metrics.",
+          "icon": "BarChart3"
+        }
+      ]
+    },
+    "benefits": {
+      "title": "Why AmplifiX Syndication",
+      "items": [
+        {
+          "title": "Maximum Reach",
+          "description": "Reach millions of investors and stakeholders through our extensive network."
+        },
+        {
+          "title": "Quality Placements",
+          "description": "Premium placement on respected financial news sites and investor platforms."
+        },
+        {
+          "title": "Instant Distribution",
+          "description": "Real-time content distribution with immediate visibility across all channels."
+        },
+        {
+          "title": "Transparent Reporting",
+          "description": "Detailed reports on impressions, engagement, and audience demographics."
+        }
+      ]
+    }
+  }
+}

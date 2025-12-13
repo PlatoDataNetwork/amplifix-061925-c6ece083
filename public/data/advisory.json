@@ -1,0 +1,66 @@
+{
+  "advisory": {
+    "hero": {
+      "title": "Strategic",
+      "title_highlight": "Advisory Services",
+      "description": "Expert guidance and strategic counsel to navigate complex business challenges and accelerate growth.",
+      "cta_button": "Schedule a Consultation"
+    },
+    "key_features": {
+      "title": "Comprehensive Advisory Solutions",
+      "features": [
+        {
+          "title": "Strategic Planning",
+          "description": "Develop comprehensive business strategies aligned with market opportunities and company objectives.",
+          "icon": "Target"
+        },
+        {
+          "title": "Market Analysis",
+          "description": "In-depth market research and competitive intelligence to inform strategic decisions.",
+          "icon": "BarChart3"
+        },
+        {
+          "title": "Growth Strategy",
+          "description": "Identify and execute on growth opportunities including M&A, partnerships, and market expansion.",
+          "icon": "TrendingUp"
+        },
+        {
+          "title": "Capital Markets",
+          "description": "Expert guidance on capital raising, investor targeting, and market positioning strategies.",
+          "icon": "DollarSign"
+        },
+        {
+          "title": "Corporate Governance",
+          "description": "Best practices for board effectiveness, shareholder relations, and ESG compliance.",
+          "icon": "Shield"
+        },
+        {
+          "title": "Executive Coaching",
+          "description": "Leadership development and executive communication training for C-suite executives.",
+          "icon": "Users"
+        }
+      ]
+    },
+    "benefits": {
+      "title": "Why Choose AmplifiX Advisory",
+      "items": [
+        {
+          "title": "Industry Expertise",
+          "description": "Deep sector knowledge across technology, healthcare, finance, and emerging industries."
+        },
+        {
+          "title": "Proven Track Record",
+          "description": "Successful outcomes for companies ranging from pre-IPO to Fortune 500."
+        },
+        {
+          "title": "Integrated Approach",
+          "description": "Advisory services seamlessly integrated with our IR/PR and analytics platforms."
+        },
+        {
+          "title": "Confidential & Trusted",
+          "description": "Strict confidentiality protocols and trusted advisor relationships built on integrity."
+        }
+      ]
+    }
+  }
+}
