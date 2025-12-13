@@ -67,6 +67,9 @@ const MainHeader = () => {
           <LanguageAwareLink to="/about" className="text-foreground hover:text-highlight-blue transition-colors">
             {t('nav.about')}
           </LanguageAwareLink>
+          <LanguageAwareLink to="/about#process" className="text-foreground hover:text-highlight-blue transition-colors">
+            Process
+          </LanguageAwareLink>
           <LanguageAwareLink to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">
             {t('nav.solutions')}
           </LanguageAwareLink>
