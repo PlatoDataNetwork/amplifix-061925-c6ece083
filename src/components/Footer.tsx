@@ -64,10 +64,10 @@ const Footer = () => {
             <h3 className="text-lg font-medium mb-4">{t('footer.company')}</h3>
             <ul className="space-y-2">
               <li><LanguageAwareLink to="/about" className="text-muted-foreground hover:text-highlight-blue">{t('nav.about')}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/about#process" className="text-muted-foreground hover:text-highlight-blue">Process</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/showcase" className="text-muted-foreground hover:text-highlight-blue">{t('nav.showcase')}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/faq" className="text-muted-foreground hover:text-highlight-blue">{t('nav.faq')}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/contact" className="text-muted-foreground hover:text-highlight-blue">{t('nav.contact')}</LanguageAwareLink></li>
-              <li className="text-muted-foreground">support@amplifix.net</li>
             </ul>
             <div className="flex items-center mt-4 p-3 bg-background rounded-lg border border-border">
               <div className="w-2 h-2 rounded-full mr-2 bg-green-500"></div>
