@@ -78,7 +78,7 @@ const Development = () => {
       <MainHeader />
       
       {/* Hero Section */}
-      <div className="pt-24 container mx-auto py-20 px-4">
+      <div className="pt-24 container mx-auto py-12 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6 pb-2 bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
             {data.development.hero.title} {data.development.hero.title_highlight}
@@ -99,9 +99,7 @@ const Development = () => {
       </div>
 
       {/* Key Features */}
-      <section className="container mx-auto py-16 px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">{data.development.key_features.title}</h2>
-        
+      <section className="container mx-auto py-8 px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {data.development.key_features.features.map((feature, index) => {
             const IconComponent = getIconComponent(feature.icon);
