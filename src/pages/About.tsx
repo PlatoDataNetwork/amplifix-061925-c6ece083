@@ -135,18 +135,18 @@ const About = () => {
 
       {/* CTA Section */}
       <section className="container mx-auto py-12 px-4">
-        <div className="max-w-4xl mx-auto bg-highlight-blue rounded-2xl p-8 md:p-12 text-center text-white">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+        <div className="max-w-4xl mx-auto bg-transparent border-2 border-highlight-blue rounded-2xl p-8 md:p-12 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
             Ready to Amplifi Your Strategy?
           </h2>
-          <p className="text-lg text-white/80 mb-8 max-w-xl mx-auto">
+          <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
             Join the companies transforming their communications with AmplifiX.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <LanguageAwareLink to="/contact">
               <Button 
                 size="lg"
-                className="bg-white text-highlight-blue hover:bg-white/90 px-8 py-4 text-lg rounded-lg font-semibold"
+                className="bg-highlight-blue text-white hover:bg-highlight-blue/90 px-8 py-4 text-lg rounded-lg font-semibold"
               >
                 Get Started
               </Button>
@@ -159,7 +159,7 @@ const About = () => {
               <Button 
                 size="lg"
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg rounded-lg"
+                className="border-highlight-blue text-highlight-blue hover:bg-highlight-blue/10 px-8 py-4 text-lg rounded-lg"
               >
                 Book a Demo
               </Button>
