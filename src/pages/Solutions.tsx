@@ -71,7 +71,7 @@ const solutionCards: SolutionCard[] = [
     icon: Megaphone,
   },
   {
-    title: "Syndication",
+    title: "Syndication & Distribution",
     description: "Premium content distribution network to amplify your message across targeted channels and maximize reach.",
     link: "/solutions/syndication",
     icon: Share2,
