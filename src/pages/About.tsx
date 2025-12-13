@@ -132,6 +132,27 @@ const About = () => {
         </div>
       </div>
 
+      {/* Features Section */}
+      <section className="container mx-auto py-12 px-4">
+        <h2 className="text-3xl font-bold text-center mb-10">Platform Capabilities</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {data.about.what_we_do.features.map((feature, index) => {
+            const IconComponent = getIconComponent(feature.icon);
+            return (
+              <div 
+                key={index} 
+                className="p-6 rounded-xl border border-border bg-card/50 hover:border-highlight-blue/50 transition-all duration-300 group"
+              >
+                <div className="w-12 h-12 bg-highlight-blue/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-highlight-blue/20 transition-colors">
+                  <IconComponent className="h-6 w-6 text-highlight-blue" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
+                <p className="text-sm text-muted-foreground">{feature.description}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section className="container mx-auto py-12 px-4">
