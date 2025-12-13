@@ -7,6 +7,7 @@ import {
   BarChart3, 
   Megaphone, 
   Share2,
+  Code,
   ArrowRight,
   LucideIcon
 } from "lucide-react";
@@ -49,6 +50,12 @@ const solutionCards: SolutionCard[] = [
     description: "Comprehensive analytics suite providing real-time insights, sentiment analysis, and performance metrics for data-driven decisions.",
     link: "/solutions/analytics",
     icon: BarChart3,
+  },
+  {
+    title: "Development",
+    description: "Tailored software solutions and platform integrations to power your corporate communications infrastructure.",
+    link: "/solutions/development",
+    icon: Code,
   },
   {
     title: "IR / PR",
