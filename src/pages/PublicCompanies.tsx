@@ -80,8 +80,8 @@ const PublicCompanies = () => {
       {/* Hero Section */}
       <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-5xl font-bold mb-6">
-            {data.public_companies.hero.title} <span className="text-highlight-blue">{data.public_companies.hero.title_highlight}</span>
+          <h1 className="text-5xl font-bold mb-6 pb-2 bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
+            {data.public_companies.hero.title} {data.public_companies.hero.title_highlight}
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
             {data.public_companies.hero.description}
