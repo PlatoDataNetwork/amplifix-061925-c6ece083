@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
   Globe, 
@@ -72,7 +74,20 @@ interface AboutData {
 
 const About = () => {
   const { data, isLoading, error } = useJsonData<AboutData>('about.json');
+  const location = useLocation();
   useLanguage();
+
+  // Handle hash navigation for Process section
+  useEffect(() => {
+    if (location.hash === '#process') {
+      setTimeout(() => {
+        const element = document.getElementById('process');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  }, [location.hash]);
 
   const getIconComponent = (iconName: string) => {
     const icons: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -153,30 +168,8 @@ const About = () => {
         </div>
       </div>
 
-      {/* Features Section */}
-      <section className="container mx-auto py-12 px-4">
-        <h2 className="text-3xl font-bold text-center mb-10">Platform Capabilities</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {data.about.what_we_do.features.map((feature, index) => {
-            const IconComponent = getIconComponent(feature.icon);
-            return (
-              <div 
-                key={index} 
-                className="p-6 rounded-xl border border-border bg-card/50 hover:border-highlight-blue/50 transition-all duration-300 group"
-              >
-                <div className="w-12 h-12 bg-highlight-blue/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-highlight-blue/20 transition-colors">
-                  <IconComponent className="h-6 w-6 text-highlight-blue" />
-                </div>
-                <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground">{feature.description}</p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
       {/* Process Section */}
-      <section className="container mx-auto py-16 px-4 bg-muted/30">
+      <section id="process" className="container mx-auto py-16 px-4 bg-muted/30">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">{data.about.process.title}</h2>
@@ -226,9 +219,31 @@ const About = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Features Section */}
       <section className="container mx-auto py-12 px-4">
-        <div className="max-w-4xl mx-auto bg-transparent border-2 border-highlight-blue rounded-2xl p-8 md:p-12 text-center">
+        <h2 className="text-3xl font-bold text-center mb-10">Platform Capabilities</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {data.about.what_we_do.features.map((feature, index) => {
+            const IconComponent = getIconComponent(feature.icon);
+            return (
+              <div 
+                key={index} 
+                className="p-6 rounded-xl border border-border bg-card/50 hover:border-highlight-blue/50 transition-all duration-300 group"
+              >
+                <div className="w-12 h-12 bg-highlight-blue/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-highlight-blue/20 transition-colors">
+                  <IconComponent className="h-6 w-6 text-highlight-blue" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
+                <p className="text-sm text-muted-foreground">{feature.description}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-12 px-4 bg-background">
+        <div className="container mx-auto max-w-4xl p-8 md:p-12 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
             Ready to Amplifi Your Strategy?
           </h2>
