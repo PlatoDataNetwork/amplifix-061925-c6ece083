@@ -53,7 +53,7 @@ const solutionCards: SolutionCard[] = [
     icon: Lightbulb,
   },
   {
-    title: "Research & Analytics",
+    title: "Data Analytics",
     description: "Comprehensive analytics suite providing real-time insights, sentiment analysis, and performance metrics for data-driven decisions.",
     link: "/solutions/analytics",
     icon: BarChart3,
