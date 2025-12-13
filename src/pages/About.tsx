@@ -132,37 +132,6 @@ const About = () => {
         </div>
       </div>
 
-      {/* Stats Bar */}
-      <section className="border-y border-border bg-card/50">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-border">
-            {data.about.stats.map((stat, index) => (
-              <div key={index} className="py-6 md:py-8 text-center">
-                <div className="text-3xl md:text-4xl font-bold text-highlight-blue mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-sm md:text-base text-muted-foreground">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Who We Are */}
-      <section className="container mx-auto py-12 px-4">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-6">{data.about.who_we_are.title}</h2>
-          <div className="space-y-4">
-            {data.about.who_we_are.paragraphs.map((paragraph, index) => (
-              <p key={index} className="text-lg text-muted-foreground leading-relaxed text-center">
-                {paragraph}
-              </p>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="container mx-auto py-12 px-4">
