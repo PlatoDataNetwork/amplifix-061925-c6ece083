@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Code, Plug, LayoutDashboard, Zap, Smartphone, Brain } from "lucide-react";
+import { CheckCircle, Code, Plug, LayoutDashboard, Zap, Smartphone, Brain, Blocks } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { useJsonData } from "@/hooks/useJsonData";
@@ -68,7 +68,7 @@ const Development = () => {
 
   const getIconComponent = (iconName: string) => {
     const icons: Record<string, any> = {
-      Code, Plug, LayoutDashboard, Zap, Smartphone, Brain, CheckCircle
+      Code, Plug, LayoutDashboard, Zap, Smartphone, Brain, Blocks, CheckCircle
     };
     return icons[iconName] || Code;
   };
