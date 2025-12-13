@@ -80,8 +80,8 @@ const Analytics = () => {
       {/* Hero Section */}
       <div className="pt-24 container mx-auto py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-5xl font-bold mb-6">
-            {data.analytics.hero.title} <span className="text-highlight-blue">{data.analytics.hero.title_highlight}</span>
+          <h1 className="text-5xl font-bold mb-6 text-foreground">
+            {data.analytics.hero.title} {data.analytics.hero.title_highlight}
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
             {data.analytics.hero.description}
