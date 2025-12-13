@@ -62,7 +62,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-medium mb-4">{t('footer.company')}</h3>
             <ul className="space-y-2">
-              <li><LanguageAwareLink to="/contact" className="text-muted-foreground hover:text-highlight-blue">{t('nav.contact')}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/about" className="text-muted-foreground hover:text-highlight-blue">{t('nav.about')}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/faq" className="text-muted-foreground hover:text-highlight-blue">{t('nav.faq')}</LanguageAwareLink></li>
               <li className="text-muted-foreground">support@amplifix.net</li>
             </ul>
