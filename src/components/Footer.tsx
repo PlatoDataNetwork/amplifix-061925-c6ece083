@@ -42,7 +42,7 @@ const Footer = () => {
             <h3 className="text-lg font-medium mb-4">{t('footer.platform')}</h3>
             <ul className="space-y-2">
               <li><LanguageAwareLink to="/intel" className="text-muted-foreground hover:text-highlight-blue">Market Intelligence</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/analytics" className="text-muted-foreground hover:text-highlight-blue">Analytics</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/analytics" className="text-muted-foreground hover:text-highlight-blue">Research & Analytics</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/syndication" className="text-muted-foreground hover:text-highlight-blue">Syndication / IR / PR</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/development" className="text-muted-foreground hover:text-highlight-blue">Blockchain / Web3</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/development" className="text-muted-foreground hover:text-highlight-blue">Influencer Marketing</LanguageAwareLink></li>
