@@ -174,11 +174,28 @@ const About = () => {
           <div className="text-center mb-12">
             <h2 className="text-5xl font-bold mb-4">{data.about.process.title}</h2>
             <p className="text-xl text-highlight-blue font-medium mb-4">{data.about.process.subtitle}</p>
-            <p className="text-muted-foreground max-w-3xl mx-auto">{data.about.process.description}</p>
+            <p className="text-muted-foreground max-w-3xl mx-auto mb-12">{data.about.process.description}</p>
+
+            {/* Process Steps */}
+            <div className="flex flex-wrap justify-center items-center gap-4 mb-12">
+              {data.about.process.steps.map((step, index) => (
+                <div key={index} className="flex items-center gap-4">
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-highlight-blue rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto mb-2">
+                      {index + 1}
+                    </div>
+                    <h4 className="font-semibold text-sm">{step.title}</h4>
+                  </div>
+                  {index < data.about.process.steps.length - 1 && (
+                    <ArrowRight className="h-5 w-5 text-highlight-blue hidden md:block" />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* AI Capabilities Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {data.about.process.capabilities.map((capability, index) => {
               const IconComponent = getIconComponent(capability.icon);
               return (
@@ -198,23 +215,6 @@ const About = () => {
                 </div>
               );
             })}
-          </div>
-
-          {/* Process Steps */}
-          <div className="flex flex-wrap justify-center items-center gap-4">
-            {data.about.process.steps.map((step, index) => (
-              <div key={index} className="flex items-center gap-4">
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-highlight-blue rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto mb-2">
-                    {index + 1}
-                  </div>
-                  <h4 className="font-semibold text-sm">{step.title}</h4>
-                </div>
-                {index < data.about.process.steps.length - 1 && (
-                  <ArrowRight className="h-5 w-5 text-highlight-blue hidden md:block" />
-                )}
-              </div>
-            ))}
           </div>
         </div>
       </section>
