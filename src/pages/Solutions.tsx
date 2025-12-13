@@ -100,6 +100,29 @@ const Solutions = () => {
           <p className="text-xl text-muted-foreground mb-8">
             Comprehensive solutions designed to amplify your communication strategy at every stage of growth.
           </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <LanguageAwareLink to="/contact">
+              <Button 
+                size="lg" 
+                className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors px-8 py-4 text-lg rounded-lg min-h-[48px]"
+              >
+                Get Started
+              </Button>
+            </LanguageAwareLink>
+            <a 
+              href="https://calendly.com/amplifix/amplifix-discovery"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-border hover:bg-accent transition-colors px-8 py-4 text-lg rounded-lg min-h-[48px]"
+              >
+                Book a Demo
+              </Button>
+            </a>
+          </div>
         </div>
       </div>
 
