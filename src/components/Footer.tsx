@@ -43,7 +43,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li><LanguageAwareLink to="/showcase" className="text-muted-foreground hover:text-highlight-blue">{t('nav.showcase')}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/intel" className="text-muted-foreground hover:text-highlight-blue">Market Intelligence</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/syndication" className="text-muted-foreground hover:text-highlight-blue">Syndication & Distribution</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/syndication" className="text-muted-foreground hover:text-highlight-blue">Syndication / IR / PR</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/public-companies" className="text-muted-foreground hover:text-highlight-blue">{t('footer.publicCompanies')}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/private-companies" className="text-muted-foreground hover:text-highlight-blue">{t('footer.privateCompanies')}</LanguageAwareLink></li>
             </ul>
@@ -55,7 +55,7 @@ const Footer = () => {
               <li><LanguageAwareLink to="/solutions/advisory" className="text-muted-foreground hover:text-highlight-blue">Advisory</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/analytics" className="text-muted-foreground hover:text-highlight-blue">Analytics</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/development" className="text-muted-foreground hover:text-highlight-blue">Development</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/ir-pr" className="text-muted-foreground hover:text-highlight-blue">IR / PR</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/ir-pr" className="text-muted-foreground hover:text-highlight-blue">Investor Relations</LanguageAwareLink></li>
             </ul>
           </div>
           
