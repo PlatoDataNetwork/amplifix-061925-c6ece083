@@ -1,0 +1,57 @@
+{
+  "hero": {
+    "title": "Video Distribution",
+    "subtitle": "Amplify Your Brand with Streaming TV & Digital Video",
+    "description": "Generate measurable business outcomes with AI-powered video distribution across streaming TV, CTV, and digital platforms. Reach your target audience where they watch most."
+  },
+  "features": [
+    {
+      "title": "Streaming TV Advertising",
+      "description": "Reach viewers across 500+ premium streaming channels including major networks, sports leagues, and entertainment platforms with precision-targeted video campaigns.",
+      "icon": "Tv"
+    },
+    {
+      "title": "Audience Targeting",
+      "description": "No wasted impressions. Target viewers by demographics, interests, location, device, and behavior to ensure your message reaches those who matter most for your brand.",
+      "icon": "Target"
+    },
+    {
+      "title": "AI Optimization",
+      "description": "Leverage AI-powered campaign optimization to maximize ROAS, automatically adjust bidding, and improve performance across all your video campaigns in real-time.",
+      "icon": "Brain"
+    },
+    {
+      "title": "Creative Solutions",
+      "description": "Create TV-ready, customizable video ads with AI-powered tools. Transform your brand assets into professional streaming-quality content in minutes.",
+      "icon": "Video"
+    },
+    {
+      "title": "Cross-Platform Distribution",
+      "description": "Distribute your video content across CTV, mobile, desktop, and tablet devices to maximize reach and engagement across every screen your audience uses.",
+      "icon": "Monitor"
+    },
+    {
+      "title": "Measurement & Reporting",
+      "description": "Track performance across every screen with clear metrics and attribution. Make smarter decisions with real-time analytics and comprehensive reporting dashboards.",
+      "icon": "BarChart3"
+    }
+  ],
+  "benefits": [
+    {
+      "title": "Generate Leads",
+      "description": "Turn viewers into qualified buyers with compelling video content that drives action and measurable conversions."
+    },
+    {
+      "title": "Increase Sales",
+      "description": "Generate measurable sales lift with targeted video campaigns that reach high-intent audiences at scale."
+    },
+    {
+      "title": "Build Awareness",
+      "description": "Stay top of mind with premium video placements that build brand recognition and trust with your target market."
+    },
+    {
+      "title": "Attract Traffic",
+      "description": "Drive convertible traffic to your website or app with engaging video content optimized for performance."
+    }
+  ]
+}

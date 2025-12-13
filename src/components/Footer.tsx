@@ -58,6 +58,7 @@ const Footer = () => {
               <li><LanguageAwareLink to="/solutions/analytics" className="text-muted-foreground hover:text-highlight-blue">Data Analytics</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/syndication" className="text-muted-foreground hover:text-highlight-blue">Syndication / IR / PR</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/blockchain" className="text-muted-foreground hover:text-highlight-blue">Blockchain / Web3</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/video-distribution" className="text-muted-foreground hover:text-highlight-blue">Video Distribution</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/influencer-marketing" className="text-muted-foreground hover:text-highlight-blue">Influencer Marketing</LanguageAwareLink></li>
             </ul>
           </div>
