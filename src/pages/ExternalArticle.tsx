@@ -245,6 +245,13 @@ if (!article) {
           {/* Article Header */}
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-6">
+              <button
+                onClick={() => navigate(`${langPrefix}/intel/${article.vertical_slug || ''}`)}
+                className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Intelligence
+              </button>
               {verticalDisplayName && (
                 <Link
                   to={`${langPrefix}/intel/${article.vertical_slug}`}
@@ -253,13 +260,6 @@ if (!article) {
                   {verticalDisplayName}
                 </Link>
               )}
-              <button
-                onClick={() => navigate(`${langPrefix}/intel/${article.vertical_slug || ''}`)}
-                className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Intelligence
-              </button>
             </div>
             
             <h1 className="text-3xl md:text-5xl font-bold mb-6 pb-4 border-b border-border translate">
