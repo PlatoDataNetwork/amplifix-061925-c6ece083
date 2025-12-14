@@ -348,31 +348,54 @@ if (!article) {
           )}
 
            {/* Article Content */}
-          <div className="prose prose-invert max-w-none mb-2 translate">
-            <div 
-               className={`${ARTICLE_CONTENT_CLASSES} translate`}
-               dangerouslySetInnerHTML={{
-                 __html: (() => {
-                   // Remove Plato source links before processing
-                    const contentWithoutSourceLinks = (article.content || article.excerpt || "")
-                      .replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/gi, '')
-                      .replace(/<div class="plato-post-bottom-links">[\s\S]*?<\/div>/gi, '')
-                      .replace(/Source Link:[\s\S]*?<\/a>/gi, '');
+          <div 
+            className={`${ARTICLE_CONTENT_CLASSES} mb-8 translate
+              [&_h1]:mt-8 [&_h1]:mb-4 [&_h1]:text-4xl [&_h1]:font-bold [&_h1]:leading-tight
+              [&_h2]:mt-8 [&_h2]:mb-6 [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:leading-tight [&_h2]:text-foreground
+              [&_h3]:mt-6 [&_h3]:mb-4 [&_h3]:text-2xl [&_h3]:font-semibold [&_h3]:leading-tight [&_h3]:text-foreground
+              [&_h4]:mt-5 [&_h4]:mb-3 [&_h4]:text-xl [&_h4]:font-semibold [&_h4]:text-foreground
+              [&_h5]:mt-4 [&_h5]:mb-2 [&_h5]:text-lg [&_h5]:font-medium [&_h5]:text-foreground
+              [&_h6]:mt-4 [&_h6]:mb-2 [&_h6]:text-base [&_h6]:font-medium [&_h6]:text-foreground
+              [&_p]:mb-4 [&_p]:leading-relaxed [&_p]:text-foreground/90
+              [&_strong]:font-bold [&_b]:font-bold
+              [&_em]:italic [&_i]:italic
+              [&_u]:underline
+              [&_a]:text-primary [&_a]:underline [&_a]:hover:text-primary/80 [&_a]:transition-colors
+              [&_ul]:my-4 [&_ul]:pl-6 [&_ul]:list-disc [&_ul]:space-y-2
+              [&_ol]:my-4 [&_ol]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-2
+              [&_li]:leading-relaxed [&_li]:text-foreground/90
+              [&_blockquote]:my-6 [&_blockquote]:pl-4 [&_blockquote]:py-2 [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:bg-muted/30 [&_blockquote]:italic [&_blockquote]:text-muted-foreground
+              [&_pre]:my-4 [&_pre]:p-4 [&_pre]:bg-muted [&_pre]:rounded-lg [&_pre]:overflow-x-auto
+              [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:bg-muted [&_code]:rounded [&_code]:text-sm [&_code]:font-mono
+              [&_table]:my-6 [&_table]:w-full [&_table]:border-collapse [&_table]:border [&_table]:border-border
+              [&_th]:border [&_th]:border-border [&_th]:p-3 [&_th]:bg-muted [&_th]:font-semibold [&_th]:text-left
+              [&_td]:border [&_td]:border-border [&_td]:p-3
+              [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-lg [&_img]:my-4
+              [&_hr]:my-8 [&_hr]:border-border
+              [&_figure]:my-6
+              [&_figcaption]:text-sm [&_figcaption]:text-muted-foreground [&_figcaption]:mt-2 [&_figcaption]:text-center
+            `}
+            dangerouslySetInnerHTML={{
+              __html: (() => {
+                // Remove Plato source links before processing
+                const contentWithoutSourceLinks = (article.content || article.excerpt || "")
+                  .replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/gi, '')
+                  .replace(/<div class="plato-post-bottom-links">[\s\S]*?<\/div>/gi, '')
+                  .replace(/Source Link:[\s\S]*?<\/a>/gi, '');
 
-                    // Remove existing Published footer paragraph to avoid duplication
-                    const contentWithoutPublished = contentWithoutSourceLinks.replace(
-                      /<p class="text-sm text-muted-foreground mt-6 pt-4 border-t border-border">[\s\S]*?Published:[\s\S]*?<\/p>/gi,
-                      ''
-                    );
-                    
-                    // Check if content has HTML tags
-                    return /<\/?[a-z][\s\S]*>/i.test(contentWithoutPublished)
-                      ? contentWithoutPublished
-                      : formatExternalArticleContent(contentWithoutPublished);
-                 })(),
-               }}
-             />
-           </div>
+                // Remove existing Published footer paragraph to avoid duplication
+                const contentWithoutPublished = contentWithoutSourceLinks.replace(
+                  /<p class="text-sm text-muted-foreground mt-6 pt-4 border-t border-border">[\s\S]*?Published:[\s\S]*?<\/p>/gi,
+                  ''
+                );
+                
+                // Check if content has HTML tags
+                return /<\/?[a-z][\s\S]*>/i.test(contentWithoutPublished)
+                  ? contentWithoutPublished
+                  : formatExternalArticleContent(contentWithoutPublished);
+              })(),
+            }}
+          />
 
           {/* Published + Source */}
           <div className="mb-6 pb-6 border-b border-border">
