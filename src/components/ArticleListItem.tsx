@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { User, ArrowRight } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import defaultArticleImage from "@/assets/default-article-image.jpg";
 
 interface BlogPost {
   id: number;
@@ -11,6 +12,7 @@ interface BlogPost {
   readTime: string;
   category: string;
   image: string;
+  image_url?: string;
 }
 
 interface ArticleListItemProps {
@@ -74,9 +76,22 @@ const ArticleListItem = ({ post, articleLink, buttonText = "Read Full Article" }
     }
   };
 
+  const thumbnailSrc = post.image_url || post.image || defaultArticleImage;
+
   return (
-    <article className="bg-card rounded-xl border border-border p-6 hover:border-blue-500/30 transition-colors">
+    <article className="bg-card rounded-xl border border-border p-4 hover:border-blue-500/30 transition-colors">
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        {/* Thumbnail Image */}
+        <div className="w-full md:w-32 h-24 md:h-20 flex-shrink-0 overflow-hidden rounded-lg">
+          <img 
+            src={thumbnailSrc}
+            alt={sanitizeText(post.title)}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.currentTarget.src = defaultArticleImage;
+            }}
+          />
+        </div>
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-3">
             <Link 

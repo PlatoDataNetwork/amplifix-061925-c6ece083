@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { User, ArrowRight, Shield, Zap, Globe } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import defaultArticleImage from "@/assets/default-article-image.jpg";
 
 interface BlogPost {
   id: number;
@@ -12,6 +13,7 @@ interface BlogPost {
   readTime: string;
   category: string;
   image: string;
+  image_url?: string;
 }
 
 interface BlogPostCardProps {
@@ -85,8 +87,21 @@ const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: B
     }
   };
 
+  const thumbnailSrc = post.image_url || post.image || defaultArticleImage;
+
   return (
     <article className="bg-card rounded-xl border border-border overflow-hidden hover:border-blue-500/30 transition-colors">
+      {/* Thumbnail Image */}
+      <div className="aspect-video overflow-hidden">
+        <img 
+          src={thumbnailSrc}
+          alt={sanitizeText(post.title)}
+          className="w-full h-full object-cover transition-transform hover:scale-105"
+          onError={(e) => {
+            e.currentTarget.src = defaultArticleImage;
+          }}
+        />
+      </div>
       <div className="p-6">
         <div className="flex items-center gap-2 mb-3">
           <Link 
