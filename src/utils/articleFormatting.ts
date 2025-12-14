@@ -1,23 +1,59 @@
 /**
- * Sanitizes article text by removing HTML links, URLs, markdown links,
- * and cleaning up formatting artifacts
+ * List of allowed semantic HTML tags for article content
+ */
+export const ALLOWED_HTML_TAGS = [
+  'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+  'p', 'br',
+  'strong', 'b', 'em', 'i', 'u', 's', 'mark',
+  'ul', 'ol', 'li',
+  'blockquote', 'pre', 'code',
+  'a',
+  'table', 'thead', 'tbody', 'tr', 'th', 'td',
+  'figure', 'figcaption', 'img',
+  'hr', 'sup', 'sub'
+];
+
+/**
+ * Sanitizes article text by removing unwanted content while preserving semantic HTML tags
  */
 export const sanitizeText = (text?: string | null): string => {
   if (!text) return "";
   return text
-    .replace(/<a\b[^>]*>/gi, "")
-    .replace(/<\/a>/gi, "")
-    .replace(/https?:\/\/\S+/gi, "")
+    // Remove inline styles and scripts
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+    // Remove standalone URLs (not in anchor tags)
+    .replace(/(?<![">])https?:\/\/\S+(?![^<]*<\/a>)/gi, "")
+    // Remove markdown links
     .replace(/\[.*?\]\(.*?\)/g, "")
+    // Clean up source/link labels
     .replace(/Source:?:?\s*/gi, "")
     .replace(/Link:?:?\s*/gi, "")
+    // Remove horizontal rules made of dashes
     .replace(/---/g, "")
-    .replace(/\*\*(.+?)\*\*/g, "$1")
-    .replace(/<\/?(p|div|span|strong|em|ul|ol|li|h[1-6])[^>]*>/gi, "")
-    .replace(/<br\s*\/?>(?!\n)/gi, "\n")
+    // Convert markdown bold to strong
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    // Convert markdown italic to em
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    // Remove div and span tags (keep content)
+    .replace(/<\/?(div|span)[^>]*>/gi, "")
+    // Convert br tags to newlines for processing
+    .replace(/<br\s*\/?>/gi, "\n")
+    // Normalize line endings
     .replace(/\r\n/g, "\n")
     .replace(/\n{3,}/g, "\n\n")
     .replace(/^[ \t]+/gm, "")
+    .trim();
+};
+
+/**
+ * Strips all HTML tags for plain text extraction
+ */
+export const stripHtmlTags = (text?: string | null): string => {
+  if (!text) return "";
+  return text
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
     .trim();
 };
 
@@ -97,12 +133,39 @@ export const formatExternalArticleContent = (text?: string | null): string => {
 
 /**
  * Standard article content CSS classes for consistent formatting
- * - Double line spacing between paragraphs (mb-4)
- * - Large, bold section headers with extra spacing below (h2: text-4xl, mb-6)
- * - Adequate margins on headers for separation
- * - Tight list spacing (my-1, space-y-1)
+ * Handles all semantic HTML tags with proper spacing and styling
  */
-export const ARTICLE_CONTENT_CLASSES = "text-foreground leading-relaxed [&>p]:mb-4 [&>p]:leading-relaxed [&>h2]:mt-8 [&>h2]:mb-6 [&>h2]:text-4xl [&>h2]:font-bold [&>h2]:leading-tight [&>h3]:mt-6 [&>h3]:mb-4 [&>h3]:text-3xl [&>h3]:font-bold [&>h3]:leading-tight [&>strong]:mt-2 [&>strong]:mb-0 [&>strong]:block [&>ul]:my-1 [&>ul]:space-y-1 [&>ol]:my-1 [&>ol]:space-y-1";
+export const ARTICLE_CONTENT_CLASSES = `
+  text-foreground leading-relaxed
+  [&>p]:mb-4 [&>p]:leading-relaxed
+  [&>h1]:mt-8 [&>h1]:mb-4 [&>h1]:text-4xl [&>h1]:font-bold [&>h1]:leading-tight
+  [&>h2]:mt-8 [&>h2]:mb-6 [&>h2]:text-3xl [&>h2]:font-bold [&>h2]:leading-tight
+  [&>h3]:mt-6 [&>h3]:mb-4 [&>h3]:text-2xl [&>h3]:font-bold [&>h3]:leading-tight
+  [&>h4]:mt-5 [&>h4]:mb-3 [&>h4]:text-xl [&>h4]:font-semibold [&>h4]:leading-tight
+  [&>h5]:mt-4 [&>h5]:mb-2 [&>h5]:text-lg [&>h5]:font-semibold [&>h5]:leading-tight
+  [&>h6]:mt-4 [&>h6]:mb-2 [&>h6]:text-base [&>h6]:font-semibold [&>h6]:leading-tight
+  [&>strong]:font-bold [&>b]:font-bold
+  [&>em]:italic [&>i]:italic
+  [&>u]:underline
+  [&>s]:line-through
+  [&>mark]:bg-primary/20 [&>mark]:px-1 [&>mark]:rounded
+  [&>ul]:my-4 [&>ul]:pl-6 [&>ul]:list-disc [&>ul]:space-y-2
+  [&>ol]:my-4 [&>ol]:pl-6 [&>ol]:list-decimal [&>ol]:space-y-2
+  [&>li]:leading-relaxed
+  [&>blockquote]:my-4 [&>blockquote]:pl-4 [&>blockquote]:border-l-4 [&>blockquote]:border-primary/50 [&>blockquote]:italic [&>blockquote]:text-muted-foreground
+  [&>pre]:my-4 [&>pre]:p-4 [&>pre]:bg-muted [&>pre]:rounded-lg [&>pre]:overflow-x-auto
+  [&>code]:px-1 [&>code]:py-0.5 [&>code]:bg-muted [&>code]:rounded [&>code]:text-sm [&>code]:font-mono
+  [&>a]:text-primary [&>a]:underline [&>a]:hover:text-primary/80
+  [&>table]:my-4 [&>table]:w-full [&>table]:border-collapse
+  [&>table_th]:border [&>table_th]:border-border [&>table_th]:p-2 [&>table_th]:bg-muted [&>table_th]:font-semibold
+  [&>table_td]:border [&>table_td]:border-border [&>table_td]:p-2
+  [&>figure]:my-4
+  [&>figcaption]:text-sm [&>figcaption]:text-muted-foreground [&>figcaption]:mt-2 [&>figcaption]:text-center
+  [&>img]:max-w-full [&>img]:h-auto [&>img]:rounded-lg
+  [&>hr]:my-8 [&>hr]:border-border
+  [&>sup]:text-xs [&>sup]:align-super
+  [&>sub]:text-xs [&>sub]:align-sub
+`.replace(/\s+/g, ' ').trim();
 
 /**
  * Processes tags to show only first word and removes duplicates
