@@ -11,6 +11,7 @@ import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { toast } from "sonner";
 import { sanitizeText, formatArticleTags, formatExternalArticleContent, ARTICLE_CONTENT_CLASSES } from "@/utils/articleFormatting";
 import { getCurrentLanguage, getGTranslateCode } from "@/utils/language";
+import defaultArticleImage from "@/assets/default-article-image.jpg";
 
 const ExternalArticle = () => {
   const { id } = useParams<{ id: string }>();
@@ -333,19 +334,17 @@ if (!article) {
             </div>
           </div>
 
-          {/* Article Image */}
-          {article.image && article.image !== '/lovable-uploads/naoris-hero-new.png' && (
-            <div className="mb-4">
-              <img 
-                src={article.image} 
-                alt={article.title}
-                className="w-full rounded-xl border border-border"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-            </div>
-          )}
+          {/* Article Image - Always show default if no image */}
+          <div className="mb-4">
+            <img 
+              src={article.image && article.image !== '/lovable-uploads/naoris-hero-new.png' ? article.image : defaultArticleImage} 
+              alt={sanitizeText(article.title)}
+              className="w-full rounded-xl border border-border"
+              onError={(e) => {
+                e.currentTarget.src = defaultArticleImage;
+              }}
+            />
+          </div>
 
            {/* Article Content */}
           <div 
