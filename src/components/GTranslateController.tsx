@@ -3,12 +3,12 @@ import { useLocation } from "react-router-dom";
 import { applyClientSideTranslation } from "@/utils/gtranslate";
 
 /**
- * Keeps GTranslate applied in a React app where re-renders can overwrite
- * translated DOM nodes (common with Google Translate + React).
+ * Applies GTranslate once on navigation and once after a delay for async content.
+ * Removed aggressive MutationObserver to prevent flickering/jumping text.
  */
 export default function GTranslateController() {
   const location = useLocation();
-  const debounceRef = useRef<number | null>(null);
+  const appliedRef = useRef<string | null>(null);
 
   const lang = useMemo(() => {
     const seg = location.pathname.split("/").filter(Boolean)[0];
@@ -16,40 +16,23 @@ export default function GTranslateController() {
   }, [location.pathname]);
 
   useEffect(() => {
-    // Always try on navigation (covers header/footer + page content)
-    void applyClientSideTranslation(lang);
+    // Skip if already applied for this lang + path combo
+    const key = `${lang}:${location.pathname}`;
+    if (appliedRef.current === key) return;
+    appliedRef.current = key;
 
     if (lang === "en") return;
 
-    const root = document.getElementById("root");
-    if (!root) return;
+    // Apply once immediately
+    void applyClientSideTranslation(lang);
 
-    const schedule = () => {
-      if (debounceRef.current) window.clearTimeout(debounceRef.current);
-      debounceRef.current = window.setTimeout(() => {
-        void applyClientSideTranslation(lang);
-      }, 400);
-    };
-
-    const observer = new MutationObserver(() => schedule());
-    observer.observe(root, {
-      subtree: true,
-      childList: true,
-      characterData: true,
-    });
-
-    // Also do a couple of delayed passes for async-loaded content
-    const t1 = window.setTimeout(() => void applyClientSideTranslation(lang), 800);
-    const t2 = window.setTimeout(() => void applyClientSideTranslation(lang), 1800);
+    // One delayed pass for async-loaded content (e.g., from DB queries)
+    const t1 = window.setTimeout(() => void applyClientSideTranslation(lang), 1200);
 
     return () => {
-      observer.disconnect();
       window.clearTimeout(t1);
-      window.clearTimeout(t2);
-      if (debounceRef.current) window.clearTimeout(debounceRef.current);
-      debounceRef.current = null;
     };
-  }, [lang]);
+  }, [lang, location.pathname]);
 
   return null;
 }
