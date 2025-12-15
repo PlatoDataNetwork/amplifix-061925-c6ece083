@@ -8,11 +8,27 @@ export default class SupabaseBackend {
 
   async read(language: string, namespace: string): Promise<any> {
     const cacheKey = `${language}-${namespace}`;
-    
+
     // Check cache first
     if (this.cache.has(cacheKey)) {
       return this.cache.get(cacheKey);
     }
+
+    const tryFetchLocale = async (lng: string) => {
+      const res = await fetch(`/locales/${lng}/${namespace}.json`);
+      if (!res.ok) return null;
+
+      // In dev, missing files can fall back to index.html (text/html) with 200.
+      // Avoid parsing HTML as JSON.
+      const contentType = (res.headers.get('content-type') || '').toLowerCase();
+      if (!contentType.includes('application/json')) return null;
+
+      try {
+        return await res.json();
+      } catch {
+        return null;
+      }
+    };
 
     try {
       // Try to load from database
@@ -29,30 +45,23 @@ export default class SupabaseBackend {
       }
 
       // Fallback to static files if not in database
-      const response = await fetch(`/locales/${language}/${namespace}.json`);
-      if (response.ok) {
-        const content = await response.json();
-        this.cache.set(cacheKey, content);
-        return content;
+      const fromStatic = await tryFetchLocale(language);
+      if (fromStatic) {
+        this.cache.set(cacheKey, fromStatic);
+        return fromStatic;
       }
 
-      throw new Error(`Failed to load ${language}/${namespace}`);
+      // Final fallback to English static files
+      if (language !== 'en') {
+        const fromEn = await tryFetchLocale('en');
+        if (fromEn) return fromEn;
+      }
+
+      // Never hard-fail i18n loads; return empty namespace so changeLanguage doesn't reject.
+      return {};
     } catch (error) {
       console.error(`Error loading translation ${language}/${namespace}:`, error);
-      
-      // Final fallback to English if available
-      if (language !== 'en') {
-        try {
-          const response = await fetch(`/locales/en/${namespace}.json`);
-          if (response.ok) {
-            return await response.json();
-          }
-        } catch (fallbackError) {
-          console.error('Fallback to English failed:', fallbackError);
-        }
-      }
-      
-      throw error;
+      return {};
     }
   }
 

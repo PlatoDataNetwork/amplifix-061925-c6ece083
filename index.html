@@ -53,8 +53,11 @@
   <body>
     <div id="root"></div>
     
-    <!-- GTranslate.io widget container (hidden - controlled by header dropdown) -->
-    <div class="gtranslate_wrapper" style="display: none;"></div>
+    <!-- GTranslate.io widget container (kept offscreen so it can initialize) -->
+    <div
+      class="gtranslate_wrapper"
+      style="position: fixed; left: -10000px; top: 0; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none;"
+    ></div>
     
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>

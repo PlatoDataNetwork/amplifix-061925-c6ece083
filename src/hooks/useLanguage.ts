@@ -32,7 +32,9 @@ export function useLanguage() {
     const langCode = getLanguageFromPath() || 'en';
     
     if (i18n.language !== langCode) {
-      i18n.changeLanguage(langCode);
+      void i18n.changeLanguage(langCode).catch((e) => {
+        console.warn('useLanguage: i18n.changeLanguage failed (continuing):', e);
+      });
     }
 
     // Apply GTranslate for non-English languages
