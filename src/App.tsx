@@ -8,6 +8,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { Analytics } from "@vercel/analytics/react";
 import PrivacyPopup from "@/components/PrivacyPopup";
+import GTranslateController from "@/components/GTranslateController";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 
@@ -105,6 +106,7 @@ const App = () => (
           <PrivacyPopup />
           <Analytics />
           <BrowserRouter>
+            <GTranslateController />
             <Routes>
               {/* English routes (no prefix) */}
               <Route path="/" element={<Index />} />
