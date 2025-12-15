@@ -134,3 +134,6 @@ verify_jwt = true
 
 [functions.delete-empty-cannabis-articles]
 verify_jwt = true
+
+[functions.translate-article]
+verify_jwt = true
