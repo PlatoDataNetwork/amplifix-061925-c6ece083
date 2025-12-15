@@ -166,31 +166,49 @@ const ExternalArticle = () => {
   useEffect(() => {
     if (isLoading || !article) return;
 
-    try {
-      const lang = getCurrentLanguage();
-      if (!lang || lang === 'en') return;
+    const lang = getCurrentLanguage();
+    if (!lang || lang === 'en') return;
 
-      const targetCode = getGTranslateCode(lang);
-      const w = window as any;
-      
+    const targetCode = getGTranslateCode(lang);
+    const w = window as any;
+    
+    const triggerTranslation = () => {
+      // Method 1: Try doGTranslate if available
       if (typeof w.doGTranslate === 'function') {
-        // Multiple translation passes to ensure all content is caught
-        setTimeout(() => {
-          try {
-            w.doGTranslate(`en|${targetCode}`);
-            
-            // Second pass after DOM stabilizes
-            setTimeout(() => {
-              w.doGTranslate(`en|${targetCode}`);
-            }, 500);
-          } catch (e) {
-            console.error('GTranslate article refresh failed', e);
-          }
-        }, 300);
+        w.doGTranslate(`en|${targetCode}`);
       }
-    } catch (e) {
-      console.error('GTranslate article refresh error', e);
-    }
+      
+      // Method 2: Force Google Translate to re-process by triggering the translate element
+      const googleTranslateFrame = document.querySelector('.goog-te-menu-frame') as HTMLIFrameElement;
+      if (googleTranslateFrame?.contentDocument) {
+        const items = googleTranslateFrame.contentDocument.querySelectorAll('.goog-te-menu2-item');
+        items.forEach((item: any) => {
+          if (item.textContent?.toLowerCase().includes(targetCode)) {
+            item.click();
+          }
+        });
+      }
+      
+      // Method 3: Set googtrans cookie and reload translation
+      document.cookie = `googtrans=/en/${targetCode}; path=/`;
+      document.cookie = `googtrans=/en/${targetCode}; path=/; domain=${window.location.hostname}`;
+      
+      // Trigger a change event on the translate select if it exists
+      const translateSelect = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+      if (translateSelect) {
+        translateSelect.value = targetCode;
+        translateSelect.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    };
+
+    // Wait for content to render, then trigger multiple times
+    const timers = [
+      setTimeout(() => triggerTranslation(), 300),
+      setTimeout(() => triggerTranslation(), 1000),
+      setTimeout(() => triggerTranslation(), 2000),
+    ];
+
+    return () => timers.forEach(clearTimeout);
   }, [isLoading, article?.id]);
 
   if (isLoading) {
