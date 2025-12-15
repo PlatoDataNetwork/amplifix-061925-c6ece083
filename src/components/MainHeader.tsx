@@ -64,7 +64,7 @@ const MainHeader = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-6">
           <LanguageAwareLink to="/about" className="text-foreground hover:text-highlight-blue transition-colors translate">
-            About
+            {t("nav.about")}
           </LanguageAwareLink>
           <LanguageAwareLink to="/about#process" className="text-foreground hover:text-highlight-blue transition-colors translate">
             Process
@@ -73,10 +73,10 @@ const MainHeader = () => {
             Research
           </LanguageAwareLink>
           <LanguageAwareLink to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors translate">
-            Solutions
+            {t("nav.solutions")}
           </LanguageAwareLink>
           <LanguageAwareLink to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors translate">
-            Showcase
+            {t("nav.showcase")}
           </LanguageAwareLink>
           
           <div className="flex items-center gap-2">
@@ -101,7 +101,7 @@ const MainHeader = () => {
           ) : (
             <Button asChild variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity translate">
               <LanguageAwareLink to="/login">
-                Login
+                {t("nav.login")}
               </LanguageAwareLink>
             </Button>
           )}

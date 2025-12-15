@@ -1,38 +1,38 @@
 {
   "nav": {
-    "about": "About",
-    "solutions": "Solutions",
-    "showcase": "Showcase",
-    "intel": "Intel",
-    "faq": "FAQ",
-    "contact": "Contact",
-    "login": "Login"
+    "about": "אודות",
+    "solutions": "פתרונות",
+    "showcase": "תצוגה",
+    "intel": "מודיעין",
+    "faq": "שאלות נפוצות",
+    "contact": "צור קשר",
+    "login": "התחברות"
   },
   "buttons": {
-    "bookDemo": "Book A Demo",
-    "learnMore": "Learn more →",
-    "amplifyBrand": "Amplifi Your Brand →",
-    "contactUs": "Contact Us",
-    "sendMessage": "Send Message"
+    "bookDemo": "קבעו דמו",
+    "learnMore": "למדו עוד →",
+    "amplifyBrand": "העצימו את המותג שלכם →",
+    "contactUs": "צור קשר",
+    "sendMessage": "שלח הודעה"
   },
   "footer": {
-    "platform": "Platform",
-    "solutions": "Solutions",
-    "company": "Company",
-    "home": "Home",
-    "publicCompanies": "Public Companies",
-    "privateCompanies": "Private Companies",
-    "ipoPreparation": "IPO Preparation",
-    "privacyPolicy": "Privacy Policy",
-    "compliance": "Compliance",
-    "termsOfService": "Terms of Service",
-    "dataProcessing": "Data Processing",
-    "copyright": "© {{year}} AmplifiX. All rights reserved.",
-    "statusOnline": "AI Systems Online"
+    "platform": "פלטפורמה",
+    "solutions": "פתרונות",
+    "company": "חברה",
+    "home": "דף הבית",
+    "publicCompanies": "חברות ציבוריות",
+    "privateCompanies": "חברות פרטיות",
+    "ipoPreparation": "הכנה להנפקה",
+    "privacyPolicy": "מדיניות פרטיות",
+    "compliance": "ציות",
+    "termsOfService": "תנאי שימוש",
+    "dataProcessing": "עיבוד נתונים",
+    "copyright": "© {{year}} AmplifiX. כל הזכויות שמורות.",
+    "statusOnline": "מערכות AI פעילות"
   },
   "ui": {
-    "loading": "Loading...",
-    "error": "Failed to load content. Please try again later.",
-    "tryAgain": "Try Again"
+    "loading": "טוען...",
+    "error": "טעינת התוכן נכשלה. נסו שוב מאוחר יותר.",
+    "tryAgain": "נסו שוב"
   }
 }
