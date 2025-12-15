@@ -7,8 +7,9 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Languages, Play, Square, RefreshCw } from 'lucide-react';
+import { Languages, Play, Square, RefreshCw, Zap } from 'lucide-react';
 
 const SUPPORTED_LANGUAGES = ['ar', 'bn', 'zh', 'da', 'nl', 'et', 'fi', 'fr', 'de', 'el', 'he', 'hi', 'hu', 'id', 'it', 'ja', 'km', 'ko', 'no', 'fa', 'pl', 'pt', 'pa', 'ro', 'ru', 'sl', 'es', 'sv', 'th', 'tr', 'uk', 'ur', 'vi'];
 
@@ -26,6 +27,8 @@ export default function TranslationAdmin() {
   const navigate = useNavigate();
   const { isAdmin, loading: adminLoading } = useAdminCheck();
   const [isTranslating, setIsTranslating] = useState(false);
+  const [batchSize, setBatchSize] = useState(50);
+  const [currentOffset, setCurrentOffset] = useState(0);
   const [progress, setProgress] = useState({ current: 0, total: 0, language: '' });
   const [stats, setStats] = useState({ totalArticles: 0, translatedArticles: 0, languageStats: {} as Record<string, number> });
 
@@ -53,8 +56,6 @@ export default function TranslationAdmin() {
       languageStats[t.language_code] = (languageStats[t.language_code] || 0) + 1;
     });
 
-    const uniqueArticles = new Set(translations?.map(t => t.language_code)).size;
-
     setStats({
       totalArticles: totalArticles || 0,
       translatedArticles: Object.values(languageStats).reduce((a, b) => a + b, 0),
@@ -62,60 +63,51 @@ export default function TranslationAdmin() {
     });
   };
 
-  const translateAllArticles = async () => {
+  const translateBatch = async () => {
     setIsTranslating(true);
-    
+    toast.info(`Starting batch translation (${batchSize} articles, offset ${currentOffset})...`);
+
     try {
-      const { data: articles, error } = await supabase
-        .from('articles')
-        .select('id')
-        .order('published_at', { ascending: false });
+      const { data, error } = await supabase.functions.invoke('batch-translate-articles', {
+        body: { 
+          limit: batchSize, 
+          offset: currentOffset,
+          languages: SUPPORTED_LANGUAGES 
+        }
+      });
 
       if (error) throw error;
 
-      const totalOperations = articles.length * SUPPORTED_LANGUAGES.length;
-      setProgress({ current: 0, total: totalOperations, language: '' });
-
-      let completed = 0;
-
-      for (const lang of SUPPORTED_LANGUAGES) {
-        setProgress(p => ({ ...p, language: LANGUAGE_NAMES[lang] }));
-        
-        for (const article of articles) {
-          // Check if translation exists
-          const { data: existing } = await supabase
-            .from('article_translations')
-            .select('id')
-            .eq('article_id', article.id)
-            .eq('language_code', lang)
-            .single();
-
-          if (!existing) {
-            try {
-              const { error: fnError } = await supabase.functions.invoke('translate-article', {
-                body: { articleId: article.id, targetLanguage: lang }
-              });
-              
-              if (fnError) {
-                console.error(`Translation error for ${article.id} to ${lang}:`, fnError);
-              }
-            } catch (e) {
-              console.error(`Failed to translate ${article.id} to ${lang}:`, e);
-            }
-            
-            // Rate limiting delay
-            await new Promise(r => setTimeout(r, 500));
-          }
-
-          completed++;
-          setProgress(p => ({ ...p, current: completed }));
-        }
-      }
-
-      toast.success('Batch translation completed!');
+      toast.success(`Batch complete: ${data.results.translated} translated, ${data.results.errors} errors`);
+      setCurrentOffset(prev => prev + batchSize);
       fetchStats();
     } catch (error) {
       console.error('Batch translation error:', error);
+      toast.error('Batch translation failed');
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
+  const translateSingleLanguage = async (lang: string) => {
+    setIsTranslating(true);
+    toast.info(`Translating to ${LANGUAGE_NAMES[lang]}...`);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('batch-translate-articles', {
+        body: { 
+          limit: batchSize, 
+          offset: 0,
+          languages: [lang] 
+        }
+      });
+
+      if (error) throw error;
+
+      toast.success(`${LANGUAGE_NAMES[lang]}: ${data.results.translated} translated`);
+      fetchStats();
+    } catch (error) {
+      console.error('Translation error:', error);
       toast.error('Translation failed');
     } finally {
       setIsTranslating(false);
@@ -125,8 +117,6 @@ export default function TranslationAdmin() {
   if (adminLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
-
-  const progressPercent = progress.total > 0 ? (progress.current / progress.total) * 100 : 0;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -169,34 +159,50 @@ export default function TranslationAdmin() {
 
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Batch Translation</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Zap className="h-5 w-5" />
+              Fast Batch Translation (5x Parallel)
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {isTranslating && (
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Translating to {progress.language}...</span>
-                  <span>{progress.current} / {progress.total}</span>
-                </div>
-                <Progress value={progressPercent} />
+            <div className="flex gap-4 items-end">
+              <div>
+                <label className="text-sm text-muted-foreground">Batch Size</label>
+                <Input 
+                  type="number" 
+                  value={batchSize} 
+                  onChange={e => setBatchSize(Number(e.target.value))}
+                  className="w-24"
+                  min={10}
+                  max={200}
+                />
               </div>
-            )}
-            
-            <div className="flex gap-4">
+              <div>
+                <label className="text-sm text-muted-foreground">Offset</label>
+                <Input 
+                  type="number" 
+                  value={currentOffset} 
+                  onChange={e => setCurrentOffset(Number(e.target.value))}
+                  className="w-24"
+                  min={0}
+                />
+              </div>
               <Button 
-                onClick={translateAllArticles} 
+                onClick={translateBatch} 
                 disabled={isTranslating}
                 className="gap-2"
               >
                 {isTranslating ? <Square className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                {isTranslating ? 'Translating...' : 'Start Batch Translation'}
+                {isTranslating ? 'Translating...' : 'Translate Batch'}
               </Button>
-              
               <Button variant="outline" onClick={fetchStats} className="gap-2">
                 <RefreshCw className="h-4 w-4" />
-                Refresh Stats
+                Refresh
               </Button>
             </div>
+            <p className="text-sm text-muted-foreground">
+              Processes {batchSize} articles × {SUPPORTED_LANGUAGES.length} languages = {batchSize * SUPPORTED_LANGUAGES.length} translations per batch with 5x parallelism
+            </p>
           </CardContent>
         </Card>
 
@@ -210,10 +216,15 @@ export default function TranslationAdmin() {
                 const count = stats.languageStats[lang] || 0;
                 const percent = stats.totalArticles > 0 ? (count / stats.totalArticles) * 100 : 0;
                 return (
-                  <div key={lang} className="flex items-center justify-between p-2 rounded bg-muted/50">
+                  <button
+                    key={lang}
+                    onClick={() => !isTranslating && translateSingleLanguage(lang)}
+                    disabled={isTranslating}
+                    className="flex items-center justify-between p-2 rounded bg-muted/50 hover:bg-muted transition-colors text-left disabled:opacity-50"
+                  >
                     <span className="text-sm font-medium">{LANGUAGE_NAMES[lang]}</span>
                     <span className="text-sm text-muted-foreground">{count} ({percent.toFixed(0)}%)</span>
-                  </div>
+                  </button>
                 );
               })}
             </div>

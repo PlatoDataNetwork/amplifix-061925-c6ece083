@@ -140,3 +140,6 @@ verify_jwt = false
 
 [functions.bootstrap-admin]
 verify_jwt = false
+
+[functions.batch-translate-articles]
+verify_jwt = false
