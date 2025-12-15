@@ -36,10 +36,11 @@ Deno.serve(async (req) => {
     const from = chunkIndex * chunkSize;
     const to = from + chunkSize - 1;
 
-    // Fetch articles for this chunk
+    // Fetch articles for this chunk - order by id for consistent pagination
     let query = supabase
       .from('articles')
       .select('*')
+      .order('id', { ascending: true })
       .range(from, to);
     
     if (verticalSlug) {
