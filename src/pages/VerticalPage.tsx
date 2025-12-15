@@ -16,6 +16,13 @@ import { usePlatoDataFeed } from "@/hooks/usePlatoDataFeed";
 import { useRSSFeed } from "@/hooks/useRSSFeed";
 import { useArticlesFromDB } from "@/hooks/useArticlesFromDB";
 import { ArrowLeft } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { getCurrentLanguage } from "@/utils/language";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -197,7 +204,7 @@ const VerticalPage = () => {
             Stay updated with the latest {verticalInfo.name} news, insights, and intelligence.
           </p>
 
-          {/* Search Bar with View Toggle */}
+          {/* Search Bar with Vertical Filter and View Toggle */}
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 max-w-4xl mx-auto">
             <div className="flex-1 w-full">
               <ArticleSearch 
@@ -206,9 +213,26 @@ const VerticalPage = () => {
                 onClear={handleClearSearch}
               />
             </div>
-            {!isLoading && displayPosts.length > 0 && (
-              <ViewToggle view={view} onViewChange={handleViewChange} />
-            )}
+            <div className="flex items-center gap-2">
+              <Select
+                value={verticalInfo.slug}
+                onValueChange={(value) => navigate(`${langPrefix}/intel/${value}`)}
+              >
+                <SelectTrigger className="w-[180px] bg-card border-border">
+                  <SelectValue placeholder="Select vertical" />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-border">
+                  {verticals.map((v) => (
+                    <SelectItem key={v.slug} value={v.slug}>
+                      {v.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {!isLoading && displayPosts.length > 0 && (
+                <ViewToggle view={view} onViewChange={handleViewChange} />
+              )}
+            </div>
           </div>
         </div>
 
