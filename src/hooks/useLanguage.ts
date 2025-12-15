@@ -2,6 +2,7 @@ import { useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getLanguageFromPath, getGTranslateCode } from '@/utils/language';
+import { ensureGTranslateReady, setGoogTransCookie } from '@/utils/gtranslate';
 
 export function useLanguage() {
   const location = useLocation();
@@ -9,7 +10,10 @@ export function useLanguage() {
 
   const applyGTranslate = useCallback((langCode: string) => {
     if (langCode === 'en') return;
-    
+
+    // Ensure Google Translate cookie is set for the whole site
+    setGoogTransCookie(langCode);
+
     const targetCode = getGTranslateCode(langCode);
     const w = window as any;
 
@@ -24,13 +28,16 @@ export function useLanguage() {
       }
     };
 
-    // Small delay to let DOM settle after navigation
-    setTimeout(() => doTranslate(), 100);
+    // Make sure the widget script is present (dev / adblock resilience)
+    void ensureGTranslateReady().finally(() => {
+      // Small delay to let DOM settle after navigation
+      setTimeout(() => doTranslate(), 100);
+    });
   }, []);
 
   useEffect(() => {
     const langCode = getLanguageFromPath() || 'en';
-    
+
     if (i18n.language !== langCode) {
       void i18n.changeLanguage(langCode).catch((e) => {
         console.warn('useLanguage: i18n.changeLanguage failed (continuing):', e);
@@ -41,9 +48,10 @@ export function useLanguage() {
     applyGTranslate(langCode);
   }, [location.pathname, i18n, applyGTranslate]);
 
-  return { 
-    currentLanguage: i18n.language, 
+  return {
+    currentLanguage: i18n.language,
     isTranslating: false,
     retriggerTranslation: () => applyGTranslate(i18n.language)
   };
 }
+
