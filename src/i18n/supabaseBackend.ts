@@ -1,5 +1,23 @@
 import { supabase } from '@/integrations/supabase/client';
 
+const isPlainObject = (v: unknown): v is Record<string, any> =>
+  !!v && typeof v === 'object' && !Array.isArray(v);
+
+const deepMerge = (...sources: any[]) => {
+  const out: Record<string, any> = {};
+  for (const src of sources) {
+    if (!isPlainObject(src)) continue;
+    for (const [k, v] of Object.entries(src)) {
+      if (isPlainObject(v) && isPlainObject(out[k])) {
+        out[k] = deepMerge(out[k], v);
+      } else {
+        out[k] = v;
+      }
+    }
+  }
+  return out;
+};
+
 export default class SupabaseBackend {
   type = 'backend' as const;
   static type = 'backend' as const;
@@ -31,6 +49,8 @@ export default class SupabaseBackend {
     };
 
     try {
+      let dbContent: any | null = null;
+
       // Try to load from database
       const { data, error } = await supabase
         .from('translations')
@@ -40,25 +60,17 @@ export default class SupabaseBackend {
         .single();
 
       if (!error && data?.content) {
-        this.cache.set(cacheKey, data.content);
-        return data.content;
+        dbContent = data.content;
       }
 
-      // Fallback to static files if not in database
+      // Always attempt static fallbacks too, then merge so DB can override but never “drop” new keys.
       const fromStatic = await tryFetchLocale(language);
-      if (fromStatic) {
-        this.cache.set(cacheKey, fromStatic);
-        return fromStatic;
-      }
+      const fromEn = language !== 'en' ? await tryFetchLocale('en') : null;
 
-      // Final fallback to English static files
-      if (language !== 'en') {
-        const fromEn = await tryFetchLocale('en');
-        if (fromEn) return fromEn;
-      }
+      const merged = deepMerge(fromEn || {}, fromStatic || {}, dbContent || {});
 
-      // Never hard-fail i18n loads; return empty namespace so changeLanguage doesn't reject.
-      return {};
+      this.cache.set(cacheKey, merged);
+      return merged;
     } catch (error) {
       console.error(`Error loading translation ${language}/${namespace}:`, error);
       return {};
