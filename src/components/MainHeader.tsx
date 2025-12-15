@@ -63,20 +63,20 @@ const MainHeader = () => {
         
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-6">
-          <LanguageAwareLink to="/about" className="text-foreground hover:text-highlight-blue transition-colors">
-            {t('nav.about')}
+          <LanguageAwareLink to="/about" className="text-foreground hover:text-highlight-blue transition-colors translate">
+            About
           </LanguageAwareLink>
-          <LanguageAwareLink to="/about#process" className="text-foreground hover:text-highlight-blue transition-colors">
+          <LanguageAwareLink to="/about#process" className="text-foreground hover:text-highlight-blue transition-colors translate">
             Process
           </LanguageAwareLink>
-          <LanguageAwareLink to="/solutions/research" className="text-foreground hover:text-highlight-blue transition-colors">
+          <LanguageAwareLink to="/solutions/research" className="text-foreground hover:text-highlight-blue transition-colors translate">
             Research
           </LanguageAwareLink>
-          <LanguageAwareLink to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors">
-            {t('nav.solutions')}
+          <LanguageAwareLink to="/solutions" className="text-foreground hover:text-highlight-blue transition-colors translate">
+            Solutions
           </LanguageAwareLink>
-          <LanguageAwareLink to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors">
-            {t('nav.showcase')}
+          <LanguageAwareLink to="/showcase" className="text-foreground hover:text-highlight-blue transition-colors translate">
+            Showcase
           </LanguageAwareLink>
           
           <div className="flex items-center gap-2">
@@ -92,16 +92,16 @@ const MainHeader = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleSignOut}>
+                <DropdownMenuItem onClick={handleSignOut} className="translate">
                   <LogOut className="h-4 w-4 mr-2" />
                   Sign Out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button asChild variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity">
+            <Button asChild variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity translate">
               <LanguageAwareLink to="/login">
-                {t('nav.login')}
+                Login
               </LanguageAwareLink>
             </Button>
           )}
