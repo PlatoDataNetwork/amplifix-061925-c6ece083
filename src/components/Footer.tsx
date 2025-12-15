@@ -58,12 +58,12 @@ const Footer = () => {
             </div>
             <div className="flex items-center p-3 bg-background rounded-lg border border-border">
               <div className="w-2 h-2 rounded-full mr-2 bg-green-500"></div>
-              <span className="text-sm translate">AI Systems Online</span>
+              <span className="text-sm translate">{t("footer.statusOnline")}</span>
             </div>
           </div>
           
           <div>
-            <h3 className="text-lg font-medium mb-4 translate">Platform</h3>
+            <h3 className="text-lg font-medium mb-4 translate">{t("footer.platform")}</h3>
             <ul className="space-y-2">
               <li><LanguageAwareLink to="/intel" className="text-muted-foreground hover:text-highlight-blue translate">Market Intelligence</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/analytics" className="text-muted-foreground hover:text-highlight-blue translate">Data Analytics</LanguageAwareLink></li>
@@ -75,7 +75,7 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="text-lg font-medium mb-4 translate">Solutions</h3>
+            <h3 className="text-lg font-medium mb-4 translate">{t("footer.solutions")}</h3>
             <ul className="space-y-2">
               <li><LanguageAwareLink to="/solutions/advisory" className="text-muted-foreground hover:text-highlight-blue translate">Advisory</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/research" className="text-muted-foreground hover:text-highlight-blue translate">Research</LanguageAwareLink></li>
@@ -87,13 +87,13 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="text-lg font-medium mb-4 translate">Company</h3>
+            <h3 className="text-lg font-medium mb-4 translate">{t("footer.company")}</h3>
             <ul className="space-y-2">
-              <li><LanguageAwareLink to="/about" className="text-muted-foreground hover:text-highlight-blue translate">About</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/about" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.about")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/about#mission" className="text-muted-foreground hover:text-highlight-blue translate">Mission</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/about#process" className="text-muted-foreground hover:text-highlight-blue translate">Process</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/showcase" className="text-muted-foreground hover:text-highlight-blue translate">Showcase</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/contact" className="text-muted-foreground hover:text-highlight-blue translate">Contact</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/showcase" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.showcase")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/contact" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.contact")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/admin" className="text-muted-foreground hover:text-highlight-blue notranslate">Admin</LanguageAwareLink></li>
             </ul>
           </div>
@@ -101,14 +101,14 @@ const Footer = () => {
         
         <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-muted-foreground text-sm translate">
-            © {new Date().getFullYear()} AmplifiX. All rights reserved.
+            {t("footer.copyright", { year: new Date().getFullYear() })}
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <LanguageAwareLink to="/privacy-policy" className="text-muted-foreground hover:text-highlight-blue text-sm translate">Privacy Policy</LanguageAwareLink>
-            <LanguageAwareLink to="/compliance" className="text-muted-foreground hover:text-highlight-blue text-sm translate">Compliance</LanguageAwareLink>
-            <LanguageAwareLink to="/terms-of-service" className="text-muted-foreground hover:text-highlight-blue text-sm translate">Terms of Service</LanguageAwareLink>
-            <LanguageAwareLink to="/faq" className="text-muted-foreground hover:text-highlight-blue text-sm translate">FAQ</LanguageAwareLink>
-            <LanguageAwareLink to="/data-processing" className="text-muted-foreground hover:text-highlight-blue text-sm translate">Data Processing</LanguageAwareLink>
+            <LanguageAwareLink to="/privacy-policy" className="text-muted-foreground hover:text-highlight-blue text-sm translate">{t("footer.privacyPolicy")}</LanguageAwareLink>
+            <LanguageAwareLink to="/compliance" className="text-muted-foreground hover:text-highlight-blue text-sm translate">{t("footer.compliance")}</LanguageAwareLink>
+            <LanguageAwareLink to="/terms-of-service" className="text-muted-foreground hover:text-highlight-blue text-sm translate">{t("footer.termsOfService")}</LanguageAwareLink>
+            <LanguageAwareLink to="/faq" className="text-muted-foreground hover:text-highlight-blue text-sm translate">{t("nav.faq")}</LanguageAwareLink>
+            <LanguageAwareLink to="/data-processing" className="text-muted-foreground hover:text-highlight-blue text-sm translate">{t("footer.dataProcessing")}</LanguageAwareLink>
           </div>
         </div>
       </div>
