@@ -8,7 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ExternalLink, Globe, FileText, RefreshCw } from "lucide-react";
+import { ExternalLink, Globe, FileText, RefreshCw, Download } from "lucide-react";
+import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const SUPPORTED_LANGUAGES = [
@@ -58,6 +59,26 @@ export default function SitemapAdmin() {
 
   const openSitemap = (url: string) => {
     window.open(url, '_blank');
+  };
+
+  const downloadSitemap = async (url: string, filename: string) => {
+    try {
+      toast.loading(`Downloading ${filename}...`, { id: filename });
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Failed to fetch sitemap');
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl);
+      toast.success(`Downloaded ${filename}`, { id: filename });
+    } catch (error) {
+      toast.error(`Failed to download ${filename}`, { id: filename });
+    }
   };
 
   const getCannabisSitemapUrl = (lang: string, batch: number) => 
@@ -133,12 +154,82 @@ export default function SitemapAdmin() {
           </Card>
         </div>
 
-        <Tabs defaultValue="cannabis" className="space-y-6">
+        <Tabs defaultValue="download" className="space-y-6">
           <TabsList>
+            <TabsTrigger value="download">Download Sitemaps</TabsTrigger>
             <TabsTrigger value="cannabis">Cannabis Sitemaps</TabsTrigger>
             <TabsTrigger value="language">Language Sitemaps</TabsTrigger>
             <TabsTrigger value="verticals">All Verticals</TabsTrigger>
           </TabsList>
+
+          {/* Download Sitemaps Tab */}
+          <TabsContent value="download" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Download className="h-5 w-5" />
+                  Download Cannabis Sitemaps
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Download XML sitemaps for each language. Each batch contains up to {BATCH_SIZE.toLocaleString()} articles.
+                  Total: {cannabisVertical ? Number(cannabisVertical.article_count).toLocaleString() : 0} cannabis articles.
+                </p>
+                
+                {/* Download Index */}
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg mb-6">
+                  <div>
+                    <p className="font-medium">Sitemap Index</p>
+                    <p className="text-sm text-muted-foreground">
+                      Master index linking all {cannabisBatches * SUPPORTED_LANGUAGES.length} sitemaps
+                    </p>
+                  </div>
+                  <Button 
+                    onClick={() => downloadSitemap(getCannabisSitemapIndexUrl(), 'cannabis-sitemap-index.xml')}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Index
+                  </Button>
+                </div>
+
+                {/* Download by Language */}
+                <div className="space-y-4">
+                  {SUPPORTED_LANGUAGES.map((lang) => (
+                    <div key={lang.code} className="p-4 border rounded-lg">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <Badge variant="outline" className="text-base px-3 py-1">
+                            {lang.code.toUpperCase()}
+                          </Badge>
+                          <p className="font-medium">{lang.name}</p>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {cannabisBatches} file{cannabisBatches !== 1 ? 's' : ''} • ~{Math.min(Number(cannabisVertical?.article_count || 0), cannabisBatches * BATCH_SIZE).toLocaleString()} articles
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {Array.from({ length: cannabisBatches }, (_, i) => (
+                          <Button
+                            key={i}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => downloadSitemap(
+                              getCannabisSitemapUrl(lang.code, i),
+                              `cannabis-sitemap-${lang.code}-batch-${i + 1}.xml`
+                            )}
+                          >
+                            <Download className="h-3 w-3 mr-1" />
+                            Batch {i + 1}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* Cannabis Sitemaps Tab */}
           <TabsContent value="cannabis" className="space-y-6">
