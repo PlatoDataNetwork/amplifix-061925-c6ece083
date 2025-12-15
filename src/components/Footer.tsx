@@ -65,24 +65,24 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-medium mb-4 translate">{t("footer.platform")}</h3>
             <ul className="space-y-2">
-              <li><LanguageAwareLink to="/intel" className="text-muted-foreground hover:text-highlight-blue translate">Market Intelligence</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/analytics" className="text-muted-foreground hover:text-highlight-blue translate">Data Analytics</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/syndication" className="text-muted-foreground hover:text-highlight-blue translate">Syndication / IR / PR</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/blockchain" className="text-muted-foreground hover:text-highlight-blue translate">Blockchain / Web3</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/video-distribution" className="text-muted-foreground hover:text-highlight-blue translate">Video Distribution</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/influencer-marketing" className="text-muted-foreground hover:text-highlight-blue translate">Influencer Marketing</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/intel" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.marketIntelligence")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/analytics" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.dataAnalytics")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/syndication" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.syndicationIrPr")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/blockchain" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.blockchainWeb3")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/video-distribution" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.videoDistribution")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/influencer-marketing" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.influencerMarketing")}</LanguageAwareLink></li>
             </ul>
           </div>
           
           <div>
             <h3 className="text-lg font-medium mb-4 translate">{t("footer.solutions")}</h3>
             <ul className="space-y-2">
-              <li><LanguageAwareLink to="/solutions/advisory" className="text-muted-foreground hover:text-highlight-blue translate">Advisory</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/research" className="text-muted-foreground hover:text-highlight-blue translate">Research</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/development" className="text-muted-foreground hover:text-highlight-blue translate">Development</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/ir-pr" className="text-muted-foreground hover:text-highlight-blue translate">Investor Relations</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/public-companies" className="text-muted-foreground hover:text-highlight-blue translate">Public Companies</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/private-companies" className="text-muted-foreground hover:text-highlight-blue translate">Private Companies</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/advisory" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.advisory")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/research" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.research")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/development" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.development")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/ir-pr" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.investorRelations")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/public-companies" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.publicCompanies")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/private-companies" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.privateCompanies")}</LanguageAwareLink></li>
             </ul>
           </div>
           
@@ -90,8 +90,8 @@ const Footer = () => {
             <h3 className="text-lg font-medium mb-4 translate">{t("footer.company")}</h3>
             <ul className="space-y-2">
               <li><LanguageAwareLink to="/about" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.about")}</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/about#mission" className="text-muted-foreground hover:text-highlight-blue translate">Mission</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/about#process" className="text-muted-foreground hover:text-highlight-blue translate">Process</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/about#mission" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.mission")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/about#process" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.process")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/showcase" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.showcase")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/contact" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.contact")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/admin" className="text-muted-foreground hover:text-highlight-blue notranslate">Admin</LanguageAwareLink></li>
