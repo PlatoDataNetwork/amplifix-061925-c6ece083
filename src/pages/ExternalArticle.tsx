@@ -213,14 +213,18 @@ const ExternalArticle = () => {
     const targetCode = getGTranslateCode(lang);
     const w = window as any;
     
-    const triggerTranslation = () => {
+    const triggerTranslation = (attempt: number = 0) => {
+      console.log(`Triggering GTranslate attempt ${attempt + 1} for: ${targetCode}`);
+      
+      // Set cookies first
+      document.cookie = `googtrans=/en/${targetCode}; path=/`;
+      document.cookie = `googtrans=/en/${targetCode}; path=/; domain=${window.location.hostname}`;
+      
       if (typeof w.doGTranslate === 'function') {
         w.doGTranslate(`en|${targetCode}`);
       }
       
-      document.cookie = `googtrans=/en/${targetCode}; path=/`;
-      document.cookie = `googtrans=/en/${targetCode}; path=/; domain=${window.location.hostname}`;
-      
+      // Also try the combo selector as fallback
       const translateSelect = document.querySelector('.goog-te-combo') as HTMLSelectElement;
       if (translateSelect) {
         translateSelect.value = targetCode;
@@ -228,13 +232,16 @@ const ExternalArticle = () => {
       }
     };
 
+    // Multiple attempts with increasing delays to ensure content is translated
     const timers = [
-      setTimeout(() => triggerTranslation(), 300),
-      setTimeout(() => triggerTranslation(), 1000),
+      setTimeout(() => triggerTranslation(0), 100),
+      setTimeout(() => triggerTranslation(1), 500),
+      setTimeout(() => triggerTranslation(2), 1500),
+      setTimeout(() => triggerTranslation(3), 3000),
     ];
 
     return () => timers.forEach(clearTimeout);
-  }, [isLoading, article?.id, translation]);
+  }, [isLoading, article?.id, article?.content, translation]);
 
   if (isLoading) {
     return (
