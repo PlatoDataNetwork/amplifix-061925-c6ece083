@@ -176,6 +176,47 @@ export type Database = {
           },
         ]
       }
+      article_translations: {
+        Row: {
+          article_id: string
+          created_at: string
+          id: string
+          language_code: string
+          translated_content: string | null
+          translated_excerpt: string | null
+          translated_title: string
+          updated_at: string
+        }
+        Insert: {
+          article_id: string
+          created_at?: string
+          id?: string
+          language_code: string
+          translated_content?: string | null
+          translated_excerpt?: string | null
+          translated_title: string
+          updated_at?: string
+        }
+        Update: {
+          article_id?: string
+          created_at?: string
+          id?: string
+          language_code?: string
+          translated_content?: string | null
+          translated_excerpt?: string | null
+          translated_title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_translations_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       articles: {
         Row: {
           author: string | null

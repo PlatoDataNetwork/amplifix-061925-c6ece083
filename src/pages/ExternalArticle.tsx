@@ -20,6 +20,7 @@ const ExternalArticle = () => {
   const { verticals } = usePlatoVerticals();
   const { isAdmin } = useAdminCheck();
   const [article, setArticle] = useState<any>(null);
+  const [translation, setTranslation] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [tags, setTags] = useState<string[]>([]);
   useLanguage(); // Enable translation
@@ -29,11 +30,17 @@ const ExternalArticle = () => {
   const languagePrefix = pathParts[0];
   const isLanguagePath = languagePrefix && languagePrefix.length === 2 && languagePrefix !== "intel";
   const langPrefix = isLanguagePath ? `/${languagePrefix}` : "";
+  const currentLang = isLanguagePath ? languagePrefix : 'en';
+
+  // Get display content - use translation if available, otherwise original
+  const displayTitle = translation?.translated_title || article?.title;
+  const displayExcerpt = translation?.translated_excerpt || article?.excerpt;
+  const displayContent = translation?.translated_content || article?.content;
 
   const shareArticle = (platform: string) => {
     const url = window.location.href;
-    const title = article?.title ? sanitizeText(article.title) : '';
-    const text = article?.excerpt ? sanitizeText(article.excerpt) : '';
+    const title = displayTitle ? sanitizeText(displayTitle) : '';
+    const text = displayExcerpt ? sanitizeText(displayExcerpt) : '';
 
     switch (platform) {
       case 'twitter':
@@ -162,9 +169,43 @@ const ExternalArticle = () => {
     loadArticle();
   }, [id]);
 
-  // Re-run GTranslate once article content is loaded so body text can be translated
+  // Fetch server-side translation if available
+  useEffect(() => {
+    if (!article?.id || currentLang === 'en') {
+      setTranslation(null);
+      return;
+    }
+
+    const fetchTranslation = async () => {
+      try {
+        const { supabase } = await import("@/integrations/supabase/client");
+        const { data } = await supabase
+          .from('article_translations')
+          .select('*')
+          .eq('article_id', article.id)
+          .eq('language_code', currentLang)
+          .maybeSingle();
+        
+        if (data) {
+          console.log(`Found server-side translation for ${currentLang}`);
+          setTranslation(data);
+        } else {
+          setTranslation(null);
+        }
+      } catch (e) {
+        console.error('Failed to fetch translation:', e);
+        setTranslation(null);
+      }
+    };
+
+    fetchTranslation();
+  }, [article?.id, currentLang]);
+
+  // Fall back to GTranslate only if no server-side translation exists
   useEffect(() => {
     if (isLoading || !article) return;
+    // Skip GTranslate if we have a server-side translation
+    if (translation) return;
 
     const lang = getCurrentLanguage();
     if (!lang || lang === 'en') return;
@@ -173,27 +214,13 @@ const ExternalArticle = () => {
     const w = window as any;
     
     const triggerTranslation = () => {
-      // Method 1: Try doGTranslate if available
       if (typeof w.doGTranslate === 'function') {
         w.doGTranslate(`en|${targetCode}`);
       }
       
-      // Method 2: Force Google Translate to re-process by triggering the translate element
-      const googleTranslateFrame = document.querySelector('.goog-te-menu-frame') as HTMLIFrameElement;
-      if (googleTranslateFrame?.contentDocument) {
-        const items = googleTranslateFrame.contentDocument.querySelectorAll('.goog-te-menu2-item');
-        items.forEach((item: any) => {
-          if (item.textContent?.toLowerCase().includes(targetCode)) {
-            item.click();
-          }
-        });
-      }
-      
-      // Method 3: Set googtrans cookie and reload translation
       document.cookie = `googtrans=/en/${targetCode}; path=/`;
       document.cookie = `googtrans=/en/${targetCode}; path=/; domain=${window.location.hostname}`;
       
-      // Trigger a change event on the translate select if it exists
       const translateSelect = document.querySelector('.goog-te-combo') as HTMLSelectElement;
       if (translateSelect) {
         translateSelect.value = targetCode;
@@ -201,15 +228,13 @@ const ExternalArticle = () => {
       }
     };
 
-    // Wait for content to render, then trigger multiple times
     const timers = [
       setTimeout(() => triggerTranslation(), 300),
       setTimeout(() => triggerTranslation(), 1000),
-      setTimeout(() => triggerTranslation(), 2000),
     ];
 
     return () => timers.forEach(clearTimeout);
-  }, [isLoading, article?.id]);
+  }, [isLoading, article?.id, translation]);
 
   if (isLoading) {
     return (
@@ -253,8 +278,8 @@ if (!article) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SEOHead 
-        title={`${sanitizeText(article.title)} - AmplifiX Intelligence`}
-        description={sanitizeText(article.excerpt)}
+        title={`${sanitizeText(displayTitle || '')} - AmplifiX Intelligence`}
+        description={sanitizeText(displayExcerpt || '')}
       />
       <MainHeader />
 
@@ -280,8 +305,8 @@ if (!article) {
               )}
             </div>
             
-            <h1 className="text-3xl md:text-5xl font-bold mb-6 pb-4 border-b border-border translate">
-              {sanitizeText(article.title)}
+            <h1 className="text-3xl md:text-5xl font-bold mb-6 pb-4 border-b border-border">
+              {sanitizeText(displayTitle || '')}
             </h1>
 
             <div className="flex flex-wrap items-center justify-between gap-4 text-muted-foreground text-sm mb-2">
@@ -352,7 +377,7 @@ if (!article) {
           <div className="mb-4">
             <img 
               src={article.image && article.image !== '/lovable-uploads/naoris-hero-new.png' ? article.image : defaultArticleImage} 
-              alt={sanitizeText(article.title)}
+              alt={sanitizeText(displayTitle || '')}
               className="w-full rounded-xl border border-border"
               onError={(e) => {
                 e.currentTarget.src = defaultArticleImage;
@@ -362,7 +387,7 @@ if (!article) {
 
            {/* Article Content */}
           <div 
-            className={`${ARTICLE_CONTENT_CLASSES} mb-8 translate
+            className={`${ARTICLE_CONTENT_CLASSES} mb-8
               [&_h1]:mt-8 [&_h1]:mb-4 [&_h1]:text-4xl [&_h1]:font-bold [&_h1]:leading-tight
               [&_h2]:mt-8 [&_h2]:mb-6 [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:leading-tight [&_h2]:text-foreground
               [&_h3]:mt-6 [&_h3]:mb-4 [&_h3]:text-2xl [&_h3]:font-semibold [&_h3]:leading-tight [&_h3]:text-foreground
@@ -390,8 +415,11 @@ if (!article) {
             `}
             dangerouslySetInnerHTML={{
               __html: (() => {
+                // Use translated content if available
+                const rawContent = displayContent || displayExcerpt || "";
+                
                 // Remove Plato source links before processing
-                const contentWithoutSourceLinks = (article.content || article.excerpt || "")
+                const contentWithoutSourceLinks = rawContent
                   .replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/gi, '')
                   .replace(/<div class="plato-post-bottom-links">[\s\S]*?<\/div>/gi, '')
                   .replace(/Source Link:[\s\S]*?<\/a>/gi, '');
