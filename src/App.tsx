@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import { Analytics } from "@vercel/analytics/react";
 import PrivacyPopup from "@/components/PrivacyPopup";
 import GTranslateController from "@/components/GTranslateController";
+import TranslationDebugWidget from "@/components/TranslationDebugWidget";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 
@@ -107,6 +108,7 @@ const App = () => (
           <Analytics />
           <BrowserRouter>
             <GTranslateController />
+            <TranslationDebugWidget />
             <Routes>
               {/* English routes (no prefix) */}
               <Route path="/" element={<Index />} />
