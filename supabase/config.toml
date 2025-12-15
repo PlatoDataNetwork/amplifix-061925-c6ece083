@@ -143,3 +143,6 @@ verify_jwt = false
 
 [functions.batch-translate-articles]
 verify_jwt = false
+
+[functions.serve-cannabis-sitemap]
+verify_jwt = false
