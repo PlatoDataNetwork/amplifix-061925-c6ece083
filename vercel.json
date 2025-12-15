@@ -13,7 +13,7 @@
       "destination": "https://rfkdcmvzvxcsoecoeddi.supabase.co/functions/v1/serve-language-sitemap?lang=:lang"
     },
     {
-      "source": "/sitemaps/cannabis/:lang.xml",
+      "source": "/sitemaps/cannabis/:lang(en|es|fr|de|it|pt|ru|ja|ko|zh|ar|hi|nl|sv|tr|el|he|hu|fi|da|et|bn|pa).xml",
       "destination": "https://rfkdcmvzvxcsoecoeddi.supabase.co/functions/v1/serve-cannabis-sitemap?lang=:lang&batch=0"
     },
     {
