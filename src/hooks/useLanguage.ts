@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getLanguageFromPath, getGTranslateCode } from '@/utils/language';
@@ -7,46 +7,41 @@ export function useLanguage() {
   const location = useLocation();
   const { i18n } = useTranslation();
 
+  const applyGTranslate = useCallback((langCode: string) => {
+    if (langCode === 'en') return;
+    
+    const targetCode = getGTranslateCode(langCode);
+    const w = window as any;
+
+    const doTranslate = (attempts = 0) => {
+      if (typeof w.doGTranslate === 'function') {
+        console.log(`useLanguage: applying GTranslate for ${targetCode}`);
+        w.doGTranslate(`en|${targetCode}`);
+      } else if (attempts < 30) {
+        setTimeout(() => doTranslate(attempts + 1), 200);
+      } else {
+        console.error('useLanguage: GTranslate doGTranslate not available');
+      }
+    };
+
+    // Small delay to let DOM settle after navigation
+    setTimeout(() => doTranslate(), 100);
+  }, []);
+
   useEffect(() => {
     const langCode = getLanguageFromPath() || 'en';
+    
     if (i18n.language !== langCode) {
       i18n.changeLanguage(langCode);
     }
 
-    // Trigger GTranslate for non-English languages
-    if (langCode !== 'en') {
-      const targetCode = getGTranslateCode(langCode);
+    // Apply GTranslate for non-English languages
+    applyGTranslate(langCode);
+  }, [location.pathname, i18n, applyGTranslate]);
 
-      const applyTranslation = (attempts = 0) => {
-        const w = window as any;
-        if (typeof w.doGTranslate === 'function') {
-          console.log(`useLanguage: applying GTranslate for ${targetCode}`);
-          w.doGTranslate(`en|${targetCode}`);
-          
-          // Force re-translation of dynamic content after a short delay
-          setTimeout(() => {
-            const translateElements = document.querySelectorAll('.translate');
-            translateElements.forEach((el) => {
-              if (el instanceof HTMLElement && !el.classList.contains('translated-ltr')) {
-                el.classList.add('translate-refresh');
-              }
-            });
-            
-            // Trigger another translation pass for newly loaded content
-            if (typeof w.doGTranslate === 'function') {
-              w.doGTranslate(`en|${targetCode}`);
-            }
-          }, 1000);
-        } else if (attempts < 20) {
-          setTimeout(() => applyTranslation(attempts + 1), 300);
-        } else {
-          console.error('useLanguage: GTranslate not ready after retries');
-        }
-      };
-
-      setTimeout(() => applyTranslation(), 400);
-    }
-  }, [location.pathname, i18n]);
-
-  return { currentLanguage: i18n.language, isTranslating: false };
+  return { 
+    currentLanguage: i18n.language, 
+    isTranslating: false,
+    retriggerTranslation: () => applyGTranslate(i18n.language)
+  };
 }
