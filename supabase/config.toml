@@ -146,3 +146,6 @@ verify_jwt = false
 
 [functions.serve-cannabis-sitemap]
 verify_jwt = false
+
+[functions.serve-vertical-sitemap]
+verify_jwt = false
