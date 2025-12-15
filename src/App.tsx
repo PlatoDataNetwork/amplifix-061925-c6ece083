@@ -91,7 +91,7 @@ import BackfillDashboard from "./pages/BackfillDashboard";
 import PlatoSourceUpdate from "./pages/PlatoSourceUpdate";
 import PlatoSourceStats from "./pages/PlatoSourceStats";
 import BulkImportAdmin from "./pages/BulkImportAdmin";
-import TranslationAdmin from "./pages/TranslationAdmin";
+
 
 const queryClient = new QueryClient();
 
@@ -186,7 +186,7 @@ const App = () => (
           <Route path="/admin/articles/backups" element={<AdminRoute><ArticleBackups /></AdminRoute>} />
           <Route path="/admin/articles/comparison" element={<AdminRoute><ArticleComparison /></AdminRoute>} />
           <Route path="/admin/sitemaps" element={<AdminRoute><SitemapGenerator /></AdminRoute>} />
-          <Route path="/admin/translations" element={<AdminRoute><TranslationAdmin /></AdminRoute>} />
+          
           <Route path="/admin/translations/manager" element={<TranslationManager />} />
           <Route path="/admin/translations/test" element={<TranslationTest />} />
           <Route path="/admin/showcase" element={<AdminRoute><ShowcaseAdmin /></AdminRoute>} />
