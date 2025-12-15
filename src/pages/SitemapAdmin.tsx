@@ -93,6 +93,15 @@ export default function SitemapAdmin() {
   const getMainSitemapUrl = (batch: number) => 
     `${SUPABASE_URL}/functions/v1/serve-sitemap?batch=${batch}`;
 
+  const getVerticalSitemapUrl = (vertical: string, lang: string, batch: number) => 
+    `${SUPABASE_URL}/functions/v1/serve-vertical-sitemap?vertical=${vertical}&lang=${lang}&batch=${batch}`;
+
+  const getVerticalSitemapIndexUrl = (vertical: string) => 
+    `${SUPABASE_URL}/functions/v1/serve-vertical-sitemap?vertical=${vertical}&index=true`;
+
+  const getMasterSitemapIndexUrl = () => 
+    `${SUPABASE_URL}/functions/v1/serve-vertical-sitemap?index=master`;
+
   const cannabisVertical = verticalCounts?.find(v => v.vertical_slug === 'cannabis');
   const cannabisBatches = cannabisVertical ? getVerticalBatches(Number(cannabisVertical.article_count)) : 0;
 
@@ -154,13 +163,141 @@ export default function SitemapAdmin() {
           </Card>
         </div>
 
-        <Tabs defaultValue="download" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="download">Download Sitemaps</TabsTrigger>
-            <TabsTrigger value="cannabis">Cannabis Sitemaps</TabsTrigger>
+        <Tabs defaultValue="all-verticals" className="space-y-6">
+          <TabsList className="flex-wrap h-auto">
+            <TabsTrigger value="all-verticals">All Vertical Sitemaps</TabsTrigger>
+            <TabsTrigger value="download">Cannabis Downloads</TabsTrigger>
+            <TabsTrigger value="cannabis">Cannabis View</TabsTrigger>
             <TabsTrigger value="language">Language Sitemaps</TabsTrigger>
-            <TabsTrigger value="verticals">All Verticals</TabsTrigger>
+            <TabsTrigger value="verticals">Stats</TabsTrigger>
           </TabsList>
+
+          {/* All Verticals Sitemaps Tab */}
+          <TabsContent value="all-verticals" className="space-y-6">
+            {/* Master Index */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Master Sitemap Index
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg mb-4">
+                  <div>
+                    <p className="font-medium">All Verticals Sitemap Index</p>
+                    <p className="text-sm text-muted-foreground">
+                      Master index containing all {verticalCounts?.length || 0} verticals × {SUPPORTED_LANGUAGES.length} languages
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => openSitemap(getMasterSitemapIndexUrl())}>
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      View
+                    </Button>
+                    <Button onClick={() => downloadSitemap(getMasterSitemapIndexUrl(), 'master-sitemap-index.xml')}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Download
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Per-Vertical Sitemaps */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="h-5 w-5" />
+                  Download Sitemaps by Vertical
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Each vertical has sitemaps for {SUPPORTED_LANGUAGES.length} languages with up to {BATCH_SIZE.toLocaleString()} articles per batch.
+                </p>
+                
+                {verticalsLoading ? (
+                  <div className="space-y-4">
+                    {[1, 2, 3].map((i) => (
+                      <Skeleton key={i} className="h-24 w-full" />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {verticalCounts?.map((vertical) => {
+                      const batches = getVerticalBatches(Number(vertical.article_count));
+                      return (
+                        <div key={vertical.vertical_slug} className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-3">
+                              <Badge variant="default" className="text-base px-3 py-1">
+                                {vertical.vertical_slug}
+                              </Badge>
+                              <span className="text-sm text-muted-foreground">
+                                {Number(vertical.article_count).toLocaleString()} articles • {batches} batch{batches !== 1 ? 'es' : ''} per language
+                              </span>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => openSitemap(getVerticalSitemapIndexUrl(vertical.vertical_slug))}
+                              >
+                                <ExternalLink className="h-3 w-3 mr-1" />
+                                View Index
+                              </Button>
+                              <Button 
+                                size="sm"
+                                onClick={() => downloadSitemap(
+                                  getVerticalSitemapIndexUrl(vertical.vertical_slug), 
+                                  `${vertical.vertical_slug}-sitemap-index.xml`
+                                )}
+                              >
+                                <Download className="h-3 w-3 mr-1" />
+                                Download Index
+                              </Button>
+                            </div>
+                          </div>
+                          
+                          {/* Language Grid */}
+                          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                            {SUPPORTED_LANGUAGES.map((lang) => (
+                              <div key={lang.code} className="border rounded p-2">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-xs font-medium">{lang.code.toUpperCase()}</span>
+                                  <span className="text-xs text-muted-foreground">{batches} files</span>
+                                </div>
+                                <div className="flex flex-wrap gap-1">
+                                  {Array.from({ length: Math.min(batches, 5) }, (_, i) => (
+                                    <Button
+                                      key={i}
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-6 px-2 text-xs"
+                                      onClick={() => downloadSitemap(
+                                        getVerticalSitemapUrl(vertical.vertical_slug, lang.code, i),
+                                        `${vertical.vertical_slug}-${lang.code}-batch-${i + 1}.xml`
+                                      )}
+                                    >
+                                      {i + 1}
+                                    </Button>
+                                  ))}
+                                  {batches > 5 && (
+                                    <span className="text-xs text-muted-foreground self-center">+{batches - 5}</span>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* Download Sitemaps Tab */}
           <TabsContent value="download" className="space-y-6">
