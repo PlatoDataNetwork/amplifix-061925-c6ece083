@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -10,6 +10,7 @@ import {
 import { Globe, ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { getLanguageFromPath, buildLanguageUrl } from "@/utils/language";
+import { ensureGTranslateReady, setGoogTransCookie } from "@/utils/gtranslate";
 
 interface Language {
   code: string;      // app / URL / i18next code
@@ -124,20 +125,27 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
         
         // Apply GTranslate on page load if language is not English
         if (pathLang !== 'en') {
-          const applyTranslation = (attempts = 0) => {
+          setGoogTransCookie(pathLang);
+
+          const applyTranslation = async (attempts = 0) => {
+            const ok = await ensureGTranslateReady(8000);
             const w = window as any;
             const targetCode = detectedLanguage.gCode || detectedLanguage.code;
-            if (typeof w.doGTranslate === 'function') {
+            if (ok && typeof w.doGTranslate === 'function') {
               console.log('Auto-applying GTranslate for:', targetCode);
               w.doGTranslate(`en|${targetCode}`);
             } else if (attempts < 20) {
-              setTimeout(() => applyTranslation(attempts + 1), 300);
+              setTimeout(() => {
+                void applyTranslation(attempts + 1);
+              }, 300);
             } else {
               console.error('GTranslate failed to load on page load');
             }
           };
-          
-          setTimeout(() => applyTranslation(), 500);
+
+          setTimeout(() => {
+            void applyTranslation();
+          }, 500);
         }
       }
     } else {
