@@ -77,11 +77,11 @@ const About = () => {
   const location = useLocation();
   useLanguage();
 
-  // Handle hash navigation for Process section
+  // Handle hash navigation for Process and Mission sections
   useEffect(() => {
-    if (location.hash === '#process') {
+    if (location.hash === '#process' || location.hash === '#mission') {
       setTimeout(() => {
-        const element = document.getElementById('process');
+        const element = document.getElementById(location.hash.replace('#', ''));
         if (element) {
           element.scrollIntoView({ behavior: 'smooth' });
         }
@@ -167,6 +167,39 @@ const About = () => {
           </div>
         </div>
       </div>
+
+      {/* Mission Section */}
+      <section id="mission" className="container mx-auto py-16 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-5xl font-bold mb-6">Our Mission</h2>
+          <p className="text-xl text-muted-foreground mb-8">
+            To revolutionize corporate communications through AI-driven intelligence, empowering companies of all sizes to communicate with precision, authenticity, and global reach.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+            <div className="p-6 rounded-xl border border-border bg-card/50">
+              <div className="w-12 h-12 bg-highlight-blue/10 rounded-lg flex items-center justify-center mb-4 mx-auto">
+                <Globe className="h-6 w-6 text-highlight-blue" />
+              </div>
+              <h3 className="font-bold mb-2">Global Impact</h3>
+              <p className="text-sm text-muted-foreground">Connecting companies with audiences across 35 languages and 2,000+ publications worldwide.</p>
+            </div>
+            <div className="p-6 rounded-xl border border-border bg-card/50">
+              <div className="w-12 h-12 bg-highlight-blue/10 rounded-lg flex items-center justify-center mb-4 mx-auto">
+                <Sparkles className="h-6 w-6 text-highlight-blue" />
+              </div>
+              <h3 className="font-bold mb-2">AI Innovation</h3>
+              <p className="text-sm text-muted-foreground">Leveraging cutting-edge artificial intelligence to transform how stories are told and received.</p>
+            </div>
+            <div className="p-6 rounded-xl border border-border bg-card/50">
+              <div className="w-12 h-12 bg-highlight-blue/10 rounded-lg flex items-center justify-center mb-4 mx-auto">
+                <Shield className="h-6 w-6 text-highlight-blue" />
+              </div>
+              <h3 className="font-bold mb-2">Trust & Integrity</h3>
+              <p className="text-sm text-muted-foreground">Building transparent, compliant communications that protect and enhance brand reputation.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Process Section */}
       <section id="process" className="container mx-auto py-16 px-4">

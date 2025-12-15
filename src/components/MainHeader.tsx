@@ -7,13 +7,12 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
-import { LogOut, User, Shield, Users as UsersIcon, Database, FileText } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 const MainHeader = () => {
@@ -80,34 +79,6 @@ const MainHeader = () => {
             {t('nav.showcase')}
           </LanguageAwareLink>
           
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="default" className="bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                ADMIN
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem onClick={() => navigate('/admin')}>
-                <Shield className="h-4 w-4 mr-2" />
-                Dashboard
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate('/admin/import')}>
-                <Database className="h-4 w-4 mr-2" />
-                Article Import
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/admin/plato-source-stats')}>
-                <FileText className="h-4 w-4 mr-2" />
-                Plato Source Stats
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/admin/users')}>
-                <UsersIcon className="h-4 w-4 mr-2" />
-                User Management
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <LanguageSwitcher />
