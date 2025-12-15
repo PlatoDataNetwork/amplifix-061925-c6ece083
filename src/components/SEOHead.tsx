@@ -44,6 +44,31 @@ const languages = [
   { code: 'vi', locale: 'vi_VN', name: 'Vietnamese' },
 ];
 
+const seoTitles: Record<string, string> = {
+  en: 'AmplifiX - AI-Powered Investor Relations & Corporate Communications',
+  es: 'AmplifiX - Relaciones con Inversores y Comunicaciones Corporativas con IA',
+  fr: 'AmplifiX - Relations Investisseurs et Communications d\'Entreprise par IA',
+  de: 'AmplifiX - KI-gestützte Investor Relations und Unternehmenskommunikation',
+  it: 'AmplifiX - Relazioni con gli Investitori e Comunicazioni Aziendali con IA',
+  pt: 'AmplifiX - Relações com Investidores e Comunicações Corporativas com IA',
+  zh: 'AmplifiX - AI驱动的投资者关系与企业沟通',
+  ja: 'AmplifiX - AI駆動の投資家関係と企業コミュニケーション',
+  ko: 'AmplifiX - AI 기반 투자자 관계 및 기업 커뮤니케이션',
+  ar: 'AmplifiX - علاقات المستثمرين والاتصالات المؤسسية المدعومة بالذكاء الاصطناعي',
+  ru: 'AmplifiX - Отношения с инвесторами и корпоративные коммуникации на базе ИИ',
+  hi: 'AmplifiX - AI-संचालित निवेशक संबंध और कॉर्पोरेट संचार',
+  nl: 'AmplifiX - AI-gestuurde Investor Relations en Bedrijfscommunicatie',
+  sv: 'AmplifiX - AI-driven Investerarrelationer och Företagskommunikation',
+  tr: 'AmplifiX - Yapay Zeka Destekli Yatırımcı İlişkileri ve Kurumsal İletişim',
+  he: 'AmplifiX - יחסי משקיעים ותקשורת תאגידית מונעי בינה מלאכותית',
+  fa: 'AmplifiX - روابط سرمایه‌گذاران و ارتباطات شرکتی مبتنی بر هوش مصنوعی',
+  th: 'AmplifiX - ความสัมพันธ์กับนักลงทุนและการสื่อสารองค์กรด้วย AI',
+  pl: 'AmplifiX - Relacje z Inwestorami i Komunikacja Korporacyjna z AI',
+  fi: 'AmplifiX - Tekoälypohjaiset sijoittajasuhteet ja yritysviestintä',
+  no: 'AmplifiX - AI-drevet investorrelasjoner og bedriftskommunikasjon',
+  da: 'AmplifiX - AI-drevet investorrelationer og virksomhedskommunikation',
+};
+
 const seoDescriptions: Record<string, string> = {
   en: 'AmplifiX leverages cutting-edge AI to transform how public and private companies manage investor relations and corporate communications.',
   es: 'AmplifiX aprovecha la IA de vanguardia para transformar cómo las empresas públicas y privadas gestionan las relaciones con inversores y comunicaciones corporativas.',
@@ -82,7 +107,7 @@ const SEOHead = ({ title, description }: SEOHeadProps) => {
     ? '/' + pathSegments.slice(1).join('/') 
     : location.pathname;
   
-  const defaultTitle = 'AmplifiX - AI-Powered Investor Relations & Corporate Communications';
+  const defaultTitle = seoTitles[currentLang] || seoTitles.en;
   const defaultDescription = seoDescriptions[currentLang] || seoDescriptions.en;
   
   const finalTitle = title || defaultTitle;
