@@ -49,6 +49,13 @@ const Footer = () => {
                 <Mail size={20} />
               </LanguageAwareLink>
             </div>
+            <div className="text-sm text-muted-foreground mb-3">
+              <a href="mailto:support@amplifix.net" className="hover:text-highlight-blue">support@amplifix.net</a>
+            </div>
+            <div className="text-sm text-muted-foreground mb-4">
+              <p>144 E 44th St</p>
+              <p>New York NY 10017</p>
+            </div>
             <div className="flex items-center p-3 bg-background rounded-lg border border-border">
               <div className="w-2 h-2 rounded-full mr-2 bg-green-500"></div>
               <span className="text-sm">AI Systems Online</span>
