@@ -66,9 +66,9 @@ const Footer = () => {
             <h3 className="text-lg font-medium mb-4 translate">{t("footer.platform")}</h3>
             <ul className="space-y-2">
               <li><LanguageAwareLink to="/solutions/analytics" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.dataAnalytics")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/blockchain" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.blockchainWeb3")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/intel" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.marketIntelligence")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/syndication" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.syndicationIrPr")}</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/blockchain" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.blockchainWeb3")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/video-distribution" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.videoDistribution")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/influencer-marketing" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.influencerMarketing")}</LanguageAwareLink></li>
             </ul>
