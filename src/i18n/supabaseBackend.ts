@@ -1,5 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 
+const isDev = import.meta.env?.DEV ?? false;
+
 const isPlainObject = (v: unknown): v is Record<string, any> =>
   !!v && typeof v === 'object' && !Array.isArray(v);
 
@@ -27,8 +29,8 @@ export default class SupabaseBackend {
   async read(language: string, namespace: string): Promise<any> {
     const cacheKey = `${language}-${namespace}`;
 
-    // Check cache first
-    if (this.cache.has(cacheKey)) {
+    // In dev, always fetch fresh so edits to /public/locales reflect immediately.
+    if (!isDev && this.cache.has(cacheKey)) {
       return this.cache.get(cacheKey);
     }
 
@@ -69,7 +71,9 @@ export default class SupabaseBackend {
 
       const merged = deepMerge(fromEn || {}, fromStatic || {}, dbContent || {});
 
-      this.cache.set(cacheKey, merged);
+      if (!isDev) {
+        this.cache.set(cacheKey, merged);
+      }
       return merged;
     } catch (error) {
       console.error(`Error loading translation ${language}/${namespace}:`, error);

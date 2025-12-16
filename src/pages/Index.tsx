@@ -191,11 +191,6 @@ const Index = () => {
                   <IconComponent className="h-12 w-12 text-highlight-blue mx-auto mb-4" />
                   <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
-                  {index === 1 && (
-                    <p className="text-sm text-muted-foreground mt-4 pt-4 border-t border-border">
-                      Trusted by both public and private companies worldwide.
-                    </p>
-                  )}
                 </div>
               );
             })
