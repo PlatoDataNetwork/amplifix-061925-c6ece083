@@ -160,6 +160,9 @@ const Index = () => {
               </Button>
             </a>
           </div>
+          <p className="text-sm text-muted-foreground mt-8 px-2">
+            Trusted by both public and private companies and emerging growth businesses worldwide.
+          </p>
         </div>
       </div>
 
