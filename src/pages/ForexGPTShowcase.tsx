@@ -12,17 +12,7 @@ import {
   Target,
   LineChart,
   Clock,
-  Shield,
-  Mic,
-  Layers,
-  Monitor,
-  Cpu,
-  BookOpen,
-  Radio,
-  Play,
-  Sparkles,
-  Eye,
-  Activity
+  Shield
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
@@ -41,50 +31,8 @@ const ForexGPTShowcase = () => {
     target: Target,
     linechart: LineChart,
     clock: Clock,
-    shield: Shield,
-    mic: Mic,
-    layers: Layers,
-    monitor: Monitor,
-    cpu: Cpu,
-    book: BookOpen,
-    radio: Radio,
-    sparkles: Sparkles,
-    eye: Eye,
-    activity: Activity
+    shield: Shield
   };
-
-  const terminalFeatures = [
-    {
-      title: "Context-Aware AI Co-Pilot",
-      description: "Unlike generic chatbots, our AI knows what chart you're viewing, your current timeframe, and the market's volatility state. Ask complex questions like 'What is the sentiment for EUR/USD based on the last hour of news?' and receive context-aware responses.",
-      icon: "brain"
-    },
-    {
-      title: "Professional-Grade Charting",
-      description: "Built on Lightweight Charts with liquidity visualization—candles color-coded by liquidity density to spot hidden order blocks. Toggle SMAs, Bollinger Bands, and Donchian Channels instantly with seamless historical and real-time data merging.",
-      icon: "chart"
-    },
-    {
-      title: "Agentic AI with 22 Tools",
-      description: "Execute voice prompts that run 22 integrated tools including analyze watchlist, scan market, get news events, and fetch blog articles. The AI executes commands autonomously within your trading workflow.",
-      icon: "mic"
-    },
-    {
-      title: "Knowledge Hub",
-      description: "Integrated news aggregation engine automatically sorts content into 'Daily Briefings,' 'Deep Dives,' and 'Weekly Outlooks' with rich media integration for a magazine-style reading experience without leaving the terminal.",
-      icon: "book"
-    },
-    {
-      title: "Zero-Latency Visualization",
-      description: "Designed for speed with a neon-noir aesthetic that reduces eye strain during long trading sessions. Optimistic UI updates reflect trade execution instantly (<50ms) with background server reconciliation.",
-      icon: "zap"
-    },
-    {
-      title: "MCP Tool Abstraction",
-      description: "The AI doesn't guess—it executes precise tools (get_price_history, analyze_sentiment) defined by the MCP server to fetch deterministic data with secure validation within strict risk management parameters.",
-      icon: "cpu"
-    }
-  ];
 
   const features = [
     {
@@ -113,44 +61,48 @@ const ForexGPTShowcase = () => {
       icon: "clock"
     },
     {
+      title: "MCP Server Integration",
+      description: "Connect Claude, ChatGPT, or any MCP-compatible client to interact with ForexGPT using natural language or programmatically via API for seamless AI-powered trading workflows.",
+      icon: "globe"
+    },
+    {
       title: "Advanced Text-to-Speech",
       description: "Listen to AI-generated post-chart analysis with integrated text-to-speech functionality, making it easier to consume insights while multitasking.",
       icon: "zap"
+    },
+    {
+      title: "Chain-of-Thought Prompting",
+      description: "Leverage sophisticated chain-of-thought prompting integrated with Large Language Models to provide deeper, more reasoned analysis devoid of human bias.",
+      icon: "brain"
+    },
+    {
+      title: "Beta Features First Access",
+      description: "Premium subscribers receive early access to new features including the Smartket Scanner and other innovations pushed from beta servers before public release.",
+      icon: "shield"
     }
   ];
 
   const platforms = [
     {
-      name: "Professional Terminal (Alpha)",
-      status: "Alpha Preview",
-      description: "The future of AI-driven trading—Generative AI as the core engine. Features agentic chat with 22 tools, voice prompts, and context-aware AI Co-Pilot.",
-      url: "https://demo.forex-gpt.ai",
-      badge: "NEW",
-      badgeColor: "bg-gradient-to-r from-purple-500 to-pink-500"
-    },
-    {
       name: "Live2 Server",
       status: "Operational",
       description: "Main production server for advanced charting analysis with standalone capabilities and integration with the Free GPT for ChatGPT.",
       url: "https://live2.forex-gpt.ai/login",
-      badge: "Primary",
-      badgeColor: "bg-green-500/10 text-green-600 dark:text-green-400"
+      badge: "Primary"
     },
     {
       name: "Live4 Server (Beta)",
       status: "Operational",
       description: "Beta server featuring newest innovations including Heatmap screener, AiWatchlist for bulk analysis, and Smartket Scanner for market scanning.",
       url: "https://live4.forex-gpt.ai/login",
-      badge: "Latest Features",
-      badgeColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+      badge: "Latest Features"
     },
     {
       name: "MCP Server",
       status: "Operational",
       description: "Model Context Protocol server enabling natural language interaction with ForexGPT through Claude, ChatGPT, or any MCP-compatible client.",
       url: "https://forex-gpt.ai/",
-      badge: "Integration",
-      badgeColor: "bg-purple-500/10 text-purple-600 dark:text-purple-400"
+      badge: "New"
     }
   ];
 
@@ -161,29 +113,6 @@ const ForexGPTShowcase = () => {
     { category: "Commodities", count: "15+", examples: "Gold, Silver, Oil, Natural Gas" },
     { category: "Bonds", count: "10+", examples: "US 10Y, German Bund, UK Gilt" },
     { category: "Timeframes", count: "22", examples: "1m, 5m, 15m, 1h, 4h, Daily, Weekly" }
-  ];
-
-  const architectureFeatures = [
-    {
-      title: "Model Context Protocol (MCP)",
-      description: "Standardized approach for AI models to interact with external tools. The LLM 'sees' the market through deterministic data fetches.",
-      icon: "cpu"
-    },
-    {
-      title: "Resilient Data Streaming",
-      description: "EventSource (SSE) Pipeline with smart backoff strategies, automatic reconnection logic, and state persistence across re-renders.",
-      icon: "radio"
-    },
-    {
-      title: "Optimistic UI Updates",
-      description: "Interface reflects trade execution instantly (<50ms), reconciling with the server in the background for a buttery-smooth experience.",
-      icon: "activity"
-    },
-    {
-      title: "Secure Validation",
-      description: "Every request is authenticated and validated, ensuring the AI operates within strict risk management parameters.",
-      icon: "shield"
-    }
   ];
 
   const plans = [
@@ -231,27 +160,27 @@ const ForexGPTShowcase = () => {
 
   const stats = [
     { label: "Trading Assets", value: "120+", icon: "globe" },
-    { label: "AI Tools", value: "22", icon: "cpu" },
     { label: "Timeframes", value: "22", icon: "clock" },
+    { label: "AI Models", value: "GPT-4o", icon: "brain" },
     { label: "Available", value: "24/7", icon: "shield" }
   ];
 
   return (
     <>
       <Helmet>
-        <title>ForexGPT Professional Terminal - AI-Powered Trading Platform | AmplifiX</title>
-        <meta name="description" content="ForexGPT Professional Terminal: The future of AI-driven trading with context-aware AI Co-Pilot, 22 agentic tools, professional charting, and real-time analysis across 120+ assets." />
-        <meta name="keywords" content="forex trading, AI trading analysis, professional terminal, trading signals, forex sentiment, agentic AI, GPT trading, crypto analysis, MCP server" />
-        <link rel="canonical" href="https://amplifix.net/showcase/forex-gpt" />
+        <title>ForexGPT - AI-Powered Forex Trading Analysis | PLATO</title>
+        <meta name="description" content="ForexGPT leverages advanced AI models to provide real-time technical analysis, trading signals, and sentiment scores across 100+ assets and 22 timeframes." />
+        <meta name="keywords" content="forex trading, AI trading analysis, technical analysis, trading signals, forex sentiment, automated trading, GPT trading, crypto analysis" />
+        <link rel="canonical" href="https://plato.so/showcase/forex-gpt" />
         
-        <meta property="og:title" content="ForexGPT Professional Terminal - AI-Powered Trading Platform" />
-        <meta property="og:description" content="The future of AI-driven trading—Generative AI as the core engine with context-aware Co-Pilot, 22 agentic tools, and professional-grade charting." />
+        <meta property="og:title" content="ForexGPT - AI-Powered Forex Trading Analysis" />
+        <meta property="og:description" content="Advanced AI-powered trading analysis platform providing real-time insights across forex, crypto, indices, commodities, and bonds." />
         <meta property="og:image" content={forexGptThumbnail} />
         <meta property="og:type" content="website" />
         
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="ForexGPT Professional Terminal - AI Trading" />
-        <meta name="twitter:description" content="ForexGPT: AI-native trading workspace with context-aware Co-Pilot and 22 agentic tools." />
+        <meta name="twitter:title" content="ForexGPT - AI-Powered Trading Analysis" />
+        <meta name="twitter:description" content="ForexGPT provides AI-powered technical analysis and trading signals across 100+ assets." />
         <meta name="twitter:image" content={forexGptThumbnail} />
       </Helmet>
 
@@ -264,12 +193,9 @@ const ForexGPTShowcase = () => {
           <div className="container relative mx-auto px-4">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-8">
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-4 py-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-full text-sm font-medium text-purple-600 dark:text-purple-400">
-                    Alpha Preview
-                  </span>
+                <div className="inline-block">
                   <span className="px-4 py-2 bg-gradient-to-r from-blue-500/10 to-green-500/10 border border-blue-500/20 rounded-full text-sm font-medium text-blue-600 dark:text-blue-400">
-                    AI-Native Trading
+                    AI-Powered Forex Analysis
                   </span>
                 </div>
                 
@@ -279,24 +205,18 @@ const ForexGPTShowcase = () => {
                   </span>
                   <br />
                   <span className="text-foreground">
-                    Professional Terminal
+                    AI Trading Intelligence
                   </span>
                 </h1>
                 
                 <p className="text-xl text-muted-foreground leading-relaxed">
-                  The future of AI-driven trading. Generative AI is not a plugin—it&apos;s the core engine. A reimagining of the trading workspace where your AI Co-Pilot lives directly on the trading floor.
+                  Advanced AI-powered technical analysis platform leveraging GPT-4o mini to deliver real-time insights, trading signals, and sentiment analysis across 120+ assets and 22 timeframes.
                 </p>
 
                 <div className="flex flex-wrap gap-4">
-                  <Button size="lg" asChild className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                    <a href="https://forex-gpt.ai/professsional-terminal-demo-alpha/" target="_blank" rel="noopener noreferrer">
-                      <Play className="mr-2 h-4 w-4" />
-                      Watch Demo
-                    </a>
-                  </Button>
                   <Button size="lg" asChild className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700">
-                    <a href="https://demo.forex-gpt.ai" target="_blank" rel="noopener noreferrer">
-                      Try Alpha
+                    <a href="https://forex-gpt.ai/" target="_blank" rel="noopener noreferrer">
+                      Launch Platform
                       <ExternalLink className="ml-2 h-4 w-4" />
                     </a>
                   </Button>
@@ -323,10 +243,10 @@ const ForexGPTShowcase = () => {
               </div>
 
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-blue-500/20 to-green-500/20 blur-3xl rounded-full" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-green-500/20 blur-3xl rounded-full" />
                 <img 
                   src={forexGptThumbnail}
-                  alt="ForexGPT Professional Terminal"
+                  alt="ForexGPT AI Trading Platform"
                   className="relative rounded-2xl shadow-2xl border border-border/50"
                 />
               </div>
@@ -334,156 +254,11 @@ const ForexGPTShowcase = () => {
           </div>
         </section>
 
-        {/* Problem Statement */}
-        <section className="py-16 bg-gradient-to-br from-orange-500/5 to-red-500/5">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl font-bold mb-6">Solving Cognitive Overload</h2>
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                Markets move faster than human analysis. By the time you&apos;ve correlated a geopolitical headline with a currency pair&apos;s technical setup, the move might already be over. ForexGPT Professional Terminal serves as a <strong className="text-foreground">force multiplier</strong>, aggregating real-time price action, news sentiment, and risk metrics into a single, unified dashboard.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Professional Terminal Features */}
-        <section className="py-20">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-16">
-              <span className="px-4 py-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-full text-sm font-medium text-purple-600 dark:text-purple-400 inline-block mb-4">
-                NEW: Professional Terminal
-              </span>
-              <h2 className="text-4xl font-bold mb-4">Trading at the Speed of Thought</h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                This is not just another charting library wrapper. It&apos;s a reimagining of the trading workspace where Generative AI is the core engine.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {terminalFeatures.map((feature, index) => {
-                const Icon = iconMap[feature.icon];
-                return (
-                  <Card key={index} className="border-border/50 hover:border-purple-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/5">
-                    <CardContent className="p-6 space-y-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-lg flex items-center justify-center">
-                        <Icon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-                      </div>
-                      <h3 className="text-xl font-semibold">{feature.title}</h3>
-                      <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* Video Demo Section */}
-        <section className="py-20 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <span className="px-4 py-2 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-full text-sm font-medium text-red-600 dark:text-red-400 inline-block mb-4">
-                Watch the Demo
-              </span>
-              <h2 className="text-4xl font-bold mb-4">See It In Action</h2>
-              <p className="text-xl text-muted-foreground mb-8">
-                ForexGPT founder Steven Hatzakis walks through a detailed preview of the Professional Terminal with agentic AI tools enabled.
-              </p>
-              
-              <div className="relative aspect-video rounded-2xl overflow-hidden border border-border/50 shadow-2xl">
-                <iframe
-                  className="absolute inset-0 w-full h-full"
-                  src="https://www.youtube.com/embed/LbrWHFFLtpI"
-                  title="ForexGPT Professional Terminal Demo"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-              
-              <p className="text-sm text-muted-foreground mt-6">
-                26-minute walkthrough covering agentic chat, voice prompts, 22 integrated tools, and the AI Co-Pilot in action.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Technical Architecture Section */}
-        <section className="py-20">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-16">
-              <span className="px-4 py-2 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-full text-sm font-medium text-cyan-600 dark:text-cyan-400 inline-block mb-4">
-                Under the Hood
-              </span>
-              <h2 className="text-4xl font-bold mb-4">Technical Architecture</h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                For engineers and quantitative traders—the innovation lies in how we built this
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-              {architectureFeatures.map((feature, index) => {
-                const Icon = iconMap[feature.icon];
-                return (
-                  <Card key={index} className="border-border/50 bg-gradient-to-br from-cyan-500/5 to-blue-500/5">
-                    <CardContent className="p-6 space-y-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-lg flex items-center justify-center">
-                        <Icon className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
-                      </div>
-                      <h3 className="text-lg font-semibold">{feature.title}</h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* Platform Servers Section */}
+        {/* Features Section */}
         <section className="py-20 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4">Access ForexGPT</h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Multiple platform servers for different use cases and integrations
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {platforms.map((platform, index) => (
-                <Card key={index} className={`border-border/50 transition-all duration-300 hover:shadow-lg ${index === 0 ? 'border-purple-500/50 shadow-lg shadow-purple-500/10' : 'hover:border-green-500/50'}`}>
-                  <CardContent className="p-6 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold">{platform.name}</h3>
-                    </div>
-                    <span className={`px-3 py-1 text-xs font-medium rounded-full inline-block ${index === 0 ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' : platform.badgeColor}`}>
-                      {platform.badge}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full animate-pulse ${platform.status === 'Alpha Preview' ? 'bg-purple-500' : 'bg-green-500'}`}></div>
-                      <span className={`text-sm ${platform.status === 'Alpha Preview' ? 'text-purple-600 dark:text-purple-400' : 'text-green-600 dark:text-green-400'}`}>{platform.status}</span>
-                    </div>
-                    <p className="text-muted-foreground leading-relaxed text-sm">
-                      {platform.description}
-                    </p>
-                    <Button variant={index === 0 ? "default" : "outline"} className={`w-full ${index === 0 ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700' : ''}`} asChild>
-                      <a href={platform.url} target="_blank" rel="noopener noreferrer">
-                        {index === 0 ? 'Try Alpha' : 'Access Server'}
-                        <ExternalLink className="ml-2 h-4 w-4" />
-                      </a>
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Core Features Section */}
-        <section className="py-20">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4">Core Platform Features</h2>
+              <h2 className="text-4xl font-bold mb-4">Powerful AI Features</h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                 ForexGPT combines cutting-edge AI technology with real-time market data to provide actionable trading insights
               </p>
@@ -504,6 +279,46 @@ const ForexGPTShowcase = () => {
                   </Card>
                 );
               })}
+            </div>
+          </div>
+        </section>
+
+        {/* Platform Servers Section */}
+        <section className="py-20">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold mb-4">Multiple Platform Servers</h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                Access ForexGPT through our production, beta, and MCP integration servers
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {platforms.map((platform, index) => (
+                <Card key={index} className="border-border/50 hover:border-green-500/50 transition-all duration-300 hover:shadow-lg">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xl font-semibold">{platform.name}</h3>
+                      <span className="px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-medium rounded-full">
+                        {platform.badge}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-sm text-green-600 dark:text-green-400">{platform.status}</span>
+                    </div>
+                    <p className="text-muted-foreground leading-relaxed text-sm">
+                      {platform.description}
+                    </p>
+                    <Button variant="outline" className="w-full" asChild>
+                      <a href={platform.url} target="_blank" rel="noopener noreferrer">
+                        Access Server
+                        <ExternalLink className="ml-2 h-4 w-4" />
+                      </a>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
@@ -544,7 +359,7 @@ const ForexGPTShowcase = () => {
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-12">
                 <span className="px-4 py-2 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-full text-sm font-medium text-purple-600 dark:text-purple-400 inline-block mb-4">
-                  Integration Ready
+                  November 2025 Update
                 </span>
                 <h2 className="text-4xl font-bold mb-4">MCP Server Integration</h2>
                 <p className="text-xl text-muted-foreground">
@@ -557,7 +372,7 @@ const ForexGPTShowcase = () => {
                   <div className="space-y-4">
                     <h3 className="text-2xl font-semibold">What is MCP?</h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      The Model Context Protocol (MCP) provides a standardized approach for AI models to interact with external tools and services. ForexGPT is built upon cutting-edge MCP, allowing the backend to standardize how the LLM &quot;sees&quot; the market through deterministic tool execution.
+                      The Model Context Protocol (MCP) provides a standardized approach for AI models to interact with external tools and services. ForexGPT subscribers can now connect their favorite MCP client to access ForexGPT&apos;s analysis capabilities using natural language or programmatic API calls.
                     </p>
                   </div>
 
@@ -565,28 +380,24 @@ const ForexGPTShowcase = () => {
                     <div className="space-y-3">
                       <h4 className="text-lg font-semibold flex items-center gap-2">
                         <Zap className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                        22 Integrated Tools
+                        Key Capabilities
                       </h4>
                       <ul className="space-y-2 text-sm text-muted-foreground">
                         <li className="flex items-start gap-2">
                           <span className="text-green-600 dark:text-green-400 mt-0.5">✓</span>
-                          <span>get_price_history - Fetch historical OHLC data</span>
+                          <span>Natural language analysis requests</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-green-600 dark:text-green-400 mt-0.5">✓</span>
-                          <span>analyze_sentiment - Market sentiment analysis</span>
+                          <span>Programmatic API access</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-green-600 dark:text-green-400 mt-0.5">✓</span>
-                          <span>scan_market - Full market scanning</span>
+                          <span>Multi-asset bulk analysis</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-green-600 dark:text-green-400 mt-0.5">✓</span>
-                          <span>get_news_events - Real-time news feed</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-green-600 dark:text-green-400 mt-0.5">✓</span>
-                          <span>analyze_watchlist - Bulk asset analysis</span>
+                          <span>Sentiment score retrieval</span>
                         </li>
                       </ul>
                     </div>
@@ -613,10 +424,6 @@ const ForexGPTShowcase = () => {
                           <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
                           <span>Custom integrations via API</span>
                         </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
-                          <span>Voice prompt execution</span>
-                        </li>
                       </ul>
                     </div>
                   </div>
@@ -633,8 +440,58 @@ const ForexGPTShowcase = () => {
           </div>
         </section>
 
-        {/* Pricing Section */}
+        {/* Technology & Innovation Section */}
         <section className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold mb-4">Powered by Cutting-Edge AI</h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                ForexGPT leverages the latest AI models and innovative techniques for superior trading analysis
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              <Card className="border-border/50">
+                <CardContent className="p-8 space-y-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-lg flex items-center justify-center">
+                    <Brain className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <h3 className="text-2xl font-semibold">OpenAI Integration</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Powered by GPT-4o mini and Whisper API from OpenAI, providing advanced natural language processing and text-to-speech capabilities for comprehensive market analysis.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-border/50">
+                <CardContent className="p-8 space-y-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500/10 to-teal-500/10 rounded-lg flex items-center justify-center">
+                    <Target className="h-6 w-6 text-green-600 dark:text-green-400" />
+                  </div>
+                  <h3 className="text-2xl font-semibold">Chain-of-Thought Prompting</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Integrated chain-of-thought prompting from our web application provides deeper reasoning and more accurate analysis, completely devoid of human opinions or bias.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="mt-12 p-8 bg-gradient-to-br from-orange-500/5 to-red-500/5 border border-orange-500/20 rounded-2xl max-w-5xl mx-auto">
+              <div className="flex items-start gap-4">
+                <Shield className="h-6 w-6 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-1" />
+                <div className="space-y-2">
+                  <h3 className="text-xl font-semibold">Educational Purpose Disclaimer</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    ForexGPT is designed solely for <strong>educational and research purposes</strong>. It is not investment advice and should not be used as the sole basis for trading decisions. Always conduct your own research and consult with qualified financial advisors before making investment decisions.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section className="py-20">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold mb-4">Choose Your Plan</h2>
@@ -685,36 +542,19 @@ const ForexGPTShowcase = () => {
           </div>
         </section>
 
-        {/* Disclaimer */}
-        <section className="py-12">
-          <div className="container mx-auto px-4">
-            <div className="max-w-5xl mx-auto p-8 bg-gradient-to-br from-orange-500/5 to-red-500/5 border border-orange-500/20 rounded-2xl">
-              <div className="flex items-start gap-4">
-                <Shield className="h-6 w-6 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-1" />
-                <div className="space-y-2">
-                  <h3 className="text-xl font-semibold">Educational Purpose Disclaimer</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    ForexGPT is designed solely for <strong>educational and research purposes</strong>. It is not investment advice and should not be used as the sole basis for trading decisions. Not a solicitation to buy or sell securities. Always conduct your own research and consult with qualified financial advisors before making investment decisions. © ForexGPT LLC 2023-2025
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* CTA Section */}
-        <section className="py-20 bg-gradient-to-br from-purple-600/10 via-blue-600/10 to-green-600/10">
+        <section className="py-20 bg-gradient-to-br from-blue-600/10 via-green-600/10 to-teal-600/10">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-4xl font-bold mb-6">
-              Welcome to the Trading Floor
+              Ready to Transform Your Trading?
             </h2>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Less noise, more signal, and an intelligent partner sitting right next to you. Join the future of AI-driven trading.
+              Join traders worldwide using ForexGPT's AI-powered analysis to make more informed trading decisions
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Button size="lg" asChild className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                <a href="https://demo.forex-gpt.ai" target="_blank" rel="noopener noreferrer">
-                  Try Professional Terminal Alpha
+              <Button size="lg" asChild className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700">
+                <a href="https://live2.forex-gpt.ai/login" target="_blank" rel="noopener noreferrer">
+                  Start Free Trial
                   <ExternalLink className="ml-2 h-4 w-4" />
                 </a>
               </Button>
@@ -724,6 +564,9 @@ const ForexGPTShowcase = () => {
                 </a>
               </Button>
             </div>
+            <p className="text-sm text-muted-foreground mt-6">
+              Note: ForexGPT is for educational and research purposes only, not investment advice
+            </p>
           </div>
         </section>
 
