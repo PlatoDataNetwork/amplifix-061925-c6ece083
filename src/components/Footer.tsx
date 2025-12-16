@@ -63,6 +63,18 @@ const Footer = () => {
           </div>
           
           <div>
+            <h3 className="text-lg font-medium mb-4 translate">{t("footer.company")}</h3>
+            <ul className="space-y-2">
+              <li><LanguageAwareLink to="/about" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.about")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/about#mission" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.mission")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/about#process" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.process")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/showcase" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.showcase")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/contact" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.contact")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/admin" className="text-muted-foreground hover:text-highlight-blue notranslate">Admin</LanguageAwareLink></li>
+            </ul>
+          </div>
+          
+          <div>
             <h3 className="text-lg font-medium mb-4 translate">{t("footer.platform")}</h3>
             <ul className="space-y-2">
               <li><LanguageAwareLink to="/solutions/analytics" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.dataAnalytics")}</LanguageAwareLink></li>
@@ -83,18 +95,6 @@ const Footer = () => {
               <li><LanguageAwareLink to="/solutions/ir-pr" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.investorRelations")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/public-companies" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.publicCompanies")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/private-companies" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.privateCompanies")}</LanguageAwareLink></li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-medium mb-4 translate">{t("footer.company")}</h3>
-            <ul className="space-y-2">
-              <li><LanguageAwareLink to="/about" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.about")}</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/about#mission" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.mission")}</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/about#process" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.process")}</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/showcase" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.showcase")}</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/contact" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.contact")}</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/admin" className="text-muted-foreground hover:text-highlight-blue notranslate">Admin</LanguageAwareLink></li>
             </ul>
           </div>
         </div>
