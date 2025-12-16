@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { useJsonData } from "@/hooks/useJsonData";
 import { AuthData } from "@/types/auth";
-import { Skeleton } from "@/components/ui/skeleton";
+
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import MainHeader from "@/components/MainHeader";
@@ -109,15 +109,13 @@ const Signup = () => {
       <div className="min-h-screen flex flex-col">
         <MainHeader />
         <main className="flex-1 flex items-center justify-center p-4">
-          <div className="w-full max-w-md space-y-8">
-            <Skeleton className="h-12 w-3/4 mx-auto" />
-            <div className="bg-card border rounded-xl p-8 space-y-6">
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-            </div>
+          <div className="flex flex-col items-center gap-4">
+            <img 
+              src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
+              alt="Loading..."
+              className="w-16 h-16 animate-pulse"
+            />
+            <span className="text-muted-foreground text-sm">Loading...</span>
           </div>
         </main>
         <Footer />
@@ -143,7 +141,7 @@ const Signup = () => {
             <h1 className="text-3xl font-bold">{signUpText.title}</h1>
           </div>
 
-          <div className="bg-card border rounded-xl p-8 shadow-lg">
+          <div className="bg-card border-border/20 border rounded-xl p-8 shadow-lg">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-sm font-medium mb-2">
