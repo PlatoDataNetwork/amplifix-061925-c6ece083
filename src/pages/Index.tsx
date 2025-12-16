@@ -229,11 +229,6 @@ const Index = () => {
                   </div>
                   <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
-                  <LanguageAwareLink to="/solutions">
-                    <Button variant="link" className="text-highlight-blue mt-4 p-0">
-                      {t('home:hero.learn_more')}
-                    </Button>
-                  </LanguageAwareLink>
                 </div>
               );
             })
