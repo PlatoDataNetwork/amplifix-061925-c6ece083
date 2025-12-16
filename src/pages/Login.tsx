@@ -83,7 +83,7 @@ const Login = () => {
             <img 
               src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
               alt="Loading..."
-              className="w-16 h-16 animate-pulse"
+              className="w-16 h-16 animate-spin"
             />
             <span className="text-muted-foreground text-sm">Loading...</span>
           </div>
