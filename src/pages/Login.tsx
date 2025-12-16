@@ -81,7 +81,7 @@ const Login = () => {
         <main className="flex-1 flex items-center justify-center p-4">
           <div className="w-full max-w-md space-y-8">
             <Skeleton className="h-12 w-3/4 mx-auto" />
-            <div className="bg-card border rounded-xl p-8 space-y-6">
+            <div className="bg-card border-border/20 border rounded-xl p-8 space-y-6">
               <Skeleton className="h-12 w-full" />
               <Skeleton className="h-12 w-full" />
               <Skeleton className="h-12 w-full" />
@@ -111,7 +111,7 @@ const Login = () => {
             <h1 className="text-3xl font-bold">{signInText.title}</h1>
           </div>
 
-          <div className="bg-card border rounded-xl p-8 shadow-lg">
+          <div className="bg-card border-border/20 border rounded-xl p-8 shadow-lg">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-sm font-medium mb-2">
