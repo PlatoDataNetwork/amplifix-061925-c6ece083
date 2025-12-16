@@ -7,18 +7,18 @@
   "about": {
     "title": "About AmplifiX",
     "description": "We're revolutionizing corporate communications through AI-driven insights, automated content generation, and intelligent stakeholder / Investor engagement.",
-    "aiPowered": {
-      "title": "AI-Powered Intelligence",
-      "description": "Advanced machine learning algorithms analyze market sentiment and optimize communications for optimal budget deployment and execution."
-    },
-    "marketLeadership": {
-      "title": "Market Leadership",
-      "description": "Trusted by both public and private companies worldwide to amplifi communications and engagements."
-    },
-    "strategicFocus": {
-      "title": "Strategic Focus",
-      "description": "Tailored solutions for both public and private companies at every stage of growth. AmplifiX form fits around your companies focus."
-    }
+  "aiPowered": {
+    "title": "AI-ਸੰਚਾਲਿਤ ਬੁੱਧੀ",
+    "description": "ਉੱਨਤ ਮਸ਼ੀਨ ਲਰਨਿੰਗ ਐਲਗੋਰਿਦਮ ਮਾਰਕੀਟ ਭਾਵਨਾ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਕਰਦੇ ਹਨ ਅਤੇ ਸਰਵੋਤਮ ਬਜਟ ਤੈਨਾਤੀ ਅਤੇ ਅਮਲ ਲਈ ਸੰਚਾਰ ਨੂੰ ਅਨੁਕੂਲ ਬਣਾਉਂਦੇ ਹਨ।"
+  },
+  "marketLeadership": {
+    "title": "ਮਾਰਕੀਟ ਲੀਡਰਸ਼ਿਪ",
+    "description": "ਸੰਚਾਰ ਅਤੇ ਸ਼ਮੂਲੀਅਤ ਨੂੰ ਵਧਾਉਣ ਲਈ ਦੁਨੀਆ ਭਰ ਵਿੱਚ ਜਨਤਕ ਅਤੇ ਨਿੱਜੀ ਦੋਵਾਂ ਕੰਪਨੀਆਂ ਦੁਆਰਾ ਭਰੋਸੇਯੋਗ।"
+  },
+  "strategicFocus": {
+    "title": "ਰਣਨੀਤਕ ਫੋਕਸ",
+    "description": "ਵਿਕਾਸ ਦੇ ਹਰ ਪੜਾਅ 'ਤੇ ਜਨਤਕ ਅਤੇ ਨਿੱਜੀ ਦੋਵਾਂ ਕੰਪਨੀਆਂ ਲਈ ਅਨੁਕੂਲਿਤ ਹੱਲ। AmplifiX ਤੁਹਾਡੀ ਕੰਪਨੀ ਦੇ ਫੋਕਸ ਦੇ ਅਨੁਸਾਰ ਢਲ ਜਾਂਦਾ ਹੈ।"
+  }
   },
   "features": {
     "title": "Powerful AI Features",

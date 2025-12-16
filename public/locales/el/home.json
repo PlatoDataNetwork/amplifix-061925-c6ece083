@@ -7,18 +7,18 @@
   "about": {
     "title": "About AmplifiX",
     "description": "We're revolutionizing corporate communications through AI-driven insights, automated content generation, and intelligent stakeholder / Investor engagement.",
-    "aiPowered": {
-      "title": "AI-Powered Intelligence",
-      "description": "Advanced machine learning algorithms analyze market sentiment and optimize communications for optimal budget deployment and execution."
-    },
-    "marketLeadership": {
-      "title": "Market Leadership",
-      "description": "Trusted by both public and private companies worldwide to amplifi communications and engagements."
-    },
-    "strategicFocus": {
-      "title": "Strategic Focus",
-      "description": "Tailored solutions for both public and private companies at every stage of growth. AmplifiX form fits around your companies focus."
-    }
+  "aiPowered": {
+    "title": "Νοημοσύνη με Τεχνητή Νοημοσύνη",
+    "description": "Προηγμένοι αλγόριθμοι μηχανικής μάθησης αναλύουν το κλίμα της αγοράς και βελτιστοποιούν τις επικοινωνίες για βέλτιστη ανάπτυξη και εκτέλεση προϋπολογισμού."
+  },
+  "marketLeadership": {
+    "title": "Ηγεσία Αγοράς",
+    "description": "Έμπιστη από δημόσιες και ιδιωτικές εταιρείες παγκοσμίως για την ενίσχυση επικοινωνιών και δεσμεύσεων."
+  },
+  "strategicFocus": {
+    "title": "Στρατηγική Εστίαση",
+    "description": "Προσαρμοσμένες λύσεις για δημόσιες και ιδιωτικές εταιρείες σε κάθε στάδιο ανάπτυξης. Το AmplifiX προσαρμόζεται στην εστίαση της εταιρείας σας."
+  }
   },
   "features": {
     "title": "Powerful AI Features",
