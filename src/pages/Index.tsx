@@ -193,7 +193,7 @@ const Index = () => {
                   <p className="text-muted-foreground">{feature.description}</p>
                   {index === 1 && (
                     <p className="text-sm text-muted-foreground mt-4 pt-4 border-t border-border">
-                      Trusted by both public and private companies and emerging growth businesses worldwide.
+                      Trusted by both public and private companies businesses worldwide.
                     </p>
                   )}
                 </div>
