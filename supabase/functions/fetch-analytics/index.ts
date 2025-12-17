@@ -263,13 +263,17 @@ serve(async (req: Request): Promise<Response> => {
       newUsers: parseInt(row.metricValues[5].value) || 0,
     })) || [];
 
-    const totals = analyticsData.totals?.[0];
-    const totalActiveUsers = totals ? parseInt(totals.metricValues[0].value) || 0 : 0;
-    const totalSessions = totals ? parseInt(totals.metricValues[1].value) || 0 : 0;
-    const totalPageViews = totals ? parseInt(totals.metricValues[2].value) || 0 : 0;
-    const avgDuration = totals ? parseFloat(totals.metricValues[3].value) || 0 : 0;
-    const bounceRate = totals ? parseFloat(totals.metricValues[4].value) || 0 : 0;
-    const totalNewUsers = totals ? parseInt(totals.metricValues[5].value) || 0 : 0;
+    // Calculate totals from rows (GA4 doesn't always return totals)
+    const totalActiveUsers = rows.reduce((sum: number, r: any) => sum + r.activeUsers, 0);
+    const totalSessions = rows.reduce((sum: number, r: any) => sum + r.sessions, 0);
+    const totalPageViews = rows.reduce((sum: number, r: any) => sum + r.pageViews, 0);
+    const totalNewUsers = rows.reduce((sum: number, r: any) => sum + r.newUsers, 0);
+    const avgDuration = rows.length > 0
+      ? rows.reduce((sum: number, r: any) => sum + r.avgSessionDuration, 0) / rows.length
+      : 0;
+    const bounceRate = rows.length > 0
+      ? rows.reduce((sum: number, r: any) => sum + r.bounceRate, 0) / rows.length
+      : 0;
 
     // Format data for the AdminAnalytics page
     const transformedData = {
