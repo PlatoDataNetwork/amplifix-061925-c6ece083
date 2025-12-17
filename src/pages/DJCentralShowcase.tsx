@@ -3,10 +3,10 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { 
-  Globe, Users, Music, Video, Tv, Play, Star, Radio, Mic2, 
-  Search, CheckCircle, Award, Sparkles, Heart, Target
+  Globe, Users, Music, Video, Tv, Star, Radio, Mic2, Play,
+  Search, CheckCircle, Award, Sparkles, Target
 } from "lucide-react";
-
+import djCentralLogo from "@/assets/dj-central-logo.png";
 const DJCentralShowcase = () => {
   return (
     <>
@@ -29,9 +29,9 @@ const DJCentralShowcase = () => {
             <div className="max-w-4xl mx-auto text-center">
               <div className="flex justify-center mb-8">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
-                  <div className="h-28 w-28 relative z-10 ring-4 ring-blue-500/30 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
-                    <Music className="h-14 w-14 text-white" />
+                  <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-lg" />
+                  <div className="h-28 w-auto relative z-10 ring-4 ring-blue-500/30 rounded-lg overflow-hidden flex items-center justify-center">
+                    <img src={djCentralLogo} alt="DJ Central" className="h-full w-auto object-contain" />
                   </div>
                 </div>
               </div>
@@ -374,62 +374,6 @@ const DJCentralShowcase = () => {
                 </div>
               </div>
 
-              <div className="mt-12 bg-gradient-to-br from-blue-500/10 to-purple-500/10 p-8 rounded-xl border border-blue-500/20">
-                <h3 className="text-2xl font-bold mb-6 text-center text-white">Latest Episodes</h3>
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div className="bg-card/50 p-4 rounded-lg border border-border">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Play className="h-5 w-5 text-blue-500" />
-                      <span className="font-semibold text-white">Season 6 Episode 1</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">Part 1 - Latest release</p>
-                  </div>
-                  <div className="bg-card/50 p-4 rounded-lg border border-border">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Play className="h-5 w-5 text-blue-500" />
-                      <span className="font-semibold text-white">Promo Feed 1</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">Promotional content</p>
-                  </div>
-                  <div className="bg-card/50 p-4 rounded-lg border border-border">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Play className="h-5 w-5 text-blue-500" />
-                      <span className="font-semibold text-white">Episode 1</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">Promo Feed 1</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Platform Impact Section */}
-        <section className="py-20 bg-card/50">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-white">
-                Platform Impact
-              </h2>
-              
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div className="text-center p-6 bg-gradient-to-br from-blue-500/10 to-transparent rounded-xl border border-blue-500/20">
-                  <div className="text-3xl md:text-4xl font-bold text-blue-500 mb-2">8+</div>
-                  <div className="text-sm text-muted-foreground">Countries</div>
-                </div>
-                <div className="text-center p-6 bg-gradient-to-br from-blue-500/10 to-transparent rounded-xl border border-blue-500/20">
-                  <div className="text-3xl md:text-4xl font-bold text-blue-500 mb-2">6</div>
-                  <div className="text-sm text-muted-foreground">TV Seasons</div>
-                </div>
-                <div className="text-center p-6 bg-gradient-to-br from-blue-500/10 to-transparent rounded-xl border border-blue-500/20">
-                  <div className="text-3xl md:text-4xl font-bold text-blue-500 mb-2">1.1K+</div>
-                  <div className="text-sm text-muted-foreground">YouTube Subscribers</div>
-                </div>
-                <div className="text-center p-6 bg-gradient-to-br from-blue-500/10 to-transparent rounded-xl border border-blue-500/20">
-                  <div className="text-3xl md:text-4xl font-bold text-blue-500 mb-2">∞</div>
-                  <div className="text-sm text-muted-foreground">Growing Artists</div>
-                </div>
-              </div>
             </div>
           </div>
         </section>
