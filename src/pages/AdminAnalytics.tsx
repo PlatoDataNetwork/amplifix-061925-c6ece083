@@ -41,8 +41,7 @@ const AdminAnalytics = () => {
     
     try {
       const { data: analyticsData, error: fetchError } = await supabase.functions.invoke('fetch-analytics', {
-        body: { 
-          propertyId: 'properties/464543802',
+        body: {
           startDate: '30daysAgo',
           endDate: 'today'
         }

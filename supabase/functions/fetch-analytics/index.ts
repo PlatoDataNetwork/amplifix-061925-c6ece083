@@ -201,8 +201,19 @@ serve(async (req: Request): Promise<Response> => {
     }
 
     // Get request parameters
-    const { propertyId = "464543802", startDate = "30daysAgo", endDate = "today" } = 
-      await req.json().catch(() => ({}));
+    const {
+      propertyId: rawPropertyId = "464543802",
+      startDate = "30daysAgo",
+      endDate = "today",
+    } = await req.json().catch(() => ({}));
+
+    const propertyId = typeof rawPropertyId === "string"
+      ? rawPropertyId.replace(/^properties\//, "")
+      : "464543802";
+
+    if (rawPropertyId !== propertyId) {
+      console.log("Normalized propertyId", { rawPropertyId, propertyId });
+    }
 
     console.log("Fetching analytics data", { propertyId, startDate, endDate });
 
@@ -210,12 +221,7 @@ serve(async (req: Request): Promise<Response> => {
     const accessToken = await getAccessToken(credentials);
 
     // Fetch GA4 data
-    const analyticsData = await fetchGA4Data(
-      accessToken,
-      propertyId,
-      startDate,
-      endDate
-    );
+    const analyticsData = await fetchGA4Data(accessToken, propertyId, startDate, endDate);
 
     // Transform the data to match AdminAnalytics page expectations
     const rows = analyticsData.rows?.map((row: any) => ({
