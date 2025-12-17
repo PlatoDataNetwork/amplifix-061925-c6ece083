@@ -1,0 +1,1 @@
+DELETE FROM showcase_companies WHERE id = '0cd425af-f0e6-4516-8972-6b3630d60bc7';
