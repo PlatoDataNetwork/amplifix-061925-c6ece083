@@ -1,7 +1,8 @@
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, FileText, BarChart3, Link2, Calendar, Building2 } from "lucide-react";
+import { Eye, FileText, BarChart3, Link2, Calendar, Building2 } from "lucide-react";
 import SharedHeader from "@/components/SharedHeader";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
@@ -87,15 +88,6 @@ const getTypeColor = (type: string) => {
 };
 
 const ReportsDashboard = () => {
-  const handleDownload = (url: string, filename: string) => {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
@@ -172,14 +164,15 @@ const ReportsDashboard = () => {
                               {report.fileSize}
                             </span>
                           )}
-                          <Button
-                            size="sm"
-                            onClick={() => handleDownload(report.downloadUrl, `${report.id}.${report.type}`)}
-                            className="ml-auto gap-2"
-                          >
-                            <Download className="h-4 w-4" />
-                            Download
-                          </Button>
+                          <Link to={`/reports/${campaign.id}/${report.id}`}>
+                            <Button
+                              size="sm"
+                              className="ml-auto gap-2"
+                            >
+                              <Eye className="h-4 w-4" />
+                              View
+                            </Button>
+                          </Link>
                         </div>
                       </CardContent>
                     </Card>
