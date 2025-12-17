@@ -9,28 +9,44 @@
     "hero_cta_secondary_link": "https://calendly.com/amplifix/amplifix-discovery",
     "faqs": [
       {
-        "question": "What is AmplifiX and how does it work?",
-        "answer": "AmplifiX is an AI-powered corporate communications platform that helps companies create compelling content, manage investor relations, and amplify their message across multiple channels. Our platform uses advanced AI technology to generate high-quality press releases, investor updates, and other corporate communications materials tailored to your company's unique voice and objectives."
+        "question": "What is AmplifiX?",
+        "answer": "AmplifiX is an AI-powered corporate communications platform that helps companies amplify their PR and investor relations strategy. We provide tailored solutions for both public and private companies, including advisory services, syndication, research & analytics, and custom development."
       },
       {
-        "question": "Who can benefit from using AmplifiX?",
-        "answer": "AmplifiX is designed for companies at all stages - from private companies preparing for fundraising to public companies managing ongoing investor relations. Our solutions are particularly valuable for companies preparing for IPOs, seeking to raise capital, or looking to improve their corporate communications strategy."
+        "question": "What solutions does AmplifiX offer?",
+        "answer": "AmplifiX offers a comprehensive suite of solutions including Advisory Services, Investor Relations, Data Research & Analytics, Syndication / IR / PR, Web Development, Blockchain / Web3 development, and Influencer Marketing. Each solution is designed to amplify your corporate communications at every stage of growth."
       },
       {
-        "question": "How does AmplifiX ensure content quality and compliance?",
-        "answer": "Our AI technology is trained on best practices in corporate communications and is regularly updated to reflect current regulatory requirements and industry standards. All content is generated with compliance in mind, and we recommend review by your legal and communications teams before publication."
+        "question": "How does AmplifiX support public companies?",
+        "answer": "For public companies, AmplifiX provides investor relations support, press release distribution, shareholder communications, quarterly reporting assistance, and ongoing market intelligence. Our platform helps maintain compliance while maximizing visibility and investor engagement."
       },
       {
-        "question": "What types of content can AmplifiX help create?",
-        "answer": "AmplifiX can help create a wide range of corporate communications materials including press releases, investor presentations, quarterly earnings materials, IPO documentation support, fundraising materials, corporate fact sheets, and ongoing investor relations content."
+        "question": "How does AmplifiX support private companies?",
+        "answer": "Private companies benefit from AmplifiX through fundraising support, pitch deck development, investor outreach, IPO preparation services, and strategic communications planning. We help position your company for growth and successful capital raises."
+      },
+      {
+        "question": "What is Market Intelligence?",
+        "answer": "Our Market Intelligence platform aggregates and analyzes news across multiple industry verticals including AI, Blockchain, Biotech, Cannabis, Cleantech, Cybersecurity, Fintech, Gaming, and more. This provides real-time insights to inform your communications strategy."
+      },
+      {
+        "question": "What are Blockchain and Web3 services?",
+        "answer": "AmplifiX offers specialized Blockchain and Web3 development services including tokenization strategies, smart contract development, and decentralized application support. We help companies navigate the evolving landscape of blockchain technology."
+      },
+      {
+        "question": "How does the Advisory service work?",
+        "answer": "Our Advisory services provide strategic guidance on corporate communications, investor relations, and market positioning. We work closely with your team to develop customized strategies that align with your business objectives and amplify your message."
+      },
+      {
+        "question": "What is Syndication and how does it help?",
+        "answer": "Our Syndication service distributes your press releases, announcements, and corporate content across a network of media outlets and platforms. This maximizes your reach and ensures your message gets in front of the right audiences."
       },
       {
         "question": "How do I get started with AmplifiX?",
-        "answer": "Getting started is easy. Contact our team to schedule a consultation where we'll assess your communications needs and demonstrate how AmplifiX can help amplify your company's message. We'll work with you to develop a customized solution that fits your specific requirements and objectives."
+        "answer": "Getting started is simple. Contact our team or book a demo to discuss your communications needs. We will assess your requirements and recommend the right combination of solutions to amplify your corporate strategy."
       },
       {
-        "question": "What makes AmplifiX different from other communication platforms?",
-        "answer": "AmplifiX combines advanced AI technology with deep expertise in corporate communications and investor relations. Our platform is specifically designed for corporate use cases and generates content that meets the high standards required for public company communications. We focus on quality, compliance, and strategic messaging rather than generic content creation."
+        "question": "How can I contact AmplifiX?",
+        "answer": "You can reach us through our Contact page or by booking a discovery call directly through our website. Our team is ready to discuss how AmplifiX can help amplify your corporate communications."
       }
     ]
   }
