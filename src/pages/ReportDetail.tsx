@@ -1,8 +1,9 @@
 import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, ArrowLeft, Calendar, Building2, FileText, BarChart3, Link2 } from "lucide-react";
+import { Download, ArrowLeft, Calendar, Building2, FileText, BarChart3, Link2, ExternalLink } from "lucide-react";
 import SharedHeader from "@/components/SharedHeader";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
@@ -89,9 +90,25 @@ const getTypeColor = (type: string) => {
 
 const ReportDetail = () => {
   const { campaignId, reportId } = useParams();
+  const [textContent, setTextContent] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   
   const campaign = campaigns.find(c => c.id === campaignId);
   const report = campaign?.reports.find(r => r.id === reportId);
+
+  useEffect(() => {
+    if (report?.type === "txt") {
+      setIsLoading(true);
+      fetch(report.downloadUrl)
+        .then(res => res.text())
+        .then(text => {
+          const lines = text.split("\n").filter(line => line.trim());
+          setTextContent(lines);
+          setIsLoading(false);
+        })
+        .catch(() => setIsLoading(false));
+    }
+  }, [report]);
 
   const handleDownload = (url: string, filename: string) => {
     const link = document.createElement("a");
@@ -216,13 +233,31 @@ const ReportDetail = () => {
                   ) : (
                     <div className="p-4 rounded-lg bg-muted/20 border border-border/50">
                       <p className="text-sm text-muted-foreground mb-4">
-                        This report contains a list of media placement URLs. Click the download button above to get the complete file.
+                        This report contains {textContent.length > 0 ? textContent.length : "a list of"} media placement URLs. Click any link to visit the placement.
                       </p>
-                      <iframe
-                        src={report.downloadUrl}
-                        className="w-full h-[600px] bg-background rounded border border-border/30"
-                        title={report.title}
-                      />
+                      {isLoading ? (
+                        <p className="text-muted-foreground">Loading links...</p>
+                      ) : (
+                        <div className="max-h-[600px] overflow-y-auto space-y-2 pr-2">
+                          {textContent.map((line, index) => {
+                            const isUrl = line.startsWith("http://") || line.startsWith("https://");
+                            return isUrl ? (
+                              <a
+                                key={index}
+                                href={line}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 hover:underline break-all p-2 rounded hover:bg-muted/30 transition-colors"
+                              >
+                                <ExternalLink className="h-4 w-4 shrink-0" />
+                                {line}
+                              </a>
+                            ) : (
+                              <p key={index} className="text-sm text-foreground p-2">{line}</p>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
