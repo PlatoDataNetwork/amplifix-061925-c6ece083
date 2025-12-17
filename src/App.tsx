@@ -86,6 +86,7 @@ import FGNexusShowcase from "./pages/FGNexusShowcase";
 import GridAIShowcase from "./pages/GridAIShowcase";
 import LixteShowcase from "./pages/LixteShowcase";
 import OneWorldOnlineShowcase from "./pages/OneWorldOnlineShowcase";
+import DJCentralShowcase from "./pages/DJCentralShowcase";
 import ShowcaseAdmin from "./pages/ShowcaseAdmin";
 import SecurityDashboard from "./pages/SecurityDashboard";
 import JsonTester from "./pages/JsonTester";
@@ -157,6 +158,7 @@ const App = () => (
               <Route path="/showcase/gridai" element={<GridAIShowcase />} />
               <Route path="/showcase/lixte" element={<LixteShowcase />} />
               <Route path="/showcase/1world-online" element={<OneWorldOnlineShowcase />} />
+              <Route path="/showcase/dj-central" element={<DJCentralShowcase />} />
               <Route path="/solutions/advisory" element={<Advisory />} />
               <Route path="/solutions/research" element={<Research />} />
               <Route path="/solutions/analytics" element={<AnalyticsSolutions />} />
@@ -246,6 +248,7 @@ const App = () => (
               <Route path="/:lang/showcase/gridai" element={<GridAIShowcase />} />
               <Route path="/:lang/showcase/lixte" element={<LixteShowcase />} />
               <Route path="/:lang/showcase/1world-online" element={<OneWorldOnlineShowcase />} />
+              <Route path="/:lang/showcase/dj-central" element={<DJCentralShowcase />} />
               <Route path="/:lang/solutions/advisory" element={<Advisory />} />
               <Route path="/:lang/solutions/research" element={<Research />} />
               <Route path="/:lang/solutions/analytics" element={<AnalyticsSolutions />} />
