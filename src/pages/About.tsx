@@ -77,9 +77,9 @@ const About = () => {
   const location = useLocation();
   useLanguage();
 
-  // Handle hash navigation for Process and Mission sections
+  // Handle hash navigation for Process, Mission, and Methodology sections
   useEffect(() => {
-    if (location.hash === '#process' || location.hash === '#mission') {
+    if (location.hash === '#process' || location.hash === '#mission' || location.hash === '#methodology') {
       setTimeout(() => {
         const element = document.getElementById(location.hash.replace('#', ''));
         if (element) {
@@ -197,6 +197,60 @@ const About = () => {
               <h3 className="font-bold mb-2">Trust & Integrity</h3>
               <p className="text-sm text-muted-foreground">Building transparent, compliant communications that protect and enhance brand reputation.</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Methodology Section */}
+      <section id="methodology" className="container mx-auto py-16 px-4 border-t border-border">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-5xl font-bold mb-6">Our Methodology</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              A systematic, data-driven approach to corporate communications that combines AI intelligence with human expertise for maximum impact.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div className="p-8 rounded-xl border border-border bg-card/50">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-highlight-blue rounded-full flex items-center justify-center text-white font-bold text-lg">1</div>
+                <h3 className="text-xl font-bold">Discovery & Analysis</h3>
+              </div>
+              <p className="text-muted-foreground">We begin by analyzing your company's current positioning, target audience, and competitive landscape using our proprietary AI tools to identify opportunities and gaps in your communication strategy.</p>
+            </div>
+            
+            <div className="p-8 rounded-xl border border-border bg-card/50">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-highlight-blue rounded-full flex items-center justify-center text-white font-bold text-lg">2</div>
+                <h3 className="text-xl font-bold">Strategy Development</h3>
+              </div>
+              <p className="text-muted-foreground">Based on insights gathered, we craft a tailored communication strategy that aligns with your business goals, incorporating sentiment analysis, market trends, and audience behavior patterns.</p>
+            </div>
+            
+            <div className="p-8 rounded-xl border border-border bg-card/50">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-highlight-blue rounded-full flex items-center justify-center text-white font-bold text-lg">3</div>
+                <h3 className="text-xl font-bold">Content Creation & Optimization</h3>
+              </div>
+              <p className="text-muted-foreground">Our AI-assisted content creation ensures messaging resonates across all channels while maintaining compliance and brand consistency. Each piece is optimized for maximum engagement and reach.</p>
+            </div>
+            
+            <div className="p-8 rounded-xl border border-border bg-card/50">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-highlight-blue rounded-full flex items-center justify-center text-white font-bold text-lg">4</div>
+                <h3 className="text-xl font-bold">Distribution & Amplification</h3>
+              </div>
+              <p className="text-muted-foreground">We leverage our network of 2,000+ publications and 35 languages to distribute your content strategically, ensuring it reaches the right audiences at optimal times for maximum visibility.</p>
+            </div>
+          </div>
+          
+          <div className="p-8 rounded-xl border border-highlight-blue/30 bg-highlight-blue/5 text-center">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="w-12 h-12 bg-highlight-blue rounded-full flex items-center justify-center text-white font-bold text-lg">5</div>
+              <h3 className="text-xl font-bold">Measurement & Iteration</h3>
+            </div>
+            <p className="text-muted-foreground max-w-2xl mx-auto">Continuous monitoring and real-time analytics provide actionable insights to refine and improve your strategy. Our feedback loop ensures your communications evolve with market dynamics and deliver measurable ROI.</p>
           </div>
         </div>
       </section>
