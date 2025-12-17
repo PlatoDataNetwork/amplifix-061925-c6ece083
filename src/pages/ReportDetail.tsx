@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -92,23 +92,37 @@ const getTypeColor = (type: string) => {
 const PDFViewer = ({ url, title }: { url: string; title: string }) => {
   const [zoom, setZoom] = useState(100);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const containerRef = useState<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleZoomIn = () => setZoom(prev => Math.min(prev + 25, 200));
-  const handleZoomOut = () => setZoom(prev => Math.max(prev - 25, 50));
+  useEffect(() => {
+    const onFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
 
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-      setIsFullscreen(true);
-    } else {
-      document.exitFullscreen();
-      setIsFullscreen(false);
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", onFullscreenChange);
+  }, []);
+
+  const handleZoomIn = () => setZoom((prev) => Math.min(prev + 25, 200));
+  const handleZoomOut = () => setZoom((prev) => Math.max(prev - 25, 50));
+
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await containerRef.current?.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch {
+      // Some browsers block fullscreen in certain contexts.
     }
   };
 
-  // Use Google Docs viewer as fallback for better compatibility
-  const googleDocsUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(window.location.origin + url)}&embedded=true`;
+  // Chrome often blocks inline PDF rendering; Google gview is more reliable.
+  const viewerUrl = useMemo(() => {
+    const absoluteUrl = new URL(url, window.location.origin).toString();
+    return `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(absoluteUrl)}`;
+  }, [url]);
 
   return (
     <div className="space-y-4">
@@ -168,18 +182,25 @@ const PDFViewer = ({ url, title }: { url: string; title: string }) => {
       </div>
 
       {/* PDF Container */}
-      <div 
+      <div
+        ref={containerRef}
         className="rounded-lg overflow-hidden border border-border/50 bg-muted/10"
-        style={{ 
-          height: isFullscreen ? '100vh' : '800px',
-          overflow: 'auto'
+        style={{
+          height: isFullscreen ? "100vh" : "800px",
+          overflow: "auto",
         }}
       >
-        <div style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'top left', width: `${10000 / zoom}%` }}>
+        <div
+          style={{
+            transform: `scale(${zoom / 100})`,
+            transformOrigin: "top left",
+            width: `${10000 / zoom}%`,
+          }}
+        >
           <iframe
-            src={url}
+            src={viewerUrl}
             className="w-full border-0"
-            style={{ height: isFullscreen ? '100vh' : '800px' }}
+            style={{ height: isFullscreen ? "100vh" : "800px" }}
             title={title}
           />
         </div>
