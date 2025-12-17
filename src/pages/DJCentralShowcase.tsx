@@ -30,11 +30,15 @@ const DJCentralShowcase = () => {
               <div className="flex justify-center mb-8">
                 <div className="relative">
                   <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-lg" />
-                  <div className="h-28 w-auto relative z-10 ring-4 ring-blue-500/30 rounded-lg overflow-hidden flex items-center justify-center">
+                  <div className="h-40 md:h-52 w-auto relative z-10 overflow-hidden flex items-center justify-center">
                     <img src={djCentralLogo} alt="DJ Central" className="h-full w-auto object-contain" />
                   </div>
                 </div>
               </div>
+
+              <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white">
+                DJ Central
+              </h1>
               
               <div className="flex items-center justify-center gap-3 mb-6">
                 <span className="px-3 py-1 bg-purple-500/15 text-purple-500 border border-purple-500/30 rounded-full text-sm font-medium">
@@ -47,10 +51,6 @@ const DJCentralShowcase = () => {
                   Record Label
                 </span>
               </div>
-
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">
-                DJ Central
-              </h1>
               
               <p className="text-2xl text-blue-400 font-semibold mb-4">
                 Listen. Watch. Dance. Enjoy.
@@ -132,7 +132,7 @@ const DJCentralShowcase = () => {
         <section id="about" className="py-20 bg-card/50">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center text-white">
+              <h2 className="text-4xl md:text-6xl font-bold mb-8 text-center text-white">
                 About DJ Central
               </h2>
               
@@ -179,7 +179,7 @@ const DJCentralShowcase = () => {
         <section id="music" className="py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">
+              <h2 className="text-4xl md:text-6xl font-bold mb-4 text-center text-white">
                 Music
               </h2>
               <p className="text-lg text-muted-foreground mb-12 text-center">
@@ -252,7 +252,7 @@ const DJCentralShowcase = () => {
         <section id="video" className="py-20 bg-card/50">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">
+              <h2 className="text-4xl md:text-6xl font-bold mb-4 text-center text-white">
                 Video
               </h2>
               <p className="text-lg text-muted-foreground mb-12 text-center">
@@ -320,7 +320,7 @@ const DJCentralShowcase = () => {
         <section id="tv-services" className="py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">
+              <h2 className="text-4xl md:text-6xl font-bold mb-4 text-center text-white">
                 TV Show Services
               </h2>
               <p className="text-lg text-muted-foreground mb-12 text-center">
@@ -382,7 +382,7 @@ const DJCentralShowcase = () => {
         <section className="py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+              <h2 className="text-4xl md:text-6xl font-bold mb-6 text-white">
                 Join the DJ Central Family
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
