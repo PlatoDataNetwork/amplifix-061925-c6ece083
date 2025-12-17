@@ -278,7 +278,14 @@ const AdminAnalytics = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Daily Active Users</CardTitle>
-                <CardDescription>User activity over the {DATE_RANGES.find(r => r.value === dateRange)?.label?.toLowerCase() || 'last 30 days'}</CardDescription>
+                <CardDescription>
+                  User activity over the {DATE_RANGES.find(r => r.value === dateRange)?.label?.toLowerCase() || 'last 30 days'}
+                  {data?.dailyUsers?.length ? (
+                    <span className="block mt-1 text-xs">
+                      Showing {data.dailyUsers.length} days • {data.dailyUsers[0].date} → {data.dailyUsers[data.dailyUsers.length - 1].date}
+                    </span>
+                  ) : null}
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div key={`${dateRange}-${lastUpdated?.getTime() ?? 0}`} className="h-64 flex items-end justify-between gap-1">
