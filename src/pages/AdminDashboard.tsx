@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainHeader from '@/components/MainHeader';
 import Footer from '@/components/Footer';
-import { Database, Users, FileText, Shield, Activity, Clock, LogOut, Archive, GitCompare, Map, Languages, Briefcase, BarChart3, Save, RotateCcw } from 'lucide-react';
+import { Database, Users, FileText, Shield, Activity, Clock, LogOut, Archive, GitCompare, Map, Languages, Briefcase, BarChart3, Save, RotateCcw, Contact } from 'lucide-react';
 import { AIBudgetTracker } from '@/components/admin/AIBudgetTracker';
 
 interface SystemStats {
@@ -75,6 +75,13 @@ const AdminDashboard = () => {
   }, []);
 
   const quickActions = [
+    {
+      title: 'CRM',
+      description: 'View and manage user signups and leads',
+      icon: Contact,
+      action: () => navigate('/admin/crm'),
+      color: 'from-emerald-500 to-teal-500'
+    },
     {
       title: 'Analytics',
       description: 'View Google Analytics insights and metrics',

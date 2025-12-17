@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { Button } from "@/components/ui/button";
-import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, User, Eye, EyeOff, Building2, Phone, Briefcase } from "lucide-react";
 import { useJsonData } from "@/hooks/useJsonData";
 import { AuthData } from "@/types/auth";
 
@@ -20,6 +20,9 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    company: '',
+    phone: '',
+    jobTitle: '',
     password: '',
     confirmPassword: ''
   });
@@ -62,7 +65,7 @@ const Signup = () => {
     try {
       const redirectUrl = `${window.location.origin}/`;
       
-      const { error } = await supabase.auth.signUp({
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
@@ -73,19 +76,38 @@ const Signup = () => {
         }
       });
 
-      if (error) {
+      if (authError) {
         toast({
           title: "Error",
-          description: error.message,
+          description: authError.message,
           variant: "destructive",
         });
-      } else {
-        toast({
-          title: "Success",
-          description: "Account created! Please check your email to confirm your account.",
-        });
-        navigate('/login');
+        return;
       }
+
+      // Create user profile in CRM
+      if (authData.user) {
+        const { error: profileError } = await supabase
+          .from('user_profiles')
+          .insert({
+            user_id: authData.user.id,
+            full_name: formData.name,
+            email: formData.email,
+            company: formData.company || null,
+            phone: formData.phone || null,
+            job_title: formData.jobTitle || null,
+          });
+
+        if (profileError) {
+          console.error('Error creating profile:', profileError);
+        }
+      }
+
+      toast({
+        title: "Success",
+        description: "Account created! Please check your email to confirm your account.",
+      });
+      navigate('/login');
     } catch (error) {
       toast({
         title: "Error",
@@ -142,7 +164,7 @@ const Signup = () => {
           </div>
 
           <div className="bg-card border-border/20 border rounded-xl p-8 shadow-lg">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">
                   {signUpText.name_label}
@@ -175,6 +197,57 @@ const Signup = () => {
                     className="w-full bg-background border rounded-lg pl-10 pr-4 py-3 focus:border-[#8A3FFC] focus:ring-2 focus:ring-[#8A3FFC]/20 focus:outline-none transition-all"
                     placeholder={signUpText.email_placeholder}
                     required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Company
+                </label>
+                <div className="relative">
+                  <Building2 className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                  <input
+                    type="text"
+                    name="company"
+                    value={formData.company}
+                    onChange={handleInputChange}
+                    className="w-full bg-background border rounded-lg pl-10 pr-4 py-3 focus:border-[#8A3FFC] focus:ring-2 focus:ring-[#8A3FFC]/20 focus:outline-none transition-all"
+                    placeholder="Enter your company name"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Phone Number
+                </label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full bg-background border rounded-lg pl-10 pr-4 py-3 focus:border-[#8A3FFC] focus:ring-2 focus:ring-[#8A3FFC]/20 focus:outline-none transition-all"
+                    placeholder="Enter your phone number"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Job Title / Role
+                </label>
+                <div className="relative">
+                  <Briefcase className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                  <input
+                    type="text"
+                    name="jobTitle"
+                    value={formData.jobTitle}
+                    onChange={handleInputChange}
+                    className="w-full bg-background border rounded-lg pl-10 pr-4 py-3 focus:border-[#8A3FFC] focus:ring-2 focus:ring-[#8A3FFC]/20 focus:outline-none transition-all"
+                    placeholder="Enter your job title"
                   />
                 </div>
               </div>
@@ -232,7 +305,7 @@ const Signup = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity h-12 text-base font-semibold"
+                className="w-full bg-gradient-to-r from-[#8A3FFC] to-[#06B6D4] text-white hover:opacity-90 transition-opacity h-12 text-base font-semibold mt-2"
               >
                 {isSubmitting ? "Creating account..." : signUpText.submit_button}
               </Button>
