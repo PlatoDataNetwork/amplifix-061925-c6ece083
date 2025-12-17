@@ -95,6 +95,7 @@ import PlatoSourceStats from "./pages/PlatoSourceStats";
 import BulkImportAdmin from "./pages/BulkImportAdmin";
 import SitemapAdmin from "./pages/SitemapAdmin";
 import AdminCRM from "./pages/AdminCRM";
+import ReportsDashboard from "./pages/ReportsDashboard";
 
 const queryClient = new QueryClient();
 
@@ -198,6 +199,7 @@ const App = () => (
           <Route path="/admin/showcase" element={<AdminRoute><ShowcaseAdmin /></AdminRoute>} />
           <Route path="/admin/json-tester" element={<AdminRoute><JsonTester /></AdminRoute>} />
           <Route path="/admin/crm" element={<AdminRoute><AdminCRM /></AdminRoute>} />
+          <Route path="/reports" element={<ReportsDashboard />} />
           <Route path="/showcase/fynn-ai" element={<FynnAIShowcase />} />
 
               {/* Language-prefixed routes (e.g., /ar/, /fr/) */}
