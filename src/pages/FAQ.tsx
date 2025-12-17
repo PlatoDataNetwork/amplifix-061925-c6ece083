@@ -45,7 +45,7 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 const FAQ = () => {
-  const { data: faqData } = useJsonData<FAQData>('/data/faq.json');
+  const { data: faqData } = useJsonData<FAQData>('faq.json');
   useLanguage();
   
   const [openCategories, setOpenCategories] = useState<string[]>(["Platform"]);
