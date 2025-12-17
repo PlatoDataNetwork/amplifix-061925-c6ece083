@@ -7,10 +7,12 @@ import { ExternalLink, TrendingUp, Shield, Cpu, Zap, Target, Globe, Play, X, Fil
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { useState } from "react";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const MicropolisShowcase = () => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  useGTranslateRefresh(true);
+  useLanguage();
+  useGTranslateRefresh(true, []);
 
   return (
     <>

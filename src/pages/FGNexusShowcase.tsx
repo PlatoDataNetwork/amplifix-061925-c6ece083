@@ -2,11 +2,13 @@ import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, TrendingUp, Shield, Wallet, Network, Award, Users, FileText, Building2 } from "lucide-react";
 
 const FGNexusShowcase = () => {
-  useGTranslateRefresh(true);
+  useLanguage();
+  useGTranslateRefresh(true, []);
   const thumbnailImage = "/lovable-uploads/fgnexus-icon.jpeg";
 
   return (

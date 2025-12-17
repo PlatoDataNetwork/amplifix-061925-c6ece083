@@ -7,10 +7,12 @@ import { Helmet } from "react-helmet-async";
 import { ExternalLink, Shield, Coins, Lock, TrendingUp, Globe, Mail } from "lucide-react";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 import { supabase } from "@/integrations/supabase/client";
 
 const KedalionShowcase = () => {
-  useGTranslateRefresh(true);
+  useLanguage();
+  useGTranslateRefresh(true, []);
   const [videoUrl, setVideoUrl] = useState("/lovable-uploads/kedalion-video.mp4");
 
   useEffect(() => {

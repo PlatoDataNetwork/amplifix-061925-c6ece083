@@ -4,9 +4,11 @@ import { ExternalLink, TrendingUp, Users, Award, Calendar, DollarSign, Building,
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const InternationalLandAllianceShowcase = () => {
-  useGTranslateRefresh(true);
+  useLanguage();
+  useGTranslateRefresh(true, []);
   return (
     <>
       <Helmet>

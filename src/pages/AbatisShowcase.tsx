@@ -5,9 +5,11 @@ import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
 import { ExternalLink, Shield, Lock, Zap, Globe, Check, FileText, ShoppingCart, TrendingUp, Users, Target, AlertCircle, Award, CheckCircle, Cpu } from "lucide-react";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const AbatisShowcase = () => {
-  useGTranslateRefresh(true);
+  useLanguage();
+  useGTranslateRefresh(true, []);
   return (
     <>
       <Helmet>

@@ -57,7 +57,7 @@ const Showcase = () => {
   const [filterType, setFilterType] = useState<'all' | 'public' | 'private' | 'token'>('all');
   const [filterSector, setFilterSector] = useState<string>('all');
   useLanguage();
-  useGTranslateRefresh(!loading && dbShowcases.length > 0, [loading, dbShowcases.length]);
+  // GTranslate refresh moved below filteredShowcases
 
   useEffect(() => {
     const fetchShowcases = async () => {
@@ -370,6 +370,9 @@ const Showcase = () => {
 
     return filtered;
   }, [allShowcases, filterType, filterSector]);
+
+  // Trigger GTranslate refresh when content is ready
+  useGTranslateRefresh(!loading, [loading, filteredShowcases.length]);
 
   console.log("Rendering with showcases:", filteredShowcases.length, "items");
 

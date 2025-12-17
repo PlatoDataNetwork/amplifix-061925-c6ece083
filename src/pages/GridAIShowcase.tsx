@@ -3,8 +3,12 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, TrendingUp, Zap, Building, Globe, Cpu, Leaf, Shield, DollarSign, Home, Factory, Server, Battery, Car, Sun, Search } from "lucide-react";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const GridAIShowcase = () => {
+  useLanguage();
+  useGTranslateRefresh(true, []);
   return (
     <>
       <Helmet>

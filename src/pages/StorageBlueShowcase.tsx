@@ -4,9 +4,11 @@ import { ExternalLink, Building2, MapPin, TrendingUp, Users, Shield, Key, Home, 
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const StorageBlueShowcase = () => {
-  useGTranslateRefresh(true);
+  useLanguage();
+  useGTranslateRefresh(true, []);
   return (
     <>
       <Helmet>

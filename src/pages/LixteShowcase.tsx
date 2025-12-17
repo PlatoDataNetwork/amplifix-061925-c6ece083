@@ -3,8 +3,12 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, TrendingUp, Globe, FileText, Pill, FlaskConical, Users, Microscope, TestTube, Shield, Target, Activity, Dna, Beaker, CheckCircle, Search } from "lucide-react";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const LixteShowcase = () => {
+  useLanguage();
+  useGTranslateRefresh(true, []);
   return (
     <>
       <Helmet>
