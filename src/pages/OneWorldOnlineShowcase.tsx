@@ -32,27 +32,30 @@ const OneWorldOnlineShowcase = () => {
               <div className="flex justify-center mb-8">
                 <div className="relative">
                   <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
-                  <div className="h-24 w-auto relative z-10 ring-4 ring-blue-500/30 rounded-lg p-4 bg-white flex items-center justify-center">
+                  <div className="h-28 w-auto relative z-10 ring-4 ring-blue-500/30 rounded-lg overflow-hidden flex items-center justify-center">
                     <img src={oneWorldLogo} alt="1World Online" className="h-full w-auto object-contain" />
                   </div>
                 </div>
               </div>
               
               <div className="flex items-center justify-center gap-3 mb-6">
-                <span className="px-3 py-1 bg-blue-500/15 text-blue-500 border border-blue-500/30 rounded-full text-sm font-medium">
-                  PRIVATE
-                </span>
                 <span className="px-3 py-1 bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 rounded-full text-sm font-medium">
                   Travel & Leisure
                 </span>
+                <span className="px-3 py-1 bg-purple-500/15 text-purple-500 border border-purple-500/30 rounded-full text-sm font-medium">
+                  Media
+                </span>
+                <span className="px-3 py-1 bg-amber-500/15 text-amber-500 border border-amber-500/30 rounded-full text-sm font-medium">
+                  Engagement
+                </span>
               </div>
 
-              <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                <span className="text-blue-500">1World</span> Online
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">
+                1World Online
               </h1>
               
               <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-                Transform passive audiences into active participants with interactive engagement solutions that drive participation, loyalty, and monetization.
+                Engagement tools for Media and Travel. Transform passive audiences into active participants with interactive solutions that drive participation, loyalty, and monetization.
               </p>
 
               <div className="flex flex-wrap justify-center gap-4">
