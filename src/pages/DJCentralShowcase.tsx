@@ -8,9 +8,11 @@ import {
 } from "lucide-react";
 import djCentralHero from "@/assets/dj-central-hero.png";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const DJCentralShowcase = () => {
-  useGTranslateRefresh(true);
+  useLanguage();
+  useGTranslateRefresh(true, []);
   return (
     <>
       <Helmet>

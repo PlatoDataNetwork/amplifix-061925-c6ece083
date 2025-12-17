@@ -6,9 +6,11 @@ import { Helmet } from "react-helmet-async";
 import { ExternalLink, Leaf, Shield, Zap, Globe2, Coins, LineChart, Users, Play } from "lucide-react";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const CutEcoShowcase = () => {
-  useGTranslateRefresh(true);
+  useLanguage();
+  useGTranslateRefresh(true, []);
 
   return (
     <>

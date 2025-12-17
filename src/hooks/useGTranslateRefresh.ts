@@ -19,24 +19,19 @@ export function useGTranslateRefresh(contentLoaded: boolean, dependencies: any[]
       if (typeof w.doGTranslate === 'function') {
         console.log(`[GTranslate] Refreshing translation for ${targetCode}`);
         
-        // Multiple passes to ensure all dynamic content is caught
-        setTimeout(() => {
-          try {
-            w.doGTranslate(`en|${targetCode}`);
-            
-            // Second pass after DOM updates
-            setTimeout(() => {
-              w.doGTranslate(`en|${targetCode}`);
-            }, 500);
-
-            // Third pass for stubborn elements
-            setTimeout(() => {
-              w.doGTranslate(`en|${targetCode}`);
-            }, 1200);
-          } catch (e) {
-            console.error('[GTranslate] Refresh failed:', e);
-          }
-        }, 300);
+        // Multiple aggressive passes to ensure all dynamic content is caught
+        const delays = [100, 300, 600, 1000, 1500, 2500];
+        delays.forEach((delay) => {
+          setTimeout(() => {
+            try {
+              if (typeof w.doGTranslate === 'function') {
+                w.doGTranslate(`en|${targetCode}`);
+              }
+            } catch (e) {
+              console.error('[GTranslate] Refresh failed:', e);
+            }
+          }, delay);
+        });
       } else {
         console.warn('[GTranslate] doGTranslate function not available');
       }

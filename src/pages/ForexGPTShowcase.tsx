@@ -20,7 +20,12 @@ import Footer from "@/components/Footer";
 
 const forexGptThumbnail = "/lovable-uploads/forex-gpt-social-thumbnail.png";
 
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
+
 const ForexGPTShowcase = () => {
+  useLanguage();
+  useGTranslateRefresh(true, []);
   const iconMap: Record<string, any> = {
     brain: Brain,
     chart: BarChart3,

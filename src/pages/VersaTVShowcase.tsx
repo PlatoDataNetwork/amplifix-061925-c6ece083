@@ -4,9 +4,11 @@ import { ExternalLink, Video, Tv, Radio, Smartphone, Users, Zap, Globe, Play, Tr
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const VersaTVShowcase = () => {
-  useGTranslateRefresh(true);
+  useLanguage();
+  useGTranslateRefresh(true, []);
   return (
     <>
       <Helmet>

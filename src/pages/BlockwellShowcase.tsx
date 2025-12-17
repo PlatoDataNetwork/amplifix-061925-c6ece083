@@ -4,9 +4,11 @@ import { ExternalLink, Shield, Blocks, Brain, Network, Lock, CheckCircle, Server
 import { Helmet } from "react-helmet-async";
 import MainHeader from "@/components/MainHeader";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const BlockwellShowcase = () => {
-  useGTranslateRefresh(true);
+  useLanguage();
+  useGTranslateRefresh(true, []);
   return (
     <>
       <Helmet>

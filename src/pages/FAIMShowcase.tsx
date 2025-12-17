@@ -6,9 +6,11 @@ import { Helmet } from "react-helmet-async";
 import { ExternalLink, Users, Sparkles, Shield, Star, TrendingUp } from "lucide-react";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const FAIMShowcase = () => {
-  useGTranslateRefresh(true);
+  useLanguage();
+  useGTranslateRefresh(true, []);
 
   return (
     <>

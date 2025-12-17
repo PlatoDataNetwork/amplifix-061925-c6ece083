@@ -23,6 +23,7 @@ import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import { useJsonData } from "@/hooks/useJsonData";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface SynbioData {
   synbio: {
@@ -139,6 +140,7 @@ const iconMap: Record<string, any> = {
 
 const SynbioShowcase = () => {
   const { data, isLoading, error } = useJsonData<SynbioData>('synbio-showcase.json');
+  useLanguage();
   useGTranslateRefresh(!isLoading && !!data, [data]);
 
   if (isLoading) {

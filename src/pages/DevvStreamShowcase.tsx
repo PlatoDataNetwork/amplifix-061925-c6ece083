@@ -6,9 +6,11 @@ import { Helmet } from "react-helmet-async";
 import { ExternalLink, TrendingUp, Leaf, Globe2, LineChart, Zap, Target, Users, Coins, Lock, Shield } from "lucide-react";
 import { LanguageAwareLink } from "@/components/LanguageAwareLink";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const DevvStreamShowcase = () => {
-  useGTranslateRefresh(true);
+  useLanguage();
+  useGTranslateRefresh(true, []);
 
   return (
     <>

@@ -9,9 +9,11 @@ import {
 } from "lucide-react";
 import oneWorldLogo from "@/assets/1world-online-logo.png";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const OneWorldOnlineShowcase = () => {
-  useGTranslateRefresh(true);
+  useLanguage();
+  useGTranslateRefresh(true, []);
   return (
     <>
       <Helmet>
