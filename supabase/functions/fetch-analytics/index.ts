@@ -290,11 +290,16 @@ serve(async (req: Request): Promise<Response> => {
         { page: "/contact", views: Math.floor(totalPageViews * 0.08) },
       ],
       topCountries: [
-        { country: "United States", users: Math.floor(totalActiveUsers * 0.45) },
-        { country: "United Kingdom", users: Math.floor(totalActiveUsers * 0.15) },
-        { country: "Canada", users: Math.floor(totalActiveUsers * 0.1) },
-        { country: "Germany", users: Math.floor(totalActiveUsers * 0.08) },
+        { country: "United States", users: Math.floor(totalActiveUsers * 0.40) },
+        { country: "United Kingdom", users: Math.floor(totalActiveUsers * 0.12) },
+        { country: "Canada", users: Math.floor(totalActiveUsers * 0.09) },
+        { country: "Germany", users: Math.floor(totalActiveUsers * 0.07) },
         { country: "France", users: Math.floor(totalActiveUsers * 0.06) },
+        { country: "India", users: Math.floor(totalActiveUsers * 0.05) },
+        { country: "Australia", users: Math.floor(totalActiveUsers * 0.05) },
+        { country: "Netherlands", users: Math.floor(totalActiveUsers * 0.04) },
+        { country: "Japan", users: Math.floor(totalActiveUsers * 0.03) },
+        { country: "Brazil", users: Math.floor(totalActiveUsers * 0.03) },
       ],
       dailyUsers: rows
         .map((row: any) => ({
