@@ -201,7 +201,7 @@ serve(async (req: Request): Promise<Response> => {
     }
 
     // Get request parameters
-    const { propertyId = "properties/464543802", startDate = "30daysAgo", endDate = "today" } = 
+    const { propertyId = "464543802", startDate = "30daysAgo", endDate = "today" } = 
       await req.json().catch(() => ({}));
 
     console.log("Fetching analytics data", { propertyId, startDate, endDate });
