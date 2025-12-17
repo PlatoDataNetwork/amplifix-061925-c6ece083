@@ -21,10 +21,13 @@ export default function TranslationDebugWidget() {
 
   const urlLang = getLanguageFromPath() || "en";
 
+  const [htmlLang, setHtmlLang] = useState("en");
+
   useEffect(() => {
     const check = () => {
       setGtLoaded(typeof window.doGTranslate === "function");
       setDocDir(document.documentElement.getAttribute("dir") || "ltr");
+      setHtmlLang(document.documentElement.getAttribute("lang") || "en");
     };
     check();
     const interval = setInterval(check, 1000);
@@ -71,6 +74,12 @@ export default function TranslationDebugWidget() {
             <div className="flex justify-between">
               <span className="text-gray-400">i18n lang:</span>
               <span className="text-cyan-400 font-bold">{i18n.language || "—"}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-400">html lang:</span>
+              <span className={`font-bold ${htmlLang === "en" ? "text-green-400" : "text-orange-400"}`}>
+                {htmlLang}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-400">dir:</span>
