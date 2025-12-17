@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, ArrowLeft, Calendar, Building2, FileText, BarChart3, Link2, ExternalLink } from "lucide-react";
+import { Download, ArrowLeft, Calendar, Building2, FileText, BarChart3, Link2, ExternalLink, ZoomIn, ZoomOut, Maximize2, Minimize2 } from "lucide-react";
 import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
@@ -86,6 +86,111 @@ const getTypeColor = (type: string) => {
     default:
       return "bg-muted text-muted-foreground";
   }
+};
+
+// PDF Viewer Component with controls
+const PDFViewer = ({ url, title }: { url: string; title: string }) => {
+  const [zoom, setZoom] = useState(100);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const containerRef = useState<HTMLDivElement | null>(null);
+
+  const handleZoomIn = () => setZoom(prev => Math.min(prev + 25, 200));
+  const handleZoomOut = () => setZoom(prev => Math.max(prev - 25, 50));
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
+  // Use Google Docs viewer as fallback for better compatibility
+  const googleDocsUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(window.location.origin + url)}&embedded=true`;
+
+  return (
+    <div className="space-y-4">
+      {/* Controls */}
+      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg border border-border/50">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Zoom:</span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleZoomOut}
+            disabled={zoom <= 50}
+            className="h-8 w-8 p-0"
+          >
+            <ZoomOut className="h-4 w-4" />
+          </Button>
+          <span className="text-sm font-medium w-12 text-center">{zoom}%</span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleZoomIn}
+            disabled={zoom >= 200}
+            className="h-8 w-8 p-0"
+          >
+            <ZoomIn className="h-4 w-4" />
+          </Button>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={toggleFullscreen}
+            className="gap-2"
+          >
+            {isFullscreen ? (
+              <>
+                <Minimize2 className="h-4 w-4" />
+                Exit Fullscreen
+              </>
+            ) : (
+              <>
+                <Maximize2 className="h-4 w-4" />
+                Fullscreen
+              </>
+            )}
+          </Button>
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-3 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+          >
+            <ExternalLink className="h-4 w-4" />
+            Open in New Tab
+          </a>
+        </div>
+      </div>
+
+      {/* PDF Container */}
+      <div 
+        className="rounded-lg overflow-hidden border border-border/50 bg-muted/10"
+        style={{ 
+          height: isFullscreen ? '100vh' : '800px',
+          overflow: 'auto'
+        }}
+      >
+        <div style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'top left', width: `${10000 / zoom}%` }}>
+          <iframe
+            src={url}
+            className="w-full border-0"
+            style={{ height: isFullscreen ? '100vh' : '800px' }}
+            title={title}
+          />
+        </div>
+      </div>
+
+      {/* Fallback notice */}
+      <p className="text-xs text-muted-foreground text-center">
+        If the PDF doesn't load, try <a href={url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">opening it directly</a> or use the "Open in New Tab" button above.
+      </p>
+    </div>
+  );
 };
 
 const ReportDetail = () => {
@@ -223,14 +328,7 @@ const ReportDetail = () => {
                 <div className="mt-8">
                   <h3 className="text-lg font-semibold text-foreground mb-4">Report Preview</h3>
                   {report.type === "pdf" ? (
-                    <div className="rounded-lg overflow-hidden border border-border/50 bg-muted/10">
-                      <embed
-                        src={`${report.downloadUrl}#toolbar=1&navpanes=1&scrollbar=1`}
-                        type="application/pdf"
-                        className="w-full h-[800px]"
-                        title={report.title}
-                      />
-                    </div>
+                    <PDFViewer url={report.downloadUrl} title={report.title} />
                   ) : (
                     <div className="p-4 rounded-lg bg-muted/20 border border-border/50">
                       <p className="text-sm text-muted-foreground mb-4">
