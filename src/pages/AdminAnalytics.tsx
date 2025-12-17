@@ -281,24 +281,38 @@ const AdminAnalytics = () => {
                 <CardDescription>User activity over the {DATE_RANGES.find(r => r.value === dateRange)?.label?.toLowerCase() || 'last 30 days'}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-64 flex items-end justify-between gap-1">
-                  {data.dailyUsers.map((day, index) => {
-                    const maxUsers = Math.max(...data.dailyUsers.map(d => d.users));
-                    const height = (day.users / maxUsers) * 100;
-                    
-                    return (
-                      <div key={index} className="flex-1 flex flex-col items-center gap-2">
-                        <div 
-                          className="w-full bg-primary rounded-t transition-all hover:bg-primary/80"
-                          style={{ height: `${height}%` }}
-                          title={`${day.date}: ${day.users} users`}
-                        />
-                        <span className="text-xs text-muted-foreground rotate-45 origin-top-left">
-                          {new Date(day.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                        </span>
-                      </div>
-                    );
-                  })}
+                <div key={`${dateRange}-${lastUpdated?.getTime() ?? 0}`} className="h-64 flex items-end justify-between gap-1">
+                  {(() => {
+                    const maxUsers = Math.max(...data.dailyUsers.map(d => d.users), 1);
+
+                    return data.dailyUsers.map((day) => {
+                      const rawDate = day.date;
+                      const displayDate = rawDate.includes('-')
+                        ? rawDate
+                        : rawDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
+
+                      const d = new Date(displayDate);
+                      const label = Number.isNaN(d.getTime())
+                        ? displayDate
+                        : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+                      const height = (day.users / maxUsers) * 100;
+                      const heightPct = day.users > 0 ? Math.max(1, height) : 0;
+
+                      return (
+                        <div key={displayDate} className="flex-1 flex flex-col items-center gap-2">
+                          <div
+                            className="w-full bg-primary rounded-t transition-all hover:bg-primary/80"
+                            style={{ height: `${heightPct}%` }}
+                            title={`${displayDate}: ${day.users} users`}
+                          />
+                          <span className="text-xs text-muted-foreground rotate-45 origin-top-left">
+                            {label}
+                          </span>
+                        </div>
+                      );
+                    });
+                  })()}
                 </div>
               </CardContent>
             </Card>
