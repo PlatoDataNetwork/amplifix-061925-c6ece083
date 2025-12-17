@@ -7,8 +7,10 @@ import {
   Search, CheckCircle, Award, Sparkles, Target
 } from "lucide-react";
 import djCentralHero from "@/assets/dj-central-hero.png";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 const DJCentralShowcase = () => {
+  useGTranslateRefresh(true);
   return (
     <>
       <Helmet>
