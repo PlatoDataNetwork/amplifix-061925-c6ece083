@@ -83,7 +83,7 @@ const OneWorldOnlineShowcase = () => {
                 >
                   <a href="https://www.bing.com/copilotsearch?q=1World+Online" target="_blank" rel="noopener noreferrer">
                     <Search className="mr-2 h-4 w-4" />
-                    AmplifiX
+                    AmplifiX Search
                   </a>
                 </Button>
               </div>
