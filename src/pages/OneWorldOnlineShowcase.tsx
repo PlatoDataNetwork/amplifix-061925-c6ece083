@@ -8,8 +8,10 @@ import {
   Clock, DollarSign, Heart, Lightbulb, Layers, PieChart
 } from "lucide-react";
 import oneWorldLogo from "@/assets/1world-online-logo.png";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 const OneWorldOnlineShowcase = () => {
+  useGTranslateRefresh(true);
   return (
     <>
       <Helmet>

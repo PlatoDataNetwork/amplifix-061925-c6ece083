@@ -16,6 +16,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
 import { useJsonData } from "@/hooks/useJsonData";
 import { DirectShowcaseUpdate } from "@/components/DirectShowcaseUpdate";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 interface ShowcaseData {
   showcase: {
@@ -56,6 +57,7 @@ const Showcase = () => {
   const [filterType, setFilterType] = useState<'all' | 'public' | 'private' | 'token'>('all');
   const [filterSector, setFilterSector] = useState<string>('all');
   useLanguage();
+  useGTranslateRefresh(!loading && dbShowcases.length > 0, [loading, dbShowcases.length]);
 
   useEffect(() => {
     const fetchShowcases = async () => {
