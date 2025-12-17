@@ -1,0 +1,31 @@
+INSERT INTO public.showcase_companies (
+  company_name,
+  ticker,
+  description,
+  tags,
+  link,
+  website,
+  thumbnail,
+  type,
+  main_sector,
+  subtitle,
+  button_text,
+  search_url,
+  display_order,
+  disabled
+) VALUES (
+  '1World Online',
+  NULL,
+  'Interactive engagement platform that transforms passive audiences into active participants through gamified experiences, AI-powered solutions, and monetization tools.',
+  ARRAY['Travel & Leisure', 'Engagement', 'Media Tech'],
+  '/showcase/1world-online',
+  'https://1worldonline.com/',
+  NULL,
+  'private',
+  'Travel & Leisure',
+  'Interactive Engagement Platform',
+  'Learn More',
+  'https://www.bing.com/copilotsearch?q=1World+Online',
+  17,
+  false
+);
