@@ -67,7 +67,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li><LanguageAwareLink to="/about" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.about")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/about#mission" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.mission")}</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/about#methodology" className="text-muted-foreground hover:text-highlight-blue">Methodology</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/about#methodology" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.methodology")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/about#process" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.process")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/showcase" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.showcase")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/contact" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.contact")}</LanguageAwareLink></li>
@@ -90,8 +90,8 @@ const Footer = () => {
             <h3 className="text-lg font-medium mb-4 translate">{t("footer.solutions")}</h3>
             <ul className="space-y-2">
               <li><LanguageAwareLink to="/solutions/advisory" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.advisory")}</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/research" className="text-muted-foreground hover:text-highlight-blue">Data Research</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/development" className="text-muted-foreground hover:text-highlight-blue">Web Development</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/research" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.dataResearch")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/development" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.development")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/ir-pr" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.investorRelations")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/public-companies" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.publicCompanies")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/private-companies" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.privateCompanies")}</LanguageAwareLink></li>
