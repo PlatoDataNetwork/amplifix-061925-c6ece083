@@ -35,7 +35,11 @@ i18n
 i18n.on('languageChanged', (lng) => {
   const dir = rtlLanguages.includes(lng) ? 'rtl' : 'ltr';
   document.documentElement.setAttribute('dir', dir);
-  document.documentElement.setAttribute('lang', lng);
+
+  // Keep the source language as English so the GTranslate widget reliably applies
+  // client-side translations. (We store the user's intended language separately.)
+  document.documentElement.setAttribute('lang', 'en');
+  document.documentElement.setAttribute('data-user-lang', lng);
 });
 
 export default i18n;
