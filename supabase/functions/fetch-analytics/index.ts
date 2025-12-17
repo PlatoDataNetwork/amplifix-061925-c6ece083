@@ -296,10 +296,13 @@ serve(async (req: Request): Promise<Response> => {
         { country: "Germany", users: Math.floor(totalActiveUsers * 0.08) },
         { country: "France", users: Math.floor(totalActiveUsers * 0.06) },
       ],
-      dailyUsers: rows.map((row: any) => ({
-        date: row.date,
-        users: row.activeUsers,
-      })),
+      dailyUsers: rows
+        .map((row: any) => ({
+          // GA4 returns dates as YYYYMMDD, convert to YYYY-MM-DD for JS Date parsing
+          date: row.date.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'),
+          users: row.activeUsers,
+        }))
+        .sort((a: any, b: any) => a.date.localeCompare(b.date)),
     };
 
     console.log("Successfully fetched and transformed analytics data", {

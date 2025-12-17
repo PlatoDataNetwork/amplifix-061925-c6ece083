@@ -278,7 +278,7 @@ const AdminAnalytics = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Daily Active Users</CardTitle>
-                <CardDescription>User activity over the last 30 days</CardDescription>
+                <CardDescription>User activity over the {DATE_RANGES.find(r => r.value === dateRange)?.label?.toLowerCase() || 'last 30 days'}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-64 flex items-end justify-between gap-1">
