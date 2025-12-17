@@ -1,84 +1,118 @@
 {
   "faq": {
-    "hero_title": "Frequently Asked",
-    "hero_title_highlight": "Questions",
-    "hero_description": "Find answers to common questions about AmplifiX and our AI-powered corporate communications solutions.",
-    "hero_cta_primary_text": "Amplifi Your Brand →",
-    "hero_cta_primary_link": "/contact",
-    "hero_cta_secondary_text": "Book A Demo",
-    "hero_cta_secondary_link": "https://calendly.com/amplifix/amplifix-discovery",
-    "faqs": [
+    "hero": {
+      "title": "Frequently Asked",
+      "title_highlight": "Questions",
+      "description": "Find answers to common questions about AmplifiX and our AI-powered corporate communications solutions.",
+      "cta_primary_text": "Amplifi Your Brand →",
+      "cta_primary_link": "/contact",
+      "cta_secondary_text": "Book A Demo",
+      "cta_secondary_link": "https://calendly.com/amplifix/amplifix-discovery"
+    },
+    "categories": [
       {
-        "question": "What is AmplifiX?",
-        "answer": "AmplifiX is an AI-powered corporate communications platform that helps companies amplify their PR and investor relations strategy. We provide tailored solutions for both public and private companies, including Advisory Services, Syndication, Research & Analytics, and Development Services."
+        "name": "Platform",
+        "icon": "layout",
+        "faqs": [
+          {
+            "question": "What is AmplifiX?",
+            "answer": "AmplifiX is an AI-powered corporate communications platform that helps companies amplify their PR and investor relations strategy. We provide tailored solutions for both public and private companies, including Advisory Services, Syndication, Research & Analytics, and Development Services."
+          },
+          {
+            "question": "What is Market Intelligence?",
+            "answer": "Our Market Intelligence platform aggregates and analyzes news across 50+ industry verticals including AI, Blockchain, Biotech, Cannabis, Cleantech, Cybersecurity, Fintech, Gaming, and more. This provides real-time insights to inform your communications strategy and keep you ahead of market trends."
+          },
+          {
+            "question": "How does AmplifiX support public companies?",
+            "answer": "For public companies, AmplifiX provides investor relations support, press release distribution, shareholder communications, quarterly reporting assistance, and ongoing market intelligence. Our platform helps maintain compliance while maximizing visibility and investor engagement."
+          },
+          {
+            "question": "How does AmplifiX support private companies?",
+            "answer": "Private companies benefit from AmplifiX through fundraising support, pitch deck development, investor outreach, IPO preparation services, and strategic communications planning. We help position your company for growth and successful capital raises."
+          }
+        ]
       },
       {
-        "question": "What solutions does AmplifiX offer?",
-        "answer": "AmplifiX offers a comprehensive suite of solutions including Advisory Services, Investor Relations, Data Research & Analytics, Syndication / IR / PR, Web Development, Blockchain / Web3 development, and Influencer Marketing. Each solution is designed to amplify your corporate communications at every stage of growth."
+        "name": "Industry Verticals",
+        "icon": "layers",
+        "faqs": [
+          {
+            "question": "What industry verticals does Market Intelligence cover?",
+            "answer": "Market Intelligence covers 50+ verticals including: Aerospace, AI (Artificial Intelligence), AR/VR, Autism, Automotive, Aviation, Big Data, Biotech, Blockchain, Cannabis, Carbon, Cleantech, Clinical Trials, Code, Crowdfunding, Cyber Security, Defense, Ecommerce, EdTech, Energy, ESG, Esports, Finance, FinanceFeeds, Fintech, Forex, Gaming, Hydrogen, IoT, Medical Devices, Music, Nano Technology, NFTs, Patents, Payments, Private Equity, Psychedelics, Quantum, Real Estate, SaaS, Semiconductor, SEO, Solar, SPACs, Startups, Stem Cell, Supply Chain, Trading, Venture Capital, and Waste Management."
+          },
+          {
+            "question": "What AI and Machine Learning coverage does AmplifiX provide?",
+            "answer": "Our AI vertical covers artificial intelligence news, machine learning developments, deep learning advances, neural networks, natural language processing, computer vision, and AI applications across industries. Stay informed about AI breakthroughs, industry adoption, and emerging technologies."
+          },
+          {
+            "question": "What Blockchain and Web3 coverage does AmplifiX provide?",
+            "answer": "Our Blockchain vertical covers distributed ledger technology, cryptocurrency developments, smart contracts, DeFi protocols, blockchain enterprise adoption, and regulatory updates. The NFTs vertical specifically covers digital collectibles, metaverse developments, and tokenization trends."
+          },
+          {
+            "question": "What Biotech and Healthcare coverage does AmplifiX provide?",
+            "answer": "We cover multiple healthcare verticals including Biotech (drug development, gene therapy), Clinical Trials, Medical Devices, Stem Cell research, and Psychedelics (emerging therapeutic applications). Each vertical provides specialized industry intelligence."
+          },
+          {
+            "question": "What Fintech and Finance coverage does AmplifiX provide?",
+            "answer": "Our finance coverage spans multiple verticals: Fintech (financial technology innovation), Finance (market news), Forex (currency markets), Trading, Payments, Private Equity, Venture Capital, and SPACs. This comprehensive coverage helps financial professionals stay informed."
+          },
+          {
+            "question": "What Energy and Sustainability coverage does AmplifiX provide?",
+            "answer": "We cover the full spectrum of energy and sustainability sectors including Cleantech, Carbon, ESG, Energy, Hydrogen, Solar, and Waste Management. Our coverage helps stakeholders track green technology developments and sustainability initiatives."
+          },
+          {
+            "question": "What Technology and Innovation coverage does AmplifiX provide?",
+            "answer": "Beyond AI and Blockchain, we cover IoT (Internet of Things), Cyber Security, Big Data, Quantum computing, Semiconductor, SaaS, Code development, Nano Technology, and AR/VR. Our technology coverage helps innovators stay ahead of emerging trends."
+          }
+        ]
       },
       {
-        "question": "What is Market Intelligence?",
-        "answer": "Our Market Intelligence platform aggregates and analyzes news across 50+ industry verticals including AI, Blockchain, Biotech, Cannabis, Cleantech, Cybersecurity, Fintech, Gaming, and more. This provides real-time insights to inform your communications strategy and keep you ahead of market trends."
+        "name": "Languages",
+        "icon": "globe",
+        "faqs": [
+          {
+            "question": "What languages does AmplifiX support?",
+            "answer": "AmplifiX supports 23 languages: English, Arabic, Bengali, Chinese, Danish, Dutch, Estonian, Finnish, French, German, Greek, Hebrew, Hindi, Hungarian, Italian, Japanese, Korean, Portuguese, Punjabi, Russian, Spanish, Swedish, and Turkish. Our platform automatically translates content for global accessibility."
+          },
+          {
+            "question": "How does multilingual support work?",
+            "answer": "Our platform uses advanced translation technology to deliver content in your preferred language. Simply select your language from the language switcher, and all platform content including articles, navigation, and interface elements will be displayed in your chosen language."
+          },
+          {
+            "question": "Are all industry verticals available in all languages?",
+            "answer": "Yes, all 50+ industry verticals are available across all 23 supported languages. Our translation system ensures comprehensive coverage regardless of your language preference, making global market intelligence accessible to everyone."
+          }
+        ]
       },
       {
-        "question": "What industry verticals does Market Intelligence cover?",
-        "answer": "Market Intelligence covers 50+ verticals including: Aerospace, AI (Artificial Intelligence), AR/VR, Autism, Automotive, Aviation, Big Data, Biotech, Blockchain, Cannabis, Carbon, Cleantech, Clinical Trials, Code, Crowdfunding, Cyber Security, Defense, Ecommerce, EdTech, Energy, ESG, Esports, Finance, FinanceFeeds, Fintech, Forex, Gaming, Hydrogen, IoT, Medical Devices, Music, Nano Technology, NFTs, Patents, Payments, Private Equity, Psychedelics, Quantum, Real Estate, SaaS, Semiconductor, SEO, Solar, SPACs, Startups, Stem Cell, Supply Chain, Trading, Venture Capital, and Waste Management."
-      },
-      {
-        "question": "What AI and Machine Learning coverage does AmplifiX provide?",
-        "answer": "Our AI vertical covers artificial intelligence news, machine learning developments, deep learning advances, neural networks, natural language processing, computer vision, and AI applications across industries. Stay informed about AI breakthroughs, industry adoption, and emerging technologies."
-      },
-      {
-        "question": "What Blockchain and Web3 coverage does AmplifiX provide?",
-        "answer": "Our Blockchain vertical covers distributed ledger technology, cryptocurrency developments, smart contracts, DeFi protocols, blockchain enterprise adoption, and regulatory updates. The NFTs vertical specifically covers digital collectibles, metaverse developments, and tokenization trends."
-      },
-      {
-        "question": "What Biotech and Healthcare coverage does AmplifiX provide?",
-        "answer": "We cover multiple healthcare verticals including Biotech (drug development, gene therapy), Clinical Trials, Medical Devices, Stem Cell research, and Psychedelics (emerging therapeutic applications). Each vertical provides specialized industry intelligence."
-      },
-      {
-        "question": "What Fintech and Finance coverage does AmplifiX provide?",
-        "answer": "Our finance coverage spans multiple verticals: Fintech (financial technology innovation), Finance (market news), Forex (currency markets), Trading, Payments, Private Equity, Venture Capital, and SPACs. This comprehensive coverage helps financial professionals stay informed."
-      },
-      {
-        "question": "What Energy and Sustainability coverage does AmplifiX provide?",
-        "answer": "We cover the full spectrum of energy and sustainability sectors including Cleantech, Carbon, ESG, Energy, Hydrogen, Solar, and Waste Management. Our coverage helps stakeholders track green technology developments and sustainability initiatives."
-      },
-      {
-        "question": "What Technology and Innovation coverage does AmplifiX provide?",
-        "answer": "Beyond AI and Blockchain, we cover IoT (Internet of Things), Cyber Security, Big Data, Quantum computing, Semiconductor, SaaS, Code development, Nano Technology, and AR/VR. Our technology coverage helps innovators stay ahead of emerging trends."
-      },
-      {
-        "question": "What languages does AmplifiX support?",
-        "answer": "AmplifiX supports 23 languages: English, Arabic, Bengali, Chinese, Danish, Dutch, Estonian, Finnish, French, German, Greek, Hebrew, Hindi, Hungarian, Italian, Japanese, Korean, Portuguese, Punjabi, Russian, Spanish, Swedish, and Turkish. Our platform automatically translates content for global accessibility."
-      },
-      {
-        "question": "How does AmplifiX support public companies?",
-        "answer": "For public companies, AmplifiX provides investor relations support, press release distribution, shareholder communications, quarterly reporting assistance, and ongoing market intelligence. Our platform helps maintain compliance while maximizing visibility and investor engagement."
-      },
-      {
-        "question": "How does AmplifiX support private companies?",
-        "answer": "Private companies benefit from AmplifiX through fundraising support, pitch deck development, investor outreach, IPO preparation services, and strategic communications planning. We help position your company for growth and successful capital raises."
-      },
-      {
-        "question": "What are Blockchain and Web3 development services?",
-        "answer": "AmplifiX offers specialized Blockchain and Web3 development services including tokenization strategies, smart contract development, and decentralized application support. We help companies navigate the evolving landscape of blockchain technology."
-      },
-      {
-        "question": "How does the Advisory service work?",
-        "answer": "Our Advisory services provide strategic guidance on corporate communications, investor relations, and market positioning. We work closely with your team to develop customized strategies that align with your business objectives and amplify your message."
-      },
-      {
-        "question": "What is Syndication and how does it help?",
-        "answer": "Our Syndication service distributes your press releases, announcements, and corporate content across a network of media outlets and platforms. This maximizes your reach and ensures your message gets in front of the right audiences."
-      },
-      {
-        "question": "How do I get started with AmplifiX?",
-        "answer": "Getting started is simple. Contact our team or book a demo to discuss your communications needs. We will assess your requirements and recommend the right combination of solutions to amplify your corporate strategy."
-      },
-      {
-        "question": "How can I contact AmplifiX?",
-        "answer": "You can reach us through our Contact page or by booking a discovery call directly through our website. Our team is ready to discuss how AmplifiX can help amplify your corporate communications."
+        "name": "Services",
+        "icon": "briefcase",
+        "faqs": [
+          {
+            "question": "What solutions does AmplifiX offer?",
+            "answer": "AmplifiX offers a comprehensive suite of solutions including Advisory Services, Investor Relations, Data Research & Analytics, Syndication / IR / PR, Web Development, Blockchain / Web3 development, and Influencer Marketing. Each solution is designed to amplify your corporate communications at every stage of growth."
+          },
+          {
+            "question": "What are Blockchain and Web3 development services?",
+            "answer": "AmplifiX offers specialized Blockchain and Web3 development services including tokenization strategies, smart contract development, and decentralized application support. We help companies navigate the evolving landscape of blockchain technology."
+          },
+          {
+            "question": "How does the Advisory service work?",
+            "answer": "Our Advisory services provide strategic guidance on corporate communications, investor relations, and market positioning. We work closely with your team to develop customized strategies that align with your business objectives and amplify your message."
+          },
+          {
+            "question": "What is Syndication and how does it help?",
+            "answer": "Our Syndication service distributes your press releases, announcements, and corporate content across a network of media outlets and platforms. This maximizes your reach and ensures your message gets in front of the right audiences."
+          },
+          {
+            "question": "How do I get started with AmplifiX?",
+            "answer": "Getting started is simple. Contact our team or book a demo to discuss your communications needs. We will assess your requirements and recommend the right combination of solutions to amplify your corporate strategy."
+          },
+          {
+            "question": "How can I contact AmplifiX?",
+            "answer": "You can reach us through our Contact page or by booking a discovery call directly through our website. Our team is ready to discuss how AmplifiX can help amplify your corporate communications."
+          }
+        ]
       }
     ]
   }
