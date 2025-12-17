@@ -91,7 +91,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li><LanguageAwareLink to="/solutions/advisory" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.advisory")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/research" className="text-muted-foreground hover:text-highlight-blue translate">{t("nav.research")}</LanguageAwareLink></li>
-              <li><LanguageAwareLink to="/solutions/development" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.development")}</LanguageAwareLink></li>
+              <li><LanguageAwareLink to="/solutions/development" className="text-muted-foreground hover:text-highlight-blue">Web Development</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/ir-pr" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.investorRelations")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/public-companies" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.publicCompanies")}</LanguageAwareLink></li>
               <li><LanguageAwareLink to="/solutions/private-companies" className="text-muted-foreground hover:text-highlight-blue translate">{t("footer.privateCompanies")}</LanguageAwareLink></li>
