@@ -133,9 +133,23 @@ async function fetchGA4Data(
   );
 
   if (!response.ok) {
-    const errorText = await response.text();
-    console.error("Failed to fetch GA4 data:", errorText);
-    throw new Error(`Failed to fetch GA4 data: ${response.status}`);
+    const raw = await response.text();
+    let parsed: any = null;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      // ignore
+    }
+
+    console.error("Failed to fetch GA4 data:", {
+      status: response.status,
+      body: parsed ?? raw,
+    });
+
+    const err: any = new Error(`Failed to fetch GA4 data: ${response.status}`);
+    err.status = response.status;
+    err.body = parsed ?? raw;
+    throw err;
   }
 
   return response.json();
@@ -146,14 +160,19 @@ serve(async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Useful for returning actionable error details (without exposing secrets)
+  let requestPropertyId = "504421609";
+  let serviceAccountEmail: string | undefined;
+
   try {
     const credentialsJson = Deno.env.get("GOOGLE_ANALYTICS_CREDENTIALS");
-    
+
     if (!credentialsJson) {
       console.error("GOOGLE_ANALYTICS_CREDENTIALS not found");
       return new Response(
-        JSON.stringify({ 
-          error: "Google Analytics credentials not configured. Please add GOOGLE_ANALYTICS_CREDENTIALS secret." 
+        JSON.stringify({
+          error:
+            "Google Analytics credentials not configured. Please add GOOGLE_ANALYTICS_CREDENTIALS secret.",
         }),
         {
           status: 500,
@@ -166,18 +185,22 @@ serve(async (req: Request): Promise<Response> => {
     const trimmedCredentials = credentialsJson.trim();
     console.log("Credentials string length:", trimmedCredentials.length);
     console.log("First 50 chars:", trimmedCredentials.substring(0, 50));
-    
+
     let credentials: GoogleCredentials;
     try {
       credentials = JSON.parse(trimmedCredentials);
     } catch (parseError: any) {
-      console.error("Failed to parse GOOGLE_ANALYTICS_CREDENTIALS:", parseError.message);
+      console.error(
+        "Failed to parse GOOGLE_ANALYTICS_CREDENTIALS:",
+        parseError.message
+      );
       console.error("Credentials preview:", trimmedCredentials.substring(0, 100));
       return new Response(
-        JSON.stringify({ 
-          error: "Invalid Google Analytics credentials format. The secret must be valid JSON.",
+        JSON.stringify({
+          error:
+            "Invalid Google Analytics credentials format. The secret must be valid JSON.",
           details: parseError.message,
-          preview: trimmedCredentials.substring(0, 50)
+          preview: trimmedCredentials.substring(0, 50),
         }),
         {
           status: 500,
@@ -190,8 +213,9 @@ serve(async (req: Request): Promise<Response> => {
     if (!credentials.client_email || !credentials.private_key || !credentials.project_id) {
       console.error("Missing required credential fields");
       return new Response(
-        JSON.stringify({ 
-          error: "Invalid credentials: missing required fields (client_email, private_key, or project_id)" 
+        JSON.stringify({
+          error:
+            "Invalid credentials: missing required fields (client_email, private_key, or project_id)",
         }),
         {
           status: 500,
@@ -200,16 +224,21 @@ serve(async (req: Request): Promise<Response> => {
       );
     }
 
+    serviceAccountEmail = credentials.client_email;
+    console.log("Using GA service account", { serviceAccountEmail });
+
     // Get request parameters
     const {
-      propertyId: rawPropertyId = "504421609",
+      propertyId: rawPropertyId = requestPropertyId,
       startDate = "30daysAgo",
       endDate = "today",
     } = await req.json().catch(() => ({}));
 
     const propertyId = typeof rawPropertyId === "string"
       ? rawPropertyId.replace(/^properties\//, "")
-      : "504421609";
+      : requestPropertyId;
+
+    requestPropertyId = propertyId;
 
     if (rawPropertyId !== propertyId) {
       console.log("Normalized propertyId", { rawPropertyId, propertyId });
@@ -259,41 +288,50 @@ serve(async (req: Request): Promise<Response> => {
       topCountries: [
         { country: "United States", users: Math.floor(totalActiveUsers * 0.45) },
         { country: "United Kingdom", users: Math.floor(totalActiveUsers * 0.15) },
-        { country: "Canada", users: Math.floor(totalActiveUsers * 0.10) },
+        { country: "Canada", users: Math.floor(totalActiveUsers * 0.1) },
         { country: "Germany", users: Math.floor(totalActiveUsers * 0.08) },
         { country: "France", users: Math.floor(totalActiveUsers * 0.06) },
       ],
-      dailyUsers: rows.map(row => ({
+      dailyUsers: rows.map((row: any) => ({
         date: row.date,
         users: row.activeUsers,
       })),
     };
 
-    console.log("Successfully fetched and transformed analytics data", { 
+    console.log("Successfully fetched and transformed analytics data", {
       rowCount: rows.length,
       totalUsers: transformedData.totalUsers,
       totalPageViews: transformedData.pageViews,
     });
 
-    return new Response(
-      JSON.stringify(transformedData),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
-    );
+    return new Response(JSON.stringify(transformedData), {
+      status: 200,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
   } catch (error: any) {
-    console.error("Error in fetch-analytics function:", error);
-    
-    return new Response(
-      JSON.stringify({ 
-        error: error.message || "Failed to fetch analytics data",
-        details: error.toString(),
-      }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
-    );
+    const status = typeof error?.status === "number" ? error.status : 500;
+
+    const payload: any = {
+      error: error?.message || "Failed to fetch analytics data",
+      details: error?.body ?? error?.toString?.() ?? String(error),
+    };
+
+    if (status === 403) {
+      payload.hint =
+        "Permission denied by GA4. Add this service account as a user to the GA4 Property (Admin → Property access management), then retry.";
+      payload.propertyId = requestPropertyId;
+      if (serviceAccountEmail) payload.serviceAccountEmail = serviceAccountEmail;
+    }
+
+    console.error("Error in fetch-analytics function:", {
+      status,
+      message: payload.error,
+      propertyId: requestPropertyId,
+    });
+
+    return new Response(JSON.stringify(payload), {
+      status,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
   }
 });
