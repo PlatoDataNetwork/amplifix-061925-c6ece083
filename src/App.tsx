@@ -96,6 +96,7 @@ import BulkImportAdmin from "./pages/BulkImportAdmin";
 import SitemapAdmin from "./pages/SitemapAdmin";
 import AdminCRM from "./pages/AdminCRM";
 import ReportsDashboard from "./pages/ReportsDashboard";
+import ReportDetail from "./pages/ReportDetail";
 
 const queryClient = new QueryClient();
 
@@ -200,6 +201,7 @@ const App = () => (
           <Route path="/admin/json-tester" element={<AdminRoute><JsonTester /></AdminRoute>} />
           <Route path="/admin/crm" element={<AdminRoute><AdminCRM /></AdminRoute>} />
           <Route path="/reports" element={<ReportsDashboard />} />
+          <Route path="/reports/:campaignId/:reportId" element={<ReportDetail />} />
           <Route path="/showcase/fynn-ai" element={<FynnAIShowcase />} />
 
               {/* Language-prefixed routes (e.g., /ar/, /fr/) */}
