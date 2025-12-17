@@ -6,14 +6,15 @@ import {
   Globe, Users, Music, Video, Tv, Star, Radio, Mic2, Play,
   Search, CheckCircle, Award, Sparkles, Target
 } from "lucide-react";
-import djCentralLogo from "@/assets/dj-central-logo.png";
+import djCentralHero from "@/assets/dj-central-hero.png";
+
 const DJCentralShowcase = () => {
   return (
     <>
       <Helmet>
-        <title>DJ Central - Global EDM & Dance Music TV Network | AmplifiX Showcase</title>
-        <meta name="description" content="DJ Central is an Australian Record Label and global Dance, House and Club music TV show syndicated to over 8 countries, featuring today's leading EDM artists." />
-        <meta property="og:title" content="DJ Central - Global EDM & Dance Music TV Network" />
+        <title>DJCentral.TV - Global EDM & Dance Music TV Network | AmplifiX Showcase</title>
+        <meta name="description" content="DJCentral.TV is an Australian Record Label and global Dance, House and Club music TV show syndicated to over 8 countries, featuring today's leading EDM artists." />
+        <meta property="og:title" content="DJCentral.TV - Global EDM & Dance Music TV Network" />
         <meta property="og:description" content="Listen. Watch. Dance. Enjoy. Global Dance, House and Club music TV show syndicated worldwide." />
         <link rel="canonical" href="https://amplifix.ai/showcase/dj-central" />
       </Helmet>
@@ -31,13 +32,13 @@ const DJCentralShowcase = () => {
                 <div className="relative">
                   <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-lg" />
                   <div className="h-40 md:h-52 w-auto relative z-10 overflow-hidden flex items-center justify-center">
-                    <img src={djCentralLogo} alt="DJ Central" className="h-full w-auto object-contain" />
+                    <img src={djCentralHero} alt="DJCentral.TV" className="h-full w-auto object-contain" />
                   </div>
                 </div>
               </div>
 
               <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white">
-                DJ Central
+                DJCentral.TV
               </h1>
               
               <div className="flex items-center justify-center gap-3 mb-6">
@@ -133,11 +134,11 @@ const DJCentralShowcase = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-4xl md:text-6xl font-bold mb-8 text-center text-white">
-                About DJ Central
+                About DJCentral.TV
               </h2>
               
               <p className="text-lg text-muted-foreground mb-8 text-center">
-                DJ Central is Australia's premier Electronic Dance Music platform, combining a record label, TV network, and artist development services into one powerhouse brand. Our mission is to provide independent labels and artists from all over the world the opportunity to gain global exposure.
+                DJCentral.TV is Australia's premier Electronic Dance Music platform, combining a record label, TV network, and artist development services into one powerhouse brand. Our mission is to provide independent labels and artists from all over the world the opportunity to gain global exposure.
               </p>
 
               <div className="grid md:grid-cols-2 gap-6">
@@ -332,7 +333,7 @@ const DJCentralShowcase = () => {
                   <div className="p-3 bg-blue-500/15 rounded-lg w-fit mb-4 group-hover:bg-blue-500/25 transition-colors">
                     <Tv className="h-6 w-6 text-blue-500" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-blue-500">DJ Central TV</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-blue-500">DJCentral.TV</h3>
                   <p className="text-muted-foreground mb-4">
                     Our flagship TV show featuring the best in Dance, House, and Club music from around the world.
                   </p>
@@ -383,10 +384,10 @@ const DJCentralShowcase = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-4xl md:text-6xl font-bold mb-6 text-white">
-                Join the DJ Central Family
+                Join the DJCentral.TV Family
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Whether you're an artist looking for exposure or a fan discovering new music, DJ Central is your gateway to the global EDM scene.
+                Whether you're an artist looking for exposure or a fan discovering new music, DJCentral.TV is your gateway to the global EDM scene.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <Button 
@@ -396,7 +397,7 @@ const DJCentralShowcase = () => {
                 >
                   <a href="https://djcentral.tv" target="_blank" rel="noopener noreferrer">
                     <Globe className="mr-2 h-5 w-5" />
-                    Visit DJ Central
+                    Visit DJCentral.TV
                   </a>
                 </Button>
                 <Button 
