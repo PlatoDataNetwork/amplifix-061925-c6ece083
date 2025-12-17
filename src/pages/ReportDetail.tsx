@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, ArrowLeft, Calendar, Building2, FileText, BarChart3, Link2, ExternalLink } from "lucide-react";
-import SharedHeader from "@/components/SharedHeader";
+import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 
@@ -122,7 +122,7 @@ const ReportDetail = () => {
   if (!campaign || !report) {
     return (
       <div className="min-h-screen bg-background">
-        <SharedHeader />
+        <MainHeader />
         <div className="container mx-auto px-4 py-20 text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Report Not Found</h1>
           <Link to="/reports">
@@ -143,7 +143,7 @@ const ReportDetail = () => {
         title={`${report.title} | ${campaign.client} | AmplifiX`}
         description={report.description}
       />
-      <SharedHeader />
+      <MainHeader />
       
       {/* Hero Section */}
       <section className="relative py-16 overflow-hidden">
