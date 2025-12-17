@@ -23,13 +23,18 @@ export default function TranslationDebugWidget() {
 
   const urlLang = getLanguageFromPath() || "en";
 
-  const [htmlLang, setHtmlLang] = useState("en");
 
   useEffect(() => {
     const check = () => {
       setGtLoaded(typeof window.doGTranslate === "function");
       setDocDir(document.documentElement.getAttribute("dir") || "ltr");
       setHtmlLang(document.documentElement.getAttribute("lang") || "en");
+      setGoogTransCookie(
+        document.cookie
+          .split("; ")
+          .find((c) => c.startsWith("googtrans="))
+          ?.split("=")[1] || ""
+      );
     };
     check();
     const interval = setInterval(check, 1000);
@@ -93,6 +98,12 @@ export default function TranslationDebugWidget() {
               <span className="text-gray-400">doGTranslate:</span>
               <span className={`font-bold ${gtLoaded ? "text-green-400" : "text-red-400"}`}>
                 {gtLoaded ? "✓ loaded" : "✗ missing"}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-400">googtrans:</span>
+              <span className={`font-bold ${googTransCookie ? "text-cyan-400" : "text-gray-400"}`}>
+                {googTransCookie || "—"}
               </span>
             </div>
             <div className="flex justify-between">
