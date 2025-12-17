@@ -10,11 +10,47 @@
     "faqs": [
       {
         "question": "What is AmplifiX?",
-        "answer": "AmplifiX is an AI-powered corporate communications platform that helps companies amplify their PR and investor relations strategy. We provide tailored solutions for both public and private companies, including advisory services, syndication, research & analytics, and custom development."
+        "answer": "AmplifiX is an AI-powered corporate communications platform that helps companies amplify their PR and investor relations strategy. We provide tailored solutions for both public and private companies, including Advisory Services, Syndication, Research & Analytics, and Development Services."
       },
       {
         "question": "What solutions does AmplifiX offer?",
         "answer": "AmplifiX offers a comprehensive suite of solutions including Advisory Services, Investor Relations, Data Research & Analytics, Syndication / IR / PR, Web Development, Blockchain / Web3 development, and Influencer Marketing. Each solution is designed to amplify your corporate communications at every stage of growth."
+      },
+      {
+        "question": "What is Market Intelligence?",
+        "answer": "Our Market Intelligence platform aggregates and analyzes news across 50+ industry verticals including AI, Blockchain, Biotech, Cannabis, Cleantech, Cybersecurity, Fintech, Gaming, and more. This provides real-time insights to inform your communications strategy and keep you ahead of market trends."
+      },
+      {
+        "question": "What industry verticals does Market Intelligence cover?",
+        "answer": "Market Intelligence covers 50+ verticals including: Aerospace, AI (Artificial Intelligence), AR/VR, Autism, Automotive, Aviation, Big Data, Biotech, Blockchain, Cannabis, Carbon, Cleantech, Clinical Trials, Code, Crowdfunding, Cyber Security, Defense, Ecommerce, EdTech, Energy, ESG, Esports, Finance, FinanceFeeds, Fintech, Forex, Gaming, Hydrogen, IoT, Medical Devices, Music, Nano Technology, NFTs, Patents, Payments, Private Equity, Psychedelics, Quantum, Real Estate, SaaS, Semiconductor, SEO, Solar, SPACs, Startups, Stem Cell, Supply Chain, Trading, Venture Capital, and Waste Management."
+      },
+      {
+        "question": "What AI and Machine Learning coverage does AmplifiX provide?",
+        "answer": "Our AI vertical covers artificial intelligence news, machine learning developments, deep learning advances, neural networks, natural language processing, computer vision, and AI applications across industries. Stay informed about AI breakthroughs, industry adoption, and emerging technologies."
+      },
+      {
+        "question": "What Blockchain and Web3 coverage does AmplifiX provide?",
+        "answer": "Our Blockchain vertical covers distributed ledger technology, cryptocurrency developments, smart contracts, DeFi protocols, blockchain enterprise adoption, and regulatory updates. The NFTs vertical specifically covers digital collectibles, metaverse developments, and tokenization trends."
+      },
+      {
+        "question": "What Biotech and Healthcare coverage does AmplifiX provide?",
+        "answer": "We cover multiple healthcare verticals including Biotech (drug development, gene therapy), Clinical Trials, Medical Devices, Stem Cell research, and Psychedelics (emerging therapeutic applications). Each vertical provides specialized industry intelligence."
+      },
+      {
+        "question": "What Fintech and Finance coverage does AmplifiX provide?",
+        "answer": "Our finance coverage spans multiple verticals: Fintech (financial technology innovation), Finance (market news), Forex (currency markets), Trading, Payments, Private Equity, Venture Capital, and SPACs. This comprehensive coverage helps financial professionals stay informed."
+      },
+      {
+        "question": "What Energy and Sustainability coverage does AmplifiX provide?",
+        "answer": "We cover the full spectrum of energy and sustainability sectors including Cleantech, Carbon, ESG, Energy, Hydrogen, Solar, and Waste Management. Our coverage helps stakeholders track green technology developments and sustainability initiatives."
+      },
+      {
+        "question": "What Technology and Innovation coverage does AmplifiX provide?",
+        "answer": "Beyond AI and Blockchain, we cover IoT (Internet of Things), Cyber Security, Big Data, Quantum computing, Semiconductor, SaaS, Code development, Nano Technology, and AR/VR. Our technology coverage helps innovators stay ahead of emerging trends."
+      },
+      {
+        "question": "What languages does AmplifiX support?",
+        "answer": "AmplifiX supports 23 languages: English, Arabic, Bengali, Chinese, Danish, Dutch, Estonian, Finnish, French, German, Greek, Hebrew, Hindi, Hungarian, Italian, Japanese, Korean, Portuguese, Punjabi, Russian, Spanish, Swedish, and Turkish. Our platform automatically translates content for global accessibility."
       },
       {
         "question": "How does AmplifiX support public companies?",
@@ -25,11 +61,7 @@
         "answer": "Private companies benefit from AmplifiX through fundraising support, pitch deck development, investor outreach, IPO preparation services, and strategic communications planning. We help position your company for growth and successful capital raises."
       },
       {
-        "question": "What is Market Intelligence?",
-        "answer": "Our Market Intelligence platform aggregates and analyzes news across multiple industry verticals including AI, Blockchain, Biotech, Cannabis, Cleantech, Cybersecurity, Fintech, Gaming, and more. This provides real-time insights to inform your communications strategy."
-      },
-      {
-        "question": "What are Blockchain and Web3 services?",
+        "question": "What are Blockchain and Web3 development services?",
         "answer": "AmplifiX offers specialized Blockchain and Web3 development services including tokenization strategies, smart contract development, and decentralized application support. We help companies navigate the evolving landscape of blockchain technology."
       },
       {
