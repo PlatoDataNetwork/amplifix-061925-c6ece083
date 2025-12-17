@@ -224,11 +224,28 @@ const ReportDetail = () => {
                   <h3 className="text-lg font-semibold text-foreground mb-4">Report Preview</h3>
                   {report.type === "pdf" ? (
                     <div className="rounded-lg overflow-hidden border border-border/50">
-                      <iframe
-                        src={report.downloadUrl}
+                      <object
+                        data={report.downloadUrl}
+                        type="application/pdf"
                         className="w-full h-[800px]"
                         title={report.title}
-                      />
+                      >
+                        <div className="flex flex-col items-center justify-center h-[400px] bg-muted/20 gap-4">
+                          <FileText className="h-16 w-16 text-muted-foreground" />
+                          <p className="text-muted-foreground text-center max-w-md">
+                            Your browser cannot display the PDF inline. Click the button below to view or download the report.
+                          </p>
+                          <a
+                            href={report.downloadUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                            Open PDF in New Tab
+                          </a>
+                        </div>
+                      </object>
                     </div>
                   ) : (
                     <div className="p-4 rounded-lg bg-muted/20 border border-border/50">
