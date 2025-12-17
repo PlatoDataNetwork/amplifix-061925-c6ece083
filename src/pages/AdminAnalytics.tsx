@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -6,6 +6,15 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import MainHeader from '@/components/MainHeader';
 import Footer from '@/components/Footer';
 import { supabase } from '@/integrations/supabase/client';
+import {
+  Bar,
+  BarChart as ReBarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -47,7 +56,7 @@ const AdminAnalytics = () => {
   const fetchAnalytics = async (range: string = dateRange) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const { data: analyticsData, error: fetchError } = await supabase.functions.invoke('fetch-analytics', {
         body: {
@@ -68,7 +77,11 @@ const AdminAnalytics = () => {
         }
 
         const message = typeof serverError?.error === 'string'
-          ? [serverError.error, serverError.hint, serverError.serviceAccountEmail ? `Service account: ${serverError.serviceAccountEmail}` : null]
+          ? [
+              serverError.error,
+              serverError.hint,
+              serverError.serviceAccountEmail ? `Service account: ${serverError.serviceAccountEmail}` : null,
+            ]
               .filter(Boolean)
               .join(' — ')
           : fetchError.message;
@@ -95,16 +108,32 @@ const AdminAnalytics = () => {
     fetchAnalytics(range);
   };
 
-  const StatCard = ({ 
-    title, 
-    value, 
-    icon: Icon, 
-    description, 
-    trend 
-  }: { 
-    title: string; 
-    value: string | number; 
-    icon: any; 
+  const formatChartDate = (raw: string) => {
+    const normalized = raw.includes('-')
+      ? raw
+      : raw.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
+
+    const d = new Date(normalized);
+    return Number.isNaN(d.getTime())
+      ? normalized
+      : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const dailyUsers = useMemo(() => data?.dailyUsers ?? [], [data?.dailyUsers]);
+  const chartData = useMemo(() => dailyUsers, [dailyUsers]);
+  const chartKey = `${dateRange}-${lastUpdated?.getTime() ?? 0}`;
+  const rangeLabel = DATE_RANGES.find(r => r.value === dateRange)?.label || '30 Days';
+
+  const StatCard = ({
+    title,
+    value,
+    icon: Icon,
+    description,
+    trend
+  }: {
+    title: string;
+    value: string | number;
+    icon: any;
     description: string;
     trend?: { value: string; positive: boolean };
   }) => (
@@ -279,47 +308,49 @@ const AdminAnalytics = () => {
               <CardHeader>
                 <CardTitle>Daily Active Users</CardTitle>
                 <CardDescription>
-                  User activity over the {DATE_RANGES.find(r => r.value === dateRange)?.label?.toLowerCase() || 'last 30 days'}
-                  {data?.dailyUsers?.length ? (
+                  User activity over the {rangeLabel.toLowerCase()}
+                  {dailyUsers.length ? (
                     <span className="block mt-1 text-xs">
-                      Showing {data.dailyUsers.length} days • {data.dailyUsers[0].date} → {data.dailyUsers[data.dailyUsers.length - 1].date}
+                      Showing {dailyUsers.length} days • {dailyUsers[0].date} → {dailyUsers[dailyUsers.length - 1].date}
                     </span>
                   ) : null}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div key={`${dateRange}-${lastUpdated?.getTime() ?? 0}`} className="h-64 flex items-end justify-between gap-1">
-                  {(() => {
-                    const maxUsers = Math.max(...data.dailyUsers.map(d => d.users), 1);
-
-                    return data.dailyUsers.map((day) => {
-                      const rawDate = day.date;
-                      const displayDate = rawDate.includes('-')
-                        ? rawDate
-                        : rawDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
-
-                      const d = new Date(displayDate);
-                      const label = Number.isNaN(d.getTime())
-                        ? displayDate
-                        : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-
-                      const height = (day.users / maxUsers) * 100;
-                      const heightPct = day.users > 0 ? Math.max(1, height) : 0;
-
-                      return (
-                        <div key={displayDate} className="flex-1 flex flex-col items-center gap-2">
-                          <div
-                            className="w-full bg-primary rounded-t transition-all hover:bg-primary/80"
-                            style={{ height: `${heightPct}%` }}
-                            title={`${displayDate}: ${day.users} users`}
-                          />
-                          <span className="text-xs text-muted-foreground rotate-45 origin-top-left">
-                            {label}
-                          </span>
-                        </div>
-                      );
-                    });
-                  })()}
+                <div className="h-72 w-full" key={chartKey}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ReBarChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 8 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis
+                        dataKey="date"
+                        tickFormatter={(v) => formatChartDate(String(v))}
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                        axisLine={{ stroke: 'hsl(var(--border))' }}
+                        tickLine={{ stroke: 'hsl(var(--border))' }}
+                        interval="preserveStartEnd"
+                        minTickGap={16}
+                      />
+                      <YAxis
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                        axisLine={{ stroke: 'hsl(var(--border))' }}
+                        tickLine={{ stroke: 'hsl(var(--border))' }}
+                        width={32}
+                      />
+                      <Tooltip
+                        cursor={{ fill: 'hsl(var(--muted))' }}
+                        contentStyle={{
+                          backgroundColor: 'hsl(var(--popover))',
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: 12,
+                          color: 'hsl(var(--foreground))',
+                        }}
+                        labelStyle={{ color: 'hsl(var(--foreground))' }}
+                        labelFormatter={(label) => `Date: ${label}`}
+                        formatter={(value) => [value as number, 'Users']}
+                      />
+                      <Bar dataKey="users" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} />
+                    </ReBarChart>
+                  </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
