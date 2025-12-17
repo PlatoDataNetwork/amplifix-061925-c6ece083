@@ -325,6 +325,38 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_notes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          note: string
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note: string
+          profile_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_notes_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       import_history: {
         Row: {
           cancelled: boolean
@@ -523,6 +555,42 @@ export type Database = {
           language_code?: string
           namespace?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          job_title: string | null
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id?: string
+          job_title?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          job_title?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
