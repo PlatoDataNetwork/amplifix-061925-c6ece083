@@ -7,6 +7,7 @@ import {
   BarChart3, Shield, Sparkles, Play, CheckCircle, Star, Quote, Utensils, Plane,
   Clock, DollarSign, Heart, Lightbulb, Layers, PieChart
 } from "lucide-react";
+import oneWorldLogo from "@/assets/1world-online-logo.png";
 
 const OneWorldOnlineShowcase = () => {
   return (
@@ -31,8 +32,8 @@ const OneWorldOnlineShowcase = () => {
               <div className="flex justify-center mb-8">
                 <div className="relative">
                   <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
-                  <div className="h-24 w-24 relative z-10 ring-4 ring-blue-500/30 rounded-lg p-4 bg-white flex items-center justify-center">
-                    <span className="text-2xl font-bold text-blue-600">1W</span>
+                  <div className="h-24 w-auto relative z-10 ring-4 ring-blue-500/30 rounded-lg p-4 bg-white flex items-center justify-center">
+                    <img src={oneWorldLogo} alt="1World Online" className="h-full w-auto object-contain" />
                   </div>
                 </div>
               </div>
