@@ -18,6 +18,8 @@ export default function TranslationDebugWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [gtLoaded, setGtLoaded] = useState(false);
   const [docDir, setDocDir] = useState("ltr");
+  const [htmlLang, setHtmlLang] = useState("en");
+  const [googTransCookie, setGoogTransCookie] = useState<string>("");
 
   const urlLang = getLanguageFromPath() || "en";
 
