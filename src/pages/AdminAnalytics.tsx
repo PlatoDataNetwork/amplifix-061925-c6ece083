@@ -42,12 +42,31 @@ const AdminAnalytics = () => {
     try {
       const { data: analyticsData, error: fetchError } = await supabase.functions.invoke('fetch-analytics', {
         body: {
+          propertyId: '504421609',
           startDate: '30daysAgo',
           endDate: 'today'
         }
       });
 
-      if (fetchError) throw fetchError;
+      if (fetchError) {
+        // Supabase returns a FunctionsHttpError with a Response in `context` for non-2xx.
+        let serverError: any = null;
+        try {
+          if (typeof (fetchError as any)?.context?.json === 'function') {
+            serverError = await (fetchError as any).context.json();
+          }
+        } catch {
+          // ignore
+        }
+
+        const message = typeof serverError?.error === 'string'
+          ? [serverError.error, serverError.hint, serverError.serviceAccountEmail ? `Service account: ${serverError.serviceAccountEmail}` : null]
+              .filter(Boolean)
+              .join(' — ')
+          : fetchError.message;
+
+        throw new Error(message);
+      }
 
       setData(analyticsData);
       setLastUpdated(new Date());
