@@ -202,14 +202,14 @@ serve(async (req: Request): Promise<Response> => {
 
     // Get request parameters
     const {
-      propertyId: rawPropertyId = "464543802",
+      propertyId: rawPropertyId = "504421609",
       startDate = "30daysAgo",
       endDate = "today",
     } = await req.json().catch(() => ({}));
 
     const propertyId = typeof rawPropertyId === "string"
       ? rawPropertyId.replace(/^properties\//, "")
-      : "464543802";
+      : "504421609";
 
     if (rawPropertyId !== propertyId) {
       console.log("Normalized propertyId", { rawPropertyId, propertyId });
