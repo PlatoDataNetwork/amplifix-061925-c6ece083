@@ -29,13 +29,22 @@ interface AnalyticsData {
   dailyUsers: Array<{ date: string; users: number }>;
 }
 
+const DATE_RANGES = [
+  { label: '7 Days', value: '7daysAgo' },
+  { label: '14 Days', value: '14daysAgo' },
+  { label: '30 Days', value: '30daysAgo' },
+  { label: '60 Days', value: '60daysAgo' },
+  { label: '90 Days', value: '90daysAgo' },
+];
+
 const AdminAnalytics = () => {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [dateRange, setDateRange] = useState('30daysAgo');
 
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = async (range: string = dateRange) => {
     setLoading(true);
     setError(null);
     
@@ -43,13 +52,12 @@ const AdminAnalytics = () => {
       const { data: analyticsData, error: fetchError } = await supabase.functions.invoke('fetch-analytics', {
         body: {
           propertyId: '504421609',
-          startDate: '30daysAgo',
+          startDate: range,
           endDate: 'today'
         }
       });
 
       if (fetchError) {
-        // Supabase returns a FunctionsHttpError with a Response in `context` for non-2xx.
         let serverError: any = null;
         try {
           if (typeof (fetchError as any)?.context?.json === 'function') {
@@ -81,6 +89,11 @@ const AdminAnalytics = () => {
   useEffect(() => {
     fetchAnalytics();
   }, []);
+
+  const handleDateRangeChange = (range: string) => {
+    setDateRange(range);
+    fetchAnalytics(range);
+  };
 
   const StatCard = ({ 
     title, 
@@ -119,14 +132,14 @@ const AdminAnalytics = () => {
       
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="mb-8">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <BarChart3 className="h-8 w-8 text-primary" />
                 <h1 className="text-4xl font-bold">Analytics Dashboard</h1>
               </div>
               <p className="text-muted-foreground">
-                Google Analytics insights for AmplifiX • Last 30 days
+                Google Analytics insights for AmplifiX • {DATE_RANGES.find(r => r.value === dateRange)?.label || 'Last 30 days'}
               </p>
               {lastUpdated && (
                 <p className="text-xs text-muted-foreground mt-1">
@@ -134,10 +147,26 @@ const AdminAnalytics = () => {
                 </p>
               )}
             </div>
-            <Button onClick={fetchAnalytics} disabled={loading} variant="outline">
-              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Refresh Data
-            </Button>
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex gap-1 bg-muted rounded-lg p-1">
+                {DATE_RANGES.map((range) => (
+                  <Button
+                    key={range.value}
+                    variant={dateRange === range.value ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => handleDateRangeChange(range.value)}
+                    disabled={loading}
+                    className="text-xs"
+                  >
+                    {range.label}
+                  </Button>
+                ))}
+              </div>
+              <Button onClick={() => fetchAnalytics()} disabled={loading} variant="outline">
+                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+            </div>
           </div>
         </div>
 
