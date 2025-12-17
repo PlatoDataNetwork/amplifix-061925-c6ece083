@@ -192,7 +192,37 @@ const AdminDashboard = () => {
           </div>
           <p className="text-muted-foreground">
             System overview and management tools
-          </p>
+        </p>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+              <CardDescription>Common administrative tasks</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {quickActions.map((action) => (
+                  <Button
+                    key={action.title}
+                    onClick={action.action}
+                    variant="outline"
+                    className="w-full justify-start h-auto p-4 hover:bg-accent"
+                  >
+                    <div className={`p-2 rounded-lg bg-gradient-to-br ${action.color} mr-4`}>
+                      <action.icon className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold">{action.title}</div>
+                      <div className="text-sm text-muted-foreground">{action.description}</div>
+                    </div>
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* System Stats */}
@@ -354,36 +384,6 @@ const AdminDashboard = () => {
             <AIBudgetTracker />
           </CardContent>
         </Card>
-
-        {/* Quick Actions */}
-        <div className="mb-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>Common administrative tasks</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {quickActions.map((action) => (
-                  <Button
-                    key={action.title}
-                    onClick={action.action}
-                    variant="outline"
-                    className="w-full justify-start h-auto p-4 hover:bg-accent"
-                  >
-                    <div className={`p-2 rounded-lg bg-gradient-to-br ${action.color} mr-4`}>
-                      <action.icon className="h-5 w-5 text-white" />
-                    </div>
-                    <div className="text-left">
-                      <div className="font-semibold">{action.title}</div>
-                      <div className="text-sm text-muted-foreground">{action.description}</div>
-                    </div>
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
           {/* Recent Activity */}
