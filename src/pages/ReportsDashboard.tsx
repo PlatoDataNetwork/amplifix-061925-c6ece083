@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, FileText, BarChart3, Link2, Calendar, Building2 } from "lucide-react";
-import SharedHeader from "@/components/SharedHeader";
+import MainHeader from "@/components/MainHeader";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 
@@ -94,7 +94,7 @@ const ReportsDashboard = () => {
         title="PR Reports Dashboard | AmplifiX"
         description="Access and download your PR campaign reports, analytics, and media placement data."
       />
-      <SharedHeader />
+      <MainHeader />
       
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden">
