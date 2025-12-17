@@ -69,9 +69,17 @@ const OneWorldOnlineShowcase = () => {
                   </a>
                 </Button>
                 <Button 
-                  variant="outline" 
                   asChild
-                  className="border-blue-500/30 hover:bg-blue-500/10"
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                >
+                  <a href="https://1worldonline.com/#contact" target="_blank" rel="noopener noreferrer">
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    Contact 1World
+                  </a>
+                </Button>
+                <Button 
+                  asChild
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
                 >
                   <a href="https://www.bing.com/copilotsearch?q=1World+Online" target="_blank" rel="noopener noreferrer">
                     <Search className="mr-2 h-4 w-4" />
