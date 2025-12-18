@@ -21,21 +21,43 @@ interface ArticleListItemProps {
   buttonText?: string;
 }
 
+const decodeHtmlEntities = (text: string): string => {
+  return text
+    // Decode numeric entities (&#8220;, &#8221;, &#8217;, etc.)
+    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code, 10)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, code) => String.fromCharCode(parseInt(code, 16)))
+    // Decode common named entities
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&ldquo;/g, "\u201C")
+    .replace(/&rdquo;/g, "\u201D")
+    .replace(/&lsquo;/g, "\u2018")
+    .replace(/&rsquo;/g, "\u2019")
+    .replace(/&mdash;/g, "\u2014")
+    .replace(/&ndash;/g, "\u2013");
+};
+
 const sanitizeText = (text?: string | null) => {
   if (!text) return "";
-  return text
-    .replace(/<a\b[^>]*>/gi, "")
-    .replace(/<\/a>/gi, "")
-    .replace(/https?:\/\/\S+/gi, "")
-    .replace(/\[.*?\]\(.*?\)/g, "")
-    .replace(/Source:?:?\s*/gi, "")
-    .replace(/Link:?:?\s*/gi, "")
-    .replace(/---/g, "")
-    .replace(/\*/g, "")
-    .replace(/\r\n/g, "\n")
-    .replace(/\n{3,}/g, "\n\n")
-    .replace(/^[ \t]+/gm, "")
-    .trim();
+  return decodeHtmlEntities(
+    text
+      .replace(/<a\b[^>]*>/gi, "")
+      .replace(/<\/a>/gi, "")
+      .replace(/https?:\/\/\S+/gi, "")
+      .replace(/\[.*?\]\(.*?\)/g, "")
+      .replace(/Source:?:?\s*/gi, "")
+      .replace(/Link:?:?\s*/gi, "")
+      .replace(/---/g, "")
+      .replace(/\*/g, "")
+      .replace(/\r\n/g, "\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .replace(/^[ \t]+/gm, "")
+      .trim()
+  );
 };
 
 const capitalizeVertical = (text: string) => {
