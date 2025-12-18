@@ -5,6 +5,7 @@ import { getCurrentLanguage } from '@/utils/language';
 interface SEOHeadProps {
   title?: string;
   description?: string;
+  canonicalUrl?: string;
 }
 
 const languages = [
@@ -333,7 +334,7 @@ const seoDescriptions: Record<string, string> = {
   fa: 'AmplifiX از هوش مصنوعی پیشرفته برای تغییر نحوه مدیریت روابط سرمایه‌گذاران و ارتباطات شرکتی توسط شرکت‌های دولتی و خصوصی استفاده می‌کند.',
 };
 
-const SEOHead = ({ title, description }: SEOHeadProps) => {
+const SEOHead = ({ title, description, canonicalUrl }: SEOHeadProps) => {
   const location = useLocation();
   const currentLang = getCurrentLanguage();
   const currentLocale = languages.find(l => l.code === currentLang)?.locale || 'en_US';
@@ -403,8 +404,8 @@ const SEOHead = ({ title, description }: SEOHeadProps) => {
       <meta name="geo.region" content="US" />
       <meta name="geo.placename" content="Global" />
       
-      {/* Canonical URL - always in current language */}
-      <link rel="canonical" href={`${baseUrl}${location.pathname}`} />
+      {/* Canonical URL - use provided canonical or current path */}
+      <link rel="canonical" href={canonicalUrl || `${baseUrl}${location.pathname}`} />
       
       {/* Hreflang Tags for all languages */}
       {languages.map(lang => {
