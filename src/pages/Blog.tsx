@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
+import { generateArticleUrl } from "@/utils/slugify";
 import { Card } from "@/components/ui/card";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 import { useTranslation } from "react-i18next";
@@ -315,7 +316,7 @@ const Blog = () => {
                     <div
                       key={result.id}
                       className="border-b border-border pb-6 last:border-0 cursor-pointer hover:bg-muted/50 p-4 rounded-lg transition-colors"
-                      onClick={() => navigate(`${langPrefix}/intel/external/${result.id}`)}
+                      onClick={() => navigate(generateArticleUrl(result.title, result.id, langPrefix))}
                     >
                       <h3 className="text-lg font-semibold text-primary mb-2 hover:underline">
                         {result.title}
@@ -374,7 +375,7 @@ const Blog = () => {
                   post.id === 1 ? "/intel/ai-intelligence-article" :
                   post.id === 2 ? "/intel/advanced-analytics-article" :
                   post.id === 3 ? "/intel/investor-engagement-article" :
-                  post.id >= 1000 ? `/intel/external/${post.id}` : undefined
+                  post.id >= 1000 ? generateArticleUrl(post.title, post.id, langPrefix) : undefined
                 }
                 buttonText={blogData?.blog.ui.read_full_article}
               />

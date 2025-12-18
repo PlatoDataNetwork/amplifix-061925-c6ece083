@@ -121,7 +121,7 @@ Deno.serve(async (req) => {
         : new Date(article.published_at).toISOString().split('T')[0];
       
       batchUrls.push({
-        loc: `${BASE_URL}/intel/external/${slug}/${articleId}`,
+        loc: `${BASE_URL}/intel/${slug}-${articleId}`,
         lastmod,
         changefreq: 'monthly',
         priority: '0.7',

@@ -12,10 +12,13 @@ import { toast } from "sonner";
 import { sanitizeText, formatArticleTags, formatExternalArticleContent, ARTICLE_CONTENT_CLASSES } from "@/utils/articleFormatting";
 import { getCurrentLanguage, getGTranslateCode } from "@/utils/language";
 import { ensureGTranslateReady } from "@/utils/gtranslate";
+import { extractIdFromSlug } from "@/utils/slugify";
 import defaultArticleImage from "@/assets/default-article-image.jpg";
 
 const ExternalArticle = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id, slugWithId } = useParams<{ id?: string; slugWithId?: string }>();
+  // Extract the actual article ID from either param
+  const articleId = id || (slugWithId ? extractIdFromSlug(slugWithId) : undefined);
   const navigate = useNavigate();
   const location = useLocation();
   const { verticals } = usePlatoVerticals();
@@ -73,17 +76,17 @@ const ExternalArticle = () => {
 
   // Try to load from cache first
   useEffect(() => {
-    if (!id) return;
+    if (!articleId) return;
     
     const loadArticle = async () => {
       try {
         // Clear any cached version to get fresh data
-        sessionStorage.removeItem(`article_${id}`);
+        sessionStorage.removeItem(`article_${articleId}`);
         
         const { supabase } = await import("@/integrations/supabase/client");
         
         // Check if ID is a UUID (contains hyphens) or a post_id (numeric)
-        const isUUID = id.includes('-');
+        const isUUID = articleId.includes('-');
         
         // Load directly from database
         let dbArticle: any;
@@ -92,7 +95,7 @@ const ExternalArticle = () => {
           const { data } = await supabase
             .from('articles')
             .select('*')
-            .eq('id', id)
+            .eq('id', articleId)
             .maybeSingle();
           dbArticle = data;
         } else {
@@ -100,7 +103,7 @@ const ExternalArticle = () => {
           const { data } = await supabase
             .from('articles')
             .select('*')
-            .eq('post_id', parseInt(id))
+            .eq('post_id', parseInt(articleId))
             .maybeSingle();
           dbArticle = data;
         }
@@ -145,7 +148,7 @@ const ExternalArticle = () => {
         } else {
           // If no tags exist, trigger tag extraction using the article's database ID
           await supabase.functions.invoke('extract-article-tags', {
-            body: { articleId: dbArticle.post_id ?? id }
+            body: { articleId: dbArticle.post_id ?? articleId }
           });
           
           // Reload tags after extraction
@@ -168,7 +171,7 @@ const ExternalArticle = () => {
     };
     
     loadArticle();
-  }, [id]);
+  }, [articleId]);
 
   // Fetch server-side translation if available
   useEffect(() => {

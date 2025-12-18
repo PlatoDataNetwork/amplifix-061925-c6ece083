@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { getCurrentLanguage } from "@/utils/language";
 import { supabase } from "@/integrations/supabase/client";
+import { generateArticleUrl } from "@/utils/slugify";
 
 const VerticalPage = () => {
   const { vertical } = useParams<{ vertical: string }>();
@@ -285,7 +286,7 @@ const VerticalPage = () => {
                       ...post,
                       readTime: post.read_time
                     }} 
-                    articleLink={`${langPrefix}/intel/external/${post.id}`}
+                    articleLink={generateArticleUrl(post.title, post.id, langPrefix)}
                     buttonText="Read Full Article"
                   />
                 ))}
@@ -299,7 +300,7 @@ const VerticalPage = () => {
                       ...post,
                       readTime: post.read_time
                     }} 
-                    articleLink={`${langPrefix}/intel/external/${post.id}`}
+                    articleLink={generateArticleUrl(post.title, post.id, langPrefix)}
                     buttonText="Read Full Article"
                   />
                 ))}

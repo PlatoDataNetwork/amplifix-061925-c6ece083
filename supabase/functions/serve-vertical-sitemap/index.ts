@@ -232,7 +232,7 @@ Deno.serve(async (req) => {
         ? new Date(article.updated_at).toISOString().split('T')[0]
         : new Date(article.published_at).toISOString().split('T')[0];
       
-      const articlePath = `/intel/external/${slug}/${articleId}`;
+      const articlePath = `/intel/${slug}-${articleId}`;
       
       const alternates = [
         { lang: 'en', url: `${BASE_URL}${articlePath}` },

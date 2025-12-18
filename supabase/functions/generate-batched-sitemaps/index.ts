@@ -155,8 +155,15 @@ Deno.serve(async (req) => {
           ? new Date(article.updated_at).toISOString().split('T')[0]
           : new Date(article.published_at).toISOString().split('T')[0];
         
+        const slug = (article.title || '')
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, ' ')
+          .replace(/[\s_]+/g, '-')
+          .replace(/^-+|-+$/g, '')
+          .substring(0, 100);
+        
         batchUrls.push({
-          loc: `${BASE_URL}/intel/external/${articleId}`,
+          loc: `${BASE_URL}/intel/${slug}-${articleId}`,
           lastmod,
           changefreq: 'monthly',
           priority: '0.7',
