@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { sanitizeText, formatArticleTags, formatExternalArticleContent, ARTICLE_CONTENT_CLASSES } from "@/utils/articleFormatting";
 import { getCurrentLanguage, getGTranslateCode } from "@/utils/language";
 import { ensureGTranslateReady } from "@/utils/gtranslate";
-import { extractIdFromSlug } from "@/utils/slugify";
+import { extractIdFromSlug, generateArticleUrl } from "@/utils/slugify";
 import defaultArticleImage from "@/assets/default-article-image.jpg";
 
 const ExternalArticle = () => {
@@ -287,11 +287,17 @@ if (!article) {
     );
   }
 
+  // Generate canonical URL with slug format
+  const canonicalUrl = article?.title && article?.post_id 
+    ? `https://amplifix.net${generateArticleUrl(article.title, article.post_id)}`
+    : undefined;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SEOHead 
         title={`${sanitizeText(displayTitle || '')} - AmplifiX Intelligence`}
         description={sanitizeText(displayExcerpt || '')}
+        canonicalUrl={canonicalUrl}
       />
       <MainHeader />
 
