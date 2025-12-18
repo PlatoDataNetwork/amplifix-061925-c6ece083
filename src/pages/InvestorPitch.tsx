@@ -417,22 +417,22 @@ const InvestorPitch = () => {
           <div className="max-w-4xl mx-auto px-6">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Investment Opportunity</h2>
-              <p className="text-xl text-muted-foreground">Series A funding round</p>
+              <p className="text-xl text-muted-foreground">Proposed Annual Budget</p>
             </div>
             <Card className="border-0 bg-card shadow-2xl shadow-black/10 overflow-hidden">
               <CardContent className="p-10 md:p-16">
                 <div className="text-center mb-12">
-                  <div className="text-6xl md:text-7xl font-bold text-foreground mb-2">$8M</div>
-                  <div className="text-xl text-muted-foreground">Target Raise</div>
+                  <div className="text-6xl md:text-7xl font-bold text-foreground mb-2">$500K</div>
+                  <div className="text-xl text-muted-foreground">Proposed Annual Budget</div>
                 </div>
                 <div className="grid md:grid-cols-2 gap-8 mb-12">
                   <div>
-                    <h4 className="text-lg font-semibold mb-4">Use of Funds</h4>
+                    <h4 className="text-lg font-semibold mb-4">Budget Allocation</h4>
                     <div className="space-y-3">
                       {[
-                        { label: "Product Development", pct: "40%" },
-                        { label: "Sales & Marketing", pct: "35%" },
-                        { label: "Operations", pct: "15%" },
+                        { label: "Sales & Marketing", pct: "65%" },
+                        { label: "Product Development", pct: "15%" },
+                        { label: "Operations", pct: "10%" },
                         { label: "G&A", pct: "10%" },
                       ].map((item, idx) => (
                         <div key={idx} className="flex items-center justify-between">
@@ -447,9 +447,10 @@ const InvestorPitch = () => {
                     <div className="space-y-3">
                       {[
                         "Launch AI 2.0 platform",
-                        "Expand to 150+ clients",
-                        "Enter European market",
-                        "Achieve $10M ARR",
+                        "Enter European markets",
+                        "Expand to Middle East & Asia",
+                        "Enter Australian market",
+                        "Achieve $2M ARR",
                       ].map((item, idx) => (
                         <div key={idx} className="flex items-center gap-3">
                           <div className="w-6 h-6 rounded-full bg-highlight-blue/20 flex items-center justify-center">
