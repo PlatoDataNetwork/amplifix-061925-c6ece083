@@ -408,6 +408,86 @@ export type Database = {
         }
         Relationships: []
       }
+      import_logs: {
+        Row: {
+          articles_imported: number | null
+          completed_at: string | null
+          error_message: string | null
+          id: number
+          log_details: Json | null
+          schedule_id: number | null
+          started_at: string | null
+          status: string | null
+        }
+        Insert: {
+          articles_imported?: number | null
+          completed_at?: string | null
+          error_message?: string | null
+          id?: number
+          log_details?: Json | null
+          schedule_id?: number | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          articles_imported?: number | null
+          completed_at?: string | null
+          error_message?: string | null
+          id?: number
+          log_details?: Json | null
+          schedule_id?: number | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "import_logs_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "import_schedules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      import_schedules: {
+        Row: {
+          base_feed_url: string
+          created_at: string | null
+          frequency_minutes: number | null
+          id: number
+          is_active: boolean | null
+          last_run_at: string | null
+          max_pages: number | null
+          name: string
+          next_run_at: string | null
+          vertical_slug: string
+        }
+        Insert: {
+          base_feed_url: string
+          created_at?: string | null
+          frequency_minutes?: number | null
+          id?: number
+          is_active?: boolean | null
+          last_run_at?: string | null
+          max_pages?: number | null
+          name: string
+          next_run_at?: string | null
+          vertical_slug: string
+        }
+        Update: {
+          base_feed_url?: string
+          created_at?: string | null
+          frequency_minutes?: number | null
+          id?: number
+          is_active?: boolean | null
+          last_run_at?: string | null
+          max_pages?: number | null
+          name?: string
+          next_run_at?: string | null
+          vertical_slug?: string
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           created_at: string
