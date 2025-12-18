@@ -99,6 +99,7 @@ import SitemapAdmin from "./pages/SitemapAdmin";
 import AdminCRM from "./pages/AdminCRM";
 import ReportsDashboard from "./pages/ReportsDashboard";
 import ReportDetail from "./pages/ReportDetail";
+import InvestorPitch from "./pages/InvestorPitch";
 
 const queryClient = new QueryClient();
 
@@ -207,6 +208,7 @@ const App = () => (
           <Route path="/reports" element={<ReportsDashboard />} />
           <Route path="/reports/:campaignId/:reportId" element={<ReportDetail />} />
           <Route path="/showcase/fynn-ai" element={<FynnAIShowcase />} />
+          <Route path="/Pitch" element={<InvestorPitch />} />
 
               {/* Language-prefixed routes (e.g., /ar/, /fr/) */}
               <Route path="/:lang" element={<Index />} />
