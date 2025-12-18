@@ -67,6 +67,20 @@ ${urlEntries}
 </urlset>`;
 }
 
+// Generate URL slug from title
+function generateSlug(title: string): string {
+  return title
+    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code, 10)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, code) => String.fromCharCode(parseInt(code, 16)))
+    .replace(/&[a-z]+;/gi, ' ')
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, ' ')
+    .replace(/[\s_]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .substring(0, 100)
+    .replace(/-+$/, '');
+}
+
 function generateSitemapIndex() {
   const today = new Date().toISOString().split('T')[0];
   const sitemaps = supportedLanguages.map(lang => `  <sitemap>
@@ -171,14 +185,15 @@ Deno.serve(async (req) => {
         ? `/intel/external/${articleId}` 
         : `/${langCode}/intel/external/${articleId}`;
       
-      urls.push({
-        loc: langCode === 'en' 
-          ? `https://amplifix.net/intel/external/${articleId}` 
-          : `${baseUrl}/intel/external/${articleId}`,
-        lastmod,
-        changefreq: 'monthly',
-        priority: '0.7',
-      });
+        const slug = generateSlug(article.title);
+        urls.push({
+          loc: langCode === 'en' 
+            ? `https://amplifix.net/intel/${slug}-${articleId}` 
+            : `${baseUrl}/intel/${slug}-${articleId}`,
+          lastmod,
+          changefreq: 'monthly',
+          priority: '0.7',
+        });
     });
 
     const sitemapXML = generateSitemapXML(urls);
