@@ -430,8 +430,9 @@ const InvestorPitch = () => {
                     <h4 className="text-lg font-semibold mb-4">Budget Allocation</h4>
                     <div className="space-y-3">
                       {[
-                        { label: "Sales & Marketing", pct: "65%" },
-                        { label: "Product Development", pct: "15%" },
+                        { label: "Sales & Marketing", pct: "60%" },
+                        { label: "Digital Inventory", pct: "10%" },
+                        { label: "Product Development", pct: "10%" },
                         { label: "Operations", pct: "10%" },
                         { label: "G&A", pct: "10%" },
                       ].map((item, idx) => (
