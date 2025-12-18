@@ -64,6 +64,7 @@ import AdvancedAnalyticsArticle from "./pages/AdvancedAnalyticsArticle";
 import InvestorEngagementArticle from "./pages/InvestorEngagementArticle";
 import ExternalArticle from "./pages/ExternalArticle";
 import VerticalPage from "./pages/VerticalPage";
+import IntelRouteHandler from "./components/IntelRouteHandler";
 import ImportAdminRefactored from "./pages/ImportAdminRefactored";
 import PlatoImport from "./pages/PlatoImport";
 import AviationImport from "./pages/AviationImport";
@@ -127,8 +128,7 @@ const App = () => (
               <Route path="/intel/external/:slug/:id" element={<ExternalArticle />} />
               <Route path="/intel/external/:id" element={<ExternalArticle />} />
               <Route path="/intel/article/:id" element={<ExternalArticle />} />
-              <Route path="/intel/:slugWithId" element={<ExternalArticle />} />
-              <Route path="/intel/:vertical" element={<VerticalPage />} />
+              <Route path="/intel/:param" element={<IntelRouteHandler />} />
               <Route path="/support" element={<Support />} />
               <Route path="/solutions" element={<Solutions />} />
               <Route path="/about" element={<About />} />
@@ -221,8 +221,7 @@ const App = () => (
               <Route path="/:lang/intel/external/:slug/:id" element={<ExternalArticle />} />
               <Route path="/:lang/intel/external/:id" element={<ExternalArticle />} />
               <Route path="/:lang/intel/article/:id" element={<ExternalArticle />} />
-              <Route path="/:lang/intel/:slugWithId" element={<ExternalArticle />} />
-              <Route path="/:lang/intel/:vertical" element={<VerticalPage />} />
+              <Route path="/:lang/intel/:param" element={<IntelRouteHandler />} />
               <Route path="/:lang/support" element={<Support />} />
               <Route path="/:lang/solutions" element={<Solutions />} />
               <Route path="/:lang/about" element={<About />} />

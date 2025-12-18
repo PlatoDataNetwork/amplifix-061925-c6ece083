@@ -28,7 +28,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { generateArticleUrl } from "@/utils/slugify";
 
 const VerticalPage = () => {
-  const { vertical } = useParams<{ vertical: string }>();
+  const { vertical, param } = useParams<{ vertical?: string; param?: string }>();
+  const verticalSlug = vertical || param;
   const navigate = useNavigate();
   const location = useLocation();
   const { verticals } = usePlatoVerticals();
@@ -92,9 +93,9 @@ const VerticalPage = () => {
   
   // Find the vertical info
   const verticalInfo = useMemo(() => {
-    const slug = vertical?.toLowerCase();
+    const slug = verticalSlug?.toLowerCase();
     return verticals.find(v => v.slug === slug || v.name.toLowerCase() === slug);
-  }, [vertical, verticals]);
+  }, [verticalSlug, verticals]);
   
   // Load from database for all verticals (primary source), fallback to external API if empty
   const { posts: dbPosts, isLoading: dbLoading, error: dbError, hasMore: dbHasMore, loadMore: dbLoadMore } = useArticlesFromDB(

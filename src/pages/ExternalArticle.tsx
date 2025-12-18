@@ -16,9 +16,9 @@ import { extractIdFromSlug, generateArticleUrl } from "@/utils/slugify";
 import defaultArticleImage from "@/assets/default-article-image.jpg";
 
 const ExternalArticle = () => {
-  const { id, slugWithId } = useParams<{ id?: string; slugWithId?: string }>();
+  const { id, slugWithId, param } = useParams<{ id?: string; slugWithId?: string; param?: string }>();
   // Extract the actual article ID from either param
-  const articleId = id || (slugWithId ? extractIdFromSlug(slugWithId) : undefined);
+  const articleId = id || (slugWithId ? extractIdFromSlug(slugWithId) : undefined) || (param ? extractIdFromSlug(param) : undefined);
   const navigate = useNavigate();
   const location = useLocation();
   const { verticals } = usePlatoVerticals();
