@@ -209,15 +209,15 @@ const InvestorPitch = () => {
         <section id="traction" className="py-24 bg-gradient-to-br from-foreground to-foreground/95">
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-background mb-4">Proven Traction</h2>
-              <p className="text-xl text-background/70 max-w-2xl mx-auto">Demonstrated growth across key metrics</p>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-background mb-4">Proven Beta Test Traction</h2>
+              <p className="text-xl text-background/70 max-w-2xl mx-auto">Real results from real clients</p>
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { value: "50+", label: "Active Clients" },
-                { value: "$2.4M", label: "ARR" },
-                { value: "340%", label: "YoY Growth" },
-                { value: "95%", label: "Retention Rate" },
+                { value: "20+", label: "Active Clients" },
+                { value: "$500K", label: "Revenue" },
+                { value: "65%", label: "Retention Rate" },
+                { value: "150%", label: "YoY Growth" },
               ].map((metric, idx) => (
                 <div key={idx} className="text-center p-8 rounded-3xl bg-background/10 backdrop-blur-sm">
                   <div className="text-4xl md:text-5xl font-bold text-background mb-2">{metric.value}</div>
