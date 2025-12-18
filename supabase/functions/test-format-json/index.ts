@@ -9,14 +9,21 @@ const corsHeaders = {
 function cleanText(text?: string | null): string {
   if (!text) return '';
   
-  return text
+  let cleaned = text
     .replace(/<[^>]*>/g, ' ')
     .replace(/\[caption[^\]]*\]/gi, '')
     .replace(/\[\/caption\]/gi, '')
     .replace(/\[.*?\]/g, '')
     .replace(/https?:\/\/[^\s]+/g, '')
     .replace(/&nbsp;/g, ' ')
-    .replace(/&[a-z]+;/gi, ' ')
+    .replace(/&[a-z]+;/gi, ' ');
+  
+  // Decode numeric HTML entities (&#160;, &#8220;, &#8217;, etc.)
+  cleaned = cleaned
+    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code, 10)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, code) => String.fromCharCode(parseInt(code, 16)));
+  
+  return cleaned
     .replace(/\s+/g, ' ')
     .trim();
 }
