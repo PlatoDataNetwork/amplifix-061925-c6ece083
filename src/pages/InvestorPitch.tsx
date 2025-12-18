@@ -1,10 +1,18 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Lock, ArrowRight, TrendingUp, Users, Globe, Zap, BarChart3, Target, Award, Briefcase, ChevronRight, Play, CheckCircle2 } from "lucide-react";
+import { Lock, ArrowRight, TrendingUp, Users, Globe, Zap, BarChart3, Target, Award, Briefcase, ChevronRight, Play, CheckCircle2, AlertTriangle, Clock, DollarSign, XCircle, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import Footer from "@/components/Footer";
+
+const AmplifiXIcon = () => (
+  <img 
+    src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
+    alt="AmplifiX Logo"
+    className="w-10 h-10"
+  />
+);
 
 const CORRECT_PASSWORD = "W3AI";
 
@@ -74,6 +82,8 @@ const InvestorPitch = () => {
 
   const sections = [
     { id: "overview", label: "Overview" },
+    { id: "problem", label: "Problem" },
+    { id: "solution", label: "Solution" },
     { id: "market", label: "Market" },
     { id: "platform", label: "Platform" },
     { id: "traction", label: "Traction" },
@@ -94,9 +104,7 @@ const InvestorPitch = () => {
           <div className="max-w-6xl mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-highlight-blue to-blue-600 flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">A</span>
-                </div>
+                <AmplifiXIcon />
                 <span className="font-semibold text-xl tracking-tight">AmplifiX</span>
               </div>
               <div className="hidden md:flex items-center gap-1">
@@ -149,8 +157,137 @@ const InvestorPitch = () => {
           </div>
         </section>
 
+        {/* Problem Section */}
+        <section id="problem" className="py-24 bg-gradient-to-br from-destructive/5 via-background to-background">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-destructive/10 text-destructive text-sm font-medium mb-6">
+                <AlertTriangle className="w-4 h-4" />
+                The Challenge
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">The Problem We Solve</h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Public companies face critical challenges in investor communications</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              {[
+                { icon: Clock, title: "Time-Consuming Manual Processes", desc: "IR teams spend 60%+ of their time on repetitive tasks like report generation, email outreach, and data compilation instead of strategic investor engagement." },
+                { icon: XCircle, title: "Fragmented Tools & Data Silos", desc: "Companies juggle 8-12 different platforms for CRM, analytics, distribution, and compliance—leading to inefficiency and missed opportunities." },
+                { icon: DollarSign, title: "High Costs, Low ROI", desc: "Traditional IR agencies charge $50K-$200K annually with minimal transparency on performance metrics and investor reach." },
+                { icon: Users, title: "Limited Investor Visibility", desc: "Most companies have no insight into who reads their materials, which investors are engaged, or how to optimize their messaging for maximum impact." },
+              ].map((problem, idx) => (
+                <Card key={idx} className="border-0 bg-card/50 backdrop-blur-sm shadow-xl shadow-black/5 hover:shadow-2xl transition-all duration-500 group border-l-4 border-l-destructive/50">
+                  <CardContent className="p-8">
+                    <div className="w-14 h-14 rounded-2xl bg-destructive/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <problem.icon className="w-7 h-7 text-destructive" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-3">{problem.title}</h3>
+                    <p className="text-muted-foreground leading-relaxed">{problem.desc}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <div className="flex justify-center mt-12">
+              <ArrowDown className="w-8 h-8 text-muted-foreground animate-bounce" />
+            </div>
+          </div>
+        </section>
+
+        {/* Solution Section */}
+        <section id="solution" className="py-24 bg-muted/30">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-highlight-blue/10 text-highlight-blue text-sm font-medium mb-6">
+                <Zap className="w-4 h-4" />
+                The Solution
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">How AmplifiX Works</h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">One unified platform powered by AI to transform investor relations</p>
+            </div>
+            
+            {/* Visual Diagram */}
+            <div className="relative mb-16">
+              <div className="bg-card rounded-3xl border border-border/50 shadow-2xl shadow-black/10 p-8 md:p-12 overflow-hidden">
+                {/* Flow Diagram */}
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-2 items-center">
+                  {/* Input */}
+                  <div className="text-center">
+                    <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center mb-4">
+                      <Globe className="w-10 h-10 text-foreground/60" />
+                    </div>
+                    <h4 className="font-semibold text-sm mb-1">Data Sources</h4>
+                    <p className="text-xs text-muted-foreground">Press, Filings, News</p>
+                  </div>
+                  
+                  {/* Arrow */}
+                  <div className="hidden md:flex justify-center">
+                    <ArrowRight className="w-8 h-8 text-highlight-blue" />
+                  </div>
+                  
+                  {/* AmplifiX Core */}
+                  <div className="text-center relative">
+                    <div className="w-28 h-28 mx-auto rounded-3xl bg-gradient-to-br from-highlight-blue to-blue-600 flex items-center justify-center mb-4 shadow-xl shadow-highlight-blue/30">
+                      <div className="text-center">
+                        <AmplifiXIcon />
+                        <span className="text-white font-bold text-xs mt-1 block">AI Engine</span>
+                      </div>
+                    </div>
+                    <h4 className="font-semibold text-sm mb-1">AmplifiX Platform</h4>
+                    <p className="text-xs text-muted-foreground">Process & Amplify</p>
+                  </div>
+                  
+                  {/* Arrow */}
+                  <div className="hidden md:flex justify-center">
+                    <ArrowRight className="w-8 h-8 text-highlight-blue" />
+                  </div>
+                  
+                  {/* Output */}
+                  <div className="text-center">
+                    <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-green-500/20 to-green-500/5 flex items-center justify-center mb-4">
+                      <TrendingUp className="w-10 h-10 text-green-500" />
+                    </div>
+                    <h4 className="font-semibold text-sm mb-1">Results</h4>
+                    <p className="text-xs text-muted-foreground">Engaged Investors</p>
+                  </div>
+                </div>
+                
+                {/* Features Row */}
+                <div className="mt-12 pt-8 border-t border-border/50">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    {[
+                      { icon: BarChart3, label: "Real-time Analytics" },
+                      { icon: Target, label: "Smart Targeting" },
+                      { icon: Globe, label: "500+ Channels" },
+                      { icon: Award, label: "SEC Compliant" },
+                    ].map((feature, idx) => (
+                      <div key={idx} className="flex items-center gap-3 p-4 rounded-xl bg-muted/50">
+                        <feature.icon className="w-5 h-5 text-highlight-blue flex-shrink-0" />
+                        <span className="text-sm font-medium">{feature.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Value Props */}
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { value: "80%", label: "Time Saved", desc: "Automate repetitive IR tasks" },
+                { value: "10x", label: "Reach Increase", desc: "Multi-channel distribution" },
+                { value: "50%", label: "Cost Reduction", desc: "vs. traditional IR agencies" },
+              ].map((prop, idx) => (
+                <div key={idx} className="text-center p-8 rounded-3xl bg-card border border-border/50">
+                  <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-highlight-blue to-blue-500 bg-clip-text text-transparent mb-2">{prop.value}</div>
+                  <div className="font-semibold text-lg mb-1">{prop.label}</div>
+                  <div className="text-sm text-muted-foreground">{prop.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Market Opportunity */}
-        <section id="market" className="py-24 bg-muted/30">
+        <section id="market" className="py-24">
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Market Opportunity</h2>
