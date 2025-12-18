@@ -140,7 +140,7 @@ const InvestorPitch = () => {
               </div>
               <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground mb-6 leading-[1.1]">
                 The Future of
-                <span className="bg-gradient-to-r from-highlight-blue to-blue-500 bg-clip-text text-transparent"> AI Powered IR / PR</span>
+                <span className="bg-gradient-to-r from-highlight-blue to-blue-500 bg-clip-text text-transparent"> Investor Relations</span>
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
                 AI-powered platform transforming how public companies connect with investors through intelligent automation and real-time analytics.
