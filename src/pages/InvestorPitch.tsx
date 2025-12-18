@@ -145,6 +145,18 @@ const InvestorPitch = () => {
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
                 AI-powered platform transforming how public companies connect with investors through intelligent automation and real-time analytics.
               </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+                <a href="/public-companies" className="w-full sm:w-auto">
+                  <Button className="w-full h-14 px-10 rounded-2xl bg-highlight-blue hover:bg-highlight-blue/90 text-white text-lg font-semibold">
+                    Public Companies
+                  </Button>
+                </a>
+                <a href="/private-companies" className="w-full sm:w-auto">
+                  <Button className="w-full h-14 px-10 rounded-2xl bg-highlight-blue hover:bg-highlight-blue/90 text-white text-lg font-semibold">
+                    Private Companies
+                  </Button>
+                </a>
+              </div>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Button className="h-14 px-8 rounded-2xl bg-foreground text-background hover:bg-foreground/90 text-lg font-medium">
                   <Play className="w-5 h-5 mr-2" /> Watch Demo
