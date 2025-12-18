@@ -394,33 +394,37 @@ if (!article) {
             />
           </div>
 
-           {/* Article Content */}
+           {/* Article Content - Prose Typography */}
           <div 
-            className={`${ARTICLE_CONTENT_CLASSES} mb-8
-              [&_h1]:mt-8 [&_h1]:mb-4 [&_h1]:text-4xl [&_h1]:font-bold [&_h1]:leading-tight
-              [&_h2]:mt-8 [&_h2]:mb-6 [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:leading-tight [&_h2]:text-foreground
-              [&_h3]:mt-6 [&_h3]:mb-4 [&_h3]:text-2xl [&_h3]:font-semibold [&_h3]:leading-tight [&_h3]:text-foreground
-              [&_h4]:mt-5 [&_h4]:mb-3 [&_h4]:text-xl [&_h4]:font-semibold [&_h4]:text-foreground
-              [&_h5]:mt-4 [&_h5]:mb-2 [&_h5]:text-lg [&_h5]:font-medium [&_h5]:text-foreground
-              [&_h6]:mt-4 [&_h6]:mb-2 [&_h6]:text-base [&_h6]:font-medium [&_h6]:text-foreground
-              [&_p]:mb-4 [&_p]:leading-relaxed [&_p]:text-foreground/90
-              [&_strong]:font-bold [&_b]:font-bold
+            className={`${ARTICLE_CONTENT_CLASSES} mb-8 prose-article
+              [&_h1]:mt-10 [&_h1]:mb-5 [&_h1]:text-3xl [&_h1]:md:text-4xl [&_h1]:font-bold [&_h1]:leading-tight [&_h1]:text-foreground [&_h1]:tracking-tight
+              [&_h2]:mt-10 [&_h2]:mb-5 [&_h2]:text-2xl [&_h2]:md:text-3xl [&_h2]:font-bold [&_h2]:leading-tight [&_h2]:text-foreground [&_h2]:tracking-tight [&_h2]:border-b [&_h2]:border-border/50 [&_h2]:pb-3
+              [&_h3]:mt-8 [&_h3]:mb-4 [&_h3]:text-xl [&_h3]:md:text-2xl [&_h3]:font-semibold [&_h3]:leading-snug [&_h3]:text-foreground
+              [&_h4]:mt-6 [&_h4]:mb-3 [&_h4]:text-lg [&_h4]:md:text-xl [&_h4]:font-semibold [&_h4]:text-foreground
+              [&_h5]:mt-5 [&_h5]:mb-2 [&_h5]:text-base [&_h5]:md:text-lg [&_h5]:font-medium [&_h5]:text-foreground
+              [&_h6]:mt-4 [&_h6]:mb-2 [&_h6]:text-base [&_h6]:font-medium [&_h6]:text-foreground/80 [&_h6]:uppercase [&_h6]:tracking-wide
+              [&_p]:mb-5 [&_p]:leading-[1.8] [&_p]:text-foreground/85 [&_p]:text-base [&_p]:md:text-lg
+              [&_strong]:font-semibold [&_strong]:text-foreground [&_b]:font-semibold [&_b]:text-foreground
               [&_em]:italic [&_i]:italic
-              [&_u]:underline
-              [&_a]:text-primary [&_a]:underline [&_a]:hover:text-primary/80 [&_a]:transition-colors
-              [&_ul]:my-4 [&_ul]:pl-6 [&_ul]:list-disc [&_ul]:space-y-2
-              [&_ol]:my-4 [&_ol]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-2
-              [&_li]:leading-relaxed [&_li]:text-foreground/90
-              [&_blockquote]:my-6 [&_blockquote]:pl-4 [&_blockquote]:py-2 [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:bg-muted/30 [&_blockquote]:italic [&_blockquote]:text-muted-foreground
-              [&_pre]:my-4 [&_pre]:p-4 [&_pre]:bg-muted [&_pre]:rounded-lg [&_pre]:overflow-x-auto
-              [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:bg-muted [&_code]:rounded [&_code]:text-sm [&_code]:font-mono
-              [&_table]:my-6 [&_table]:w-full [&_table]:border-collapse [&_table]:border [&_table]:border-border
-              [&_th]:border [&_th]:border-border [&_th]:p-3 [&_th]:bg-muted [&_th]:font-semibold [&_th]:text-left
-              [&_td]:border [&_td]:border-border [&_td]:p-3
-              [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-lg [&_img]:my-4
-              [&_hr]:my-8 [&_hr]:border-border
-              [&_figure]:my-6
-              [&_figcaption]:text-sm [&_figcaption]:text-muted-foreground [&_figcaption]:mt-2 [&_figcaption]:text-center
+              [&_u]:underline [&_u]:underline-offset-2
+              [&_a]:text-highlight-blue [&_a]:font-medium [&_a]:underline [&_a]:underline-offset-2 [&_a]:decoration-highlight-blue/40 [&_a]:hover:decoration-highlight-blue [&_a]:transition-all [&_a]:duration-200
+              [&_ul]:my-6 [&_ul]:pl-6 [&_ul]:list-disc [&_ul]:space-y-3 [&_ul]:marker:text-highlight-blue
+              [&_ol]:my-6 [&_ol]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-3 [&_ol]:marker:text-highlight-blue [&_ol]:marker:font-semibold
+              [&_li]:leading-[1.7] [&_li]:text-foreground/85 [&_li]:pl-2
+              [&_blockquote]:my-8 [&_blockquote]:pl-6 [&_blockquote]:py-4 [&_blockquote]:border-l-4 [&_blockquote]:border-highlight-blue [&_blockquote]:bg-highlight-blue/5 [&_blockquote]:rounded-r-lg [&_blockquote]:italic [&_blockquote]:text-foreground/80 [&_blockquote_p]:mb-0 [&_blockquote_p]:text-lg
+              [&_pre]:my-6 [&_pre]:p-5 [&_pre]:bg-muted [&_pre]:rounded-xl [&_pre]:overflow-x-auto [&_pre]:border [&_pre]:border-border
+              [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:bg-muted [&_code]:rounded [&_code]:text-sm [&_code]:font-mono [&_code]:text-foreground/90
+              [&_table]:my-8 [&_table]:w-full [&_table]:border-collapse [&_table]:rounded-lg [&_table]:overflow-hidden [&_table]:border [&_table]:border-border
+              [&_th]:border [&_th]:border-border [&_th]:p-4 [&_th]:bg-muted [&_th]:font-semibold [&_th]:text-left [&_th]:text-foreground
+              [&_td]:border [&_td]:border-border [&_td]:p-4 [&_td]:text-foreground/85
+              [&_tr:hover]:bg-muted/30
+              [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-xl [&_img]:my-6 [&_img]:shadow-md
+              [&_hr]:my-10 [&_hr]:border-border/50
+              [&_figure]:my-8
+              [&_figcaption]:text-sm [&_figcaption]:text-muted-foreground [&_figcaption]:mt-3 [&_figcaption]:text-center [&_figcaption]:italic
+              [&_mark]:bg-highlight-blue/20 [&_mark]:px-1 [&_mark]:rounded
+              [&_sup]:text-xs [&_sub]:text-xs
+              [&_abbr]:underline [&_abbr]:decoration-dotted [&_abbr]:underline-offset-2 [&_abbr]:cursor-help
             `}
             dangerouslySetInnerHTML={{
               __html: (() => {
