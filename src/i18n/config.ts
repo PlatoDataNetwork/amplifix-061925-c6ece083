@@ -8,7 +8,8 @@ export const supportedLanguages = [
   'he', 'hi', 'hu', 'id', 'it', 'ja', 'km', 'ko', 'no', 'fa', 'pl', 'pt',
   'pa', 'ro', 'ru', 'sl', 'es', 'sv', 'th', 'tr', 'uk', 'ur', 'vi'
 ] as const;
-export const rtlLanguages = ['ar', 'he', 'fa', 'ur'] as const;
+
+const rtlLanguages = ['ar', 'he', 'fa', 'ur'] as const;
 
 i18n
   .use(SupabaseBackend)
