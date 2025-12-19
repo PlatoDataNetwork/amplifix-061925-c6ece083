@@ -15,7 +15,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 const SUPPORTED_LANGUAGES = [
   { code: 'ar', name: 'Arabic' },
   { code: 'bn', name: 'Bengali' },
-  { code: 'zh', name: 'Chinese' },
+  { code: 'zh', name: 'Chinese (Simplified)' },
+  { code: 'zh-TW', name: 'Chinese (Traditional)' },
   { code: 'da', name: 'Danish' },
   { code: 'nl', name: 'Dutch' },
   { code: 'et', name: 'Estonian' },
@@ -45,7 +46,7 @@ const SUPPORTED_LANGUAGES = [
   { code: 'tr', name: 'Turkish' },
   { code: 'uk', name: 'Ukrainian' },
   { code: 'ur', name: 'Urdu' },
-  { code: 'vi', name: 'Vietnamese' }
+  { code: 'vi', name: 'Vietnamese' },
 ];
 
 // Only translate data files, not i18next files (common/home handled separately)

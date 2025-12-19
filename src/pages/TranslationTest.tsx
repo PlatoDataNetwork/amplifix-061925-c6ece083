@@ -8,12 +8,13 @@ import MainHeader from "@/components/MainHeader";
 import { Link } from "react-router-dom";
 
 const SUPPORTED_LANGUAGES = [
-  { code: 'en', name: 'English' },
   { code: 'ar', name: 'Arabic (العربية)' },
   { code: 'bn', name: 'Bengali (বাংলা)' },
-  { code: 'zh', name: 'Chinese (中文)' },
+  { code: 'zh', name: 'Chinese Simplified (简体中文)' },
+  { code: 'zh-TW', name: 'Chinese Traditional (繁體中文)' },
   { code: 'da', name: 'Danish (Dansk)' },
   { code: 'nl', name: 'Dutch (Nederlands)' },
+  { code: 'en', name: 'English' },
   { code: 'et', name: 'Estonian (Eesti)' },
   { code: 'fi', name: 'Finnish (Suomi)' },
   { code: 'fr', name: 'French (Français)' },

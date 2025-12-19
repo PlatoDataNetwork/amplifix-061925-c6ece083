@@ -22,7 +22,8 @@ interface Language {
 const languages: Language[] = [
   { code: 'ar', name: 'Arabic', flag: '🇸🇦', gCode: 'ar' },
   { code: 'bn', name: 'Bengali', flag: '🇧🇩', gCode: 'bn' },
-  { code: 'zh', name: 'Chinese', flag: '🇨🇳', gCode: 'zh-CN' },
+  { code: 'zh', name: 'Chinese (Simplified)', flag: '🇨🇳', gCode: 'zh-CN' },
+  { code: 'zh-TW', name: 'Chinese (Traditional)', flag: '🇹🇼', gCode: 'zh-TW' },
   { code: 'da', name: 'Danish', flag: '🇩🇰', gCode: 'da' },
   { code: 'nl', name: 'Dutch', flag: '🇳🇱', gCode: 'nl' },
   { code: 'en', name: 'English', flag: '🇺🇸', gCode: 'en' },
