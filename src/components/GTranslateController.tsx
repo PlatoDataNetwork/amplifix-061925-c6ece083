@@ -78,17 +78,42 @@ export default function GTranslateController() {
       timersRef.current.push(t);
     });
 
+    const isTranslateUiNode = (n: Node) => {
+      if (!(n instanceof Element)) return false;
+      const el = n as Element;
+      const cls = (el.getAttribute("class") || "").toLowerCase();
+      const id = (el.getAttribute("id") || "").toLowerCase();
+      const tag = el.tagName.toLowerCase();
+      const src = tag === "iframe" ? ((el as HTMLIFrameElement).getAttribute("src") || "").toLowerCase() : "";
+
+      return (
+        cls.includes("goog-te") ||
+        cls.includes("gt_float") ||
+        cls.includes("gt-float") ||
+        cls.includes("gtranslate") ||
+        id.includes("goog-gt") ||
+        id.includes("gt_float") ||
+        id.includes("gtranslate") ||
+        src.includes("translate.google") ||
+        src.includes("google_translate") ||
+        src.includes("gtranslate") ||
+        cls.includes("vipgjd-zvi9od")
+      );
+    };
+
     // Observe DOM insertions briefly; debounce heavily to avoid flicker
     let debounceTimer: number | null = null;
     const observer = new MutationObserver((mutations) => {
       if (cancelled) return;
       if (applyCount >= maxApplies) return;
 
-      const hasAddedNodes = mutations.some((m) => m.addedNodes && m.addedNodes.length > 0);
-      if (!hasAddedNodes) return;
+      const addedNodes = mutations.flatMap((m) => Array.from(m.addedNodes || []));
+      if (addedNodes.length === 0) return;
 
-      // If the widget injects UI nodes, remove them ASAP.
+      // If ONLY translate UI nodes were injected, just scrub them (don't re-apply translation).
+      const hasNonUiAdd = addedNodes.some((n) => !isTranslateUiNode(n));
       removeGTranslateUI();
+      if (!hasNonUiAdd) return;
 
       if (debounceTimer) window.clearTimeout(debounceTimer);
       debounceTimer = window.setTimeout(() => {
