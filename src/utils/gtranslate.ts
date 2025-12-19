@@ -36,8 +36,15 @@ export async function ensureGTranslateReady(timeoutMs: number = 8000): Promise<b
 
 export function setGoogTransCookie(langCode: string) {
   const target = getGTranslateCode(langCode);
-  document.cookie = `googtrans=/en/${target}; path=/`;
-  document.cookie = `googtrans=/en/${target}; path=/; domain=${window.location.hostname}`;
+
+  // Clear any previously-set variants to avoid duplicate googtrans cookies
+  const expire = 'Thu, 01 Jan 1970 00:00:00 GMT';
+  document.cookie = `googtrans=; expires=${expire}; path=/`;
+  document.cookie = `googtrans=; expires=${expire}; path=/; domain=${window.location.hostname}`;
+
+  // Set a single host-scoped cookie (most reliable in SPAs / previews)
+  // Note: avoid setting a domain cookie unless you control the apex domain.
+  document.cookie = `googtrans=/en/${target}; path=/; max-age=31536000; samesite=lax`;
 }
 
 export async function applyClientSideTranslation(langCode: string) {
