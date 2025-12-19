@@ -53,12 +53,27 @@
           var map = { zh: "zh-CN", "zh-TW": "zh-TW", he: "iw" };
           var target = map[first] || first;
 
+          // In Lovable Preview the app runs inside an iframe, making cookies "third-party".
+          // To ensure the googtrans cookie sticks there, use SameSite=None; Secure.
+          var inIframe = false;
+          try {
+            inIframe = window.top !== window.self;
+          } catch (e) {
+            inIframe = true;
+          }
+
+          var needsSecure = window.location.protocol === "https:";
+          var sameSite = inIframe ? "none" : "lax";
+          var secure = inIframe && needsSecure ? "; secure" : "";
+
           // Clear any old variants then set one host-scoped cookie
           document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
           document.cookie =
             "googtrans=/en/" +
             target +
-            "; path=/; max-age=31536000; samesite=lax";
+            "; path=/; max-age=31536000; samesite=" +
+            sameSite +
+            secure;
         } catch (e) {
           // no-op
         }
