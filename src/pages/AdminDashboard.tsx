@@ -76,6 +76,13 @@ const AdminDashboard = () => {
 
   const quickActions = [
     {
+      title: 'Intel Stats',
+      description: 'Real-time article statistics dashboard',
+      icon: Activity,
+      action: () => navigate('/admin/intel-stats'),
+      color: 'from-cyan-500 to-blue-500'
+    },
+    {
       title: 'CRM',
       description: 'View and manage user signups and leads',
       icon: Contact,
