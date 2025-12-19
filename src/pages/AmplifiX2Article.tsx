@@ -1,7 +1,12 @@
 import ArticleLayout from "@/components/ArticleLayout";
 import { Helmet } from "react-helmet-async";
+import { useLanguage } from "@/hooks/useLanguage";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 
 const AmplifiX2Article = () => {
+  useLanguage();
+  useGTranslateRefresh(true, []);
+  
   return (
     <>
       <Helmet>
