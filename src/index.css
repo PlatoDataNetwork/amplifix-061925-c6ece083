@@ -71,71 +71,14 @@
   }
 }
 
-#gt_float_wrapper {
-  position: relative !important;
-  top: 0 !important;
-  right: 0 !important;
-  display: flex !important;
-}
-
-.gt_float_switcher {
-    border-radius: 7px !important;
-}
-
-.gt_float_switcher {
-    background: unset !important;
-}
-
-.gt_float_switcher .gt-selected {
-    position: relative;
-    z-index: 888;
-    background-color: #03aaff !important;
-    cursor: pointer;
-    text-transform: uppercase;
-    overflow: hidden;
-    text-align: right;
-}
-
-.gt_float_switcher .gt-selected .gt-current-lang {
-    color: #fff !important;
-    padding: 5px 12px !important;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    gap: 5px !important;
-}
-
-.gt_float_switcher .gt_options {
-    position: absolute !important;
-    right: 0;
-    width: max-content;
-    border: 1px solid;
-    margin-top: 10px;
-    border-radius: 10px;
-    transform: translateY(40px) !important;
-    background: #eaf6ff;
-    border: 0px !important;
-}
-
-.gt_float_switcher .gt_options a {
-    color: #03aaff !important;
-}
-
-.gt_float_switcher .gt_options a:hover {
-  background-color: #03aaff !important;
-  color: #fff !important;
-}
-
-.gt_float_switcher img{
+/* Hide GTranslate's floating UI (we use our own language picker) */
+#gt_float_wrapper,
+.gt_float_switcher,
+.gt_float_switcher * {
   display: none !important;
-}
-
-.gt_float_switcher .gt-selected .gt-current-lang{
-  height: 40px !important;
-}
-
-.gt_float_switcher .gt-selected .gt-current-lang span.gt_float_switcher-arrow{
-  filter: brightness(3);
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 /* Google Translate Widget Customization */

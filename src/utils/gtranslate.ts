@@ -4,6 +4,7 @@ declare global {
   interface Window {
     doGTranslate?: (value: string) => void;
     gtranslateSettings?: Record<string, unknown>;
+    __gtLastApply?: { key: string; ts: number };
   }
 }
 
@@ -56,15 +57,18 @@ export function setGoogTransCookie(langCode: string) {
 export async function applyClientSideTranslation(langCode: string) {
   if (!langCode || langCode === "en") return;
 
+  const target = getGTranslateCode(langCode);
+  const key = `en|${target}`;
+
+  // Throttle: repeated doGTranslate calls cause visible flicker.
+  // We keep it SPA-safe by allowing at most one apply per language per ~1.2s.
+  const now = Date.now();
+  if (window.__gtLastApply?.key === key && now - window.__gtLastApply.ts < 1200) return;
+  window.__gtLastApply = { key, ts: now };
+
   setGoogTransCookie(langCode);
   const ok = await ensureGTranslateReady();
   if (!ok) return;
 
-  const target = getGTranslateCode(langCode);
-
-  // GTranslate's doGTranslate can be timing-sensitive in SPAs.
-  // A few short, repeated calls dramatically improves reliability for late-rendered content.
-  const run = () => window.doGTranslate?.(`en|${target}`);
-  run();
-  [350, 900, 1700].forEach((delay) => window.setTimeout(run, delay));
+  window.doGTranslate?.(key);
 }
