@@ -293,7 +293,7 @@ if (!article) {
               )}
             </div>
             
-            <h1 className="text-3xl md:text-5xl font-bold mb-6 pb-4 border-b border-border">
+            <h1 className="text-3xl md:text-5xl font-bold mb-6 pb-4 border-b border-border translate">
               {sanitizeText(displayTitle || '')}
             </h1>
 
@@ -375,7 +375,7 @@ if (!article) {
 
            {/* Article Content - Prose Typography */}
           <div 
-            className={`${ARTICLE_CONTENT_CLASSES} mb-8 prose-article
+            className={`${ARTICLE_CONTENT_CLASSES} mb-8 prose-article translate
               [&_h1]:mt-10 [&_h1]:mb-5 [&_h1]:text-3xl [&_h1]:md:text-4xl [&_h1]:font-bold [&_h1]:leading-tight [&_h1]:text-foreground [&_h1]:tracking-tight
               [&_h2]:mt-10 [&_h2]:mb-5 [&_h2]:text-2xl [&_h2]:md:text-3xl [&_h2]:font-bold [&_h2]:leading-tight [&_h2]:text-foreground [&_h2]:tracking-tight [&_h2]:border-b [&_h2]:border-border/50 [&_h2]:pb-3
               [&_h3]:mt-8 [&_h3]:mb-4 [&_h3]:text-xl [&_h3]:md:text-2xl [&_h3]:font-semibold [&_h3]:leading-snug [&_h3]:text-foreground
