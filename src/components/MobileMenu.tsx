@@ -38,19 +38,25 @@ const MobileMenu = () => {
             </div>
             <nav className="flex flex-col bg-white dark:bg-gray-900">
               <LanguageAwareLink to="/about" className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800 translate" onClick={closeMenu}>
-                About
+                {t("nav.about")}
+              </LanguageAwareLink>
+              <LanguageAwareLink to="/about#process" className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800 translate" onClick={closeMenu}>
+                {t("nav.process")}
+              </LanguageAwareLink>
+              <LanguageAwareLink to="/solutions/research" className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800 translate" onClick={closeMenu}>
+                {t("nav.research")}
               </LanguageAwareLink>
               <LanguageAwareLink to="/solutions" className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800 translate" onClick={closeMenu}>
-                Solutions
+                {t("nav.solutions")}
               </LanguageAwareLink>
               <LanguageAwareLink to="/intel" className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800 translate" onClick={closeMenu}>
-                Intel
+                {t("nav.intel")}
               </LanguageAwareLink>
               <LanguageAwareLink to="/showcase" className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800 translate" onClick={closeMenu}>
-                Showcase
+                {t("nav.showcase")}
               </LanguageAwareLink>
               <LanguageAwareLink to="/contact" className="px-4 py-3 text-foreground hover:text-highlight-blue transition-colors border-b border-gray-100 dark:border-gray-800 translate" onClick={closeMenu}>
-                Contact
+                {t("nav.contact")}
               </LanguageAwareLink>
               <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                 <ThemeToggle />
