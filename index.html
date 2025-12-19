@@ -39,6 +39,53 @@
         "native_language_names": true
       };
     </script>
+
+    <!-- Hide any injected GTranslate / Google Translate UI BEFORE app CSS loads -->
+    <style id="gtranslate-ui-hide">
+      #gt_float_wrapper,
+      .gt_float_switcher,
+      .gt_float_switcher_wrapper,
+      [class*="gt_float"],
+      [id*="gt_float"],
+      [class*="gt-float"],
+      [id*="gt-float"],
+      .gt_switcher,
+      .gt-current-lang,
+      .gt_selector,
+      .gtranslate_wrapper,
+      #gtranslate_wrapper,
+      [onclick*="doGTranslate"],
+      #google_translate_element,
+      .goog-te-gadget,
+      .goog-te-gadget-simple,
+      .goog-te-menu-frame,
+      .goog-te-banner-frame,
+      .goog-te-balloon-frame,
+      #goog-gt-tt,
+      #goog-gt-vt,
+      .goog-logo-link,
+      .goog-te-gadget-icon,
+      .goog-text-highlight,
+      .goog-te-spinner-pos,
+      .goog-te-ftab-float,
+      .VIpgJd-ZVi9od-l4eHX-hSRGPd,
+      .VIpgJd-ZVi9od-ORHb-OEVmcd,
+      #VIpgJd-ZVi9od-ORHb-OEVmcd,
+      iframe[src*="translate.google"],
+      iframe.goog-te-menu-frame,
+      iframe.goog-te-banner-frame {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        left: -99999px !important;
+        top: -99999px !important;
+      }
+    </style>
     <script>
       // Ensure googtrans cookie is set BEFORE dwf.js runs (required for reliable first-load translation)
       (function () {

@@ -45,14 +45,16 @@ export default function GTranslateController() {
 
     // Scrub any injected widget UI that can briefly appear during SPA navigation.
     removeGTranslateUI();
-    const scrubId = window.setInterval(removeGTranslateUI, 200);
-    const scrubStopId = window.setTimeout(() => window.clearInterval(scrubId), 15000);
+    const scrubId = window.setInterval(removeGTranslateUI, 250);
+    const scrubStopId = window.setTimeout(() => window.clearInterval(scrubId), 60000);
     timersRef.current.push(scrubId, scrubStopId);
 
     let cancelled = false;
 
-    // For English, we still keep the short scrub window above, then stop.
+    // For English, actively reset translation back to English (clears googtrans)
+    // and rely on the scrub window above to remove any late-injected UI.
     if (lang === "en") {
+      void applyClientSideTranslation("en");
       return () => {
         cancelled = true;
         clearAllTimers();
