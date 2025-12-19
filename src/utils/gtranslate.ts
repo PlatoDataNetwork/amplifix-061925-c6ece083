@@ -5,6 +5,7 @@ declare global {
     doGTranslate?: (value: string) => void;
     gtranslateSettings?: Record<string, unknown>;
     __gtLastApply?: { key: string; ts: number };
+    __gtScrub?: { intervalId?: number; timeoutId?: number };
   }
 }
 
@@ -69,6 +70,22 @@ export async function applyClientSideTranslation(langCode: string) {
   if (!ok) return;
 
   window.doGTranslate?.(key);
+
+  // Some widget UIs are injected *after* doGTranslate runs (and can persist).
+  // Scrub briefly on every apply, not just on navigation.
+  scrubGTranslateUIWindow();
+}
+
+function scrubGTranslateUIWindow(windowMs: number = 2500, everyMs: number = 200) {
+  // Clear any previous scrub window to avoid leaking intervals.
+  if (window.__gtScrub?.intervalId) window.clearInterval(window.__gtScrub.intervalId);
+  if (window.__gtScrub?.timeoutId) window.clearTimeout(window.__gtScrub.timeoutId);
+
+  // Immediate scrub + short burst interval
+  removeGTranslateUI();
+  const intervalId = window.setInterval(removeGTranslateUI, everyMs);
+  const timeoutId = window.setTimeout(() => window.clearInterval(intervalId), windowMs);
+  window.__gtScrub = { intervalId, timeoutId };
 }
 
 /**

@@ -10,7 +10,6 @@ import {
 import { Globe, ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { getLanguageFromPath, buildLanguageUrl } from "@/utils/language";
-import { ensureGTranslateReady, setGoogTransCookie } from "@/utils/gtranslate";
 
 interface Language {
   code: string;      // app / URL / i18next code
@@ -73,8 +72,7 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
     console.log('Switching to language:', langCode);
     
     try {
-      const selectedLang = languages.find(lang => lang.code === langCode) || languages[0];
-      const targetCode = selectedLang.gCode || selectedLang.code;
+      const selectedLang = languages.find((lang) => lang.code === langCode) || languages[0];
 
       setCurrentLanguage(selectedLang);
       localStorage.setItem('selectedLanguage', langCode);
@@ -87,23 +85,9 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
       console.log('Navigating to:', newPath);
       navigate(newPath);
 
-      // Trigger GTranslate.io translation with retry logic
-      const triggerTranslation = (attempts = 0) => {
-        const w = window as any;
-        if (typeof w.doGTranslate === 'function') {
-          console.log('Triggering GTranslate with:', `en|${targetCode}`);
-          w.doGTranslate(`en|${targetCode}`);
-        } else if (attempts < 10) {
-          console.log(`GTranslate not ready, retry ${attempts + 1}/10`);
-          setTimeout(() => triggerTranslation(attempts + 1), 300);
-        } else {
-          console.error('GTranslate failed to load after 10 attempts');
-        }
-      };
-      
-      setTimeout(() => triggerTranslation(), 200);
+      // Translation is applied globally by GTranslateController on navigation.
       setIsTranslating(false);
-      
+
     } catch (error) {
       console.error('Language switch failed:', error);
       setIsTranslating(false);
@@ -122,31 +106,6 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
         localStorage.setItem('selectedLanguage', pathLang);
         if (i18n.language !== pathLang) {
           i18n.changeLanguage(pathLang);
-        }
-        
-        // Apply GTranslate on page load if language is not English
-        if (pathLang !== 'en') {
-          setGoogTransCookie(pathLang);
-
-          const applyTranslation = async (attempts = 0) => {
-            const ok = await ensureGTranslateReady(8000);
-            const w = window as any;
-            const targetCode = detectedLanguage.gCode || detectedLanguage.code;
-            if (ok && typeof w.doGTranslate === 'function') {
-              console.log('Auto-applying GTranslate for:', targetCode);
-              w.doGTranslate(`en|${targetCode}`);
-            } else if (attempts < 20) {
-              setTimeout(() => {
-                void applyTranslation(attempts + 1);
-              }, 300);
-            } else {
-              console.error('GTranslate failed to load on page load');
-            }
-          };
-
-          setTimeout(() => {
-            void applyTranslation();
-          }, 500);
         }
       }
     } else {
