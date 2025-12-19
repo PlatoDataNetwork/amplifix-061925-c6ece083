@@ -64,25 +64,25 @@ const ArticleLayout = ({
         <LanguageAwareLink to="/intel">
           <Button variant="ghost" size="sm" className="mb-4 -ml-2">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Intel
+            <span className="translate">Back to Intel</span>
           </Button>
         </LanguageAwareLink>
         
         {/* Article Header */}
         <header className="mb-4">
           {/* Category Badge */}
-          <span className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-3">
+          <span className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-3 translate">
             {category}
           </span>
           
           {/* Title */}
-          <h1 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">
+          <h1 className="text-3xl md:text-4xl font-bold mb-3 leading-tight translate">
             {title}
           </h1>
           
           {/* Description */}
           {description && (
-            <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
+            <p className="text-lg text-muted-foreground mb-4 leading-relaxed translate">
               {description}
             </p>
           )}
@@ -93,17 +93,17 @@ const ArticleLayout = ({
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                 <User className="h-4 w-4 text-primary" />
               </div>
-              <span className="font-medium">{author}</span>
+              <span className="font-medium translate">{author}</span>
             </div>
             
             <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4" />
-              <time>{date}</time>
+              <time className="translate">{date}</time>
             </div>
             
             <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
               <Clock className="h-4 w-4" />
-              <span>{readTime}</span>
+              <span className="translate">{readTime}</span>
             </div>
           </div>
         </header>
@@ -112,7 +112,7 @@ const ArticleLayout = ({
         <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-4" />
         
         {/* Article Content */}
-        <article className={`prose prose-base md:prose-lg max-w-none dark:prose-invert ${ARTICLE_CONTENT_CLASSES.replace('text-foreground leading-relaxed whitespace-pre-wrap', '')}`}>
+        <article className={`prose prose-base md:prose-lg max-w-none dark:prose-invert translate ${ARTICLE_CONTENT_CLASSES.replace('text-foreground leading-relaxed whitespace-pre-wrap', '')}`}>
           {children}
         </article>
         
@@ -144,7 +144,7 @@ const ArticleLayout = ({
           <LanguageAwareLink to="/intel">
             <Button variant="outline" size="sm">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to All Articles
+              <span className="translate">Back to All Articles</span>
             </Button>
           </LanguageAwareLink>
         </div>
