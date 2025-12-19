@@ -39,8 +39,33 @@
         "native_language_names": true
       };
     </script>
+    <script>
+      // Ensure googtrans cookie is set BEFORE dwf.js runs (required for reliable first-load translation)
+      (function () {
+        try {
+          var path = window.location.pathname || "/";
+          var first = path.split("/").filter(Boolean)[0] || "";
+
+          // Accept common language prefixes (e.g. /bn/..., /fr/..., /zh-TW/...)
+          var isLang = /^[a-z]{2}$/.test(first) || first === "zh-TW";
+          if (!isLang || first === "en") return;
+
+          var map = { zh: "zh-CN", "zh-TW": "zh-TW", he: "iw" };
+          var target = map[first] || first;
+
+          // Clear any old variants then set one host-scoped cookie
+          document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+          document.cookie =
+            "googtrans=/en/" +
+            target +
+            "; path=/; max-age=31536000; samesite=lax";
+        } catch (e) {
+          // no-op
+        }
+      })();
+    </script>
     <script id="gtranslate-dwf" src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
-    
+
     <!-- Set dark theme as default before React loads to prevent flash -->
     <script>
       (function() {

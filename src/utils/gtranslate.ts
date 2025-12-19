@@ -55,5 +55,10 @@ export async function applyClientSideTranslation(langCode: string) {
   if (!ok) return;
 
   const target = getGTranslateCode(langCode);
-  window.doGTranslate?.(`en|${target}`);
+
+  // GTranslate's doGTranslate can be timing-sensitive in SPAs.
+  // A few short, repeated calls dramatically improves reliability for late-rendered content.
+  const run = () => window.doGTranslate?.(`en|${target}`);
+  run();
+  [350, 900, 1700].forEach((delay) => window.setTimeout(run, delay));
 }
