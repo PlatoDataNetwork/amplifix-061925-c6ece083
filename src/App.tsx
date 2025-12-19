@@ -99,6 +99,7 @@ import BulkImportAdmin from "./pages/BulkImportAdmin";
 import SitemapAdmin from "./pages/SitemapAdmin";
 import AdminCRM from "./pages/AdminCRM";
 import ReportsDashboard from "./pages/ReportsDashboard";
+import IntelStatsDashboard from "./pages/IntelStatsDashboard";
 import ReportDetail from "./pages/ReportDetail";
 import InvestorPitch from "./pages/InvestorPitch";
 
@@ -205,6 +206,7 @@ const App = () => (
           <Route path="/admin/showcase" element={<AdminRoute><ShowcaseAdmin /></AdminRoute>} />
           <Route path="/admin/json-tester" element={<AdminRoute><JsonTester /></AdminRoute>} />
           <Route path="/admin/crm" element={<AdminRoute><AdminCRM /></AdminRoute>} />
+          <Route path="/admin/intel-stats" element={<AdminRoute><IntelStatsDashboard /></AdminRoute>} />
           <Route path="/reports" element={<ReportsDashboard />} />
           <Route path="/reports/:campaignId/:reportId" element={<ReportDetail />} />
           <Route path="/showcase/fynn-ai" element={<FynnAIShowcase />} />
