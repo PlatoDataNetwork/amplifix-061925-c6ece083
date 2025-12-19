@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { applyClientSideTranslation } from "@/utils/gtranslate";
+import { applyClientSideTranslation, removeGTranslateUI } from "@/utils/gtranslate";
 import { getLanguageFromPath } from "@/utils/language";
 
 /**
@@ -32,13 +32,33 @@ export default function GTranslateController() {
     if (appliedRef.current === key) return;
     appliedRef.current = key;
 
-    // Cleanup any previous timers
-    timersRef.current.forEach((t) => window.clearTimeout(t));
-    timersRef.current = [];
+    const clearAllTimers = () => {
+      timersRef.current.forEach((t) => {
+        window.clearTimeout(t);
+        window.clearInterval(t);
+      });
+      timersRef.current = [];
+    };
 
-    if (lang === "en") return;
+    // Cleanup any previous timers
+    clearAllTimers();
+
+    // Scrub any injected widget UI that can briefly appear during SPA navigation.
+    removeGTranslateUI();
+    const scrubId = window.setInterval(removeGTranslateUI, 200);
+    const scrubStopId = window.setTimeout(() => window.clearInterval(scrubId), 2500);
+    timersRef.current.push(scrubId, scrubStopId);
 
     let cancelled = false;
+
+    // For English, we still keep the short scrub window above, then stop.
+    if (lang === "en") {
+      return () => {
+        cancelled = true;
+        clearAllTimers();
+      };
+    }
+
     let applyCount = 0;
     const maxApplies = 3;
 
@@ -46,7 +66,9 @@ export default function GTranslateController() {
       if (cancelled) return;
       if (applyCount >= maxApplies) return;
       applyCount += 1;
+      // Translate + immediately re-scrub UI (some widgets pop in right after apply)
       void applyClientSideTranslation(lang);
+      removeGTranslateUI();
     };
 
     // One immediate pass + one delayed pass; the observer handles late content.
@@ -65,6 +87,9 @@ export default function GTranslateController() {
       const hasAddedNodes = mutations.some((m) => m.addedNodes && m.addedNodes.length > 0);
       if (!hasAddedNodes) return;
 
+      // If the widget injects UI nodes, remove them ASAP.
+      removeGTranslateUI();
+
       if (debounceTimer) window.clearTimeout(debounceTimer);
       debounceTimer = window.setTimeout(() => {
         apply();
@@ -82,8 +107,7 @@ export default function GTranslateController() {
       cancelled = true;
       if (debounceTimer) window.clearTimeout(debounceTimer);
       observer.disconnect();
-      timersRef.current.forEach((t) => window.clearTimeout(t));
-      timersRef.current = [];
+      clearAllTimers();
     };
   }, [lang, location.pathname]);
 

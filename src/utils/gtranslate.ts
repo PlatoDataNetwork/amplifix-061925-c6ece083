@@ -46,9 +46,7 @@ export function setGoogTransCookie(langCode: string) {
   // In Lovable Preview the app runs inside an iframe; modern browsers often block
   // third-party cookies unless they're SameSite=None; Secure.
   const canUseSecureNone = window.location.protocol === "https:";
-  const cookieAttrs = canUseSecureNone
-    ? "; samesite=none; secure"
-    : "; samesite=lax";
+  const cookieAttrs = canUseSecureNone ? "; samesite=none; secure" : "; samesite=lax";
 
   // Set a host-scoped cookie (SPA-friendly)
   document.cookie = `googtrans=/en/${target}; path=/; max-age=31536000${cookieAttrs}`;
@@ -71,4 +69,61 @@ export async function applyClientSideTranslation(langCode: string) {
   if (!ok) return;
 
   window.doGTranslate?.(key);
+}
+
+/**
+ * Some GTranslate / Google Translate UIs can render briefly during SPA navigation.
+ * CSS can be overridden by inline !important styles, so we proactively remove them.
+ */
+export function removeGTranslateUI() {
+  try {
+    const selectors = [
+      "#gt_float_wrapper",
+      ".gt_float_switcher",
+      ".gt_float_switcher_wrapper",
+      ".gt_switcher",
+      "#google_translate_element",
+      ".goog-te-banner-frame",
+      ".goog-te-balloon-frame",
+      "#goog-gt-tt",
+      "#goog-gt-vt",
+      ".goog-te-gadget",
+      ".goog-te-gadget-simple",
+      ".goog-logo-link",
+      ".goog-te-gadget-icon",
+      ".goog-text-highlight",
+    ];
+
+    const nodes = new Set<Element>();
+
+    selectors.forEach((sel) => {
+      document.querySelectorAll(sel).forEach((el) => nodes.add(el));
+    });
+
+    document
+      .querySelectorAll('[class*="gt_float"],[id*="gt_float"]')
+      .forEach((el) => nodes.add(el));
+
+    document.querySelectorAll("iframe").forEach((el) => {
+      const iframe = el as HTMLIFrameElement;
+      const src = iframe.getAttribute("src") || "";
+      if (
+        src.includes("translate.google") ||
+        src.includes("google_translate") ||
+        src.includes("gtranslate")
+      ) {
+        nodes.add(iframe);
+      }
+    });
+
+    nodes.forEach((el) => {
+      try {
+        el.remove();
+      } catch {
+        // no-op
+      }
+    });
+  } catch {
+    // no-op
+  }
 }
