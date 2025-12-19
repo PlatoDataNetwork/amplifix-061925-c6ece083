@@ -77,26 +77,25 @@
 .gt_float_switcher_wrapper,
 [class*="gt_float"],
 [id*="gt_float"],
-.gt_switcher {
+[class*="gt-float"],
+[id*="gt-float"],
+.gt_switcher,
+.gt-current-lang,
+.gt_selector,
+.gtranslate_wrapper,
+#gtranslate_wrapper,
+[onclick*="doGTranslate"],
+[class*="skiptranslate"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
-}
-
-/* Keep the required init container permanently offscreen */
-.gtranslate_wrapper {
-  position: fixed !important;
-  left: -10000px !important;
-  top: 0 !important;
-  width: 1px !important;
-  height: 1px !important;
+  width: 0 !important;
+  height: 0 !important;
   overflow: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-.gtranslate_wrapper * {
-  pointer-events: none !important;
+  position: fixed !important;
+  left: -99999px !important;
+  top: -99999px !important;
 }
 
 /* Google Translate injected UI (hard-hidden; we only use programmatic translation) */
@@ -110,11 +109,25 @@
 #goog-gt-vt,
 .goog-logo-link,
 .goog-te-gadget-icon,
-.goog-text-highlight {
+.goog-text-highlight,
+.goog-te-spinner-pos,
+.goog-te-ftab-float,
+.VIpgJd-ZVi9od-l4eHX-hSRGPd,
+.VIpgJd-ZVi9od-ORHb-OEVmcd,
+#VIpgJd-ZVi9od-ORHb-OEVmcd,
+iframe[src*="translate.google"],
+iframe.goog-te-menu-frame,
+iframe.goog-te-banner-frame {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  position: fixed !important;
+  left: -99999px !important;
+  top: -99999px !important;
 }
 
 /* ReactQuill Editor Styles */
