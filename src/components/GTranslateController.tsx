@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { applyClientSideTranslation } from "@/utils/gtranslate";
 import { getLanguageFromPath } from "@/utils/language";
 
@@ -17,10 +18,14 @@ import { getLanguageFromPath } from "@/utils/language";
  */
 export default function GTranslateController() {
   const location = useLocation();
+  const { i18n } = useTranslation();
   const appliedRef = useRef<string | null>(null);
   const timersRef = useRef<number[]>([]);
 
-  const lang = useMemo(() => getLanguageFromPath() || "en", [location.pathname]);
+  const lang = useMemo(
+    () => getLanguageFromPath() || i18n.language || "en",
+    [location.pathname, i18n.language]
+  );
 
   useEffect(() => {
     const key = `${lang}:${location.pathname}`;

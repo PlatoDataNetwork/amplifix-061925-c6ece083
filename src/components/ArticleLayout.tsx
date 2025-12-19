@@ -44,7 +44,9 @@ const ArticleLayout = ({
   }, []);
 
   const handleTagClick = (tag: string) => {
-    navigate(`/intel?tag=${encodeURIComponent(tag)}`);
+    const userLang = document.documentElement.getAttribute("data-user-lang") || "en";
+    const prefix = userLang && userLang !== "en" ? `/${userLang}` : "";
+    navigate(`${prefix}/intel?tag=${encodeURIComponent(tag)}`);
   };
 
   return (
