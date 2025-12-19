@@ -113,7 +113,7 @@ const About = () => {
     );
   }
 
-  if (error || !data) {
+  if (error || !data || !data.about) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <MainHeader />
@@ -124,6 +124,12 @@ const About = () => {
       </div>
     );
   }
+
+  // Safely extract data with defaults for incomplete translations
+  const about = data.about;
+  const hero = about.hero || { title: 'About AmplifiX', description: '', cta_primary: 'Get Started', cta_secondary: 'Book a Demo' };
+  const process = about.process || { title: '', subtitle: '', description: '', steps: [], capabilities: [] };
+  const whatWeDo = about.what_we_do || { title: '', features: [] };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -137,10 +143,10 @@ const About = () => {
       <div className="pt-24 container mx-auto py-12 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6 pb-2 bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
-            {data.about.hero.title}
+            {hero.title}
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            {data.about.hero.description}
+            {hero.description}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <LanguageAwareLink to="/contact">
@@ -148,7 +154,7 @@ const About = () => {
                 size="lg" 
                 className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors px-8 py-4 text-lg rounded-lg min-h-[48px]"
               >
-                {data.about.hero.cta_primary}
+                {hero.cta_primary}
               </Button>
             </LanguageAwareLink>
             <a 
@@ -161,7 +167,7 @@ const About = () => {
                 variant="outline" 
                 className="border-border hover:bg-accent transition-colors px-8 py-4 text-lg rounded-lg min-h-[48px]"
               >
-                {data.about.hero.cta_secondary}
+                {hero.cta_secondary}
               </Button>
             </a>
           </div>
@@ -255,78 +261,86 @@ const About = () => {
         </div>
       </section>
 
-      {/* Process Section */}
-      <section id="process" className="container mx-auto py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-5xl font-bold mb-4">{data.about.process.title}</h2>
-            <p className="text-xl text-highlight-blue font-medium mb-4">{data.about.process.subtitle}</p>
-            <p className="text-muted-foreground max-w-3xl mx-auto mb-12">{data.about.process.description}</p>
+      {/* Process Section - only show if we have process data */}
+      {process.title && (
+        <section id="process" className="container mx-auto py-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-5xl font-bold mb-4">{process.title}</h2>
+              <p className="text-xl text-highlight-blue font-medium mb-4">{process.subtitle}</p>
+              <p className="text-muted-foreground max-w-3xl mx-auto mb-12">{process.description}</p>
 
-            {/* Process Steps */}
-            <div className="flex flex-wrap justify-center items-center gap-4 mb-12">
-              {data.about.process.steps.map((step, index) => (
-                <div key={index} className="flex items-center gap-4">
-                  <div className="text-center">
-                    <div className="w-12 h-12 bg-highlight-blue rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto mb-2">
-                      {index + 1}
+              {/* Process Steps */}
+              {process.steps.length > 0 && (
+                <div className="flex flex-wrap justify-center items-center gap-4 mb-12">
+                  {process.steps.map((step, index) => (
+                    <div key={index} className="flex items-center gap-4">
+                      <div className="text-center">
+                        <div className="w-12 h-12 bg-highlight-blue rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto mb-2">
+                          {index + 1}
+                        </div>
+                        <h4 className="font-semibold text-sm">{step.title}</h4>
+                      </div>
+                      {index < process.steps.length - 1 && (
+                        <ArrowRight className="h-5 w-5 text-highlight-blue hidden md:block" />
+                      )}
                     </div>
-                    <h4 className="font-semibold text-sm">{step.title}</h4>
-                  </div>
-                  {index < data.about.process.steps.length - 1 && (
-                    <ArrowRight className="h-5 w-5 text-highlight-blue hidden md:block" />
-                  )}
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
-          </div>
 
-          {/* AI Capabilities Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data.about.process.capabilities.map((capability, index) => {
-              const IconComponent = getIconComponent(capability.icon);
+            {/* AI Capabilities Grid */}
+            {process.capabilities.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {process.capabilities.map((capability, index) => {
+                  const IconComponent = getIconComponent(capability.icon);
+                  return (
+                    <div 
+                      key={index} 
+                      className="p-5 rounded-xl border border-border bg-card hover:border-highlight-blue/50 transition-all duration-300 group"
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 bg-highlight-blue/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-highlight-blue/20 transition-colors">
+                          <IconComponent className="h-5 w-5 text-highlight-blue" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold mb-1">{capability.title}</h3>
+                          <p className="text-sm text-muted-foreground">{capability.description}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Features Section - only show if we have features data */}
+      {whatWeDo.features.length > 0 && (
+        <section className="container mx-auto py-12 px-4">
+          <h2 className="text-5xl font-bold text-center mb-10">Capabilities</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {whatWeDo.features.map((feature, index) => {
+              const IconComponent = getIconComponent(feature.icon);
               return (
                 <div 
                   key={index} 
-                  className="p-5 rounded-xl border border-border bg-card hover:border-highlight-blue/50 transition-all duration-300 group"
+                  className="p-6 rounded-xl border border-border bg-card/50 hover:border-highlight-blue/50 transition-all duration-300 group"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-highlight-blue/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-highlight-blue/20 transition-colors">
-                      <IconComponent className="h-5 w-5 text-highlight-blue" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold mb-1">{capability.title}</h3>
-                      <p className="text-sm text-muted-foreground">{capability.description}</p>
-                    </div>
+                  <div className="w-12 h-12 bg-highlight-blue/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-highlight-blue/20 transition-colors">
+                    <IconComponent className="h-6 w-6 text-highlight-blue" />
                   </div>
+                  <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground">{feature.description}</p>
                 </div>
               );
             })}
           </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="container mx-auto py-12 px-4">
-        <h2 className="text-5xl font-bold text-center mb-10">Capabilities</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {data.about.what_we_do.features.map((feature, index) => {
-            const IconComponent = getIconComponent(feature.icon);
-            return (
-              <div 
-                key={index} 
-                className="p-6 rounded-xl border border-border bg-card/50 hover:border-highlight-blue/50 transition-all duration-300 group"
-              >
-                <div className="w-12 h-12 bg-highlight-blue/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-highlight-blue/20 transition-colors">
-                  <IconComponent className="h-6 w-6 text-highlight-blue" />
-                </div>
-                <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground">{feature.description}</p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* CTA Section */}
       <section className="py-12 px-4 bg-background">
