@@ -274,11 +274,11 @@ if (!article) {
       <MainHeader />
       <div className="pt-24 container mx-auto py-8 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-3xl font-bold mb-4">Article Not Found</h1>
-          <p className="text-muted-foreground mb-6">The article you're looking for doesn't exist.</p>
+          <h1 className="text-3xl font-bold mb-4 translate">Article Not Found</h1>
+          <p className="text-muted-foreground mb-6 translate">The article you're looking for doesn't exist.</p>
           <Button onClick={() => navigate(`${langPrefix}/intel`)} variant="outline">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Intelligence
+            <span className="translate">Back to Intelligence</span>
           </Button>
           </div>
         </div>
@@ -311,7 +311,7 @@ if (!article) {
                 className="px-4 py-2 bg-card border border-border text-sm text-muted-foreground hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-colors flex items-center gap-2"
               >
                 <ArrowLeft className="h-4 w-4" />
-                Back to Intelligence
+                <span className="translate">Back to Intelligence</span>
               </button>
               {verticalDisplayName && (
                 <Link
@@ -342,9 +342,9 @@ if (!article) {
                     <span className="text-muted-foreground/60">| ID: {article.post_id || article.id}</span>
                   )}
                 </div>
-                <div className="flex items-center gap-2 notranslate">
+                <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
-                  <span>3 Min Read</span>
+                  <span className="notranslate">3</span> <span className="translate">Min Read</span>
                 </div>
                 
                 {/* Share Section Inline */}
