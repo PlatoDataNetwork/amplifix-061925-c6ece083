@@ -74,135 +74,47 @@
 /* Hide GTranslate's floating UI (we use our own language picker) */
 #gt_float_wrapper,
 .gt_float_switcher,
-.gt_float_switcher * {
+.gt_float_switcher_wrapper,
+[class*="gt_float"],
+[id*="gt_float"],
+.gt_switcher {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
 
-/* Google Translate Widget Customization */
+/* Keep the required init container permanently offscreen */
 .gtranslate_wrapper {
-  position: relative;
-}
-
-#google_translate_element {
-  display: inline-block;
-}
-
-.goog-te-gadget {
-  font-family: inherit !important;
-  font-size: 14px !important;
-  color: var(--foreground) !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-.goog-te-gadget-simple {
-  background-color: var(--background) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 6px !important;
-  padding: 6px 12px !important;
-  font-size: 14px !important;
-  color: var(--foreground) !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-}
-
-.goog-te-gadget-simple:hover {
-  background-color: var(--muted) !important;
-  border-color: var(--highlight-blue) !important;
-}
-
-.goog-te-gadget-simple .goog-te-menu-value {
-  color: var(--foreground) !important;
-  font-size: 14px !important;
-}
-
-.goog-te-gadget-simple .goog-te-menu-value span {
-  color: var(--foreground) !important;
-}
-
-.goog-te-gadget-simple .goog-te-menu-value:before {
-  content: "🌐 ";
-  margin-right: 4px;
-}
-
-/* Hide Google Translate branding */
-.goog-te-gadget-icon {
-  display: none !important;
-}
-
-.goog-te-banner-frame {
-  display: none !important;
-}
-
-.goog-te-menu-frame {
-  max-height: 400px !important;
-  overflow-y: auto !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 6px !important;
-  background: var(--background) !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-}
-
-.goog-te-menu2 {
-  background: var(--background) !important;
-  border: none !important;
-  max-height: 400px !important;
-  overflow-y: auto !important;
-}
-
-.goog-te-menu2-item div {
-  color: var(--foreground) !important;
-  font-size: 14px !important;
-  padding: 8px 12px !important;
-}
-
-.goog-te-menu2-item-selected {
-  background: var(--highlight-blue) !important;
-  color: white !important;
-}
-
-.goog-te-menu2-item:hover {
-  background: var(--muted) !important;
-}
-
-/* Custom styles for better integration */
-.gtranslate_wrapper .goog-te-gadget {
-  text-decoration: none !important;
-}
-
-/* Remove Google Translate attribution */
-.goog-logo-link {
-  display: none !important;
-}
-
-.goog-te-gadget .goog-te-gadget-simple a {
-  text-decoration: none !important;
-}
-
-/* Hide Google Translate widget but keep it functional */
-#google_translate_hidden {
   position: fixed !important;
-  top: -1000px !important;
-  left: -1000px !important;
-  visibility: hidden !important;
+  left: -10000px !important;
+  top: 0 !important;
   width: 1px !important;
   height: 1px !important;
+  overflow: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
+.gtranslate_wrapper * {
+  pointer-events: none !important;
+}
 
-/* Ensure the combo element is still accessible */
-#google_translate_hidden .goog-te-combo {
-  position: fixed !important;
-  top: -1000px !important;
-  left: -1000px !important;
+/* Google Translate injected UI (hard-hidden; we only use programmatic translation) */
+#google_translate_element,
+.goog-te-gadget,
+.goog-te-gadget-simple,
+.goog-te-menu-frame,
+.goog-te-banner-frame,
+.goog-te-balloon-frame,
+#goog-gt-tt,
+#goog-gt-vt,
+.goog-logo-link,
+.goog-te-gadget-icon,
+.goog-text-highlight {
+  display: none !important;
   visibility: hidden !important;
-  width: 1px !important;
-  height: 1px !important;
   opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 /* ReactQuill Editor Styles */
