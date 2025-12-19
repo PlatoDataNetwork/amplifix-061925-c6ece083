@@ -214,10 +214,10 @@ const Blog = () => {
       <div className="pt-24 container mx-auto py-8 md:py-12 px-4">
         {/* Hero Section */}
         <div className="text-center mb-12 md:mb-16">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 pb-2 bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 pb-2 bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent translate">
             AmplifiX Intelligence
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4 mb-8">
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4 mb-8 translate">
             Insights on AI, corporate communications, investor relations, and business intelligence.
           </p>
           
@@ -240,7 +240,7 @@ const Blog = () => {
                     }}
                     className={selectedVerticalFilter === 'All' ? 'bg-accent' : ''}
                   >
-                    All Verticals
+                    <span className="translate">All Verticals</span>
                   </DropdownMenuItem>
                   {verticals.map((vertical) => (
                     <DropdownMenuItem 
@@ -297,17 +297,17 @@ const Blog = () => {
           <section className="mb-12 max-w-4xl mx-auto">
             <Card className="p-6">
               <div className="mb-4">
-                <h2 className="text-xl font-semibold">
+                <h2 className="text-xl font-semibold translate">
                   {isSearching ? 'Searching...' : `Found ${searchResults.length} result${searchResults.length !== 1 ? 's' : ''}`}
                 </h2>
               </div>
               
               {isSearching ? (
-                <div className="text-center py-8 text-muted-foreground">
+                <div className="text-center py-8 text-muted-foreground translate">
                   Searching through articles...
                 </div>
               ) : searchResults.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
+                <div className="text-center py-8 text-muted-foreground translate">
                   No articles found matching "{searchQuery}"
                 </div>
               ) : (
@@ -325,7 +325,7 @@ const Blog = () => {
                         {result.excerpt || 'No excerpt available'}
                       </p>
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <span className="bg-primary/10 text-primary px-2 py-1 rounded">
+                        <span className="bg-primary/10 text-primary px-2 py-1 rounded translate">
                           Relevance: {(result.rank * 100).toFixed(0)}%
                         </span>
                       </div>
@@ -385,7 +385,7 @@ const Blog = () => {
           {/* Show More Button */}
           {hasMorePosts && (
             <div className="mt-12 flex flex-col items-center gap-4">
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-sm translate">
                 Showing {visibleCount} of {filteredBlogPosts.length} articles
               </p>
               <Button 
@@ -394,7 +394,7 @@ const Blog = () => {
                 size="lg"
                 className="min-w-[200px]"
               >
-                Show More Articles
+                <span className="translate">Show More Articles</span>
               </Button>
             </div>
           )}
