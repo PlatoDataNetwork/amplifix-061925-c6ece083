@@ -37,7 +37,7 @@ i18n
 
 // Set document direction based on language
 i18n.on('languageChanged', (lng) => {
-  const dir = rtlLanguages.includes(lng) ? 'rtl' : 'ltr';
+  const dir = (rtlLanguages as readonly string[]).includes(lng) ? 'rtl' : 'ltr';
   document.documentElement.setAttribute('dir', dir);
 
   // Keep the source language as English so the GTranslate widget reliably applies
@@ -47,4 +47,3 @@ i18n.on('languageChanged', (lng) => {
 });
 
 export default i18n;
-export { rtlLanguages };
