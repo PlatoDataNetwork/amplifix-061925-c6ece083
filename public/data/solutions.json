@@ -2,39 +2,74 @@
   "solutions": {
     "hero_title": "Solutions for",
     "hero_title_highlight": "Every Stage",
-    "hero_description": "From private companies preparing for growth to public companies managing investor relations, AmplifiX provides tailored solutions for your unique needs.",
-    "hero_cta_primary_text": "Amplifi Your Brand →",
+    "hero_description": "Comprehensive solutions designed to amplify your communication strategy at every stage of growth.",
+    "hero_cta_primary_text": "Get Started",
     "hero_cta_primary_link": "/contact",
-    "hero_cta_secondary_text": "Book A Demo",
+    "hero_cta_secondary_text": "Book a Demo",
     "hero_cta_secondary_link": "https://calendly.com/amplifix/amplifix-discovery",
     "solutions_list": [
       {
         "title": "Public Companies",
-        "description": "Comprehensive investor relations and corporate communications solutions for publicly traded companies.",
-        "link_text": "Learn More →",
+        "description": "AI-powered investor relations and corporate communications solutions designed for publicly traded companies with compliance-first approach.",
+        "link_text": "Explore →",
         "link": "/solutions/public-companies",
-        "icon": "Building"
+        "icon": "Building2"
       },
       {
         "title": "Private Companies",
-        "description": "Scale your communications strategy with AI-powered PR and stakeholder management solutions.",
-        "link_text": "Learn More →",
+        "description": "Strategic communications and stakeholder engagement solutions tailored for private companies preparing for growth or exit.",
+        "link_text": "Explore →",
         "link": "/solutions/private-companies",
         "icon": "Users"
       },
       {
-        "title": "IPO Preparation",
-        "description": "Complete preparation for going public with comprehensive communications and compliance support.",
-        "link_text": "Learn More →",
-        "link": "/solutions/ipo-preparation",
+        "title": "Market Intelligence",
+        "description": "Real-time market insights, news aggregation, and intelligence across key verticals to inform strategic decisions.",
+        "link_text": "Explore →",
+        "link": "/intel",
         "icon": "TrendingUp"
       },
       {
-        "title": "Fundraising Support",
-        "description": "AI-optimized pitch decks, investor outreach, and fundraising communications management.",
-        "link_text": "Learn More →",
-        "link": "/solutions/fundraising",
-        "icon": "Rocket"
+        "title": "Advisory",
+        "description": "Strategic advisory services to help you navigate complex corporate communications challenges and maximize stakeholder value.",
+        "link_text": "Explore →",
+        "link": "/solutions/advisory",
+        "icon": "Lightbulb"
+      },
+      {
+        "title": "Data Analytics",
+        "description": "Comprehensive analytics suite providing real-time insights, sentiment analysis, and performance metrics for data-driven decisions.",
+        "link_text": "Explore →",
+        "link": "/solutions/analytics",
+        "icon": "BarChart3"
+      },
+      {
+        "title": "Development",
+        "description": "Tailored software solutions and platform integrations to power your corporate communications infrastructure.",
+        "link_text": "Explore →",
+        "link": "/solutions/development",
+        "icon": "Code"
+      },
+      {
+        "title": "Investor Relations",
+        "description": "Integrated investor relations and public relations platform to streamline communications and enhance stakeholder engagement.",
+        "link_text": "Explore →",
+        "link": "/solutions/ir-pr",
+        "icon": "Megaphone"
+      },
+      {
+        "title": "Syndication / IR / PR",
+        "description": "Premium content distribution network to amplify your message across targeted channels and maximize reach.",
+        "link_text": "Explore →",
+        "link": "/solutions/syndication",
+        "icon": "Share2"
+      },
+      {
+        "title": "Video Distribution",
+        "description": "Streaming TV and digital video distribution with AI-powered targeting to reach audiences across every screen.",
+        "link_text": "Explore →",
+        "link": "/solutions/video-distribution",
+        "icon": "Tv"
       }
     ]
   }
