@@ -11,7 +11,8 @@ interface SEOHeadProps {
 const languages = [
   { code: 'ar', locale: 'ar_SA', name: 'Arabic' },
   { code: 'bn', locale: 'bn_BD', name: 'Bengali' },
-  { code: 'zh', locale: 'zh_CN', name: 'Chinese' },
+  { code: 'zh', locale: 'zh_CN', name: 'Chinese (Simplified)' },
+  { code: 'zh-TW', locale: 'zh_TW', name: 'Chinese (Traditional)' },
   { code: 'da', locale: 'da_DK', name: 'Danish' },
   { code: 'nl', locale: 'nl_NL', name: 'Dutch' },
   { code: 'en', locale: 'en_US', name: 'English' },
