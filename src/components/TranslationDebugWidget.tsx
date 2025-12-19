@@ -12,6 +12,7 @@ declare global {
 }
 
 export default function TranslationDebugWidget() {
+  const isDev = import.meta.env.DEV;
   const { isAdmin, loading } = useAdminCheck();
   const location = useLocation();
   const { i18n } = useTranslation();
@@ -22,7 +23,6 @@ export default function TranslationDebugWidget() {
   const [googTransCookie, setGoogTransCookie] = useState<string>("");
 
   const urlLang = getLanguageFromPath() || "en";
-
 
   useEffect(() => {
     const check = () => {
@@ -41,8 +41,8 @@ export default function TranslationDebugWidget() {
     return () => clearInterval(interval);
   }, [location.pathname]);
 
-  // Don't render for non-admins or while loading
-  if (loading || !isAdmin) return null;
+  // Don't render in production builds, and don't render for non-admins (or while loading)
+  if (!isDev || loading || !isAdmin) return null;
 
   const retrigger = () => {
     if (typeof window.doGTranslate === "function" && urlLang !== "en") {
