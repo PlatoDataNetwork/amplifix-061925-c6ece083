@@ -109,6 +109,18 @@ export function removeGTranslateUI() {
       ".goog-logo-link",
       ".goog-te-gadget-icon",
       ".goog-text-highlight",
+      // Additional GTranslate selectors for the floating pill/button
+      ".gtranslate_wrapper",
+      "#gtranslate_wrapper",
+      ".gt-current-lang",
+      ".gt_selector",
+      '[onclick*="doGTranslate"]',
+      '[class*="skiptranslate"]',
+      ".VIpgJd-ZVi9od-l4eHX-hSRGPd", // Google Translate bar
+      ".VIpgJd-ZVi9od-ORHb-OEVmcd",
+      "#VIpgJd-ZVi9od-ORHb-OEVmcd",
+      ".goog-te-spinner-pos",
+      ".goog-te-ftab-float",
     ];
 
     const nodes = new Set<Element>();
@@ -117,19 +129,63 @@ export function removeGTranslateUI() {
       document.querySelectorAll(sel).forEach((el) => nodes.add(el));
     });
 
+    // Wildcard matches for gt_float patterns
     document
-      .querySelectorAll('[class*="gt_float"],[id*="gt_float"]')
+      .querySelectorAll('[class*="gt_float"],[id*="gt_float"],[class*="gt-float"],[id*="gt-float"]')
       .forEach((el) => nodes.add(el));
 
+    // Match any element with gtranslate in class or id
+    document
+      .querySelectorAll('[class*="gtranslate"],[id*="gtranslate"],[class*="goog-te"],[id*="goog-te"]')
+      .forEach((el) => nodes.add(el));
+
+    // Target iframes from Google Translate / GTranslate
     document.querySelectorAll("iframe").forEach((el) => {
       const iframe = el as HTMLIFrameElement;
       const src = iframe.getAttribute("src") || "";
+      const id = iframe.id || "";
+      const className = iframe.className || "";
       if (
         src.includes("translate.google") ||
         src.includes("google_translate") ||
-        src.includes("gtranslate")
+        src.includes("gtranslate") ||
+        id.includes("gtranslate") ||
+        className.includes("skiptranslate") ||
+        className.includes("goog-te")
       ) {
         nodes.add(iframe);
+      }
+    });
+
+    // Target fixed-position elements in top-left that look like language switchers
+    // (GTranslate often injects a small pill in the corner)
+    document.querySelectorAll("body > div, body > a, body > span").forEach((el) => {
+      const style = window.getComputedStyle(el);
+      const rect = el.getBoundingClientRect();
+      const isFixed = style.position === "fixed";
+      const isTopLeft = rect.top < 100 && rect.left < 100;
+      const isSmall = rect.width < 200 && rect.height < 80;
+
+      // Check for GTranslate-like attributes
+      const hasGtAttr =
+        el.innerHTML.includes("doGTranslate") ||
+        el.innerHTML.includes("gtranslate") ||
+        (el as HTMLElement).onclick?.toString().includes("doGTranslate");
+
+      if (isFixed && isTopLeft && isSmall && hasGtAttr) {
+        nodes.add(el);
+      }
+
+      // Also check class/id patterns
+      const elClass = el.className?.toString() || "";
+      const elId = el.id || "";
+      if (
+        elClass.includes("gt_") ||
+        elClass.includes("gt-") ||
+        elId.includes("gt_") ||
+        elId.includes("gt-")
+      ) {
+        nodes.add(el);
       }
     });
 
