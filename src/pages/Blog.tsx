@@ -10,7 +10,7 @@ import { useJsonData } from "@/hooks/useJsonData";
 import { useRSSFeed } from "@/hooks/useRSSFeed";
 import { usePlatoDataFeed } from "@/hooks/usePlatoDataFeed";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
-import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useMemo, useState, useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Input } from "@/components/ui/input";
@@ -69,15 +69,9 @@ const Blog = () => {
   const { verticals } = usePlatoVerticals();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const location = useLocation();
-  useLanguage(); // Auto-translates page
-  
-  // Get language prefix from current path
-  const languagePrefix = location.pathname.startsWith('/') 
-    ? location.pathname.split('/')[1] 
-    : '';
-  const isLanguagePath = languagePrefix && languagePrefix.length === 2 && languagePrefix !== 'intel';
-  const langPrefix = isLanguagePath ? `/${languagePrefix}` : '';
+  const { currentLanguage } = useLanguage(); // Auto-translates page
+
+  const langPrefix = currentLanguage && currentLanguage !== "en" ? `/${currentLanguage}` : "";
   
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -372,9 +366,9 @@ const Blog = () => {
                   readTime: post.read_time
                 }} 
                 articleLink={
-                  post.id === 1 ? "/intel/ai-intelligence-article" :
-                  post.id === 2 ? "/intel/advanced-analytics-article" :
-                  post.id === 3 ? "/intel/investor-engagement-article" :
+                  post.id === 1 ? `${langPrefix}/intel/ai-intelligence-article` :
+                  post.id === 2 ? `${langPrefix}/intel/advanced-analytics-article` :
+                  post.id === 3 ? `${langPrefix}/intel/investor-engagement-article` :
                   post.id >= 1000 ? generateArticleUrl(post.title, post.id, langPrefix) : undefined
                 }
                 buttonText={blogData?.blog.ui.read_full_article}

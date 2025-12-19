@@ -68,15 +68,17 @@ export function useLanguage() {
   }, []);
 
   useEffect(() => {
-    const langCode = getLanguageFromPath() || 'en';
+    const pathLang = getLanguageFromPath();
+    const langCode = pathLang || i18n.language || "en";
 
-    if (i18n.language !== langCode) {
-      void i18n.changeLanguage(langCode).catch((e) => {
-        console.warn('useLanguage: i18n.changeLanguage failed (continuing):', e);
+    // If URL explicitly requests a language, sync i18n to it.
+    if (pathLang && i18n.language !== pathLang) {
+      void i18n.changeLanguage(pathLang).catch((e) => {
+        console.warn("useLanguage: i18n.changeLanguage failed (continuing):", e);
       });
     }
 
-    // Apply GTranslate for non-English languages
+    // Apply GTranslate for non-English languages (even on non-prefixed routes if user language is persisted)
     applyGTranslate(langCode);
   }, [location.pathname, i18n, applyGTranslate]);
 
