@@ -165,11 +165,11 @@ const VerticalPage = () => {
         <MainHeader />
         <div className="pt-24 container mx-auto py-8 px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-3xl font-bold mb-4">Vertical Not Found</h1>
-            <p className="text-muted-foreground mb-6">The vertical you're looking for doesn't exist.</p>
+            <h1 className="text-3xl font-bold mb-4 translate">Vertical Not Found</h1>
+            <p className="text-muted-foreground mb-6 translate">The vertical you're looking for doesn't exist.</p>
             <Button onClick={() => navigate(`${langPrefix}/intel`)} variant="outline">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Intelligence
+              <span className="translate">Back to Intelligence</span>
             </Button>
           </div>
         </div>
@@ -194,15 +194,15 @@ const VerticalPage = () => {
           className="mb-8"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to All Intelligence
+          <span className="translate">Back to All Intelligence</span>
         </Button>
 
         {/* Hero Section */}
         <div className="text-center mb-8 md:mb-12">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 pb-2 bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
-            {verticalInfo.name} Intelligence
+            {verticalInfo.name} <span className="translate">Intelligence</span>
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4 mb-8">
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto px-4 mb-8 translate">
             Stay updated with the latest {verticalInfo.name} news, insights, and intelligence.
           </p>
 
@@ -311,7 +311,7 @@ const VerticalPage = () => {
             {/* Show More Button - only show if not searching */}
             {hasMorePosts && !isSearching && (
               <div className="mt-12 flex flex-col items-center gap-4">
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-sm translate">
                   Showing {displayPosts.length} articles
                 </p>
                 <Button 
@@ -321,7 +321,7 @@ const VerticalPage = () => {
                   className="min-w-[200px]"
                   disabled={dbLoading}
                 >
-                  {dbLoading ? 'Loading...' : 'Show More Articles'}
+                  <span className="translate">{dbLoading ? 'Loading...' : 'Show More Articles'}</span>
                 </Button>
               </div>
             )}
@@ -331,11 +331,11 @@ const VerticalPage = () => {
         {/* No Articles */}
         {!isLoading && displayPosts.length === 0 && !isSearching && (
           <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg mb-4">
+            <p className="text-muted-foreground text-lg mb-4 translate">
               No articles available for {verticalInfo.name} at the moment.
             </p>
             <Button onClick={() => navigate(`${langPrefix}/intel`)} variant="outline">
-              View All Articles
+              <span className="translate">View All Articles</span>
             </Button>
           </div>
         )}

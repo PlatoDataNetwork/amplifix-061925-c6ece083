@@ -146,19 +146,19 @@ const BlogPostCard = ({ post, articleLink, buttonText = "Read Full Article" }: B
           articleLink.startsWith('http') ? (
             <Button variant="link" className="text-blue-500 mt-4 p-0" asChild>
               <a href={articleLink} target="_blank" rel="noopener noreferrer" onClick={handleClick}>
-                {buttonText} <ArrowRight className="ml-2 h-4 w-4" />
+                <span className="translate">{buttonText}</span> <ArrowRight className="ml-2 h-4 w-4" />
               </a>
             </Button>
           ) : (
             <Button variant="link" className="text-blue-500 mt-4 p-0" asChild>
               <Link to={articleLink} onClick={handleClick}>
-                {buttonText} <ArrowRight className="ml-2 h-4 w-4" />
+                <span className="translate">{buttonText}</span> <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           )
         ) : (
           <Button variant="link" className="text-blue-500 mt-4 p-0" onClick={handleClick}>
-            {buttonText} <ArrowRight className="ml-2 h-4 w-4" />
+            <span className="translate">{buttonText}</span> <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         )}
       </div>
