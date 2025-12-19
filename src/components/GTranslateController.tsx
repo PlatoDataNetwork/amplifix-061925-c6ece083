@@ -40,7 +40,7 @@ export default function GTranslateController() {
 
     let cancelled = false;
     let applyCount = 0;
-    const maxApplies = 8;
+    const maxApplies = 5;
 
     const apply = () => {
       if (cancelled) return;
@@ -49,14 +49,14 @@ export default function GTranslateController() {
       void applyClientSideTranslation(lang);
     };
 
-    // Immediate + staged passes (covers most async fetches)
+    // Immediate + a couple staged passes (enough for async content without visible flicker)
     apply();
-    [600, 1400, 2600, 4200, 6500].forEach((delay) => {
+    [900, 2600, 5200].forEach((delay) => {
       const t = window.setTimeout(apply, delay);
       timersRef.current.push(t);
     });
 
-    // Observe DOM insertions for a short time to catch late-loaded content
+    // Observe DOM insertions briefly; debounce heavily to avoid flicker
     let debounceTimer: number | null = null;
     const observer = new MutationObserver((mutations) => {
       if (cancelled) return;
@@ -68,7 +68,7 @@ export default function GTranslateController() {
       if (debounceTimer) window.clearTimeout(debounceTimer);
       debounceTimer = window.setTimeout(() => {
         apply();
-      }, 450);
+      }, 1200);
     });
 
     // body may be null very early; guard
