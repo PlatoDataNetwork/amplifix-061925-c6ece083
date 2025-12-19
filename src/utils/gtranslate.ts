@@ -38,13 +38,19 @@ export function setGoogTransCookie(langCode: string) {
   const target = getGTranslateCode(langCode);
 
   // Clear any previously-set variants to avoid duplicate googtrans cookies
-  const expire = 'Thu, 01 Jan 1970 00:00:00 GMT';
+  const expire = "Thu, 01 Jan 1970 00:00:00 GMT";
   document.cookie = `googtrans=; expires=${expire}; path=/`;
   document.cookie = `googtrans=; expires=${expire}; path=/; domain=${window.location.hostname}`;
 
-  // Set a single host-scoped cookie (most reliable in SPAs / previews)
-  // Note: avoid setting a domain cookie unless you control the apex domain.
-  document.cookie = `googtrans=/en/${target}; path=/; max-age=31536000; samesite=lax`;
+  // In Lovable Preview the app runs inside an iframe; modern browsers often block
+  // third-party cookies unless they're SameSite=None; Secure.
+  const canUseSecureNone = window.location.protocol === "https:";
+  const cookieAttrs = canUseSecureNone
+    ? "; samesite=none; secure"
+    : "; samesite=lax";
+
+  // Set a host-scoped cookie (SPA-friendly)
+  document.cookie = `googtrans=/en/${target}; path=/; max-age=31536000${cookieAttrs}`;
 }
 
 export async function applyClientSideTranslation(langCode: string) {
