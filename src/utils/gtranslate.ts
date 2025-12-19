@@ -54,7 +54,7 @@ export function setGoogTransCookie(langCode: string) {
 }
 
 export async function applyClientSideTranslation(langCode: string) {
-  if (!langCode || langCode === "en") return;
+  if (!langCode) return;
 
   const target = getGTranslateCode(langCode);
   const key = `en|${target}`;
@@ -65,10 +65,17 @@ export async function applyClientSideTranslation(langCode: string) {
   if (window.__gtLastApply?.key === key && now - window.__gtLastApply.ts < 1200) return;
   window.__gtLastApply = { key, ts: now };
 
+  // Always set the cookie, including when switching back to English.
+  // This is what actually “turns off” translation for many widget variants.
   setGoogTransCookie(langCode);
-  const ok = await ensureGTranslateReady();
-  if (!ok) return;
 
+  const ok = await ensureGTranslateReady();
+  if (!ok) {
+    scrubGTranslateUIWindow();
+    return;
+  }
+
+  // Note: key can be "en|en" to reset back to English.
   window.doGTranslate?.(key);
 
   // Some widget UIs are injected *after* doGTranslate runs (and can persist).
