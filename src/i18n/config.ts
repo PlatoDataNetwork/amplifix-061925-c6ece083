@@ -3,12 +3,12 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import SupabaseBackend from './supabaseBackend';
 
-const supportedLanguages = [
-  'en', 'ar', 'bn', 'zh', 'zh-TW', 'da', 'nl', 'et', 'fi', 'fr', 'de', 'el', 
-  'he', 'hi', 'hu', 'id', 'it', 'ja', 'km', 'ko', 'no', 'fa', 'pl', 'pt', 
+export const supportedLanguages = [
+  'en', 'ar', 'bn', 'zh', 'zh-TW', 'da', 'nl', 'et', 'fi', 'fr', 'de', 'el',
+  'he', 'hi', 'hu', 'id', 'it', 'ja', 'km', 'ko', 'no', 'fa', 'pl', 'pt',
   'pa', 'ro', 'ru', 'sl', 'es', 'sv', 'th', 'tr', 'uk', 'ur', 'vi'
-];
-const rtlLanguages = ['ar', 'he', 'fa', 'ur'];
+] as const;
+export const rtlLanguages = ['ar', 'he', 'fa', 'ur'] as const;
 
 i18n
   .use(SupabaseBackend)

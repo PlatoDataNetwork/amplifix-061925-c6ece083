@@ -1,36 +1,84 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { applyClientSideTranslation } from "@/utils/gtranslate";
+import { getLanguageFromPath } from "@/utils/language";
 
 /**
- * Applies GTranslate once on navigation and once after a delay for async content.
- * Removed aggressive MutationObserver to prevent flickering/jumping text.
+ * Universal, SPA-safe GTranslate driver.
+ *
+ * Why this exists:
+ * - Many pages render async (JSON / Supabase) after navigation.
+ * - One-shot translation misses late content.
+ *
+ * Strategy:
+ * - Apply immediately + a few delayed passes.
+ * - Observe DOM node insertions for a short window and re-apply (debounced, capped)
+ *   to catch late-loaded cards, showcases, and articles without constant flicker.
  */
 export default function GTranslateController() {
   const location = useLocation();
   const appliedRef = useRef<string | null>(null);
+  const timersRef = useRef<number[]>([]);
 
-  const lang = useMemo(() => {
-    const seg = location.pathname.split("/").filter(Boolean)[0];
-    return seg && seg.length === 2 ? seg : "en";
-  }, [location.pathname]);
+  const lang = useMemo(() => getLanguageFromPath() || "en", [location.pathname]);
 
   useEffect(() => {
-    // Skip if already applied for this lang + path combo
     const key = `${lang}:${location.pathname}`;
     if (appliedRef.current === key) return;
     appliedRef.current = key;
 
+    // Cleanup any previous timers
+    timersRef.current.forEach((t) => window.clearTimeout(t));
+    timersRef.current = [];
+
     if (lang === "en") return;
 
-    // Apply once immediately
-    void applyClientSideTranslation(lang);
+    let cancelled = false;
+    let applyCount = 0;
+    const maxApplies = 8;
 
-    // One delayed pass for async-loaded content (e.g., from DB queries)
-    const t1 = window.setTimeout(() => void applyClientSideTranslation(lang), 1200);
+    const apply = () => {
+      if (cancelled) return;
+      if (applyCount >= maxApplies) return;
+      applyCount += 1;
+      void applyClientSideTranslation(lang);
+    };
+
+    // Immediate + staged passes (covers most async fetches)
+    apply();
+    [600, 1400, 2600, 4200, 6500].forEach((delay) => {
+      const t = window.setTimeout(apply, delay);
+      timersRef.current.push(t);
+    });
+
+    // Observe DOM insertions for a short time to catch late-loaded content
+    let debounceTimer: number | null = null;
+    const observer = new MutationObserver((mutations) => {
+      if (cancelled) return;
+      if (applyCount >= maxApplies) return;
+
+      const hasAddedNodes = mutations.some((m) => m.addedNodes && m.addedNodes.length > 0);
+      if (!hasAddedNodes) return;
+
+      if (debounceTimer) window.clearTimeout(debounceTimer);
+      debounceTimer = window.setTimeout(() => {
+        apply();
+      }, 450);
+    });
+
+    // body may be null very early; guard
+    if (document.body) {
+      observer.observe(document.body, { childList: true, subtree: true });
+      const stop = window.setTimeout(() => observer.disconnect(), 9000);
+      timersRef.current.push(stop);
+    }
 
     return () => {
-      window.clearTimeout(t1);
+      cancelled = true;
+      if (debounceTimer) window.clearTimeout(debounceTimer);
+      observer.disconnect();
+      timersRef.current.forEach((t) => window.clearTimeout(t));
+      timersRef.current = [];
     };
   }, [lang, location.pathname]);
 
