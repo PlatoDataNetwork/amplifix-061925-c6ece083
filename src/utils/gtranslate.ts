@@ -76,7 +76,7 @@ export async function applyClientSideTranslation(langCode: string) {
   scrubGTranslateUIWindow();
 }
 
-function scrubGTranslateUIWindow(windowMs: number = 2500, everyMs: number = 200) {
+function scrubGTranslateUIWindow(windowMs: number = 30000, everyMs: number = 250) {
   // Clear any previous scrub window to avoid leaking intervals.
   if (window.__gtScrub?.intervalId) window.clearInterval(window.__gtScrub.intervalId);
   if (window.__gtScrub?.timeoutId) window.clearTimeout(window.__gtScrub.timeoutId);
@@ -115,7 +115,6 @@ export function removeGTranslateUI() {
       ".gt-current-lang",
       ".gt_selector",
       '[onclick*="doGTranslate"]',
-      '[class*="skiptranslate"]',
       ".VIpgJd-ZVi9od-l4eHX-hSRGPd", // Google Translate bar
       ".VIpgJd-ZVi9od-ORHb-OEVmcd",
       "#VIpgJd-ZVi9od-ORHb-OEVmcd",
@@ -157,40 +156,56 @@ export function removeGTranslateUI() {
       }
     });
 
-    // Target fixed-position elements in top-left that look like language switchers
-    // (GTranslate often injects a small pill in the corner)
-    document.querySelectorAll("body > div, body > a, body > span").forEach((el) => {
+    // Target fixed-position elements in top-left that look like translate widgets
+    // (some variants inject a round "G" icon without obvious classes)
+    document.querySelectorAll("body > div, body > a, body > span, body > button").forEach((el) => {
       const style = window.getComputedStyle(el);
       const rect = el.getBoundingClientRect();
+
       const isFixed = style.position === "fixed";
-      const isTopLeft = rect.top < 100 && rect.left < 100;
-      const isSmall = rect.width < 200 && rect.height < 80;
+      const top = parseFloat(style.top || "0");
+      const left = parseFloat(style.left || "0");
+      const isTopLeft = rect.top < 80 && rect.left < 80 && top < 120 && left < 120;
+      const isSmall = rect.width > 20 && rect.width < 120 && rect.height > 20 && rect.height < 120;
+      const z = Number(style.zIndex || 0);
+      const isOnTop = z >= 999;
 
-      // Check for GTranslate-like attributes
-      const hasGtAttr =
-        el.innerHTML.includes("doGTranslate") ||
-        el.innerHTML.includes("gtranslate") ||
-        (el as HTMLElement).onclick?.toString().includes("doGTranslate");
+      if (!(isFixed && isTopLeft && isSmall && isOnTop)) return;
 
-      if (isFixed && isTopLeft && isSmall && hasGtAttr) {
-        nodes.add(el);
-      }
+      const aria = (el.getAttribute("aria-label") || "").toLowerCase();
+      const title = (el.getAttribute("title") || "").toLowerCase();
+      const href = (el as HTMLAnchorElement).href?.toLowerCase?.() || "";
+      const text = (el.textContent || "").trim().toLowerCase();
 
-      // Also check class/id patterns
-      const elClass = el.className?.toString() || "";
-      const elId = el.id || "";
-      if (
-        elClass.includes("gt_") ||
-        elClass.includes("gt-") ||
-        elId.includes("gt_") ||
-        elId.includes("gt-")
-      ) {
+      const hasMedia = !!el.querySelector("img,svg");
+      const imgSrc = (el.querySelector("img") as HTMLImageElement | null)?.src?.toLowerCase?.() || "";
+
+      const looksLikeTranslate =
+        aria.includes("translate") ||
+        aria.includes("gtranslate") ||
+        aria.includes("google") ||
+        title.includes("translate") ||
+        title.includes("gtranslate") ||
+        title.includes("google") ||
+        href.includes("translate") ||
+        imgSrc.includes("translate") ||
+        imgSrc.includes("gtranslate") ||
+        imgSrc.includes("google") ||
+        text === "g" ||
+        text === "gtranslate";
+
+      if (hasMedia && looksLikeTranslate) {
         nodes.add(el);
       }
     });
 
     nodes.forEach((el) => {
       try {
+        // Never remove root nodes
+        if (el === document.documentElement) return;
+        if (el === document.body) return;
+        if ((el as HTMLElement).id === "root") return;
+
         el.remove();
       } catch {
         // no-op

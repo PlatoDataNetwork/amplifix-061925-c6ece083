@@ -84,8 +84,7 @@
 .gt_selector,
 .gtranslate_wrapper,
 #gtranslate_wrapper,
-[onclick*="doGTranslate"],
-[class*="skiptranslate"] {
+[onclick*="doGTranslate"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
