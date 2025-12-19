@@ -10,8 +10,8 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { toast } from "sonner";
 import { sanitizeText, formatArticleTags, formatExternalArticleContent, ARTICLE_CONTENT_CLASSES } from "@/utils/articleFormatting";
-import { getCurrentLanguage, getGTranslateCode } from "@/utils/language";
-import { ensureGTranslateReady } from "@/utils/gtranslate";
+import { getCurrentLanguage } from "@/utils/language";
+import { applyClientSideTranslation } from "@/utils/gtranslate";
 import { extractIdFromSlug, generateArticleUrl } from "@/utils/slugify";
 import defaultArticleImage from "@/assets/default-article-image.jpg";
 
@@ -212,40 +212,10 @@ const ExternalArticle = () => {
     if (translation) return;
 
     const lang = getCurrentLanguage();
-    if (!lang || lang === 'en') return;
+    if (!lang || lang === "en") return;
 
-    const targetCode = getGTranslateCode(lang);
-    const w = window as any;
-    
-    const triggerTranslation = async (attempt: number = 0) => {
-      console.log(`Triggering GTranslate attempt ${attempt + 1} for: ${targetCode}`);
-
-      // Set cookies first
-      document.cookie = `googtrans=/en/${targetCode}; path=/`;
-      document.cookie = `googtrans=/en/${targetCode}; path=/; domain=${window.location.hostname}`;
-
-      const ok = await ensureGTranslateReady(8000);
-      if (ok && typeof w.doGTranslate === 'function') {
-        w.doGTranslate(`en|${targetCode}`);
-      }
-
-      // Also try the combo selector as fallback
-      const translateSelect = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-      if (translateSelect) {
-        translateSelect.value = targetCode;
-        translateSelect.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-    };
-
-    // Multiple attempts with increasing delays to ensure content is translated
-    const timers = [
-      setTimeout(() => { void triggerTranslation(0); }, 100),
-      setTimeout(() => { void triggerTranslation(1); }, 500),
-      setTimeout(() => { void triggerTranslation(2); }, 1500),
-      setTimeout(() => { void triggerTranslation(3); }, 3000),
-    ];
-
-    return () => timers.forEach(clearTimeout);
+    // Let the centralized helper handle cookie + apply + UI scrub.
+    void applyClientSideTranslation(lang);
   }, [isLoading, article?.id, article?.content, translation]);
 
   if (isLoading) {

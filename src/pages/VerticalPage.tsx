@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getCurrentLanguage } from "@/utils/language";
+import { applyClientSideTranslation } from "@/utils/gtranslate";
 import { supabase } from "@/integrations/supabase/client";
 import { generateArticleUrl } from "@/utils/slugify";
 
@@ -132,23 +133,10 @@ const VerticalPage = () => {
   useEffect(() => {
     if (isLoading || !displayPosts.length) return;
 
-    try {
-      const lang = getCurrentLanguage();
-      if (!lang || lang === 'en') return;
+    const lang = getCurrentLanguage();
+    if (!lang || lang === "en") return;
 
-      const w = window as any;
-      if (typeof w.doGTranslate === 'function') {
-        setTimeout(() => {
-          try {
-            w.doGTranslate(`en|${lang}`);
-          } catch (e) {
-            console.error('GTranslate vertical refresh failed', e);
-          }
-        }, 200);
-      }
-    } catch (e) {
-      console.error('GTranslate vertical refresh error', e);
-    }
+    void applyClientSideTranslation(lang);
   }, [isLoading, displayPosts.length]);
   
   const handleShowMore = () => {
