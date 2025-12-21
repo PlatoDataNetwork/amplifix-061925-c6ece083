@@ -251,8 +251,8 @@ const VerticalPage = () => {
           </div>
         )}
 
-        {/* Error State */}
-        {!isLoading && error && (
+        {/* Error State - only show if no posts loaded */}
+        {!isLoading && error && displayPosts.length === 0 && (
           <div className="text-center py-12">
             <p className="text-red-500 text-lg mb-4">
               Error loading articles: {error}
