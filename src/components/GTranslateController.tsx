@@ -126,7 +126,7 @@ export default function GTranslateController() {
     // body may be null very early; guard
     if (document.body) {
       observer.observe(document.body, { childList: true, subtree: true });
-      const stop = window.setTimeout(() => observer.disconnect(), 9000);
+      const stop = window.setTimeout(() => observer.disconnect(), 20000);
       timersRef.current.push(stop);
     }
 
