@@ -117,8 +117,6 @@ export function removeGTranslateUI() {
       ".goog-te-gadget-icon",
       ".goog-text-highlight",
       // Additional GTranslate selectors for the floating pill/button
-      ".gtranslate_wrapper",
-      "#gtranslate_wrapper",
       ".gt-current-lang",
       ".gt_selector",
       '[onclick*="doGTranslate"]',
@@ -129,36 +127,53 @@ export function removeGTranslateUI() {
       ".goog-te-ftab-float",
     ];
 
+    const isInternalContainer = (el: Element) => {
+      // Keep the offscreen container and anything inside it so doGTranslate keeps working.
+      if ((el as HTMLElement).classList?.contains("gtranslate_wrapper")) return true;
+      return !!(el as HTMLElement).closest?.(".gtranslate_wrapper");
+    };
+
     const nodes = new Set<Element>();
 
     selectors.forEach((sel) => {
-      document.querySelectorAll(sel).forEach((el) => nodes.add(el));
+      document.querySelectorAll(sel).forEach((el) => {
+        if (isInternalContainer(el)) return;
+        nodes.add(el);
+      });
     });
 
     // Wildcard matches for gt_float patterns
     document
       .querySelectorAll('[class*="gt_float"],[id*="gt_float"],[class*="gt-float"],[id*="gt-float"]')
-      .forEach((el) => nodes.add(el));
+      .forEach((el) => {
+        if (isInternalContainer(el)) return;
+        nodes.add(el);
+      });
 
-    // Match any element with gtranslate in class or id
+    // Match any element with gtranslate/goog-te in class or id, but never the hidden wrapper container.
     document
       .querySelectorAll('[class*="gtranslate"],[id*="gtranslate"],[class*="goog-te"],[id*="goog-te"]')
-      .forEach((el) => nodes.add(el));
+      .forEach((el) => {
+        if (isInternalContainer(el)) return;
+        nodes.add(el);
+      });
 
     // Target iframes from Google Translate / GTranslate
     document.querySelectorAll("iframe").forEach((el) => {
       const iframe = el as HTMLIFrameElement;
-      const src = iframe.getAttribute("src") || "";
-      const id = iframe.id || "";
-      const className = iframe.className || "";
+      const src = (iframe.getAttribute("src") || "").toLowerCase();
+      const id = (iframe.id || "").toLowerCase();
+      const className = (iframe.className || "").toLowerCase();
+
       if (
         src.includes("translate.google") ||
         src.includes("google_translate") ||
         src.includes("gtranslate") ||
         id.includes("gtranslate") ||
-        className.includes("skiptranslate") ||
-        className.includes("goog-te")
+        className.includes("goog-te") ||
+        className.includes("skiptranslate")
       ) {
+        if (isInternalContainer(iframe)) return;
         nodes.add(iframe);
       }
     });
@@ -202,18 +217,39 @@ export function removeGTranslateUI() {
         text === "gtranslate";
 
       if (hasMedia && looksLikeTranslate) {
+        if (isInternalContainer(el)) return;
         nodes.add(el);
       }
     });
 
+    const hardHide = (el: Element) => {
+      const node = el as HTMLElement;
+      if (!node?.style?.setProperty) return;
+
+      node.style.setProperty("display", "none", "important");
+      node.style.setProperty("visibility", "hidden", "important");
+      node.style.setProperty("opacity", "0", "important");
+      node.style.setProperty("pointer-events", "none", "important");
+      node.style.setProperty("position", "fixed", "important");
+      node.style.setProperty("left", "-99999px", "important");
+      node.style.setProperty("top", "-99999px", "important");
+      node.style.setProperty("width", "0", "important");
+      node.style.setProperty("height", "0", "important");
+      node.style.setProperty("overflow", "hidden", "important");
+
+      node.setAttribute("aria-hidden", "true");
+    };
+
     nodes.forEach((el) => {
       try {
-        // Never remove root nodes
+        // Never touch root nodes
         if (el === document.documentElement) return;
         if (el === document.body) return;
         if ((el as HTMLElement).id === "root") return;
+        if (isInternalContainer(el)) return;
 
-        el.remove();
+        // Hide instead of removing to avoid breaking doGTranslate internals.
+        hardHide(el);
       } catch {
         // no-op
       }
