@@ -466,6 +466,7 @@ export type Database = {
           mode: string | null
           name: string
           next_run_at: string | null
+          start_page: number | null
           vertical_slug: string
         }
         Insert: {
@@ -484,6 +485,7 @@ export type Database = {
           mode?: string | null
           name: string
           next_run_at?: string | null
+          start_page?: number | null
           vertical_slug: string
         }
         Update: {
@@ -502,6 +504,7 @@ export type Database = {
           mode?: string | null
           name?: string
           next_run_at?: string | null
+          start_page?: number | null
           vertical_slug?: string
         }
         Relationships: []
