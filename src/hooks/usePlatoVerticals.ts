@@ -65,7 +65,9 @@ export function usePlatoVerticals() {
       { name: 'Waste Management', slug: 'waste-management', url: 'https://platodata.ai/waste-management/json/' },
     ];
     
-    setVerticals(platoVerticals);
+    // Sort alphabetically by name
+    const sortedVerticals = platoVerticals.sort((a, b) => a.name.localeCompare(b.name));
+    setVerticals(sortedVerticals);
     setIsLoading(false);
   }, []);
 
