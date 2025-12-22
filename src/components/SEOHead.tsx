@@ -373,7 +373,7 @@ const SEOHead = ({ title, description, canonicalUrl }: SEOHeadProps) => {
       <meta property="og:description" content={finalDescription} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={`${baseUrl}${location.pathname}`} />
-      <meta property="og:image" content={`${baseUrl}/lovable-uploads/amplifix-social-logo.png`} />
+      <meta property="og:image" content={`${baseUrl}/social-icon.png`} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="1200" />
       <meta property="og:site_name" content={displayUrl} />
@@ -395,7 +395,7 @@ const SEOHead = ({ title, description, canonicalUrl }: SEOHeadProps) => {
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={finalTitle} />
       <meta name="twitter:description" content={finalDescription} />
-      <meta name="twitter:image" content={`${baseUrl}/lovable-uploads/amplifix-social-logo.png`} />
+      <meta name="twitter:image" content={`${baseUrl}/social-icon.png`} />
       <meta name="twitter:site" content="@AmplifiX" />
       <meta name="twitter:creator" content="@AmplifiX" />
       
