@@ -47,6 +47,7 @@ export function usePlatoVerticals() {
       { name: 'Nano Technology', slug: 'nano-technology', url: 'https://platodata.ai/nano-technology/json/' },
       { name: 'NFTs', slug: 'nfts', url: 'https://platodata.ai/nfts/json/' },
       { name: 'Patents', slug: 'patents', url: 'https://platodata.ai/patents/json/' },
+      { name: 'Plato Health', slug: 'platohealth', url: 'https://platodata.ai/platohealth/json/' },
       { name: 'Payments', slug: 'payments', url: 'https://platodata.ai/payments/json/' },
       { name: 'Private Equity', slug: 'private-equity', url: 'https://platodata.ai/private-equity/json/' },
       { name: 'Psychedelics', slug: 'psychedelics', url: 'https://platodata.ai/psychedelics/json/' },
