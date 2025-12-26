@@ -9,7 +9,7 @@ import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { toast } from "sonner";
-import { sanitizeText, formatArticleTags, formatExternalArticleContent, ARTICLE_CONTENT_CLASSES } from "@/utils/articleFormatting";
+import { sanitizeText, sanitizeHTML, formatArticleTags, formatExternalArticleContent, ARTICLE_CONTENT_CLASSES } from "@/utils/articleFormatting";
 import { getCurrentLanguage } from "@/utils/language";
 import { applyClientSideTranslation } from "@/utils/gtranslate";
 import { extractIdFromSlug, generateArticleUrl } from "@/utils/slugify";
@@ -423,9 +423,12 @@ if (!article) {
                 );
                 
                 // Check if content has HTML tags
-                return /<\/?[a-z][\s\S]*>/i.test(contentWithoutPublished)
+                const processedContent = /<\/?[a-z][\s\S]*>/i.test(contentWithoutPublished)
                   ? contentWithoutPublished
                   : formatExternalArticleContent(contentWithoutPublished);
+                
+                // Sanitize to prevent XSS attacks
+                return sanitizeHTML(processedContent);
               })(),
             }}
           />

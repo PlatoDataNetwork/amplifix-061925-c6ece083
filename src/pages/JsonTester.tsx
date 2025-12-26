@@ -9,6 +9,7 @@ import SharedHeader from "@/components/SharedHeader";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { sanitizeHTML } from "@/utils/articleFormatting";
 
 interface JsonArticle {
   post_id: number;
@@ -449,7 +450,7 @@ export default function JsonTester() {
                   <h3 className="font-semibold mb-2">Formatted Content:</h3>
                   <div 
                     className="bg-muted p-4 rounded-lg text-sm max-h-[400px] overflow-y-auto"
-                    dangerouslySetInnerHTML={{ __html: result.formatted }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHTML(result.formatted) }}
                   />
                 </div>
               </div>
@@ -545,7 +546,7 @@ export default function JsonTester() {
                       prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded
                       prose-pre:bg-muted prose-pre:text-foreground
                       prose-img:rounded-lg prose-img:shadow-lg"
-                    dangerouslySetInnerHTML={{ __html: previewArticle.content }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHTML(previewArticle.content) }}
                   />
                 )}
 

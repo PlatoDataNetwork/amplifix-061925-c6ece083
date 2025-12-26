@@ -1,3 +1,5 @@
+import DOMPurify from 'dompurify';
+
 /**
  * List of allowed semantic HTML tags for article content
  */
@@ -12,6 +14,23 @@ export const ALLOWED_HTML_TAGS = [
   'figure', 'figcaption', 'img',
   'hr', 'sup', 'sub'
 ];
+
+/**
+ * Sanitizes HTML content using DOMPurify to prevent XSS attacks.
+ * This should be used for any user-provided or externally-sourced HTML
+ * that will be rendered with dangerouslySetInnerHTML.
+ */
+export const sanitizeHTML = (html: string): string => {
+  if (!html) return '';
+  
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ALLOWED_HTML_TAGS,
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'class'],
+    ALLOW_DATA_ATTR: false,
+    // Prevent javascript: URLs and other dangerous protocols
+    ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
+  });
+};
 
 /**
  * Sanitizes article text by removing unwanted content while preserving semantic HTML tags
