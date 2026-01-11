@@ -31,30 +31,39 @@ const companyUpdates: CompanyUpdate[] = [
   { name: 'Versa TV', tags: ['Media', 'Streaming', 'Entertainment'], type: 'private', subtitle: 'Next-Gen Streaming Platform', main_sector: 'MEDIA' },
 ];
 
-async function verifyAdmin(req: Request): Promise<{ authorized: boolean; error?: string }> {
+async function verifyAdmin(req: Request): Promise<{ authorized: boolean; error?: string; userId?: string }> {
   const authHeader = req.headers.get('Authorization');
-  if (!authHeader) {
+  if (!authHeader?.startsWith('Bearer ')) {
     return { authorized: false, error: 'Missing authorization header' };
   }
 
-  const supabase = createClient(supabaseUrl, supabaseKey);
-  const token = authHeader.replace('Bearer ', '');
+  const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+  const supabaseAuth = createClient(supabaseUrl, anonKey, {
+    global: { headers: { Authorization: authHeader } }
+  });
   
-  const { data: { user }, error: userError } = await supabase.auth.getUser(token);
-  if (userError || !user) {
+  const token = authHeader.replace('Bearer ', '');
+  const { data, error: claimsError } = await supabaseAuth.auth.getClaims(token);
+  
+  if (claimsError || !data?.claims) {
+    console.error('Token validation failed:', claimsError);
     return { authorized: false, error: 'Invalid or expired token' };
   }
 
+  const userId = data.claims.sub;
+  
+  // Use service role client for role check
+  const supabase = createClient(supabaseUrl, supabaseKey);
   const { data: roles, error: rolesError } = await supabase
     .from('user_roles')
     .select('role')
-    .eq('user_id', user.id);
+    .eq('user_id', userId);
 
   if (rolesError || !roles?.some(r => r.role === 'admin')) {
     return { authorized: false, error: 'Admin access required' };
   }
 
-  return { authorized: true };
+  return { authorized: true, userId };
 }
 
 Deno.serve(async (req) => {
