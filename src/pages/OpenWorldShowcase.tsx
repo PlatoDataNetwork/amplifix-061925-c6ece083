@@ -171,7 +171,7 @@ const OpenWorldShowcase = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen bg-black text-white">
       <Helmet>
         <title>OpenWorld - RWA Tokenization Platform | AmplifiX</title>
         <meta name="description" content="OpenWorld is a leading RWA tokenization platform transforming real-world assets into digital securities. Enabling fractional ownership and global liquidity." />
@@ -194,7 +194,7 @@ const OpenWorldShowcase = () => {
             alt="OpenWorld Header" 
             className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/60 via-[#0a0a0a]/80 to-[#0a0a0a]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/80 to-black" />
         </div>
         
         {/* Animated background grid */}
@@ -298,7 +298,7 @@ const OpenWorldShowcase = () => {
 
               {/* Company Info Sidebar */}
               <div className="lg:col-span-1">
-                <Card className="border-white/10 bg-gradient-to-br from-white/[0.05] to-transparent backdrop-blur-sm sticky top-24">
+                <Card className="border-white/20 bg-transparent backdrop-blur-sm sticky top-24">
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold mb-6 text-white">Company Details</h3>
                     <div className="space-y-5">
@@ -352,7 +352,7 @@ const OpenWorldShowcase = () => {
       </section>
 
       {/* Market Stats */}
-      <section className="py-20 border-y border-white/5 bg-white/[0.02]">
+      <section className="py-20 border-y border-white/10 bg-transparent">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {marketStats.map((stat, index) => (
@@ -388,7 +388,7 @@ const OpenWorldShowcase = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <Card className="border-white/10 bg-gradient-to-br from-white/[0.03] to-transparent backdrop-blur-sm">
+            <Card className="border-white/20 bg-transparent backdrop-blur-sm">
               <CardContent className="p-8">
                 <div className="w-14 h-14 rounded-xl bg-red-500/10 flex items-center justify-center mb-6">
                   <Layers className="w-7 h-7 text-red-400" />
@@ -415,7 +415,7 @@ const OpenWorldShowcase = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-white/10 bg-gradient-to-br from-white/[0.03] to-transparent backdrop-blur-sm">
+            <Card className="border-white/20 bg-transparent backdrop-blur-sm">
               <CardContent className="p-8">
                 <div className="w-14 h-14 rounded-xl bg-green-500/10 flex items-center justify-center mb-6">
                   <BarChart3 className="w-7 h-7 text-green-400" />
@@ -446,10 +446,10 @@ const OpenWorldShowcase = () => {
       </section>
 
       {/* Asset Categories */}
-      <section className="py-24 lg:py-32 bg-white/[0.02]">
+      <section className="py-24 lg:py-32 bg-transparent">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-20">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-transparent border border-white/20 mb-6">
               <Network className="w-4 h-4 text-purple-400" />
               <span className="text-sm text-white/60">Asset Classes</span>
             </div>
@@ -466,7 +466,7 @@ const OpenWorldShowcase = () => {
             {rwaCategories.map((category, index) => (
               <Card 
                 key={index} 
-                className="group border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/10 transition-all duration-500 backdrop-blur-sm"
+                className="group border-white/20 bg-transparent hover:bg-white/5 hover:border-white/30 transition-all duration-500 backdrop-blur-sm"
               >
                 <CardContent className="p-8">
                   <div className={`w-12 h-12 rounded-xl ${category.bgColor} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
@@ -529,10 +529,10 @@ const OpenWorldShowcase = () => {
       </section>
 
       {/* Tokenization Process */}
-      <section className="py-24 lg:py-32 bg-white/[0.02]">
+      <section className="py-24 lg:py-32 bg-transparent">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-20">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-transparent border border-white/20 mb-6">
               <Zap className="w-4 h-4 text-yellow-400" />
               <span className="text-sm text-white/60">How It Works</span>
             </div>
@@ -583,7 +583,7 @@ const OpenWorldShowcase = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <Card className="text-center border-white/10 bg-white/[0.02] backdrop-blur-sm">
+            <Card className="text-center border-white/20 bg-transparent backdrop-blur-sm">
               <CardContent className="p-8">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-500/5 flex items-center justify-center mx-auto mb-6">
                   <Shield className="w-8 h-8 text-blue-400" />
@@ -595,7 +595,7 @@ const OpenWorldShowcase = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center border-white/10 bg-white/[0.02] backdrop-blur-sm">
+            <Card className="text-center border-white/20 bg-transparent backdrop-blur-sm">
               <CardContent className="p-8">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/5 flex items-center justify-center mx-auto mb-6">
                   <FileCheck className="w-8 h-8 text-purple-400" />
@@ -607,7 +607,7 @@ const OpenWorldShowcase = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center border-white/10 bg-white/[0.02] backdrop-blur-sm">
+            <Card className="text-center border-white/20 bg-transparent backdrop-blur-sm">
               <CardContent className="p-8">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500/20 to-green-500/5 flex items-center justify-center mx-auto mb-6">
                   <Globe className="w-8 h-8 text-green-400" />
@@ -623,10 +623,10 @@ const OpenWorldShowcase = () => {
       </section>
 
       {/* Use Cases */}
-      <section className="py-24 lg:py-32 bg-white/[0.02]">
+      <section className="py-24 lg:py-32 bg-transparent">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-20">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-transparent border border-white/20 mb-6">
               <Building2 className="w-4 h-4 text-orange-400" />
               <span className="text-sm text-white/60">Applications</span>
             </div>
@@ -640,7 +640,7 @@ const OpenWorldShowcase = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <Card className="border-white/10 bg-white/[0.02] backdrop-blur-sm hover:bg-white/[0.04] transition-colors duration-300">
+            <Card className="border-white/20 bg-transparent backdrop-blur-sm hover:bg-white/5 transition-colors duration-300">
               <CardContent className="p-8">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-500/5 flex items-center justify-center mb-6">
                   <Home className="w-6 h-6 text-blue-400" />
@@ -665,7 +665,7 @@ const OpenWorldShowcase = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-white/10 bg-white/[0.02] backdrop-blur-sm hover:bg-white/[0.04] transition-colors duration-300">
+            <Card className="border-white/20 bg-transparent backdrop-blur-sm hover:bg-white/5 transition-colors duration-300">
               <CardContent className="p-8">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500/20 to-yellow-500/5 flex items-center justify-center mb-6">
                   <Gem className="w-6 h-6 text-yellow-400" />
@@ -690,7 +690,7 @@ const OpenWorldShowcase = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-white/10 bg-white/[0.02] backdrop-blur-sm hover:bg-white/[0.04] transition-colors duration-300">
+            <Card className="border-white/20 bg-transparent backdrop-blur-sm hover:bg-white/5 transition-colors duration-300">
               <CardContent className="p-8">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-500/5 flex items-center justify-center mb-6">
                   <FileCheck className="w-6 h-6 text-purple-400" />
@@ -715,7 +715,7 @@ const OpenWorldShowcase = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-white/10 bg-white/[0.02] backdrop-blur-sm hover:bg-white/[0.04] transition-colors duration-300">
+            <Card className="border-white/20 bg-transparent backdrop-blur-sm hover:bg-white/5 transition-colors duration-300">
               <CardContent className="p-8">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/20 to-green-500/5 flex items-center justify-center mb-6">
                   <Leaf className="w-6 h-6 text-green-400" />
@@ -744,7 +744,7 @@ const OpenWorldShowcase = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 lg:py-32 relative">
+      <section className="py-24 lg:py-32 relative bg-transparent">
         <div className="absolute inset-0 bg-gradient-to-t from-blue-500/5 via-transparent to-transparent" />
         
         <div className="container mx-auto px-4 relative z-10">
