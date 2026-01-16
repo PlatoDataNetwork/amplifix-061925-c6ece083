@@ -255,6 +255,102 @@ const OpenWorldShowcase = () => {
         </div>
       </section>
 
+      {/* About Section */}
+      <section className="py-20 lg:py-28 border-b border-white/5">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-3 gap-12 lg:gap-16">
+              {/* Main About Content */}
+              <div className="lg:col-span-2">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+                  <Building2 className="w-4 h-4 text-blue-400" />
+                  <span className="text-sm text-white/60">About OpenWorld</span>
+                </div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-8 text-white">
+                  Pioneering Blockchain Innovation Since 2023
+                </h2>
+                <div className="space-y-6 text-white/60 leading-relaxed">
+                  <p>
+                    Open World has been a major driving force behind many of the most iconic projects in blockchain. 
+                    Since 2023, we've facilitated the inception and growth of more than <span className="text-white font-semibold">20 companies</span> and 
+                    helped launch over <span className="text-white font-semibold">$65 billion</span> in aggregate network value at peak FDV.
+                  </p>
+                  <p>
+                    We advise founding teams as they navigate the complex intersections of regulatory compliance, 
+                    tokenomics, public markets, exchange strategy, and governance structuring. Our clients are 
+                    backed by leading venture capital firms including <span className="text-white font-semibold">a16z, Multicoin Capital, 
+                    Dragonfly, and Founders Fund</span>.
+                  </p>
+                  <p>
+                    Given our expertise in Web3, Open World is now expanding into TradFi with a comprehensive 
+                    range of services: token launch advisory, DATs and TradFi strategies, RWA tokenization, 
+                    stablecoin issuance, policy advocacy, and strategic advisory work.
+                  </p>
+                  <p>
+                    Through our strategic merger with <span className="text-white font-semibold">VerifyMe (NASDAQ: VRME)</span>, 
+                    the combined company will deliver institutional-grade on-chain solutions that connect real-world 
+                    use cases with blockchain infrastructure. From collaborating with sovereign entities on compliant 
+                    stablecoins to enabling enterprises to tokenize strategic assets, we're building the compliance-ready 
+                    infrastructure for digital asset adoption.
+                  </p>
+                </div>
+              </div>
+
+              {/* Company Info Sidebar */}
+              <div className="lg:col-span-1">
+                <Card className="border-white/10 bg-gradient-to-br from-white/[0.05] to-transparent backdrop-blur-sm sticky top-24">
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold mb-6 text-white">Company Details</h3>
+                    <div className="space-y-5">
+                      <div>
+                        <div className="text-xs uppercase tracking-wider text-white/40 mb-1">Website</div>
+                        <a 
+                          href="https://www.openworld.dev" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-2"
+                        >
+                          openworld.dev
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                      <div>
+                        <div className="text-xs uppercase tracking-wider text-white/40 mb-1">Industry</div>
+                        <div className="text-white/80">Blockchain Services</div>
+                      </div>
+                      <div>
+                        <div className="text-xs uppercase tracking-wider text-white/40 mb-1">Company Size</div>
+                        <div className="text-white/80 flex items-center gap-2">
+                          <Users className="w-4 h-4 text-white/40" />
+                          11-50 employees
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs uppercase tracking-wider text-white/40 mb-1">Founded</div>
+                        <div className="text-white/80">2025</div>
+                      </div>
+                      <div className="pt-4 border-t border-white/10">
+                        <div className="flex flex-wrap gap-2">
+                          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 hover:bg-blue-500/30">
+                            Web3
+                          </Badge>
+                          <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 hover:bg-purple-500/30">
+                            RWA
+                          </Badge>
+                          <Badge className="bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30">
+                            TradFi
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Market Stats */}
       <section className="py-20 border-y border-white/5 bg-white/[0.02]">
         <div className="container mx-auto px-4">
