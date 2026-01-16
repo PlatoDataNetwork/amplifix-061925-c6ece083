@@ -91,6 +91,7 @@ import OneWorldOnlineShowcase from "./pages/OneWorldOnlineShowcase";
 import DJCentralShowcase from "./pages/DJCentralShowcase";
 import FilmologyShowcase from "./pages/FilmologyShowcase";
 import TwentyTwoXVenturesShowcase from "./pages/22XVenturesShowcase";
+import OpenWorldShowcase from "./pages/OpenWorldShowcase";
 import ShowcaseAdmin from "./pages/ShowcaseAdmin";
 import SecurityDashboard from "./pages/SecurityDashboard";
 import JsonTester from "./pages/JsonTester";
@@ -167,6 +168,7 @@ const App = () => (
               <Route path="/showcase/dj-central" element={<DJCentralShowcase />} />
               <Route path="/showcase/filmology" element={<FilmologyShowcase />} />
               <Route path="/showcase/22x-ventures" element={<TwentyTwoXVenturesShowcase />} />
+              <Route path="/showcase/openworld" element={<OpenWorldShowcase />} />
               <Route path="/solutions/advisory" element={<Advisory />} />
               <Route path="/solutions/research" element={<Research />} />
               <Route path="/solutions/analytics" element={<AnalyticsSolutions />} />
