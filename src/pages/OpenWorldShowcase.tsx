@@ -22,7 +22,10 @@ import {
   Gem,
   Factory,
   Leaf,
-  ChevronLeft
+  ChevronLeft,
+  Zap,
+  Network,
+  CircuitBoard
 } from "lucide-react";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 import { useNavigate } from "react-router-dom";
@@ -144,7 +147,7 @@ const OpenWorldShowcase = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0a0a0a] text-white">
       <Helmet>
         <title>OpenWorld - RWA Tokenization Platform | AmplifiX</title>
         <meta name="description" content="OpenWorld is a leading RWA tokenization platform transforming real-world assets into digital securities. Enabling fractional ownership and global liquidity." />
@@ -159,40 +162,68 @@ const OpenWorldShowcase = () => {
       <MainHeader />
 
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
+      <section className="relative py-24 lg:py-40 overflow-hidden">
+        {/* Animated background grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0a0a]/50 to-[#0a0a0a]" />
+        
+        {/* Glowing orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
         
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <Badge variant="outline" className="mb-6 px-4 py-2 text-sm font-medium border-primary/30 bg-primary/5">
-              Private Company
+          <div className="max-w-5xl mx-auto text-center">
+            {/* Logo */}
+            <div className="mb-8 flex justify-center">
+              <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center backdrop-blur-sm">
+                <img 
+                  src="/images/showcase/openworld-logo.png" 
+                  alt="OpenWorld" 
+                  className="w-16 h-16 object-contain"
+                />
+              </div>
+            </div>
+
+            <Badge className="mb-6 px-4 py-2 text-sm font-medium bg-white/5 border border-white/10 text-white/80 hover:bg-white/10">
+              Private Company • RWA Tokenization
             </Badge>
             
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-              OpenWorld
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight">
+              <span className="bg-gradient-to-r from-white via-white to-white/60 bg-clip-text text-transparent">
+                OpenWorld
+              </span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-muted-foreground mb-4">
+            <p className="text-xl md:text-2xl text-white/60 mb-4 font-light">
               Real World Asset Tokenization Platform
             </p>
             
-            <p className="text-lg text-muted-foreground/80 mb-10 max-w-2xl mx-auto">
+            <p className="text-lg text-white/40 mb-12 max-w-3xl mx-auto leading-relaxed">
               Transforming real-world assets into digital securities. Enabling fractional ownership, 
               enhanced liquidity, and global investment access for traditionally illiquid assets.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="gap-2" asChild>
+              <Button 
+                size="lg" 
+                className="gap-2 bg-white text-black hover:bg-white/90 font-medium px-8"
+                asChild
+              >
                 <a href="https://openworld.dev" target="_blank" rel="noopener noreferrer">
                   <Globe className="w-5 h-5" />
                   Visit Website
                   <ExternalLink className="w-4 h-4" />
                 </a>
               </Button>
-              <Button size="lg" variant="outline" className="gap-2" asChild>
-                <a href="https://www.bing.com/copilotsearch?q=OPenworld+RWA+Tokenization" target="_blank" rel="noopener noreferrer">
-                  Learn More
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="gap-2 border-white/20 text-white hover:bg-white/10 hover:text-white font-medium px-8"
+                asChild
+              >
+                <a href="https://www.bing.com/copilotsearch?q=OpenWorld+RWA+Tokenization" target="_blank" rel="noopener noreferrer">
+                  <Zap className="w-5 h-5" />
+                  AmplifiX Research
                   <ArrowRight className="w-4 h-4" />
                 </a>
               </Button>
@@ -202,13 +233,15 @@ const OpenWorldShowcase = () => {
       </section>
 
       {/* Market Stats */}
-      <section className="py-16 border-y border-border/50 bg-muted/30">
+      <section className="py-20 border-y border-white/5 bg-white/[0.02]">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {marketStats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
+              <div key={index} className="text-center group">
+                <div className="text-4xl md:text-5xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                  {stat.value}
+                </div>
+                <div className="text-sm text-white/40 uppercase tracking-wider">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -216,14 +249,19 @@ const OpenWorldShowcase = () => {
       </section>
 
       {/* What is RWA Tokenization */}
-      <section className="py-20 lg:py-28">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <Badge variant="secondary" className="mb-4">Understanding RWA</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+      <section className="py-24 lg:py-32 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/[0.02] to-transparent" />
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+              <CircuitBoard className="w-4 h-4 text-blue-400" />
+              <span className="text-sm text-white/60">Understanding RWA</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
               What is Real World Asset Tokenization?
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-white/50 leading-relaxed">
               RWA tokenization is the process of converting ownership rights of physical or financial assets 
               into digital tokens on a blockchain. This revolutionary technology bridges traditional finance 
               with decentralized infrastructure, creating new opportunities for investors and asset owners alike.
@@ -231,50 +269,54 @@ const OpenWorldShowcase = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <Card className="border-primary/20 bg-gradient-to-br from-background to-primary/5">
+            <Card className="border-white/10 bg-gradient-to-br from-white/[0.03] to-transparent backdrop-blur-sm">
               <CardContent className="p-8">
-                <Layers className="w-12 h-12 text-primary mb-6" />
-                <h3 className="text-xl font-semibold mb-4">Traditional Assets</h3>
-                <ul className="space-y-3 text-muted-foreground">
+                <div className="w-14 h-14 rounded-xl bg-red-500/10 flex items-center justify-center mb-6">
+                  <Layers className="w-7 h-7 text-red-400" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4 text-white">Traditional Assets</h3>
+                <ul className="space-y-4 text-white/50">
                   <li className="flex items-start gap-3">
-                    <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 flex-shrink-0" />
                     Limited liquidity with long settlement times
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 flex-shrink-0" />
                     High minimum investment requirements
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 flex-shrink-0" />
                     Geographic and regulatory barriers
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 flex-shrink-0" />
                     Complex intermediary structures
                   </li>
                 </ul>
               </CardContent>
             </Card>
 
-            <Card className="border-primary/20 bg-gradient-to-br from-background to-accent/5">
+            <Card className="border-white/10 bg-gradient-to-br from-white/[0.03] to-transparent backdrop-blur-sm">
               <CardContent className="p-8">
-                <BarChart3 className="w-12 h-12 text-primary mb-6" />
-                <h3 className="text-xl font-semibold mb-4">Tokenized Assets</h3>
-                <ul className="space-y-3 text-muted-foreground">
+                <div className="w-14 h-14 rounded-xl bg-green-500/10 flex items-center justify-center mb-6">
+                  <BarChart3 className="w-7 h-7 text-green-400" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4 text-white">Tokenized Assets</h3>
+                <ul className="space-y-4 text-white/50">
                   <li className="flex items-start gap-3">
-                    <span className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 mt-2 flex-shrink-0" />
                     24/7 trading with instant settlement
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 mt-2 flex-shrink-0" />
                     Fractional ownership enables broader access
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 mt-2 flex-shrink-0" />
                     Global, borderless investment opportunities
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 mt-2 flex-shrink-0" />
                     Automated compliance and reduced costs
                   </li>
                 </ul>
@@ -285,14 +327,17 @@ const OpenWorldShowcase = () => {
       </section>
 
       {/* Asset Categories */}
-      <section className="py-20 lg:py-28 bg-muted/30">
+      <section className="py-24 lg:py-32 bg-white/[0.02]">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <Badge variant="secondary" className="mb-4">Asset Classes</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+              <Network className="w-4 h-4 text-purple-400" />
+              <span className="text-sm text-white/60">Asset Classes</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
               Tokenizable Real World Assets
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-white/50 leading-relaxed">
               From real estate to commodities, virtually any asset with quantifiable value can be tokenized, 
               unlocking new investment opportunities across diverse asset classes.
             </p>
@@ -300,16 +345,24 @@ const OpenWorldShowcase = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {rwaCategories.map((category, index) => (
-              <Card key={index} className="group hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
-                <CardContent className="p-6">
-                  <category.icon className="w-10 h-10 text-primary mb-4 group-hover:scale-110 transition-transform" />
-                  <h3 className="text-lg font-semibold mb-3">{category.title}</h3>
-                  <p className="text-muted-foreground text-sm mb-4">{category.description}</p>
+              <Card 
+                key={index} 
+                className="group border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/10 transition-all duration-500 backdrop-blur-sm"
+              >
+                <CardContent className="p-8">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <category.icon className="w-6 h-6 text-white/80" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-3 text-white">{category.title}</h3>
+                  <p className="text-white/40 text-sm mb-6 leading-relaxed">{category.description}</p>
                   <div className="flex flex-wrap gap-2">
                     {category.examples.map((example, i) => (
-                      <Badge key={i} variant="outline" className="text-xs">
+                      <span 
+                        key={i} 
+                        className="px-2 py-1 text-xs rounded-md bg-white/5 text-white/50 border border-white/5"
+                      >
                         {example}
-                      </Badge>
+                      </span>
                     ))}
                   </div>
                 </CardContent>
@@ -320,30 +373,35 @@ const OpenWorldShowcase = () => {
       </section>
 
       {/* Benefits */}
-      <section className="py-20 lg:py-28">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <Badge variant="secondary" className="mb-4">Advantages</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+      <section className="py-24 lg:py-32 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/[0.02] to-transparent" />
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+              <TrendingUp className="w-4 h-4 text-green-400" />
+              <span className="text-sm text-white/60">Advantages</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
               Benefits of RWA Tokenization
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-white/50 leading-relaxed">
               Tokenization unlocks significant value for both asset owners and investors through 
               enhanced liquidity, accessibility, and operational efficiency.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {benefits.map((benefit, index) => (
-              <div key={index} className="flex gap-4">
+              <div key={index} className="flex gap-5 group">
                 <div className="flex-shrink-0">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <benefit.icon className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center group-hover:from-white/20 group-hover:to-white/10 transition-all duration-300">
+                    <benefit.icon className="w-6 h-6 text-white/80" />
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-2">{benefit.title}</h3>
-                  <p className="text-sm text-muted-foreground">{benefit.description}</p>
+                  <h3 className="font-semibold mb-2 text-white">{benefit.title}</h3>
+                  <p className="text-sm text-white/40 leading-relaxed">{benefit.description}</p>
                 </div>
               </div>
             ))}
@@ -352,14 +410,17 @@ const OpenWorldShowcase = () => {
       </section>
 
       {/* Tokenization Process */}
-      <section className="py-20 lg:py-28 bg-muted/30">
+      <section className="py-24 lg:py-32 bg-white/[0.02]">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <Badge variant="secondary" className="mb-4">How It Works</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+              <Zap className="w-4 h-4 text-yellow-400" />
+              <span className="text-sm text-white/60">How It Works</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
               The Tokenization Process
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-white/50 leading-relaxed">
               A comprehensive, end-to-end process that transforms physical assets into 
               compliant digital securities ready for global markets.
             </p>
@@ -369,12 +430,12 @@ const OpenWorldShowcase = () => {
             <div className="grid gap-6">
               {tokenizationProcess.map((step, index) => (
                 <div key={index} className="flex gap-6 items-start group">
-                  <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform">
+                  <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center font-bold text-xl text-white group-hover:from-white/20 group-hover:to-white/10 group-hover:border-white/20 transition-all duration-300">
                     {step.step}
                   </div>
-                  <div className="flex-1 pt-2">
-                    <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
-                    <p className="text-muted-foreground">{step.description}</p>
+                  <div className="flex-1 pt-3">
+                    <h3 className="text-lg font-semibold mb-2 text-white">{step.title}</h3>
+                    <p className="text-white/40 leading-relaxed">{step.description}</p>
                   </div>
                 </div>
               ))}
@@ -384,45 +445,56 @@ const OpenWorldShowcase = () => {
       </section>
 
       {/* Technology Stack */}
-      <section className="py-20 lg:py-28">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <Badge variant="secondary" className="mb-4">Technology</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+      <section className="py-24 lg:py-32 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/[0.02] to-transparent" />
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+              <Shield className="w-4 h-4 text-blue-400" />
+              <span className="text-sm text-white/60">Technology</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
               Built on Proven Technology
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-white/50 leading-relaxed">
               OpenWorld leverages enterprise-grade blockchain infrastructure and smart contract 
               technology to ensure security, scalability, and regulatory compliance.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <Card className="text-center">
+            <Card className="text-center border-white/10 bg-white/[0.02] backdrop-blur-sm">
               <CardContent className="p-8">
-                <Shield className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">Enterprise Security</h3>
-                <p className="text-sm text-muted-foreground">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-500/5 flex items-center justify-center mx-auto mb-6">
+                  <Shield className="w-8 h-8 text-blue-400" />
+                </div>
+                <h3 className="font-semibold mb-3 text-white">Enterprise Security</h3>
+                <p className="text-sm text-white/40 leading-relaxed">
                   Multi-sig custody, hardware security modules, and institutional-grade key management.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center border-white/10 bg-white/[0.02] backdrop-blur-sm">
               <CardContent className="p-8">
-                <FileCheck className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">Smart Contracts</h3>
-                <p className="text-sm text-muted-foreground">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/5 flex items-center justify-center mx-auto mb-6">
+                  <FileCheck className="w-8 h-8 text-purple-400" />
+                </div>
+                <h3 className="font-semibold mb-3 text-white">Smart Contracts</h3>
+                <p className="text-sm text-white/40 leading-relaxed">
                   Audited smart contracts with automated compliance, dividends, and corporate actions.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center border-white/10 bg-white/[0.02] backdrop-blur-sm">
               <CardContent className="p-8">
-                <Globe className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">Multi-Chain Support</h3>
-                <p className="text-sm text-muted-foreground">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500/20 to-green-500/5 flex items-center justify-center mx-auto mb-6">
+                  <Globe className="w-8 h-8 text-green-400" />
+                </div>
+                <h3 className="font-semibold mb-3 text-white">Multi-Chain Support</h3>
+                <p className="text-sm text-white/40 leading-relaxed">
                   Deploy on Ethereum, Polygon, or other networks optimized for your use case.
                 </p>
               </CardContent>
@@ -432,84 +504,119 @@ const OpenWorldShowcase = () => {
       </section>
 
       {/* Use Cases */}
-      <section className="py-20 lg:py-28 bg-muted/30">
+      <section className="py-24 lg:py-32 bg-white/[0.02]">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <Badge variant="secondary" className="mb-4">Applications</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+              <Building2 className="w-4 h-4 text-orange-400" />
+              <span className="text-sm text-white/60">Applications</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
               Real-World Use Cases
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-white/50 leading-relaxed">
               Organizations worldwide are leveraging RWA tokenization to unlock value, 
               improve efficiency, and create new investment products.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <Card>
+            <Card className="border-white/10 bg-white/[0.02] backdrop-blur-sm hover:bg-white/[0.04] transition-colors duration-300">
               <CardContent className="p-8">
-                <Home className="w-10 h-10 text-primary mb-4" />
-                <h3 className="text-xl font-semibold mb-3">Real Estate Tokenization</h3>
-                <p className="text-muted-foreground mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-500/5 flex items-center justify-center mb-6">
+                  <Home className="w-6 h-6 text-blue-400" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4 text-white">Real Estate Tokenization</h3>
+                <p className="text-white/40 mb-6 leading-relaxed">
                   A $100M commercial property tokenized into 1 million tokens, enabling investors 
                   to purchase fractional ownership starting at $100. The property generates rental 
                   income distributed automatically via smart contracts.
                 </p>
                 <div className="flex gap-2 flex-wrap">
-                  <Badge variant="outline">Fractional Ownership</Badge>
-                  <Badge variant="outline">Automated Dividends</Badge>
-                  <Badge variant="outline">Secondary Trading</Badge>
+                  <span className="px-3 py-1 text-xs rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                    Fractional Ownership
+                  </span>
+                  <span className="px-3 py-1 text-xs rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                    Automated Dividends
+                  </span>
+                  <span className="px-3 py-1 text-xs rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                    Secondary Trading
+                  </span>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-white/10 bg-white/[0.02] backdrop-blur-sm hover:bg-white/[0.04] transition-colors duration-300">
               <CardContent className="p-8">
-                <Gem className="w-10 h-10 text-primary mb-4" />
-                <h3 className="text-xl font-semibold mb-3">Gold-Backed Tokens</h3>
-                <p className="text-muted-foreground mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500/20 to-yellow-500/5 flex items-center justify-center mb-6">
+                  <Gem className="w-6 h-6 text-yellow-400" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4 text-white">Gold-Backed Tokens</h3>
+                <p className="text-white/40 mb-6 leading-relaxed">
                   Physical gold stored in secure vaults tokenized 1:1, allowing instant transfer 
                   and redemption. Each token represents ownership of actual gold with full audit 
                   transparency and insurance coverage.
                 </p>
                 <div className="flex gap-2 flex-wrap">
-                  <Badge variant="outline">1:1 Asset Backing</Badge>
-                  <Badge variant="outline">Instant Settlement</Badge>
-                  <Badge variant="outline">Audited Reserves</Badge>
+                  <span className="px-3 py-1 text-xs rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
+                    1:1 Asset Backing
+                  </span>
+                  <span className="px-3 py-1 text-xs rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
+                    Instant Settlement
+                  </span>
+                  <span className="px-3 py-1 text-xs rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
+                    Audited Reserves
+                  </span>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-white/10 bg-white/[0.02] backdrop-blur-sm hover:bg-white/[0.04] transition-colors duration-300">
               <CardContent className="p-8">
-                <FileCheck className="w-10 h-10 text-primary mb-4" />
-                <h3 className="text-xl font-semibold mb-3">Private Credit Funds</h3>
-                <p className="text-muted-foreground mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-500/5 flex items-center justify-center mb-6">
+                  <FileCheck className="w-6 h-6 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4 text-white">Private Credit Funds</h3>
+                <p className="text-white/40 mb-6 leading-relaxed">
                   A private credit fund tokenized to enable broader investor access with lower 
                   minimums. Monthly yield distributions automated through smart contracts with 
                   transparent NAV reporting.
                 </p>
                 <div className="flex gap-2 flex-wrap">
-                  <Badge variant="outline">Lower Minimums</Badge>
-                  <Badge variant="outline">Yield Distribution</Badge>
-                  <Badge variant="outline">Transparent Reporting</Badge>
+                  <span className="px-3 py-1 text-xs rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                    Lower Minimums
+                  </span>
+                  <span className="px-3 py-1 text-xs rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                    Yield Distribution
+                  </span>
+                  <span className="px-3 py-1 text-xs rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                    Transparent Reporting
+                  </span>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-white/10 bg-white/[0.02] backdrop-blur-sm hover:bg-white/[0.04] transition-colors duration-300">
               <CardContent className="p-8">
-                <Leaf className="w-10 h-10 text-primary mb-4" />
-                <h3 className="text-xl font-semibold mb-3">Carbon Credit Markets</h3>
-                <p className="text-muted-foreground mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/20 to-green-500/5 flex items-center justify-center mb-6">
+                  <Leaf className="w-6 h-6 text-green-400" />
+                </div>
+                <h3 className="text-xl font-semibold mb-4 text-white">Carbon Credit Markets</h3>
+                <p className="text-white/40 mb-6 leading-relaxed">
                   Verified carbon credits tokenized for transparent trading with full traceability 
                   from origin to retirement. Enables companies to offset emissions with verifiable, 
                   immutable records.
                 </p>
                 <div className="flex gap-2 flex-wrap">
-                  <Badge variant="outline">Full Traceability</Badge>
-                  <Badge variant="outline">Verified Credits</Badge>
-                  <Badge variant="outline">Immutable Records</Badge>
+                  <span className="px-3 py-1 text-xs rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
+                    Full Traceability
+                  </span>
+                  <span className="px-3 py-1 text-xs rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
+                    Verified Credits
+                  </span>
+                  <span className="px-3 py-1 text-xs rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
+                    Immutable Records
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -518,27 +625,38 @@ const OpenWorldShowcase = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 lg:py-28">
-        <div className="container mx-auto px-4">
+      <section className="py-24 lg:py-32 relative">
+        <div className="absolute inset-0 bg-gradient-to-t from-blue-500/5 via-transparent to-transparent" />
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
               Ready to Tokenize Your Assets?
             </h2>
-            <p className="text-lg text-muted-foreground mb-10">
+            <p className="text-lg text-white/50 mb-12 leading-relaxed">
               Join the future of asset ownership with OpenWorld's comprehensive RWA tokenization platform. 
               From real estate to commodities, we provide the infrastructure to bring your assets on-chain.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
-              <Button size="lg" className="gap-2" asChild>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <Button 
+                size="lg" 
+                className="gap-2 bg-white text-black hover:bg-white/90 font-medium px-8"
+                asChild
+              >
                 <a href="https://openworld.dev" target="_blank" rel="noopener noreferrer">
                   <Globe className="w-5 h-5" />
                   Visit OpenWorld
                   <ExternalLink className="w-4 h-4" />
                 </a>
               </Button>
-              <Button size="lg" variant="outline" className="gap-2" asChild>
-                <a href="https://www.bing.com/copilotsearch?q=OPenworld+RWA+Tokenization" target="_blank" rel="noopener noreferrer">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="gap-2 border-white/20 text-white hover:bg-white/10 hover:text-white font-medium px-8"
+                asChild
+              >
+                <a href="https://www.bing.com/copilotsearch?q=OpenWorld+RWA+Tokenization" target="_blank" rel="noopener noreferrer">
                   Research RWA Tokenization
                   <ArrowRight className="w-4 h-4" />
                 </a>
@@ -547,7 +665,7 @@ const OpenWorldShowcase = () => {
 
             <Button 
               variant="ghost" 
-              className="gap-2"
+              className="gap-2 text-white/60 hover:text-white hover:bg-white/5"
               onClick={() => navigate('/showcase')}
             >
               <ChevronLeft className="w-4 h-4" />
