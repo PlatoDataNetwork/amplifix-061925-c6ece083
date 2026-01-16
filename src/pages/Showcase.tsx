@@ -605,18 +605,20 @@ const Showcase = () => {
                       </a>
                     )}
                     
-                    {/* AmplifiX Search Button */}
-                    <a 
-                      href={showcase.search_url || `https://www.bing.com/copilotsearch?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}&FORM=CSSCOP`}
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex-1"
-                    >
-                      <Button variant="outline" className="w-full min-h-[44px]">
-                        <Search className="h-4 w-4 mr-2" />
-                        {showcaseData?.showcase.cta.stock_button_labels.amplifix_search || 'AmplifiX'}
-                      </Button>
-                    </a>
+                    {/* AmplifiX Search Button - only show if search_url is not explicitly null */}
+                    {showcase.search_url !== null && (
+                      <a 
+                        href={showcase.search_url || `https://www.bing.com/copilotsearch?q=${encodeURIComponent(showcase.company_name + (showcase.ticker ? ` ${showcase.ticker}` : ''))}&FORM=CSSCOP`}
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex-1"
+                      >
+                        <Button variant="outline" className="w-full min-h-[44px]">
+                          <Search className="h-4 w-4 mr-2" />
+                          {showcaseData?.showcase.cta.stock_button_labels.amplifix_search || 'AmplifiX'}
+                        </Button>
+                      </a>
+                    )}
                   </div>
                   {showcase.link ? (
                     showcase.link.startsWith('http') ? (
