@@ -39,37 +39,49 @@ const OpenWorldShowcase = () => {
       icon: Landmark,
       title: "Real Estate",
       description: "Tokenize commercial and residential properties for fractional ownership and global investment access.",
-      examples: ["Commercial Buildings", "Residential Complexes", "REITs", "Land Parcels"]
+      examples: ["Commercial Buildings", "Residential Complexes", "REITs", "Land Parcels"],
+      iconColor: "text-blue-400",
+      bgColor: "bg-blue-500/20"
     },
     {
       icon: Gem,
       title: "Precious Metals & Commodities",
       description: "Digital representation of gold, silver, and other commodities with instant settlement.",
-      examples: ["Gold Reserves", "Silver Holdings", "Oil & Gas", "Agricultural Products"]
+      examples: ["Gold Reserves", "Silver Holdings", "Oil & Gas", "Agricultural Products"],
+      iconColor: "text-amber-400",
+      bgColor: "bg-amber-500/20"
     },
     {
       icon: FileCheck,
       title: "Private Equity & Debt",
       description: "Transform private investments into tradeable digital securities with enhanced liquidity.",
-      examples: ["Private Credit", "Venture Capital", "Corporate Bonds", "Fund Interests"]
+      examples: ["Private Credit", "Venture Capital", "Corporate Bonds", "Fund Interests"],
+      iconColor: "text-purple-400",
+      bgColor: "bg-purple-500/20"
     },
     {
       icon: Factory,
       title: "Infrastructure Assets",
       description: "Enable investment in large-scale infrastructure through tokenized ownership structures.",
-      examples: ["Energy Projects", "Transportation", "Data Centers", "Utilities"]
+      examples: ["Energy Projects", "Transportation", "Data Centers", "Utilities"],
+      iconColor: "text-orange-400",
+      bgColor: "bg-orange-500/20"
     },
     {
       icon: Leaf,
       title: "Carbon Credits & ESG",
       description: "Tokenize environmental assets for transparent and efficient carbon markets.",
-      examples: ["Carbon Offsets", "Renewable Energy Credits", "Sustainability Bonds", "Green Investments"]
+      examples: ["Carbon Offsets", "Renewable Energy Credits", "Sustainability Bonds", "Green Investments"],
+      iconColor: "text-emerald-400",
+      bgColor: "bg-emerald-500/20"
     },
     {
       icon: Building2,
       title: "Art & Collectibles",
       description: "Fractional ownership of high-value art, collectibles, and luxury assets.",
-      examples: ["Fine Art", "Rare Collectibles", "Luxury Watches", "Wine Collections"]
+      examples: ["Fine Art", "Rare Collectibles", "Luxury Watches", "Wine Collections"],
+      iconColor: "text-rose-400",
+      bgColor: "bg-rose-500/20"
     }
   ];
 
@@ -77,32 +89,44 @@ const OpenWorldShowcase = () => {
     {
       icon: Coins,
       title: "Enhanced Liquidity",
-      description: "Transform illiquid assets into tradeable tokens, enabling 24/7 global trading and faster settlement cycles."
+      description: "Transform illiquid assets into tradeable tokens, enabling 24/7 global trading and faster settlement cycles.",
+      iconColor: "text-yellow-400",
+      bgColor: "bg-yellow-500/20"
     },
     {
       icon: Users,
       title: "Fractional Ownership",
-      description: "Lower investment minimums allow broader participation in premium asset classes previously reserved for institutions."
+      description: "Lower investment minimums allow broader participation in premium asset classes previously reserved for institutions.",
+      iconColor: "text-cyan-400",
+      bgColor: "bg-cyan-500/20"
     },
     {
       icon: Globe,
       title: "Global Access",
-      description: "Remove geographical barriers and enable cross-border investment with instant, borderless transactions."
+      description: "Remove geographical barriers and enable cross-border investment with instant, borderless transactions.",
+      iconColor: "text-blue-400",
+      bgColor: "bg-blue-500/20"
     },
     {
       icon: Shield,
       title: "Enhanced Security",
-      description: "Blockchain-based immutable records ensure transparent ownership and reduce fraud risk."
+      description: "Blockchain-based immutable records ensure transparent ownership and reduce fraud risk.",
+      iconColor: "text-green-400",
+      bgColor: "bg-green-500/20"
     },
     {
       icon: TrendingUp,
       title: "Cost Efficiency",
-      description: "Eliminate intermediaries, reduce transaction costs, and streamline administrative processes."
+      description: "Eliminate intermediaries, reduce transaction costs, and streamline administrative processes.",
+      iconColor: "text-pink-400",
+      bgColor: "bg-pink-500/20"
     },
     {
       icon: Lock,
       title: "Regulatory Compliance",
-      description: "Built-in compliance with programmable smart contracts ensuring adherence to securities regulations."
+      description: "Built-in compliance with programmable smart contracts ensuring adherence to securities regulations.",
+      iconColor: "text-violet-400",
+      bgColor: "bg-violet-500/20"
     }
   ];
 
@@ -161,6 +185,15 @@ const OpenWorldShowcase = () => {
 
       <MainHeader />
 
+      {/* Top Header Banner */}
+      <div className="w-full">
+        <img 
+          src="/images/showcase/openworld-header.png" 
+          alt="OpenWorld Header" 
+          className="w-full h-auto object-cover"
+        />
+      </div>
+
       {/* Hero Section */}
       <section className="relative py-24 lg:py-40 overflow-hidden">
         {/* Animated background grid */}
@@ -173,16 +206,6 @@ const OpenWorldShowcase = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-5xl mx-auto text-center">
-            {/* Logo */}
-            <div className="mb-8 flex justify-center">
-              <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center backdrop-blur-sm">
-                <img 
-                  src="/images/showcase/openworld-logo.png" 
-                  alt="OpenWorld" 
-                  className="w-16 h-16 object-contain"
-                />
-              </div>
-            </div>
 
             <Badge className="mb-6 px-4 py-2 text-sm font-medium bg-white/5 border border-white/10 text-white/80 hover:bg-white/10">
               Private Company • RWA Tokenization
@@ -350,8 +373,8 @@ const OpenWorldShowcase = () => {
                 className="group border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/10 transition-all duration-500 backdrop-blur-sm"
               >
                 <CardContent className="p-8">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <category.icon className="w-6 h-6 text-white/80" />
+                  <div className={`w-12 h-12 rounded-xl ${category.bgColor} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                    <category.icon className={`w-6 h-6 ${category.iconColor}`} />
                   </div>
                   <h3 className="text-lg font-semibold mb-3 text-white">{category.title}</h3>
                   <p className="text-white/40 text-sm mb-6 leading-relaxed">{category.description}</p>
@@ -395,8 +418,8 @@ const OpenWorldShowcase = () => {
             {benefits.map((benefit, index) => (
               <div key={index} className="flex gap-5 group">
                 <div className="flex-shrink-0">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center group-hover:from-white/20 group-hover:to-white/10 transition-all duration-300">
-                    <benefit.icon className="w-6 h-6 text-white/80" />
+                  <div className={`w-12 h-12 rounded-xl ${benefit.bgColor} flex items-center justify-center group-hover:scale-110 transition-all duration-300`}>
+                    <benefit.icon className={`w-6 h-6 ${benefit.iconColor}`} />
                   </div>
                 </div>
                 <div>
