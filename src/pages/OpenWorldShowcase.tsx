@@ -185,20 +185,20 @@ const OpenWorldShowcase = () => {
 
       <MainHeader />
 
-      {/* Top Header Banner */}
-      <div className="w-full">
-        <img 
-          src="/images/showcase/openworld-header.png" 
-          alt="OpenWorld Header" 
-          className="w-full h-auto object-cover"
-        />
-      </div>
-
-      {/* Hero Section */}
+      {/* Hero Section with Header Banner Background */}
       <section className="relative py-24 lg:py-40 overflow-hidden">
+        {/* Header Banner as Background */}
+        <div className="absolute inset-0 w-full">
+          <img 
+            src="/images/showcase/openworld-header.png" 
+            alt="OpenWorld Header" 
+            className="w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/60 via-[#0a0a0a]/80 to-[#0a0a0a]" />
+        </div>
+        
         {/* Animated background grid */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0a0a]/50 to-[#0a0a0a]" />
         
         {/* Glowing orbs */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] animate-pulse" />
