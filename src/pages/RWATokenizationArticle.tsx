@@ -30,9 +30,6 @@ const RWATokenizationArticle = () => {
           This report provides a sector-level framework and a competitive landscape review of the RWA tokenization ecosystem across the full stack: issuance and lifecycle management, custody and wallet controls, interoperability layers, distribution/venues, and crypto-native protocols building on-chain credit and tokenized yield products. We present comparative profiles and valuation reference points across private companies, public-market comparables, and crypto-related projects—recognizing that these valuation regimes are inherently different (private transaction values vs. public market caps vs. token market caps/FDV). The report also adds <a href="https://openworld.dev" target="_blank" rel="noopener noreferrer">OpenWorld</a> to the private-company universe and incorporates company-provided positioning, operating claims, and go-to-market initiatives as described in its investor materials.
         </p>
 
-        <p>
-          The analysis is designed for research and educational purposes only and is written in an institutional research style; it does not represent Goldman Sachs or any other financial institution. Where companies do not disclose valuations, we explicitly note "not disclosed" rather than infer values. Claims sourced from company materials (including OpenWorld's deck) are treated as management-provided and may not be independently verified; readers should apply appropriate diligence standards, particularly around regulatory posture, custody/segregation, legal enforceability of token-holder rights, liquidity assumptions, and operational resilience.
-        </p>
 
         <h2>The Race is On</h2>
         <p>
