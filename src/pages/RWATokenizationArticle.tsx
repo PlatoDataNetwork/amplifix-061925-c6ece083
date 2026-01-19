@@ -15,7 +15,7 @@ const RWATokenizationArticle = () => {
       </Helmet>
       
       <ArticleLayout
-        title="Tokenization of Real-World Assets (RWA): A New Financial World Order"
+        title={<>Tokenization of Real-World Assets (RWA):<br />A New Financial World Order</>}
         description="Tokenization of real-world assets is entering a new phase—shifting from isolated pilots toward early, repeatable commercialization. This sector analysis explores the full tokenization stack and competitive landscape."
         category="Sector Research"
         author="Plato Data Intelligence"
