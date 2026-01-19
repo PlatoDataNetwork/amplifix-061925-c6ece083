@@ -19,8 +19,22 @@
       "author": "AmplifiX",
       "date": "Sept 1, 2025",
       "button_text": "Read Full Article",
-      "link": "/intel/amplifi-x-2-0-article"
+      "link": "/intel/amplifi-x-2-0-article",
+      "icon": "shield"
     },
+    "featured_posts": [
+      {
+        "badge": "New Research",
+        "category": "Sector Research",
+        "title": "Tokenization of Real-World Assets (RWA): A New Financial World Order",
+        "description": "Deep dive into RWA tokenization - from cash equivalents to institutional infrastructure. Explore the competitive landscape, market sizing, and the race toward commercialization.",
+        "author": "Plato Data Intelligence",
+        "date": "Jan 17, 2026",
+        "button_text": "Read Full Article",
+        "link": "/intel/rwa-tokenization-article",
+        "icon": "trending"
+      }
+    ],
     "ui": {
       "featured_badge": "Featured",
       "read_full_article": "Read Full Article",
@@ -32,17 +46,6 @@
     },
     "categories": ["All", "AI", "Analytics", "Security", "Insights", "Updates"],
     "blog_posts": [
-      {
-        "id": 4,
-        "title": "Tokenization of Real-World Assets (RWA): A New Financial World Order",
-        "excerpt": "Tokenization of real-world assets is entering a new phase—shifting from isolated pilots toward early, repeatable commercialization. Explore the full tokenization stack and competitive landscape.",
-        "author": "Plato Data Intelligence",
-        "date": "Jan 17, 2026",
-        "read_time": "12 min read",
-        "category": "Sector Research",
-        "image": "blog1",
-        "tags": ["Tokenization", "RWA", "Blockchain", "Finance", "Digital Assets"]
-      },
       {
         "id": 1,
         "title": "The Future of AI-Powered Corporate Intelligence",
