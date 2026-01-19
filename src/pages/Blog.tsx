@@ -366,6 +366,7 @@ const Blog = () => {
                   readTime: post.read_time
                 }} 
                 articleLink={
+                  post.id === 4 ? `${langPrefix}/intel/rwa-tokenization-article` :
                   post.id === 1 ? `${langPrefix}/intel/ai-intelligence-article` :
                   post.id === 2 ? `${langPrefix}/intel/advanced-analytics-article` :
                   post.id === 3 ? `${langPrefix}/intel/investor-engagement-article` :
