@@ -60,6 +60,7 @@ import TermsOfService from "./pages/TermsOfService";
 import DataProcessing from "./pages/DataProcessing";
 import Compliance from "./pages/Compliance";
 import AmplifiX2Article from "./pages/AmplifiX2Article";
+import RWATokenizationArticle from "./pages/RWATokenizationArticle";
 import AIIntelligenceArticle from "./pages/AIIntelligenceArticle";
 import AdvancedAnalyticsArticle from "./pages/AdvancedAnalyticsArticle";
 import InvestorEngagementArticle from "./pages/InvestorEngagementArticle";
@@ -127,6 +128,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/api" element={<API />} />
               <Route path="/intel" element={<Blog />} />
+              <Route path="/intel/rwa-tokenization-article" element={<RWATokenizationArticle />} />
               <Route path="/intel/amplifi-x-2-0-article" element={<AmplifiX2Article />} />
               <Route path="/intel/ai-intelligence-article" element={<AIIntelligenceArticle />} />
               <Route path="/intel/advanced-analytics-article" element={<AdvancedAnalyticsArticle />} />
@@ -224,6 +226,7 @@ const App = () => (
               <Route path="/:lang" element={<Index />} />
               <Route path="/:lang/api" element={<API />} />
               <Route path="/:lang/intel" element={<Blog />} />
+              <Route path="/:lang/intel/rwa-tokenization-article" element={<RWATokenizationArticle />} />
               <Route path="/:lang/intel/amplifi-x-2-0-article" element={<AmplifiX2Article />} />
               <Route path="/:lang/intel/ai-intelligence-article" element={<AIIntelligenceArticle />} />
               <Route path="/:lang/intel/advanced-analytics-article" element={<AdvancedAnalyticsArticle />} />
