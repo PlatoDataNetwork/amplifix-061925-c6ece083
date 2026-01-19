@@ -182,3 +182,26 @@ iframe.goog-te-banner-frame {
 .dark .ql-picker-options {
   @apply text-foreground bg-card;
 }
+
+/* Article prose link styling - ensure links are visible and clickable */
+.prose a,
+article a {
+  @apply text-blue-500 hover:text-blue-400 underline decoration-blue-500/30 hover:decoration-blue-400 transition-colors cursor-pointer;
+}
+
+.prose a:visited,
+article a:visited {
+  @apply text-blue-400;
+}
+
+/* Ensure links in tables are also styled */
+.prose table a,
+article table a {
+  @apply text-blue-500 hover:text-blue-400 underline;
+}
+
+/* Dark mode link styling */
+.dark .prose a,
+.dark article a {
+  @apply text-blue-400 hover:text-blue-300 decoration-blue-400/30 hover:decoration-blue-300;
+}
