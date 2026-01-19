@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { formatExternalArticleContent, ARTICLE_CONTENT_CLASSES } from "@/utils/articleFormatting";
 
 interface ArticleLayoutProps {
-  title: string;
+  title: string | ReactNode;
   description: string;
   category: string;
   author: string;
