@@ -1,6 +1,5 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useLocation } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { getLanguageFromPath } from "@/utils/language";
 import { applyClientSideTranslation } from "@/utils/gtranslate";
 
@@ -10,26 +9,17 @@ import { applyClientSideTranslation } from "@/utils/gtranslate";
  */
 export function useLanguage() {
   const location = useLocation();
-  const { i18n } = useTranslation();
 
-  useEffect(() => {
-    const pathLang = getLanguageFromPath();
-
-    // If URL explicitly requests a language, sync i18n to it.
-    if (pathLang && i18n.language !== pathLang) {
-      void i18n.changeLanguage(pathLang).catch((e) => {
-        console.warn("useLanguage: i18n.changeLanguage failed (continuing):", e);
-      });
-    }
-  }, [location.pathname, i18n]);
+  // Get language purely from URL path - no i18n state to prevent loops
+  const currentLanguage = getLanguageFromPath() || "en";
 
   const retriggerTranslation = useCallback(() => {
-    const lang = getLanguageFromPath() || i18n.language || "en";
+    const lang = getLanguageFromPath() || "en";
     void applyClientSideTranslation(lang);
-  }, [i18n.language]);
+  }, []);
 
   return {
-    currentLanguage: i18n.language,
+    currentLanguage,
     isTranslating: false,
     retriggerTranslation,
   };
