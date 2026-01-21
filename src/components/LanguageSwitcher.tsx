@@ -95,7 +95,7 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
   };
 
   useEffect(() => {
-    // Detect language from URL path
+    // Detect language from URL path ONLY - do not auto-apply saved preference
     const pathLang = getLanguageFromPath();
     
     if (pathLang) {
@@ -109,15 +109,13 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
         }
       }
     } else {
-      // Check saved preference as fallback
-      const savedLang = localStorage.getItem('selectedLanguage');
-      if (savedLang && savedLang !== 'en') {
-        const savedLanguage = languages.find(lang => lang.code === savedLang);
-        if (savedLanguage) {
-          setCurrentLanguage(savedLanguage);
-          if (i18n.language !== savedLang) {
-            i18n.changeLanguage(savedLang);
-          }
+      // No language prefix in URL = default to English
+      // Do NOT auto-apply saved preference - user must explicitly choose language
+      const englishLang = languages.find(lang => lang.code === 'en');
+      if (englishLang) {
+        setCurrentLanguage(englishLang);
+        if (i18n.language !== 'en') {
+          i18n.changeLanguage('en');
         }
       }
     }

@@ -20,7 +20,11 @@ export function useJsonData<T>(filename: string): JsonDataHook<T> {
         setError(null);
         
         const currentLang = getCurrentLanguage();
-        const namespace = filename.replace('.json', '');
+        
+        // Handle both full paths (/data/file.json) and just filenames (file.json)
+        const isFullPath = filename.startsWith('/');
+        const baseFilename = isFullPath ? filename.split('/').pop() || filename : filename;
+        const namespace = baseFilename.replace('.json', '');
         
         // For non-English languages, try to load from Supabase translations first
         if (currentLang !== 'en') {
@@ -52,14 +56,17 @@ export function useJsonData<T>(filename: string): JsonDataHook<T> {
         }
         
         // Fallback to loading English version from static files
-        // Try /data/ first, then /locales/en/ for i18n files
-        let response = await fetch(`/data/${filename}`);
-        if (!response.ok && (filename === 'common.json' || filename === 'home.json')) {
-          response = await fetch(`/locales/en/${filename}`);
+        // If full path provided, use it directly; otherwise try /data/ first
+        let fetchPath = isFullPath ? filename : `/data/${baseFilename}`;
+        let response = await fetch(fetchPath);
+        
+        // Fallback to /locales/en/ for i18n files
+        if (!response.ok && (baseFilename === 'common.json' || baseFilename === 'home.json')) {
+          response = await fetch(`/locales/en/${baseFilename}`);
         }
         
         if (!response.ok) {
-          throw new Error(`Failed to load ${filename}: ${response.status}`);
+          throw new Error(`Failed to load ${fetchPath}: ${response.status}`);
         }
         
         const jsonData = await response.json();
