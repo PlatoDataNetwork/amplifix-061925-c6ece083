@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { applyClientSideTranslation, removeGTranslateUI } from "@/utils/gtranslate";
 import { getLanguageFromPath } from "@/utils/language";
 
@@ -18,18 +17,24 @@ import { getLanguageFromPath } from "@/utils/language";
  */
 export default function GTranslateController() {
   const location = useLocation();
-  const { i18n } = useTranslation();
   const appliedRef = useRef<string | null>(null);
   const timersRef = useRef<number[]>([]);
+  const isApplyingRef = useRef(false);
 
+  // Only use URL path for language detection - ignore i18n.language to prevent loops
   const lang = useMemo(
-    () => getLanguageFromPath() || i18n.language || "en",
-    [location.pathname, i18n.language]
+    () => getLanguageFromPath() || "en",
+    [location.pathname]
   );
 
   useEffect(() => {
+    // Prevent re-entry during translation application
+    if (isApplyingRef.current) return;
+
     const key = `${lang}:${location.pathname}`;
     if (appliedRef.current === key) return;
+    
+    isApplyingRef.current = true;
     appliedRef.current = key;
 
     const clearAllTimers = () => {
@@ -132,11 +137,20 @@ export default function GTranslateController() {
 
     return () => {
       cancelled = true;
+      isApplyingRef.current = false;
       if (debounceTimer) window.clearTimeout(debounceTimer);
       observer.disconnect();
       clearAllTimers();
     };
   }, [lang, location.pathname]);
+
+  // Reset applying flag after effect completes
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      isApplyingRef.current = false;
+    }, 2000);
+    return () => window.clearTimeout(timeout);
+  }, [lang]);
 
   return null;
 }
