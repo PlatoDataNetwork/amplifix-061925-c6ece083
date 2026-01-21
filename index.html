@@ -40,6 +40,25 @@
       };
     </script>
 
+    <!-- Clear googtrans cookie for English (root URL) -->
+    <script>
+      (function() {
+        var path = window.location.pathname || "/";
+        var first = path.split("/").filter(Boolean)[0] || "";
+        
+        // List of supported language codes
+        var supported = ['ar','bn','zh','zh-CN','zh-TW','da','nl','et','fi','fr','de','el','he','iw','hi','hu','id','it','ja','km','ko','no','fa','pl','pt','pa','ro','ru','sl','es','sv','th','tr','uk','ur','vi'];
+        var isLangPrefix = supported.indexOf(first) !== -1;
+        
+        // If no language prefix (English), clear the googtrans cookie
+        if (!isLangPrefix) {
+          document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+          document.cookie = 'googtrans=; path=/; domain=' + window.location.hostname + '; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+          document.cookie = 'googtrans=; path=/; domain=.' + window.location.hostname + '; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        }
+      })();
+    </script>
+
     <!-- Hide any injected GTranslate / Google Translate UI BEFORE app CSS loads -->
     <style id="gtranslate-ui-hide">
       #gt_float_wrapper,
@@ -140,6 +159,8 @@
 </head>
 
   <body>
+    <!-- Hidden Google Translate element (kept outside React root) -->
+    <div id="google_translate_element" style="display:none !important;"></div>
     <div id="root"></div>
     
     <!-- GTranslate.io widget container (kept offscreen so it can initialize) -->

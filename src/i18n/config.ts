@@ -1,7 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import SupabaseBackend from './supabaseBackend';
+import HttpBackend from 'i18next-http-backend';
 
 export const supportedLanguages = [
   'en', 'ar', 'bn', 'zh', 'zh-TW', 'da', 'nl', 'et', 'fi', 'fr', 'de', 'el',
@@ -12,7 +12,8 @@ export const supportedLanguages = [
 const rtlLanguages = ['ar', 'he', 'fa', 'ur'] as const;
 
 i18n
-  .use(SupabaseBackend)
+  // Load translations from static files in /public/locales
+  .use(HttpBackend)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
@@ -25,6 +26,10 @@ i18n
       order: ['path', 'localStorage', 'navigator'],
       lookupFromPathIndex: 0,
       caches: ['localStorage'],
+    },
+
+    backend: {
+      loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
     
     interpolation: {
