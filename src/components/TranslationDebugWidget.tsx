@@ -8,6 +8,7 @@ import { Bug, X, ChevronDown, ChevronUp } from "lucide-react";
 declare global {
   interface Window {
     doGTranslate?: (value: string) => void;
+    __gtLastApply?: { key: string; ts: number };
   }
 }
 
@@ -47,7 +48,21 @@ export default function TranslationDebugWidget() {
   const retrigger = () => {
     if (typeof window.doGTranslate === "function" && urlLang !== "en") {
       const targetCode = urlLang === "zh" ? "zh-CN" : urlLang === "he" ? "iw" : urlLang;
+      console.log("[TranslationDebug] Re-triggering GTranslate for:", targetCode);
       window.doGTranslate(`en|${targetCode}`);
+    }
+  };
+
+  const forceFullRefresh = () => {
+    // Force a complete re-application of translation
+    if (urlLang !== "en") {
+      console.log("[TranslationDebug] Force full refresh for:", urlLang);
+      // Clear the last apply timestamp to allow immediate re-application
+      if (window.__gtLastApply) {
+        window.__gtLastApply.ts = 0;
+      }
+      const targetCode = urlLang === "zh" ? "zh-CN" : urlLang === "he" ? "iw" : urlLang;
+      window.doGTranslate?.(`en|${targetCode}`);
     }
   };
 
@@ -118,6 +133,13 @@ export default function TranslationDebugWidget() {
               className="w-full mt-2 px-2 py-1 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 disabled:text-gray-400 rounded text-center transition-colors"
             >
               Re-trigger GTranslate
+            </button>
+            <button
+              onClick={forceFullRefresh}
+              disabled={!gtLoaded || urlLang === "en"}
+              className="w-full mt-2 px-2 py-1 bg-green-600 hover:bg-green-500 disabled:bg-gray-600 disabled:text-gray-400 rounded text-center transition-colors"
+            >
+              Force Full Refresh
             </button>
           </div>
         </div>

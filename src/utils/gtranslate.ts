@@ -59,23 +59,25 @@ export async function applyClientSideTranslation(langCode: string) {
   const target = getGTranslateCode(langCode);
   const key = `en|${target}`;
 
-  // Throttle: repeated doGTranslate calls cause visible flicker.
-  // We keep it SPA-safe by allowing at most one apply per language per ~1.2s.
+  // Reduced throttle for better dynamic content handling
+  // Allow re-translation every 500ms for dynamic content
   const now = Date.now();
-  if (window.__gtLastApply?.key === key && now - window.__gtLastApply.ts < 1200) return;
+  if (window.__gtLastApply?.key === key && now - window.__gtLastApply.ts < 500) return;
   window.__gtLastApply = { key, ts: now };
 
   // Always set the cookie, including when switching back to English.
-  // This is what actually “turns off” translation for many widget variants.
+  // This is what actually "turns off" translation for many widget variants.
   setGoogTransCookie(langCode);
 
   const ok = await ensureGTranslateReady();
   if (!ok) {
+    console.warn("[GTranslate] doGTranslate function not available");
     scrubGTranslateUIWindow();
     return;
   }
 
   // Note: key can be "en|en" to reset back to English.
+  console.log("[GTranslate] Calling doGTranslate with:", key);
   window.doGTranslate?.(key);
 
   // Some widget UIs are injected *after* doGTranslate runs (and can persist).
