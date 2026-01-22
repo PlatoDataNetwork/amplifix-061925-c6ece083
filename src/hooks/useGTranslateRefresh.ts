@@ -1,44 +1,27 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { getCurrentLanguage } from "@/utils/language";
-import { applyClientSideTranslation } from "@/utils/gtranslate";
 
 /**
- * Re-trigger for pages that render data AFTER mount.
- * The global GTranslateController handles most cases; this provides
- * additional retries for pages with heavy dynamic content.
+ * Simplified hook - GTranslate is now handled by:
+ * 1. Cookie set in index.html before React loads
+ * 2. GTranslateController for SPA navigation
+ * 
+ * This hook is kept for backwards compatibility but no longer does retries.
  */
-export function useGTranslateRefresh(contentLoaded: boolean, dependencies: any[] = []) {
-  const retriesRef = useRef(0);
-  const maxRetries = 5;
-
+export function useGTranslateRefresh(_contentLoaded: boolean, _dependencies: any[] = []) {
   useEffect(() => {
-    if (!contentLoaded) return;
-
+    // No-op: Translation is handled globally by GTranslateController
+    // Keeping this hook for backwards compatibility with existing components
     const lang = getCurrentLanguage();
-    if (!lang || lang === "en") return;
-
-    // Reset retry counter when dependencies change
-    retriesRef.current = 0;
-
-    const applyWithRetries = () => {
-      if (retriesRef.current >= maxRetries) return;
-      retriesRef.current += 1;
-      console.log(`[useGTranslateRefresh] Applying translation (attempt ${retriesRef.current}/${maxRetries})`);
-      void applyClientSideTranslation(lang);
-    };
-
-    // Immediate + delayed retries for dynamic content
-    applyWithRetries();
-    
-    const timers = [
-      setTimeout(applyWithRetries, 300),
-      setTimeout(applyWithRetries, 800),
-      setTimeout(applyWithRetries, 1500),
-      setTimeout(applyWithRetries, 3000),
-    ];
-
-    return () => {
-      timers.forEach(clearTimeout);
-    };
-  }, [contentLoaded, ...dependencies]);
+    if (lang && lang !== "en") {
+      // Single delayed call for dynamic content that loads after mount
+      const timer = setTimeout(() => {
+        if (typeof window.doGTranslate === "function") {
+          const targetCode = lang === "zh" ? "zh-CN" : lang === "he" ? "iw" : lang;
+          window.doGTranslate(`en|${targetCode}`);
+        }
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [_contentLoaded]);
 }
