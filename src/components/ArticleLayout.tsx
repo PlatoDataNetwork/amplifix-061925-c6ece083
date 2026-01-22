@@ -27,7 +27,7 @@ const ArticleLayout = ({
   readTime = "5 min read",
   children,
 }: ArticleLayoutProps) => {
-  const { data: blogData } = useJsonData<any>('blog.json');
+  const { data: blogData } = useJsonData<any>('blog-intel.json');
   const navigate = useNavigate();
   const [scrollProgress, setScrollProgress] = useState(0);
 
