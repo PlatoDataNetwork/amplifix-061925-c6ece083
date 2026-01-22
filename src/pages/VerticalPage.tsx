@@ -9,12 +9,13 @@ import VerticalAIChat from "@/components/VerticalAIChat";
 import ArticleSearch from "@/components/ArticleSearch";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
 import { usePlatoDataFeed } from "@/hooks/usePlatoDataFeed";
 import { useRSSFeed } from "@/hooks/useRSSFeed";
 import { useArticlesFromDB } from "@/hooks/useArticlesFromDB";
+import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
 import { ArrowLeft } from "lucide-react";
 import {
   Select,
@@ -23,8 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getCurrentLanguage } from "@/utils/language";
-import { applyClientSideTranslation } from "@/utils/gtranslate";
 import { supabase } from "@/integrations/supabase/client";
 import { generateArticleUrl } from "@/utils/slugify";
 
@@ -129,15 +128,8 @@ const VerticalPage = () => {
   // Use database hasMore if we have DB posts and not searching, otherwise check platoData length
   const hasMorePosts = !isSearching && dbPosts.length > 0 ? dbHasMore : displayPosts.length > 0;
 
-  // Re-run GTranslate once posts are loaded so thumbnails/text can be translated
-  useEffect(() => {
-    if (isLoading || !displayPosts.length) return;
-
-    const lang = getCurrentLanguage();
-    if (!lang || lang === "en") return;
-
-    void applyClientSideTranslation(lang);
-  }, [isLoading, displayPosts.length]);
+  // Use enhanced GTranslate refresh hook for dynamic content translation
+  useGTranslateRefresh(!isLoading && displayPosts.length > 0, [displayPosts.length, verticalSlug]);
   
   const handleShowMore = () => {
     // If using DB posts with pagination, load more from DB

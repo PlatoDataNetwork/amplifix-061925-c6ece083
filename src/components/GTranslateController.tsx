@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { applyClientSideTranslation, removeGTranslateUI } from "@/utils/gtranslate";
 import { getLanguageFromPath } from "@/utils/language";
@@ -11,21 +11,34 @@ import { getLanguageFromPath } from "@/utils/language";
  * - One-shot translation misses late content.
  *
  * Strategy:
- * - Apply immediately + a few delayed passes.
- * - Observe DOM node insertions for a short window and re-apply (debounced, capped)
- *   to catch late-loaded cards, showcases, and articles without constant flicker.
+ * - Apply immediately + multiple delayed passes for dynamic content.
+ * - Observe DOM node insertions and re-apply (debounced, capped)
+ *   to catch late-loaded cards, showcases, and articles.
  */
 export default function GTranslateController() {
   const location = useLocation();
   const appliedRef = useRef<string | null>(null);
   const timersRef = useRef<number[]>([]);
   const isApplyingRef = useRef(false);
+  const observerRef = useRef<MutationObserver | null>(null);
 
   // Only use URL path for language detection - ignore i18n.language to prevent loops
   const lang = useMemo(
     () => getLanguageFromPath() || "en",
     [location.pathname]
   );
+
+  // Force re-translation of dynamic content
+  const forceTranslate = useCallback(() => {
+    if (lang === "en") return;
+    
+    // Call doGTranslate directly if available
+    if (typeof window.doGTranslate === "function") {
+      const targetCode = lang === "zh" ? "zh-CN" : lang === "he" ? "iw" : lang;
+      console.log("[GTranslate] Force applying translation for:", targetCode);
+      window.doGTranslate(`en|${targetCode}`);
+    }
+  }, [lang]);
 
   useEffect(() => {
     // Prevent re-entry during translation application
@@ -45,8 +58,9 @@ export default function GTranslateController() {
       timersRef.current = [];
     };
 
-    // Cleanup any previous timers
+    // Cleanup any previous timers and observer
     clearAllTimers();
+    observerRef.current?.disconnect();
 
     // Scrub any injected widget UI that can briefly appear during SPA navigation.
     removeGTranslateUI();
@@ -57,9 +71,9 @@ export default function GTranslateController() {
     let cancelled = false;
 
     // For English, actively reset translation back to English (clears googtrans)
-    // and rely on the scrub window above to remove any late-injected UI.
     if (lang === "en") {
       void applyClientSideTranslation("en");
+      isApplyingRef.current = false;
       return () => {
         cancelled = true;
         clearAllTimers();
@@ -67,20 +81,24 @@ export default function GTranslateController() {
     }
 
     let applyCount = 0;
-    const maxApplies = 3;
+    const maxApplies = 8; // Increased for better coverage of dynamic content
 
     const apply = () => {
       if (cancelled) return;
       if (applyCount >= maxApplies) return;
       applyCount += 1;
+      console.log(`[GTranslate] Applying translation pass ${applyCount}/${maxApplies} for:`, lang);
       // Translate + immediately re-scrub UI (some widgets pop in right after apply)
       void applyClientSideTranslation(lang);
       removeGTranslateUI();
     };
 
-    // One immediate pass + one delayed pass; the observer handles late content.
+    // Immediate pass + multiple delayed passes for dynamic content
     apply();
-    [1800].forEach((delay) => {
+    
+    // Schedule more aggressive retries for dynamic content
+    const delays = [500, 1000, 1500, 2500, 4000, 6000];
+    delays.forEach((delay) => {
       const t = window.setTimeout(apply, delay);
       timersRef.current.push(t);
     });
@@ -108,7 +126,21 @@ export default function GTranslateController() {
       );
     };
 
-    // Observe DOM insertions briefly; debounce heavily to avoid flicker
+    // Check if node contains translatable content
+    const hasTranslatableContent = (n: Node): boolean => {
+      if (!(n instanceof Element)) return false;
+      const el = n as Element;
+      // Check if element or children have translate class or significant text
+      if (el.classList?.contains("translate")) return true;
+      if (el.querySelector?.(".translate")) return true;
+      // Check for article-like content
+      if (el.tagName === "ARTICLE" || el.closest?.("article")) return true;
+      // Check for text content
+      const text = el.textContent?.trim() || "";
+      return text.length > 50; // Significant text content
+    };
+
+    // Observe DOM insertions; debounce heavily to avoid flicker
     let debounceTimer: number | null = null;
     const observer = new MutationObserver((mutations) => {
       if (cancelled) return;
@@ -117,21 +149,29 @@ export default function GTranslateController() {
       const addedNodes = mutations.flatMap((m) => Array.from(m.addedNodes || []));
       if (addedNodes.length === 0) return;
 
-      // If ONLY translate UI nodes were injected, just scrub them (don't re-apply translation).
+      // If ONLY translate UI nodes were injected, just scrub them
       const hasNonUiAdd = addedNodes.some((n) => !isTranslateUiNode(n));
       removeGTranslateUI();
       if (!hasNonUiAdd) return;
 
+      // Check if any added nodes have translatable content
+      const hasNewContent = addedNodes.some(hasTranslatableContent);
+      if (!hasNewContent) return;
+
       if (debounceTimer) window.clearTimeout(debounceTimer);
       debounceTimer = window.setTimeout(() => {
+        console.log("[GTranslate] New content detected, re-applying translation");
         apply();
-      }, 1400);
+      }, 800);
     });
+
+    observerRef.current = observer;
 
     // body may be null very early; guard
     if (document.body) {
       observer.observe(document.body, { childList: true, subtree: true });
-      const stop = window.setTimeout(() => observer.disconnect(), 20000);
+      // Keep observing longer for dynamic content
+      const stop = window.setTimeout(() => observer.disconnect(), 30000);
       timersRef.current.push(stop);
     }
 
