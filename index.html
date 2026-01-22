@@ -40,25 +40,6 @@
       };
     </script>
 
-    <!-- Clear googtrans cookie for English (root URL) -->
-    <script>
-      (function() {
-        var path = window.location.pathname || "/";
-        var first = path.split("/").filter(Boolean)[0] || "";
-        
-        // List of supported language codes
-        var supported = ['ar','bn','zh','zh-CN','zh-TW','da','nl','et','fi','fr','de','el','he','iw','hi','hu','id','it','ja','km','ko','no','fa','pl','pt','pa','ro','ru','sl','es','sv','th','tr','uk','ur','vi'];
-        var isLangPrefix = supported.indexOf(first) !== -1;
-        
-        // If no language prefix (English), clear the googtrans cookie
-        if (!isLangPrefix) {
-          document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-          document.cookie = 'googtrans=; path=/; domain=' + window.location.hostname + '; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-          document.cookie = 'googtrans=; path=/; domain=.' + window.location.hostname + '; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-        }
-      })();
-    </script>
-
     <!-- Hide any injected GTranslate / Google Translate UI BEFORE app CSS loads -->
     <style id="gtranslate-ui-hide">
       #gt_float_wrapper,
@@ -103,46 +84,6 @@
         top: -99999px !important;
       }
     </style>
-    <script>
-      // Ensure googtrans cookie is set BEFORE dwf.js runs (required for reliable first-load translation)
-      (function () {
-        try {
-          var path = window.location.pathname || "/";
-          var first = path.split("/").filter(Boolean)[0] || "";
-
-          // Accept common language prefixes (e.g. /bn/..., /fr/..., /zh-TW/...)
-          var isLang = /^[a-z]{2}$/.test(first) || first === "zh-TW";
-          if (!isLang || first === "en") return;
-
-          var map = { zh: "zh-CN", "zh-TW": "zh-TW", he: "iw" };
-          var target = map[first] || first;
-
-          // In Lovable Preview the app runs inside an iframe, making cookies "third-party".
-          // To ensure the googtrans cookie sticks there, use SameSite=None; Secure.
-          var inIframe = false;
-          try {
-            inIframe = window.top !== window.self;
-          } catch (e) {
-            inIframe = true;
-          }
-
-          var needsSecure = window.location.protocol === "https:";
-          var sameSite = inIframe ? "none" : "lax";
-          var secure = inIframe && needsSecure ? "; secure" : "";
-
-          // Clear any old variants then set one host-scoped cookie
-          document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
-          document.cookie =
-            "googtrans=/en/" +
-            target +
-            "; path=/; max-age=31536000; samesite=" +
-            sameSite +
-            secure;
-        } catch (e) {
-          // no-op
-        }
-      })();
-    </script>
     <script id="gtranslate-dwf" src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
 
     <!-- Set dark theme as default before React loads to prevent flash -->
@@ -159,7 +100,89 @@
 </head>
 
   <body>
-    <!-- Hidden Google Translate element (kept outside React root) -->
+    <!-- CRITICAL: Handle Google Translate state BEFORE any scripts load -->
+    <script>
+      (function() {
+        var path = window.location.pathname;
+        var seg = path.split('/').filter(Boolean)[0] || '';
+        // Supported language codes (must match i18nLanguages.ts)
+        var supported = ['ar','bn','zh-CN','zh-TW','da','nl','et','fi','fr','de','el','iw','hi','hu','id','it','ja','km','ko','no','fa','pl','pt','pa','ro','ru','sl','es','sv','th','tr','uk','ur','vi'];
+        var isLangPrefix = supported.indexOf(seg) !== -1;
+
+        function getCookieDomains() {
+          var host = window.location.hostname;
+          var base = host.indexOf('www.') === 0 ? host.slice(4) : host;
+          var domains = ['', host, '.' + host];
+          if (base && base !== host) {
+            domains.push(base, '.' + base);
+          }
+          var seen = {};
+          return domains.filter(function(d) {
+            if (seen[d]) return false;
+            seen[d] = true;
+            return true;
+          });
+        }
+
+        function clearAllGoogTransCookies() {
+          getCookieDomains().forEach(function(domain) {
+            var cookieStr = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+            if (domain) cookieStr += '; domain=' + domain;
+            document.cookie = cookieStr;
+          });
+        }
+
+        function setGoogTransCookie(value) {
+          getCookieDomains().forEach(function(domain) {
+            var cookieStr = 'googtrans=' + value + '; path=/';
+            if (domain) cookieStr += '; domain=' + domain;
+            document.cookie = cookieStr;
+          });
+        }
+
+        function getCookieLang() {
+          var cookies = document.cookie.split(';');
+          var lang = null;
+          for (var i = 0; i < cookies.length; i++) {
+            var parts = cookies[i].trim().split('=');
+            if (parts[0] === 'googtrans' && parts[1]) {
+              var m = parts[1].match(/\/en\/([a-zA-Z\-]+)/);
+              if (m && m[1]) {
+                lang = m[1];
+              }
+            }
+          }
+          return lang;
+        }
+
+        var cookieLang = getCookieLang();
+        var urlLang = isLangPrefix ? seg : 'en';
+
+        // CASE 1: Root domain (English) - clear everything
+        if (!isLangPrefix) {
+          clearAllGoogTransCookies();
+          document.documentElement.classList.remove('translated-ltr', 'translated-rtl');
+          if (document.body) {
+            document.body.classList.remove('translated-ltr', 'translated-rtl');
+          }
+          try {
+            localStorage.removeItem('googtrans');
+            localStorage.removeItem('google_translate_element');
+          } catch(e) {}
+        }
+        // CASE 2: Language URL but cookie has different language - fix the mismatch
+        else if (cookieLang && cookieLang !== urlLang) {
+          clearAllGoogTransCookies();
+          setGoogTransCookie('/en/' + urlLang);
+        }
+        // CASE 3: Language URL but no cookie - set it
+        else if (!cookieLang && isLangPrefix) {
+          setGoogTransCookie('/en/' + urlLang);
+        }
+      })();
+    </script>
+
+    <!-- Hidden Google Translate element - MUST be outside React root -->
     <div id="google_translate_element" style="display:none !important;"></div>
     <div id="root"></div>
     
