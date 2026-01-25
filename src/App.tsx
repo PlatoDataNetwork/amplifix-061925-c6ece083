@@ -92,6 +92,10 @@ import DJCentralShowcase from "./pages/DJCentralShowcase";
 import FilmologyShowcase from "./pages/FilmologyShowcase";
 import TwentyTwoXVenturesShowcase from "./pages/22XVenturesShowcase";
 import OpenWorldShowcase from "./pages/OpenWorldShowcase";
+import SecureTechShowcase from "./pages/SecureTechShowcase";
+import MobileGlobalEsportsShowcase from "./pages/MobileGlobalEsportsShowcase";
+import AIEraCorpShowcase from "./pages/AIEraCorpShowcase";
+import IONDigitalShowcase from "./pages/IONDigitalShowcase";
 import ShowcaseAdmin from "./pages/ShowcaseAdmin";
 import SecurityDashboard from "./pages/SecurityDashboard";
 import JsonTester from "./pages/JsonTester";
@@ -169,6 +173,10 @@ const App = () => (
               <Route path="/showcase/filmology" element={<FilmologyShowcase />} />
               <Route path="/showcase/22x-ventures" element={<TwentyTwoXVenturesShowcase />} />
               <Route path="/showcase/openworld" element={<OpenWorldShowcase />} />
+              <Route path="/showcase/securetech" element={<SecureTechShowcase />} />
+              <Route path="/showcase/mobile-global-esports" element={<MobileGlobalEsportsShowcase />} />
+              <Route path="/showcase/ai-era-corp" element={<AIEraCorpShowcase />} />
+              <Route path="/showcase/ion-digital" element={<IONDigitalShowcase />} />
               <Route path="/solutions/advisory" element={<Advisory />} />
               <Route path="/solutions/research" element={<Research />} />
               <Route path="/solutions/analytics" element={<AnalyticsSolutions />} />
