@@ -217,24 +217,24 @@ const SecureTechShowcase = () => {
         </section>
 
         {/* Call to Action */}
-        <section className="py-20 bg-gradient-to-r from-primary to-primary-variant text-primary-foreground">
+        <section className="py-20 bg-gradient-to-r from-[hsl(220,20%,20%)] to-[hsl(220,15%,35%)]">
           <div className="container mx-auto px-4 text-center">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
                 Securing the Future
               </h2>
-              <p className="text-xl mb-8 opacity-90">
+              <p className="text-xl mb-8 text-muted-foreground">
                 SecureTech Innovations is at the forefront of security technology, protecting businesses 
                 and individuals with cutting-edge solutions across multiple sectors.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild size="lg" variant="secondary">
+                <Button asChild size="lg" className="bg-[hsl(220,20%,15%)] hover:bg-[hsl(220,20%,20%)] text-white border border-white/20">
                   <a href="https://securetechinnovations.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                     <ExternalLink className="w-4 h-4" />
                     Learn More
                   </a>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+                <Button asChild variant="outline" size="lg" className="border-white/30 text-foreground hover:bg-white/10">
                   <LanguageAwareLink to="/contact" className="flex items-center gap-2">
                     <Users className="w-4 h-4" />
                     Contact Us
