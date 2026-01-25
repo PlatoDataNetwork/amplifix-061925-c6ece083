@@ -1,0 +1,77 @@
+-- Insert 4 new showcase companies
+
+INSERT INTO public.showcase_companies (
+  company_name,
+  ticker,
+  subtitle,
+  description,
+  tags,
+  type,
+  main_sector,
+  link,
+  website,
+  search_url,
+  button_text,
+  display_order,
+  disabled
+) VALUES 
+(
+  'SecureTech Innovations',
+  'OTCMKTS: SCTH',
+  'OTC:SCTH',
+  'SecureTech Innovations develops cutting-edge security and safety technologies including Top Kontrol, an advanced anti-theft and anti-carjacking system. Operating across Cybersecurity, Web3, AI, and Industrial 3D Printing sectors.',
+  ARRAY['AI', 'Cybersecurity', 'Web3', '3D Printing'],
+  'stock',
+  'CYBERSECURITY',
+  '/showcase/securetech',
+  'https://securetechinnovations.com/',
+  'https://www.bing.com/copilotsearch?q=SCTH+Securetech+Innovations',
+  'View Showcase',
+  101,
+  false
+),
+(
+  'Mobile Global Esports',
+  'OTCPK: MGAM',
+  'OTC:MGAM',
+  'Mobile Global eSPORTS is a next-generation digital technology and entertainment company leveraging AI, blockchain, AR, and real-time platforms. Powered by their proprietary PUHZL AI engine for digital games and experiences.',
+  ARRAY['AI', 'Gaming', 'Blockchain', 'Esports'],
+  'stock',
+  'GAMING',
+  '/showcase/mobile-global-esports',
+  'https://mobileglobal.us/',
+  'https://www.bing.com/copilotsearch?q=MGAM+Gaming+Esports',
+  'View Showcase',
+  102,
+  false
+),
+(
+  'AI Era Corp',
+  'OTCMKTS: AERA',
+  'OTC:AERA',
+  'AI Era Corp is an intellectual property (IP) and movie investment firm specializing in acquisitions, licensing, NFT platforms, and cinema operations. Recently rebranded from AB International Group Corp.',
+  ARRAY['AI', 'Media', 'IP Licensing', 'NFT'],
+  'stock',
+  'MEDIA',
+  '/showcase/ai-era-corp',
+  'https://www.abqqs.com/',
+  'https://www.bing.com/copilotsearch?q=AERA+AI+ERA+Corp',
+  'View Showcase',
+  103,
+  false
+),
+(
+  'I-ON Digital',
+  'OTCQB: IONI',
+  'OTC:IONI',
+  'I-ON Digital Corp digitizes and tokenizes real-world assets, primarily in-situ gold, into fully compliant, blockchain-backed digital securities. Their flagship asset ION.au bridges TradFi and DeFi with institutional-grade security.',
+  ARRAY['Blockchain', 'RWA', 'Tokenization', 'Fintech'],
+  'stock',
+  'RWA',
+  '/showcase/ion-digital',
+  'https://iondigitalcorp.com/',
+  'https://www.bing.com/copilotsearch?q=IONI+I-ON%20Digital+Tokenization',
+  'View Showcase',
+  104,
+  false
+);
