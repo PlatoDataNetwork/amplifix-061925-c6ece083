@@ -42,6 +42,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { 
   ArrowLeft, 
@@ -55,7 +56,9 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  Pause
+  Pause,
+  AlertCircle,
+  FileText
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { usePlatoVerticals } from "@/hooks/usePlatoVerticals";
@@ -89,6 +92,24 @@ interface RssFeed {
   updated_at: string;
 }
 
+interface SyncResult {
+  feedId: string;
+  feedName: string;
+  results: {
+    processed: number;
+    imported: number;
+    skipped: number;
+    errors: number;
+    details: Array<{
+      guid: string;
+      title: string;
+      status: string;
+      error?: string;
+      articleId?: string;
+    }>;
+  };
+}
+
 const defaultFeed = {
   name: "",
   feed_url: "",
@@ -118,6 +139,9 @@ const FeedsManagement = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingFeed, setEditingFeed] = useState<RssFeed | null>(null);
   const [newFeed, setNewFeed] = useState(defaultFeed);
+  const [syncingFeedId, setSyncingFeedId] = useState<string | null>(null);
+  const [syncResult, setSyncResult] = useState<SyncResult | null>(null);
+  const [isSyncResultDialogOpen, setIsSyncResultDialogOpen] = useState(false);
 
   // Fetch feeds
   const { data: feeds, isLoading } = useQuery({
@@ -235,6 +259,47 @@ const FeedsManagement = () => {
     },
   });
 
+  // Sync feed mutation
+  const syncFeedMutation = useMutation({
+    mutationFn: async (feedId: string) => {
+      setSyncingFeedId(feedId);
+      
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData.session) {
+        throw new Error("You must be logged in to sync feeds");
+      }
+
+      const response = await supabase.functions.invoke("sync-rss-feed", {
+        body: { feedId },
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || "Failed to sync feed");
+      }
+
+      return response.data as SyncResult;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["rss-feeds"] });
+      setSyncResult(data);
+      setIsSyncResultDialogOpen(true);
+      
+      if (data.results.imported > 0) {
+        toast.success(`Synced ${data.results.imported} article(s) from ${data.feedName}`);
+      } else if (data.results.skipped > 0) {
+        toast.info(`No new articles - ${data.results.skipped} already synced`);
+      } else {
+        toast.info("No articles found in feed");
+      }
+    },
+    onError: (error) => {
+      toast.error(`Failed to sync feed: ${error.message}`);
+    },
+    onSettled: () => {
+      setSyncingFeedId(null);
+    },
+  });
+
   // Filter feeds by search
   const filteredFeeds = feeds?.filter(
     (feed) =>
@@ -251,6 +316,19 @@ const FeedsManagement = () => {
         return <Badge className="bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"><Pause className="h-3 w-3 mr-1" />Paused</Badge>;
       case "error":
         return <Badge className="bg-destructive/20 text-destructive hover:bg-destructive/30"><XCircle className="h-3 w-3 mr-1" />Error</Badge>;
+    }
+  };
+
+  const getSyncItemStatusIcon = (status: string) => {
+    switch (status) {
+      case "imported":
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case "skipped":
+        return <AlertCircle className="h-4 w-4 text-amber-500" />;
+      case "error":
+        return <XCircle className="h-4 w-4 text-destructive" />;
+      default:
+        return <FileText className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -593,8 +671,14 @@ const FeedsManagement = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="icon" disabled>
-                            <RefreshCw className="h-4 w-4" />
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => syncFeedMutation.mutate(feed.id)}
+                            disabled={syncingFeedId === feed.id || syncFeedMutation.isPending}
+                            title="Sync now"
+                          >
+                            <RefreshCw className={`h-4 w-4 ${syncingFeedId === feed.id ? "animate-spin" : ""}`} />
                           </Button>
                           <Button
                             variant="ghost"
@@ -657,6 +741,81 @@ const FeedsManagement = () => {
                 isLoading={updateFeedMutation.isPending}
                 submitText="Save Changes"
               />
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Sync Results Dialog */}
+        <Dialog open={isSyncResultDialogOpen} onOpenChange={setIsSyncResultDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Sync Results</DialogTitle>
+              <DialogDescription>
+                {syncResult?.feedName} - Sync completed
+              </DialogDescription>
+            </DialogHeader>
+            {syncResult && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-4 gap-4">
+                  <Card>
+                    <CardContent className="pt-4 text-center">
+                      <div className="text-2xl font-bold">{syncResult.results.processed}</div>
+                      <div className="text-xs text-muted-foreground">Processed</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-4 text-center">
+                      <div className="text-2xl font-bold text-green-500">{syncResult.results.imported}</div>
+                      <div className="text-xs text-muted-foreground">Imported</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-4 text-center">
+                      <div className="text-2xl font-bold text-amber-500">{syncResult.results.skipped}</div>
+                      <div className="text-xs text-muted-foreground">Skipped</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-4 text-center">
+                      <div className="text-2xl font-bold text-destructive">{syncResult.results.errors}</div>
+                      <div className="text-xs text-muted-foreground">Errors</div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {syncResult.results.details.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-sm">Details</h4>
+                    <ScrollArea className="h-[300px] border rounded-md">
+                      <div className="p-2 space-y-1">
+                        {syncResult.results.details.map((item, index) => (
+                          <div 
+                            key={index} 
+                            className="flex items-start gap-2 p-2 rounded-md hover:bg-muted/50 text-sm"
+                          >
+                            {getSyncItemStatusIcon(item.status)}
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium truncate">{item.title}</p>
+                              {item.error && (
+                                <p className="text-xs text-muted-foreground">{item.error}</p>
+                              )}
+                            </div>
+                            <Badge variant="outline" className="shrink-0">
+                              {item.status}
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  </div>
+                )}
+
+                <DialogFooter>
+                  <Button onClick={() => setIsSyncResultDialogOpen(false)}>
+                    Close
+                  </Button>
+                </DialogFooter>
+              </div>
             )}
           </DialogContent>
         </Dialog>
