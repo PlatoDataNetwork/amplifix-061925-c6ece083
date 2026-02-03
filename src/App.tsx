@@ -112,6 +112,10 @@ import IntelStatsDashboard from "./pages/IntelStatsDashboard";
 import ReportDetail from "./pages/ReportDetail";
 import InvestorPitch from "./pages/InvestorPitch";
 import Management from "./pages/Management";
+import TagsManagement from "./pages/TagsManagement";
+import VerticalsManagement from "./pages/VerticalsManagement";
+import FeedsManagement from "./pages/FeedsManagement";
+import DefaultImagesManagement from "./pages/DefaultImagesManagement";
 
 const queryClient = new QueryClient();
 
@@ -227,6 +231,10 @@ const App = () => (
           <Route path="/admin/json-tester" element={<AdminRoute><JsonTester /></AdminRoute>} />
           <Route path="/admin/crm" element={<AdminRoute><AdminCRM /></AdminRoute>} />
           <Route path="/admin/intel-stats" element={<AdminRoute><IntelStatsDashboard /></AdminRoute>} />
+          <Route path="/admin/tags" element={<AdminRoute><TagsManagement /></AdminRoute>} />
+          <Route path="/admin/verticals" element={<AdminRoute><VerticalsManagement /></AdminRoute>} />
+          <Route path="/admin/feeds" element={<AdminRoute><FeedsManagement /></AdminRoute>} />
+          <Route path="/admin/default-images" element={<AdminRoute><DefaultImagesManagement /></AdminRoute>} />
           <Route path="/reports" element={<ReportsDashboard />} />
           <Route path="/reports/:campaignId/:reportId" element={<ReportDetail />} />
           <Route path="/showcase/fynn-ai" element={<FynnAIShowcase />} />
