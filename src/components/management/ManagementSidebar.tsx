@@ -4,21 +4,17 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   LayoutDashboard,
   FileText,
-  PenSquare,
-  Wand2,
-  Archive,
-  GitCompare,
-  Download,
-  Upload,
-  Database,
-  Users,
-  Star,
-  Map,
-  Languages,
+  FilePlus,
+  Tags,
+  FolderTree,
+  Rss,
+  PlusCircle,
+  ScrollText,
+  Image,
+  Settings,
   BarChart3,
-  LineChart,
-  UserCog,
-  Shield,
+  Map,
+  FileCode,
   LogOut,
   ChevronDown,
 } from "lucide-react";
@@ -41,7 +37,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Button } from "@/components/ui/button";
 
 interface ManagementSidebarProps {
   currentView: string;
@@ -56,9 +51,8 @@ const ManagementSidebar = ({ currentView, onViewChange }: ManagementSidebarProps
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     content: true,
-    import: false,
+    feeds: false,
     settings: false,
-    analytics: false,
   });
 
   const toggleGroup = (group: string) => {
@@ -84,39 +78,28 @@ const ManagementSidebar = ({ currentView, onViewChange }: ManagementSidebarProps
       label: "Content",
       items: [
         { id: "articles", label: "All Articles", icon: FileText, path: "/admin/articles" },
-        { id: "article-editor", label: "Article Editor", icon: PenSquare, path: "/admin/articles" },
-        { id: "article-formatter", label: "Article Formatter", icon: Wand2, path: "/admin/articles/format" },
-        { id: "article-backups", label: "Article Backups", icon: Archive, path: "/admin/articles/backups" },
-        { id: "article-comparison", label: "Article Comparison", icon: GitCompare, path: "/admin/articles/comparison" },
+        { id: "new-article", label: "New Article", icon: FilePlus, path: "/admin/articles/new" },
+        { id: "tags", label: "Tags", icon: Tags, path: "/admin/tags" },
+        { id: "verticals", label: "Verticals", icon: FolderTree, path: "/admin/verticals" },
       ],
     },
     {
-      id: "import",
-      label: "Import",
+      id: "feeds",
+      label: "Feed Syndicator",
       items: [
-        { id: "import-dashboard", label: "Import Dashboard", icon: Download, path: "/admin/import" },
-        { id: "bulk-import", label: "Bulk Import", icon: Upload, path: "/admin/bulk-import" },
-        { id: "plato-import", label: "Plato Import", icon: Database, path: "/admin/plato-import" },
+        { id: "feeds", label: "All Feeds", icon: Rss, path: "/admin/feeds" },
+        { id: "add-feed", label: "Add Feed", icon: PlusCircle, path: "/admin/feeds/new" },
+        { id: "feed-logs", label: "Sync Logs", icon: ScrollText, path: "/admin/feeds/logs" },
       ],
     },
     {
       id: "settings",
       label: "Settings",
       items: [
-        { id: "users", label: "User Management", icon: Users, path: "/admin/users" },
-        { id: "showcase", label: "Showcase Manager", icon: Star, path: "/admin/showcase" },
-        { id: "sitemaps", label: "Sitemap Generator", icon: Map, path: "/admin/sitemaps" },
-        { id: "translations", label: "Translations", icon: Languages, path: "/admin/translations/manager" },
-      ],
-    },
-    {
-      id: "analytics",
-      label: "Analytics",
-      items: [
-        { id: "intel-stats", label: "Intel Stats", icon: BarChart3, path: "/admin/intel-stats" },
-        { id: "analytics", label: "Google Analytics", icon: LineChart, path: "/admin/analytics" },
-        { id: "crm", label: "CRM", icon: UserCog, path: "/admin/crm" },
-        { id: "security", label: "Security Dashboard", icon: Shield, path: "/admin/security" },
+        { id: "settings-general", label: "General", icon: Settings, path: "/admin/settings" },
+        { id: "settings-analytics", label: "Analytics", icon: BarChart3, path: "/admin/analytics" },
+        { id: "sitemaps", label: "Sitemaps", icon: Map, path: "/admin/sitemap-admin" },
+        { id: "robots", label: "Robots.txt", icon: FileCode, path: "/admin/robots" },
       ],
     },
   ];
@@ -191,6 +174,22 @@ const ManagementSidebar = ({ currentView, onViewChange }: ManagementSidebarProps
             </Collapsible>
           </SidebarGroup>
         ))}
+
+        {/* Default Images - standalone item */}
+        <SidebarGroup>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                isActive={currentView === "default-images"}
+                onClick={() => handleNavigation("default-images", "/admin/default-images")}
+                tooltip="Default Images"
+              >
+                <Image className="h-4 w-4" />
+                {!isCollapsed && <span>Default Images</span>}
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border">
