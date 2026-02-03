@@ -111,6 +111,7 @@ import ReportsDashboard from "./pages/ReportsDashboard";
 import IntelStatsDashboard from "./pages/IntelStatsDashboard";
 import ReportDetail from "./pages/ReportDetail";
 import InvestorPitch from "./pages/InvestorPitch";
+import Management from "./pages/Management";
 
 const queryClient = new QueryClient();
 
@@ -198,6 +199,7 @@ const App = () => (
               <Route path="/data-processing" element={<DataProcessing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/management" element={<AdminRoute><Management /></AdminRoute>} />
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           <Route path="/admin/analytics" element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
           <Route path="/admin/security" element={<AdminRoute><SecurityDashboard /></AdminRoute>} />
