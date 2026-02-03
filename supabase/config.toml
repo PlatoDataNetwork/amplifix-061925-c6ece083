@@ -152,3 +152,6 @@ verify_jwt = false
 
 [functions.sync-rss-feed]
 verify_jwt = false
+
+[functions.auto-sync-feeds]
+verify_jwt = false
