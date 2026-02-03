@@ -357,6 +357,57 @@ export type Database = {
           },
         ]
       }
+      feed_sync_logs: {
+        Row: {
+          article_id: string | null
+          error_message: string | null
+          feed_id: string
+          id: string
+          original_guid: string
+          original_title: string | null
+          original_url: string | null
+          status: string
+          synced_at: string | null
+        }
+        Insert: {
+          article_id?: string | null
+          error_message?: string | null
+          feed_id: string
+          id?: string
+          original_guid: string
+          original_title?: string | null
+          original_url?: string | null
+          status?: string
+          synced_at?: string | null
+        }
+        Update: {
+          article_id?: string | null
+          error_message?: string | null
+          feed_id?: string
+          id?: string
+          original_guid?: string
+          original_title?: string | null
+          original_url?: string | null
+          status?: string
+          synced_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feed_sync_logs_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feed_sync_logs_feed_id_fkey"
+            columns: ["feed_id"]
+            isOneToOne: false
+            referencedRelation: "rss_feeds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       import_history: {
         Row: {
           cancelled: boolean
@@ -542,6 +593,81 @@ export type Database = {
           subscribed_at?: string
           updated_at?: string
           vertical_slug?: string | null
+        }
+        Relationships: []
+      }
+      rss_feeds: {
+        Row: {
+          auto_sync: boolean
+          check_duplicate_link: boolean
+          check_duplicate_title: boolean
+          created_at: string | null
+          default_author: string | null
+          default_image_url: string | null
+          feed_url: string
+          id: string
+          import_mode: Database["public"]["Enums"]["feed_import_mode"]
+          last_error: string | null
+          last_synced_at: string | null
+          max_articles_per_sync: number
+          name: string
+          publish_status: Database["public"]["Enums"]["feed_publish_status"]
+          source_link_text: string | null
+          source_link_url: string | null
+          status: Database["public"]["Enums"]["feed_status"]
+          strip_images: boolean
+          strip_inline_styles: boolean
+          sync_interval_hours: number
+          updated_at: string | null
+          vertical_slug: string
+        }
+        Insert: {
+          auto_sync?: boolean
+          check_duplicate_link?: boolean
+          check_duplicate_title?: boolean
+          created_at?: string | null
+          default_author?: string | null
+          default_image_url?: string | null
+          feed_url: string
+          id?: string
+          import_mode?: Database["public"]["Enums"]["feed_import_mode"]
+          last_error?: string | null
+          last_synced_at?: string | null
+          max_articles_per_sync?: number
+          name: string
+          publish_status?: Database["public"]["Enums"]["feed_publish_status"]
+          source_link_text?: string | null
+          source_link_url?: string | null
+          status?: Database["public"]["Enums"]["feed_status"]
+          strip_images?: boolean
+          strip_inline_styles?: boolean
+          sync_interval_hours?: number
+          updated_at?: string | null
+          vertical_slug: string
+        }
+        Update: {
+          auto_sync?: boolean
+          check_duplicate_link?: boolean
+          check_duplicate_title?: boolean
+          created_at?: string | null
+          default_author?: string | null
+          default_image_url?: string | null
+          feed_url?: string
+          id?: string
+          import_mode?: Database["public"]["Enums"]["feed_import_mode"]
+          last_error?: string | null
+          last_synced_at?: string | null
+          max_articles_per_sync?: number
+          name?: string
+          publish_status?: Database["public"]["Enums"]["feed_publish_status"]
+          source_link_text?: string | null
+          source_link_url?: string | null
+          status?: Database["public"]["Enums"]["feed_status"]
+          strip_images?: boolean
+          strip_inline_styles?: boolean
+          sync_interval_hours?: number
+          updated_at?: string | null
+          vertical_slug?: string
         }
         Relationships: []
       }
@@ -766,6 +892,9 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      feed_import_mode: "full_content" | "excerpt_with_link"
+      feed_publish_status: "publish" | "draft"
+      feed_status: "active" | "paused" | "error"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -894,6 +1023,9 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      feed_import_mode: ["full_content", "excerpt_with_link"],
+      feed_publish_status: ["publish", "draft"],
+      feed_status: ["active", "paused", "error"],
     },
   },
 } as const
