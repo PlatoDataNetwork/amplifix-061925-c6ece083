@@ -1,0 +1,44 @@
+-- Create the article-images storage bucket
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('article-images', 'article-images', true);
+
+-- Allow public read access to article images
+CREATE POLICY "Article images are publicly accessible"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'article-images');
+
+-- Allow admins to upload article images
+CREATE POLICY "Admins can upload article images"
+ON storage.objects FOR INSERT
+WITH CHECK (
+  bucket_id = 'article-images' 
+  AND EXISTS (
+    SELECT 1 FROM public.user_roles 
+    WHERE user_id = auth.uid() 
+    AND role = 'admin'
+  )
+);
+
+-- Allow admins to update article images
+CREATE POLICY "Admins can update article images"
+ON storage.objects FOR UPDATE
+USING (
+  bucket_id = 'article-images' 
+  AND EXISTS (
+    SELECT 1 FROM public.user_roles 
+    WHERE user_id = auth.uid() 
+    AND role = 'admin'
+  )
+);
+
+-- Allow admins to delete article images
+CREATE POLICY "Admins can delete article images"
+ON storage.objects FOR DELETE
+USING (
+  bucket_id = 'article-images' 
+  AND EXISTS (
+    SELECT 1 FROM public.user_roles 
+    WHERE user_id = auth.uid() 
+    AND role = 'admin'
+  )
+);
