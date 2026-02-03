@@ -110,6 +110,21 @@ interface SyncResult {
   };
 }
 
+interface BulkSyncResult {
+  totalFeeds: number;
+  completedFeeds: number;
+  totalImported: number;
+  totalSkipped: number;
+  totalErrors: number;
+  feedResults: Array<{
+    feedName: string;
+    imported: number;
+    skipped: number;
+    errors: number;
+    error?: string;
+  }>;
+}
+
 const defaultFeed = {
   name: "",
   feed_url: "",
@@ -142,6 +157,10 @@ const FeedsManagement = () => {
   const [syncingFeedId, setSyncingFeedId] = useState<string | null>(null);
   const [syncResult, setSyncResult] = useState<SyncResult | null>(null);
   const [isSyncResultDialogOpen, setIsSyncResultDialogOpen] = useState(false);
+  const [isBulkSyncing, setIsBulkSyncing] = useState(false);
+  const [bulkSyncResult, setBulkSyncResult] = useState<BulkSyncResult | null>(null);
+  const [isBulkSyncResultDialogOpen, setIsBulkSyncResultDialogOpen] = useState(false);
+  const [bulkSyncProgress, setBulkSyncProgress] = useState({ current: 0, total: 0 });
 
   // Fetch feeds
   const { data: feeds, isLoading } = useQuery({
@@ -299,6 +318,89 @@ const FeedsManagement = () => {
       setSyncingFeedId(null);
     },
   });
+
+  // Bulk sync all active feeds
+  const handleBulkSync = async () => {
+    const activeFeeds = feeds?.filter(f => f.status === "active") || [];
+    
+    if (activeFeeds.length === 0) {
+      toast.error("No active feeds to sync");
+      return;
+    }
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) {
+      toast.error("You must be logged in to sync feeds");
+      return;
+    }
+
+    setIsBulkSyncing(true);
+    setBulkSyncProgress({ current: 0, total: activeFeeds.length });
+
+    const results: BulkSyncResult = {
+      totalFeeds: activeFeeds.length,
+      completedFeeds: 0,
+      totalImported: 0,
+      totalSkipped: 0,
+      totalErrors: 0,
+      feedResults: [],
+    };
+
+    for (let i = 0; i < activeFeeds.length; i++) {
+      const feed = activeFeeds[i];
+      setBulkSyncProgress({ current: i + 1, total: activeFeeds.length });
+
+      try {
+        const response = await supabase.functions.invoke("sync-rss-feed", {
+          body: { feedId: feed.id },
+        });
+
+        if (response.error) {
+          results.feedResults.push({
+            feedName: feed.name,
+            imported: 0,
+            skipped: 0,
+            errors: 1,
+            error: response.error.message,
+          });
+          results.totalErrors++;
+        } else {
+          const data = response.data as SyncResult;
+          results.feedResults.push({
+            feedName: data.feedName,
+            imported: data.results.imported,
+            skipped: data.results.skipped,
+            errors: data.results.errors,
+          });
+          results.totalImported += data.results.imported;
+          results.totalSkipped += data.results.skipped;
+          results.totalErrors += data.results.errors;
+        }
+        results.completedFeeds++;
+      } catch (error) {
+        results.feedResults.push({
+          feedName: feed.name,
+          imported: 0,
+          skipped: 0,
+          errors: 1,
+          error: error instanceof Error ? error.message : "Unknown error",
+        });
+        results.totalErrors++;
+        results.completedFeeds++;
+      }
+    }
+
+    setIsBulkSyncing(false);
+    setBulkSyncResult(results);
+    setIsBulkSyncResultDialogOpen(true);
+    queryClient.invalidateQueries({ queryKey: ["rss-feeds"] });
+
+    if (results.totalImported > 0) {
+      toast.success(`Bulk sync complete: ${results.totalImported} articles imported from ${results.completedFeeds} feeds`);
+    } else {
+      toast.info(`Bulk sync complete: No new articles found`);
+    }
+  };
 
   // Filter feeds by search
   const filteredFeeds = feeds?.filter(
@@ -570,13 +672,31 @@ const FeedsManagement = () => {
                 <Rss className="h-5 w-5" />
                 <CardTitle>All Feeds</CardTitle>
               </div>
-              <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Feed
-                  </Button>
-                </DialogTrigger>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  onClick={handleBulkSync}
+                  disabled={isBulkSyncing || !feeds?.some(f => f.status === "active")}
+                >
+                  {isBulkSyncing ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Syncing {bulkSyncProgress.current}/{bulkSyncProgress.total}...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Sync All Active
+                    </>
+                  )}
+                </Button>
+                <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Feed
+                    </Button>
+                  </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
                     <DialogTitle>Add New RSS Feed</DialogTitle>
@@ -593,6 +713,7 @@ const FeedsManagement = () => {
                   />
                 </DialogContent>
               </Dialog>
+              </div>
             </div>
             <CardDescription>
               {feeds?.length || 0} feeds configured
@@ -812,6 +933,101 @@ const FeedsManagement = () => {
 
                 <DialogFooter>
                   <Button onClick={() => setIsSyncResultDialogOpen(false)}>
+                    Close
+                  </Button>
+                </DialogFooter>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Bulk Sync Results Dialog */}
+        <Dialog open={isBulkSyncResultDialogOpen} onOpenChange={setIsBulkSyncResultDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Bulk Sync Results</DialogTitle>
+              <DialogDescription>
+                Synced {bulkSyncResult?.completedFeeds} of {bulkSyncResult?.totalFeeds} active feeds
+              </DialogDescription>
+            </DialogHeader>
+            {bulkSyncResult && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-4 gap-4">
+                  <Card>
+                    <CardContent className="pt-4 text-center">
+                      <div className="text-2xl font-bold">{bulkSyncResult.completedFeeds}</div>
+                      <div className="text-xs text-muted-foreground">Feeds Synced</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-4 text-center">
+                      <div className="text-2xl font-bold text-green-500">{bulkSyncResult.totalImported}</div>
+                      <div className="text-xs text-muted-foreground">Imported</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-4 text-center">
+                      <div className="text-2xl font-bold text-amber-500">{bulkSyncResult.totalSkipped}</div>
+                      <div className="text-xs text-muted-foreground">Skipped</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-4 text-center">
+                      <div className="text-2xl font-bold text-destructive">{bulkSyncResult.totalErrors}</div>
+                      <div className="text-xs text-muted-foreground">Errors</div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {bulkSyncResult.feedResults.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-sm">Feed Results</h4>
+                    <ScrollArea className="h-[300px] border rounded-md">
+                      <div className="p-2 space-y-1">
+                        {bulkSyncResult.feedResults.map((result, index) => (
+                          <div 
+                            key={index} 
+                            className="flex items-center gap-2 p-2 rounded-md hover:bg-muted/50 text-sm"
+                          >
+                            {result.error ? (
+                              <XCircle className="h-4 w-4 text-destructive shrink-0" />
+                            ) : result.imported > 0 ? (
+                              <CheckCircle className="h-4 w-4 text-green-500 shrink-0" />
+                            ) : (
+                              <AlertCircle className="h-4 w-4 text-amber-500 shrink-0" />
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium truncate">{result.feedName}</p>
+                              {result.error && (
+                                <p className="text-xs text-muted-foreground">{result.error}</p>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2 text-xs shrink-0">
+                              {result.imported > 0 && (
+                                <Badge variant="outline" className="bg-green-500/10 text-green-500">
+                                  +{result.imported}
+                                </Badge>
+                              )}
+                              {result.skipped > 0 && (
+                                <Badge variant="outline" className="bg-amber-500/10 text-amber-500">
+                                  {result.skipped} skipped
+                                </Badge>
+                              )}
+                              {result.errors > 0 && (
+                                <Badge variant="outline" className="bg-destructive/10 text-destructive">
+                                  {result.errors} errors
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  </div>
+                )}
+
+                <DialogFooter>
+                  <Button onClick={() => setIsBulkSyncResultDialogOpen(false)}>
                     Close
                   </Button>
                 </DialogFooter>
