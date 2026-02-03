@@ -7,11 +7,13 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
-import { LogOut, User } from "lucide-react";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
+import { LogOut, User, Settings } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -21,6 +23,7 @@ const MainHeader = () => {
   const [isSticky, setIsSticky] = useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAdminCheck();
 
   const handleSignOut = async () => {
     await signOut();
@@ -95,6 +98,15 @@ const MainHeader = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                {isAdmin && (
+                  <>
+                    <DropdownMenuItem onClick={() => navigate('/management')} className="translate">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Management
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
                 <DropdownMenuItem onClick={handleSignOut} className="translate">
                   <LogOut className="h-4 w-4 mr-2" />
                   Sign Out
