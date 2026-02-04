@@ -127,10 +127,10 @@ const Contact = () => {
       <div className="pt-24 container mx-auto py-12 md:py-20 px-4">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold mb-6">
-            {contactData?.contact.hero.title || 'Get in'} <span className="text-highlight-blue">{contactData?.contact.hero.title_highlight || 'Touch'}</span>
+            {contactData?.contact?.hero?.title || 'Get in'} <span className="text-highlight-blue">{contactData?.contact?.hero?.title_highlight || 'Touch'}</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8 px-4">
-            {contactData?.contact.hero.description || 'Contact us to learn more about AmplifiX'}
+            {contactData?.contact?.hero?.description || 'Contact us to learn more about AmplifiX'}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <Button 
@@ -143,10 +143,10 @@ const Contact = () => {
               }}
               className="bg-highlight-blue text-white hover:bg-highlight-blue/90 transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
             >
-              {contactData?.contact.hero.cta_primary_text || 'Send Message'}
+              {contactData?.contact?.hero?.cta_primary_text || 'Send Message'}
             </Button>
             <a 
-              href={contactData?.contact.hero.cta_secondary_link || 'https://calendly.com/amplifix/amplifix-discovery'}
+              href={contactData?.contact?.hero?.cta_secondary_link || 'https://calendly.com/amplifix/amplifix-discovery'}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto"
@@ -156,7 +156,7 @@ const Contact = () => {
                 variant="outline" 
                 className="border-border hover:bg-accent transition-colors w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-lg min-h-[48px]"
               >
-                {contactData?.contact.hero.cta_secondary_text || 'Book a Demo'}
+                {contactData?.contact?.hero?.cta_secondary_text || 'Book a Demo'}
               </Button>
             </a>
           </div>
@@ -169,7 +169,7 @@ const Contact = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div className="bg-card p-8 rounded-xl border border-border">
-              <h2 className="text-2xl font-bold mb-6">{contactData?.contact.form.title || 'Send us a message'}</h2>
+              <h2 className="text-2xl font-bold mb-6">{contactData?.contact?.form?.title || 'Send us a message'}</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
