@@ -423,9 +423,21 @@ if (!article) {
                 );
                 
                 // Check if content has HTML tags
-                const processedContent = /<\/?[a-z][\s\S]*>/i.test(contentWithoutPublished)
-                  ? contentWithoutPublished
-                  : formatExternalArticleContent(contentWithoutPublished);
+                const hasHtml = /<\/?[a-z][\s\S]*>/i.test(contentWithoutPublished);
+                let processedContent: string;
+                if (!hasHtml) {
+                  processedContent = formatExternalArticleContent(contentWithoutPublished);
+                } else if (!/<p[\s>]/i.test(contentWithoutPublished)) {
+                  // HTML content without <p> tags: wrap double-newline-separated blocks in <p>
+                  processedContent = contentWithoutPublished
+                    .split(/\n\s*\n/)
+                    .map(block => block.trim())
+                    .filter(Boolean)
+                    .map(block => `<p>${block}</p>`)
+                    .join('\n');
+                } else {
+                  processedContent = contentWithoutPublished;
+                }
                 
                 // Sanitize to prevent XSS attacks
                 return sanitizeHTML(processedContent);
