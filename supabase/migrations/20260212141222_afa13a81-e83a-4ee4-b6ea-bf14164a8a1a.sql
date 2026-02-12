@@ -1,0 +1,1 @@
+UPDATE public.articles SET image_url = '/assets/default-article-image-B8RYI6gN.jpg' WHERE id = '3e5374f4-aa34-4cb0-aeaa-6e3a569b9946';
