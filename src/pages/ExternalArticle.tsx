@@ -361,17 +361,6 @@ if (!article) {
             </div>
           </div>
 
-          {/* Article Image - Always show default if no image */}
-          <div className="mb-4">
-            <img 
-              src={article.image && article.image !== '/lovable-uploads/naoris-hero-new.png' ? article.image : defaultArticleImage} 
-              alt={sanitizeText(displayTitle || '')}
-              className="w-full rounded-xl border border-border"
-              onError={(e) => {
-                e.currentTarget.src = defaultArticleImage;
-              }}
-            />
-          </div>
 
            {/* Article Content - Prose Typography */}
           <div 
