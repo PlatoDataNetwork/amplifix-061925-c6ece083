@@ -6,6 +6,8 @@ interface SEOHeadProps {
   title?: string;
   description?: string;
   canonicalUrl?: string;
+  image?: string;
+  type?: string;
 }
 
 const languages = [
@@ -335,7 +337,7 @@ const seoDescriptions: Record<string, string> = {
   fa: 'AmplifiX از هوش مصنوعی پیشرفته برای تغییر نحوه مدیریت روابط سرمایه‌گذاران و ارتباطات شرکتی توسط شرکت‌های دولتی و خصوصی استفاده می‌کند.',
 };
 
-const SEOHead = ({ title, description, canonicalUrl }: SEOHeadProps) => {
+const SEOHead = ({ title, description, canonicalUrl, image, type }: SEOHeadProps) => {
   const location = useLocation();
   const currentLang = getCurrentLanguage();
   const currentLocale = languages.find(l => l.code === currentLang)?.locale || 'en_US';
@@ -371,11 +373,11 @@ const SEOHead = ({ title, description, canonicalUrl }: SEOHeadProps) => {
       {/* Open Graph Meta Tags */}
       <meta property="og:title" content={finalTitle} />
       <meta property="og:description" content={finalDescription} />
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content={type || "website"} />
       <meta property="og:url" content={`${baseUrl}${location.pathname}`} />
-      <meta property="og:image" content={`${baseUrl}/social-icon.png`} />
+      <meta property="og:image" content={image || `${baseUrl}/social-icon.png`} />
       <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="1200" />
+      <meta property="og:image:height" content={image ? "630" : "1200"} />
       <meta property="og:site_name" content={displayUrl} />
       <meta property="og:locale" content={currentLocale} />
       
@@ -395,7 +397,7 @@ const SEOHead = ({ title, description, canonicalUrl }: SEOHeadProps) => {
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={finalTitle} />
       <meta name="twitter:description" content={finalDescription} />
-      <meta name="twitter:image" content={`${baseUrl}/social-icon.png`} />
+      <meta name="twitter:image" content={image || `${baseUrl}/social-icon.png`} />
       <meta name="twitter:site" content="@AmplifiX" />
       <meta name="twitter:creator" content="@AmplifiX" />
       

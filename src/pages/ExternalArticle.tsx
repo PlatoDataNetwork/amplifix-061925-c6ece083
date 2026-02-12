@@ -268,6 +268,8 @@ if (!article) {
         title={`${sanitizeText(displayTitle || '')} - AmplifiX Intelligence`}
         description={sanitizeText(displayExcerpt || '')}
         canonicalUrl={canonicalUrl}
+        image={article.image ? (article.image.startsWith('http') ? article.image : `https://amplifix.net${article.image}`) : undefined}
+        type="article"
       />
       <MainHeader />
 
