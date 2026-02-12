@@ -1,0 +1,1 @@
+UPDATE public.articles SET vertical_slug = 'blockchain' WHERE id = '3e5374f4-aa34-4cb0-aeaa-6e3a569b9946' AND vertical_slug = 'Blockchain';
