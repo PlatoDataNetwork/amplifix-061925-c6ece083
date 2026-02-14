@@ -11,16 +11,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Validate API key
-    const apiKey = req.headers.get('x-api-key');
-    const expectedKey = Deno.env.get('PLATOAI_KEY');
-    if (!apiKey || apiKey !== expectedKey) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
     const url = new URL(req.url);
     const vertical = url.searchParams.get('vertical') || 'artificial-intelligence';
     const page = Math.max(1, parseInt(url.searchParams.get('page') || '1'));
