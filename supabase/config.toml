@@ -155,3 +155,6 @@ verify_jwt = false
 
 [functions.auto-sync-feeds]
 verify_jwt = false
+
+[functions.export-articles]
+verify_jwt = false
