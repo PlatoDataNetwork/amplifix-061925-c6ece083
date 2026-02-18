@@ -401,11 +401,7 @@ if (!article) {
                 // Use translated content if available
                 const rawContent = displayContent || displayExcerpt || "";
                 
-                // Remove Plato source links before processing
-                const contentWithoutSourceLinks = rawContent
-                  .replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/gi, '')
-                  .replace(/<div class="plato-post-bottom-links">[\s\S]*?<\/div>/gi, '')
-                  .replace(/Source Link:[\s\S]*?<\/a>/gi, '');
+                const contentWithoutSourceLinks = rawContent;
 
                 // Remove existing Published footer paragraph to avoid duplication
                 const contentWithoutPublished = contentWithoutSourceLinks.replace(
