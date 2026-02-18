@@ -414,8 +414,8 @@ Deno.serve(async (req) => {
             content = stripInlineStyles(content);
           }
 
-          // Add source link if configured
-          if (feed.source_link_text && feed.source_link_url && feed.import_mode === 'excerpt_with_link') {
+          // Add source link if configured (for any import mode)
+          if (feed.source_link_text && feed.source_link_url) {
             const sourceUrl = feed.source_link_url.replace('{url}', item.link || '');
             content += `<p><a href="${sourceUrl}" target="_blank" rel="noopener">${feed.source_link_text}</a></p>`;
           } else if (feed.import_mode === 'excerpt_with_link' && item.link) {
