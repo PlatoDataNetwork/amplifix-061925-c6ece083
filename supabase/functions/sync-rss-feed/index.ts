@@ -414,12 +414,12 @@ Deno.serve(async (req) => {
             content = stripInlineStyles(content);
           }
 
-          // Add source link if configured
-          if (feed.source_link_text && feed.source_link_url && feed.import_mode === 'excerpt_with_link') {
+          // Add source link at the bottom of the content
+          if (feed.source_link_text && feed.source_link_url) {
             const sourceUrl = feed.source_link_url.replace('{url}', item.link || '');
-            content += `<p><a href="${sourceUrl}" target="_blank" rel="noopener">${feed.source_link_text}</a></p>`;
-          } else if (feed.import_mode === 'excerpt_with_link' && item.link) {
-            content += `<p><a href="${item.link}" target="_blank" rel="noopener">Read more</a></p>`;
+            content += `<p>Source: <a href="${sourceUrl}" target="_blank" rel="noopener">${feed.source_link_text}</a></p>`;
+          } else if (item.link) {
+            content += `<p>Source: <a href="${item.link}" target="_blank" rel="noopener">${item.link}</a></p>`;
           }
         }
 
