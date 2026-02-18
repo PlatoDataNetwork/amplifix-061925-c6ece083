@@ -291,9 +291,16 @@ async function syncFeed(supabase: ReturnType<typeof createClient>, feed: RSSFeed
         const articleData = {
           title: item.title,
           content: content,
-          excerpt: item.description?.substring(0, 500) || null,
+          excerpt: (() => {
+            let exc = item.description?.substring(0, 500) || null;
+            if (exc) {
+              if (feed.strip_images) exc = stripImages(exc);
+              if (feed.strip_inline_styles) exc = stripInlineStyles(exc);
+            }
+            return exc;
+          })(),
           author: item.author || feed.default_author || null,
-          image_url: item.imageUrl || feed.default_image_url || null,
+          image_url: feed.strip_images ? (feed.default_image_url || null) : (item.imageUrl || feed.default_image_url || null),
           external_url: item.link || null,
           vertical_slug: feed.vertical_slug,
           published_at: parseDate(item.pubDate).toISOString(),
