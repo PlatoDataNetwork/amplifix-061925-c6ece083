@@ -352,8 +352,13 @@ const FeedsSyndicator = ({
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["rss-feeds"] });
-      if (data.articlesImported > 0) {
-        toast.success(`Imported ${data.articlesImported} new articles`);
+      const imported = data?.results?.imported ?? data?.articlesImported ?? 0;
+      const skipped = data?.results?.skipped ?? 0;
+      const errors = data?.results?.errors ?? 0;
+      if (imported > 0) {
+        toast.success(`Imported ${imported} new articles (${skipped} skipped, ${errors} errors)`);
+      } else if (skipped > 0) {
+        toast.info(`No new articles to import (${skipped} already exist)`);
       } else {
         toast.info("No new articles to import");
       }
