@@ -1,54 +1,110 @@
 
 
-# Add VerifyMe Showcase Page
+# Plan: Port PlatoData Management System to AmplifiX
 
 ## Overview
-Create a new showcase page for VerifyMe (Nasdaq: VRME) at `/showcase/verifyme`, following the OpenWorld showcase page pattern -- black background, transparent white-bordered cards, hero with background image, animated orbs, and colorful icon-accented sections.
+Replace the current simple `/management` page with PlatoData's full admin management system, including 14 admin components, 4 settings components, 8 edge functions, missing database tables, and a new hook.
 
-## What will be built
+## What Changes
 
-### 1. New Page: `src/pages/VerifyMeShowcase.tsx`
-A full showcase page modeled after OpenWorld's structure with VerifyMe-specific content:
+### 1. Upgrade `useAuth` hook (modify `src/hooks/useAuth.ts`)
+PlatoData's Management.tsx expects `useAuth()` to return `{ user, isAdmin, isLoading, signOut }` as a React Context. The current hook is a simple non-context hook without `isAdmin`. 
 
-- **Hero Section**: Badge "Public Company -- Nasdaq: VRME", company name, subtitle "Logistics & Security Solutions", description about VerifyMe's authentication and brand protection technology. Two CTA buttons: "Visit Website" (links to https://verifyme.com) and "AmplifiX Research" (Bing Copilot search link).
-- **About Section**: Company overview covering their patented authentication technologies, supply chain traceability, and anti-counterfeiting solutions. Sidebar with company details (Website, Industry: Logistics & Security, Ticker: NASDAQ: VRME, Founded year).
-- **Market Stats**: Key metrics related to VerifyMe's impact (e.g., counterfeit market size, products authenticated, supply chain visibility improvement).
-- **Core Solutions Section**: Cards for their key product areas -- Authentication Technologies, Supply Chain Traceability, Brand Protection, Serialization & Track-and-Trace, Anti-Counterfeiting, Compliance Solutions -- each with colored icons matching OpenWorld's style.
-- **Benefits Section**: Key advantages like Enhanced Security, Global Traceability, Regulatory Compliance, Cost Savings, Brand Protection, Real-Time Visibility.
-- **How It Works Section**: Step-by-step process (Product Registration, Authentication Integration, Supply Chain Tracking, Verification & Reporting).
-- **Technology Stack Section**: 3-card grid (Patented Technology, Cloud Platform, Enterprise Integration).
-- **Use Cases Section**: Industry applications (Pharmaceuticals, Consumer Goods, Government/Defense, Cannabis Compliance).
-- **CTA Section**: Dark gradient background with "Partner with VerifyMe" heading and buttons to visit website and AmplifiX Research.
+**Approach**: Convert to Context pattern (AuthProvider + useAuth) matching PlatoData's version, with `isAdmin` built in via `has_role` RPC. Update `src/App.tsx` to wrap the app in `<AuthProvider>`. Update `AdminRoute.tsx` to use the new `isAdmin` from `useAuth` instead of the separate `useAdminCheck` hook.
 
-### 2. Route Registration in `src/App.tsx`
-- Import `VerifyMeShowcase` component
-- Add route: `/showcase/verifyme`
+### 2. Create 14 admin component files (new files, no conflicts)
+Copy from PlatoData `src/components/admin/`:
+- `AdminSidebar.tsx`
+- `AnalyticsDashboard.tsx`
+- `ArticleEditor.tsx`
+- `ArticleManagement.tsx`
+- `BatchImageResizer.tsx`
+- `DefaultFeaturedImages.tsx`
+- `FeedSyncLogs.tsx`
+- `FeedsSyndicator.tsx`
+- `ImageUpload.tsx`
+- `OGImageGenerator.tsx`
+- `RichTextEditor.tsx`
+- `SocialPreviewDebugger.tsx`
+- `TagsManagement.tsx`
+- `VerticalsManagement.tsx`
 
-### 3. Database Record
-- Add VerifyMe to `showcase_companies` table via the showcase admin or inline insert:
-  - company_name: "VerifyMe"
-  - ticker: "VRME"
-  - subtitle: "NAS:VRME"
-  - type: "stock"
-  - main_sector: "LOGISTICS & SECURITY"
-  - tags: ["Logistics", "Security", "Authentication"]
-  - link: "/showcase/verifyme"
-  - website: "https://verifyme.com"
-  - stock_url: "https://www.tradingview.com/symbols/NASDAQ-VRME/"
-  - search_url: "https://www.bing.com/copilotsearch?q=VerifyMe+NASDAQ+VRME"
-  - button_text: "View Showcase"
-  - thumbnail: AmplifiX search link for the thumbnail button
-  - disabled: false
+None of these conflict with existing files in `src/components/admin/`.
 
-## Design Details
+### 3. Create 4 settings component files (new directory)
+Copy from PlatoData `src/components/admin/settings/`:
+- `GeneralSettings.tsx`
+- `AnalyticsSettings.tsx`
+- `SitemapsSettings.tsx`
+- `RobotsSettings.tsx`
 
-- **Theme**: Black background (`bg-black text-white`), transparent cards with `border-white/20`, matching OpenWorld exactly
-- **Color accents**: Blue for primary, green for security, purple for technology, orange for supply chain, amber for authentication
-- **Animations**: Glowing orb pulses, hover scale effects on cards, grid background pattern
-- **SEO**: Full Helmet meta tags for title, description, OG and Twitter cards
-- **Translation**: `useGTranslateRefresh(true)` hook included
+### 4. Replace `src/pages/Management.tsx`
+Replace with PlatoData's version (adapted to use this project's brand name "AmplifiX" instead of "Platodata").
 
-## Files to create/modify
-1. **Create**: `src/pages/VerifyMeShowcase.tsx` (approx 800 lines, following OpenWorld template)
-2. **Modify**: `src/App.tsx` -- add import and route
+### 5. Add `src/hooks/useSiteSettings.ts`
+Copy from PlatoData, update default values from "Platodata" to "AmplifiX".
+
+### 6. Delete old management components
+- `src/components/management/ManagementSidebar.tsx`
+- `src/components/management/DashboardView.tsx`
+
+### 7. Create 8 edge functions
+Copy from PlatoData: `articles-api`, `generate-og-image`, `robots-txt`, `rss-feed`, `json-feed`, `sitemap-xsl`, `ga-realtime`, `migrate-articles`. Add entries to `supabase/config.toml`.
+
+### 8. Database migrations
+Create missing tables and functions:
+
+**Tables:**
+- `site_settings` (key/value store for site configuration) with admin-only RLS
+- `default_featured_images` (pool of fallback images) with admin-only write, public read RLS
+
+**Functions:**
+- `get_article_verticals()` — returns distinct vertical slugs from articles
+- `get_user_roles()` — returns roles for a given user
+
+The `has_role` function, `app_role` enum, `article_translations`, and `translations` tables already exist. The `article-images` storage bucket already exists and is public.
+
+### 9. Install TipTap dependencies
+Add: `@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extension-image`, `@tiptap/extension-link`
+
+## Technical Details
+
+### Auth refactor
+The current `useAuth` returns `{ user, session, loading, signIn, signUp, signOut }`. The new version wraps this in a React Context and adds `isAdmin` (checked via `supabase.rpc('has_role', ...)`). The property name changes from `loading` to `isLoading`. All existing consumers of `useAuth` will need minor updates.
+
+### Files affected summary
+- **New files**: 14 admin components + 4 settings components + 1 hook + 8 edge functions = 27 new files
+- **Modified files**: `Management.tsx`, `useAuth.ts`, `AdminRoute.tsx`, `App.tsx`, `config.toml`
+- **Deleted files**: `ManagementSidebar.tsx`, `DashboardView.tsx`
+
+### Database changes
+```sql
+-- site_settings table
+CREATE TABLE public.site_settings (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  key text UNIQUE NOT NULL,
+  value text,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- default_featured_images table
+CREATE TABLE public.default_featured_images (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  url text NOT NULL,
+  filename text,
+  created_at timestamptz DEFAULT now()
+);
+
+-- get_article_verticals function
+CREATE OR REPLACE FUNCTION public.get_article_verticals()
+RETURNS TABLE(vertical_slug text, article_count bigint)
+LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public
+AS $$ SELECT vertical_slug, COUNT(*) FROM articles GROUP BY vertical_slug ORDER BY article_count DESC; $$;
+```
+
+RLS policies: admin-only CRUD on `site_settings`, admin-only write + public read on `default_featured_images`.
+
+### No existing admin routes touched
+All `/admin/*` routes and existing admin components remain untouched.
 
