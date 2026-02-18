@@ -46,8 +46,8 @@ export const sanitizeText = (text?: string | null): string => {
     // Remove markdown links
     .replace(/\[.*?\]\(.*?\)/g, "")
     // Clean up source/link labels
-    .replace(/Source:?:?\s*/gi, "")
-    .replace(/Link:?:?\s*/gi, "")
+    // Preserve "Source:" labels in article content
+    .replace(/(?<![a-zA-Z])Link:?:?\s*/gi, "")
     // Remove horizontal rules made of dashes
     .replace(/---/g, "")
     // Convert markdown bold to strong
@@ -83,12 +83,7 @@ export const stripHtmlTags = (text?: string | null): string => {
 export const formatExternalArticleContent = (text?: string | null): string => {
   if (!text) return "";
 
-  // First, remove Plato source links and other metadata
-  let cleaned = text
-    .replace(/<ul class="plato-post-bottom-links">[\s\S]*?<\/ul>/gi, '')
-    .replace(/<div class="plato-post-bottom-links">[\s\S]*?<\/div>/gi, '')
-    .replace(/Source Link:[\s\S]*?<\/a>/gi, '')
-    .trim();
+  let cleaned = text.trim();
   
   // Then apply standard sanitization
   cleaned = sanitizeText(cleaned);
