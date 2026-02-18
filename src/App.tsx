@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/hooks/useTheme";
+import { AuthProvider } from "@/hooks/useAuth";
 import { Analytics } from "@vercel/analytics/react";
 import PrivacyPopup from "@/components/PrivacyPopup";
 import GTranslateController from "@/components/GTranslateController";
@@ -125,6 +126,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
       <ThemeProvider>
+        <AuthProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -313,6 +315,7 @@ const App = () => (
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
+        </AuthProvider>
       </ThemeProvider>
     </HelmetProvider>
   </QueryClientProvider>
