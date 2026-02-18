@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { useJsonData } from "@/hooks/useJsonData";
 import { DirectShowcaseUpdate } from "@/components/DirectShowcaseUpdate";
 import { useGTranslateRefresh } from "@/hooks/useGTranslateRefresh";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 
 interface ShowcaseData {
   showcase: {
@@ -57,6 +58,7 @@ const Showcase = () => {
   const [filterType, setFilterType] = useState<'all' | 'public' | 'private' | 'token'>('all');
   const [filterSector, setFilterSector] = useState<string>('all');
   useLanguage();
+  const { isAdmin } = useAdminCheck();
   // GTranslate refresh moved below filteredShowcases
 
   useEffect(() => {
@@ -493,7 +495,7 @@ const Showcase = () => {
                 <div className="text-sm text-muted-foreground">
                   Showing {filteredShowcases.length} of {allShowcases.length} companies
                 </div>
-                <DirectShowcaseUpdate />
+                {isAdmin && <DirectShowcaseUpdate />}
               </div>
             </div>
             
