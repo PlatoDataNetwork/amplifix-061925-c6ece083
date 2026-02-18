@@ -1,226 +1,1309 @@
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { toast } from 'sonner';
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
-  Rss, Plus, Trash2, RefreshCw, Loader2, ExternalLink, Settings,
-} from 'lucide-react';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter,
-} from '@/components/ui/dialog';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from '@/components/ui/select';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
+import { 
+  Plus, 
+  RefreshCw, 
+  Trash2, 
+  Edit2, 
+  Play, 
+  Pause, 
+  AlertCircle,
+  Rss,
+  Loader2,
+  ExternalLink,
+  ImageIcon,
+  Upload,
+  ArrowLeft,
+  Settings,
+  MoreHorizontal,
+  FileX,
+  ChevronDown
+} from "lucide-react";
+import { format } from "date-fns";
 
-const FeedsSyndicator = () => {
+type FeedStatus = "active" | "paused" | "error";
+type ImportMode = "full_content" | "excerpt_with_link";
+type PublishStatus = "publish" | "draft";
+
+interface RssFeed {
+  id: string;
+  name: string;
+  feed_url: string;
+  vertical_slug: string;
+  status: FeedStatus;
+  import_mode: ImportMode;
+  publish_status: PublishStatus;
+  auto_sync: boolean;
+  sync_interval_hours: number;
+  last_synced_at: string | null;
+  last_error: string | null;
+  created_at: string;
+  updated_at: string;
+  default_image_url: string | null;
+  check_duplicate_title: boolean;
+  check_duplicate_link: boolean;
+  max_articles_per_sync: number;
+  strip_images: boolean;
+  strip_inline_styles: boolean;
+  default_author: string | null;
+  source_link_text: string | null;
+  source_link_url: string | null;
+}
+
+interface FeedFormData {
+  name: string;
+  feed_url: string;
+  vertical_slug: string;
+  import_mode: ImportMode;
+  publish_status: PublishStatus;
+  auto_sync: boolean;
+  sync_interval_hours: number;
+  default_image_url: string;
+  check_duplicate_title: boolean;
+  check_duplicate_link: boolean;
+  max_articles_per_sync: number;
+  strip_images: boolean;
+  strip_inline_styles: boolean;
+  default_author: string;
+  add_source_link: boolean;
+  source_label: string;
+}
+
+const defaultFormData: FeedFormData = {
+  name: "",
+  feed_url: "",
+  vertical_slug: "",
+  import_mode: "full_content",
+  publish_status: "publish",
+  auto_sync: true,
+  sync_interval_hours: 4,
+  default_image_url: "",
+  check_duplicate_title: true,
+  check_duplicate_link: true,
+  max_articles_per_sync: 20,
+  strip_images: true,
+  strip_inline_styles: true,
+  default_author: "Republished By Plato",
+  add_source_link: false,
+  source_label: "Source",
+};
+
+interface FeedsSyndicatorProps {
+  mode?: "list" | "add" | "edit";
+  editFeedId?: string;
+  onAddFeed?: () => void;
+  onEditFeed?: (feedId: string) => void;
+  onViewArticles?: (feedId: string) => void;
+  onBack?: () => void;
+}
+
+const FeedsSyndicator = ({ 
+  mode = "list", 
+  editFeedId, 
+  onAddFeed, 
+  onEditFeed,
+  onViewArticles,
+  onBack 
+}: FeedsSyndicatorProps) => {
   const queryClient = useQueryClient();
-  const [isAddOpen, setIsAddOpen] = useState(false);
-  const [newFeed, setNewFeed] = useState({
-    name: '', feed_url: '', vertical_slug: '', auto_sync: false,
-    import_mode: 'full_content' as 'full_content' | 'excerpt_with_link',
-    publish_status: 'draft' as 'publish' | 'draft',
-    sync_interval_hours: 24, max_articles_per_sync: 0,
-    check_duplicate_title: true, check_duplicate_link: true,
-    strip_images: false, strip_inline_styles: true,
-    default_author: '', default_image_url: '', source_link_text: '', source_link_url: '',
+  const [formData, setFormData] = useState<FeedFormData>(defaultFormData);
+  const [syncingFeedId, setSyncingFeedId] = useState<string | null>(null);
+  const [isBulkSyncing, setIsBulkSyncing] = useState(false);
+  const [bulkSyncProgress, setBulkSyncProgress] = useState<{
+    current: number;
+    total: number;
+    currentFeedName: string;
+  } | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [deletingArticlesFeed, setDeletingArticlesFeed] = useState<RssFeed | null>(null);
+  const [isDeletingArticles, setIsDeletingArticles] = useState(false);
+
+  const { data: feeds, isLoading: feedsLoading } = useQuery({
+    queryKey: ["rss-feeds"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("rss_feeds")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data as RssFeed[];
+    },
   });
+
+  const { data: feedArticleCounts } = useQuery({
+    queryKey: ["feed-article-counts"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("feed_sync_logs")
+        .select("feed_id, article_id")
+        .not("article_id", "is", null);
+      
+      if (error) throw error;
+      
+      const counts: Record<string, number> = {};
+      data?.forEach((log) => {
+        counts[log.feed_id] = (counts[log.feed_id] || 0) + 1;
+      });
+      
+      return counts;
+    },
+    enabled: mode === "list",
+  });
+
+  const { data: editingFeed, isLoading: editFeedLoading } = useQuery({
+    queryKey: ["rss-feed", editFeedId],
+    queryFn: async () => {
+      if (!editFeedId) return null;
+      const { data, error } = await supabase
+        .from("rss_feeds")
+        .select("*")
+        .eq("id", editFeedId)
+        .single();
+      if (error) throw error;
+      return data as RssFeed;
+    },
+    enabled: mode === "edit" && !!editFeedId,
+  });
+
+  useEffect(() => {
+    if (editingFeed) {
+      setFormData({
+        name: editingFeed.name,
+        feed_url: editingFeed.feed_url,
+        vertical_slug: editingFeed.vertical_slug,
+        import_mode: editingFeed.import_mode,
+        publish_status: editingFeed.publish_status,
+        auto_sync: editingFeed.auto_sync,
+        sync_interval_hours: editingFeed.sync_interval_hours,
+        default_image_url: editingFeed.default_image_url || "",
+        check_duplicate_title: editingFeed.check_duplicate_title || false,
+        check_duplicate_link: editingFeed.check_duplicate_link || false,
+        max_articles_per_sync: editingFeed.max_articles_per_sync || 0,
+        strip_images: editingFeed.strip_images ?? true,
+        strip_inline_styles: editingFeed.strip_inline_styles ?? true,
+        default_author: editingFeed.default_author || "",
+        add_source_link: !!(editingFeed.source_link_url),
+        source_label: editingFeed.source_link_text || "Source",
+      });
+    }
+  }, [editingFeed]);
+
+  useEffect(() => {
+    if (mode === "add") {
+      setFormData(defaultFormData);
+    }
+  }, [mode]);
 
   const { data: verticals } = useQuery({
-    queryKey: ['article-verticals'],
+    queryKey: ["verticals-list"],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_article_verticals');
+      const { data, error } = await supabase.rpc("get_article_verticals");
       if (error) throw error;
-      return data;
+      return data?.map((v: { vertical_slug: string }) => v.vertical_slug) || [];
     },
   });
 
-  const { data: feeds, isLoading } = useQuery({
-    queryKey: ['rss-feeds'],
+  const { data: existingAuthors } = useQuery({
+    queryKey: ["existing-authors"],
     queryFn: async () => {
-      const { data, error } = await supabase.from('rss_feeds').select('*').order('created_at', { ascending: false });
+      const { data, error } = await supabase
+        .from("articles")
+        .select("author")
+        .not("author", "is", null)
+        .not("author", "eq", "");
       if (error) throw error;
-      return data;
+      const uniqueAuthors = [...new Set(data?.map(a => a.author).filter(Boolean))];
+      return uniqueAuthors.sort() as string[];
     },
   });
 
-  const addFeed = useMutation({
-    mutationFn: async () => {
-      const { error } = await supabase.from('rss_feeds').insert(newFeed);
+  const createFeedMutation = useMutation({
+    mutationFn: async (data: FeedFormData) => {
+      const { error } = await supabase.from("rss_feeds").insert({
+        name: data.name,
+        feed_url: data.feed_url,
+        vertical_slug: data.vertical_slug,
+        import_mode: data.import_mode,
+        publish_status: data.publish_status,
+        auto_sync: data.auto_sync,
+        sync_interval_hours: data.sync_interval_hours,
+        status: "active",
+        default_image_url: data.default_image_url || null,
+        check_duplicate_title: data.check_duplicate_title,
+        check_duplicate_link: data.check_duplicate_link,
+        max_articles_per_sync: data.max_articles_per_sync,
+        strip_images: data.strip_images,
+        strip_inline_styles: data.strip_inline_styles,
+        default_author: data.default_author || null,
+        source_link_text: data.add_source_link ? (data.source_label || "Source") : null,
+        source_link_url: data.add_source_link ? "enabled" : null,
+      });
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['rss-feeds'] });
-      toast.success('Feed added');
-      setIsAddOpen(false);
-      setNewFeed({ name: '', feed_url: '', vertical_slug: '', auto_sync: false, import_mode: 'full_content', publish_status: 'draft', sync_interval_hours: 24, max_articles_per_sync: 0, check_duplicate_title: true, check_duplicate_link: true, strip_images: false, strip_inline_styles: true, default_author: '', default_image_url: '', source_link_text: '', source_link_url: '' });
+      queryClient.invalidateQueries({ queryKey: ["rss-feeds"] });
+      toast.success("Feed added successfully");
+      onBack?.();
     },
-    onError: (err) => toast.error(`Failed: ${err.message}`),
+    onError: (error) => {
+      toast.error(`Failed to add feed: ${error.message}`);
+    },
   });
 
-  const deleteFeed = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from('rss_feeds').delete().eq('id', id);
+  const updateFeedMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<FeedFormData> }) => {
+      const { error } = await supabase.from("rss_feeds").update({
+        name: data.name,
+        feed_url: data.feed_url,
+        vertical_slug: data.vertical_slug,
+        import_mode: data.import_mode,
+        publish_status: data.publish_status,
+        auto_sync: data.auto_sync,
+        sync_interval_hours: data.sync_interval_hours,
+        default_image_url: data.default_image_url || null,
+        check_duplicate_title: data.check_duplicate_title,
+        check_duplicate_link: data.check_duplicate_link,
+        max_articles_per_sync: data.max_articles_per_sync,
+        strip_images: data.strip_images,
+        strip_inline_styles: data.strip_inline_styles,
+        default_author: data.default_author || null,
+        source_link_text: data.add_source_link ? (data.source_label || "Source") : null,
+        source_link_url: data.add_source_link ? "enabled" : null,
+      }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['rss-feeds'] });
-      toast.success('Feed deleted');
+      queryClient.invalidateQueries({ queryKey: ["rss-feeds"] });
+      toast.success("Feed updated successfully");
+      onBack?.();
+    },
+    onError: (error) => {
+      toast.error(`Failed to update feed: ${error.message}`);
     },
   });
 
-  const syncFeed = useMutation({
+  const deleteFeedMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { data, error } = await supabase.functions.invoke('sync-rss-feed', { body: { feedId: id } });
+      const { error } = await supabase.from("rss_feeds").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["rss-feeds"] });
+      toast.success("Feed deleted successfully");
+    },
+    onError: (error) => {
+      toast.error(`Failed to delete feed: ${error.message}`);
+    },
+  });
+
+  const syncFeedMutation = useMutation({
+    mutationFn: async (feedId: string) => {
+      setSyncingFeedId(feedId);
+      const { data, error } = await supabase.functions.invoke("sync-rss-feed", {
+        body: { feedId },
+      });
       if (error) throw error;
       return data;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['rss-feeds'] });
-      toast.success(`Synced: ${data?.imported || 0} imported, ${data?.skipped || 0} skipped`);
+      queryClient.invalidateQueries({ queryKey: ["rss-feeds"] });
+      if (data.articlesImported > 0) {
+        toast.success(`Imported ${data.articlesImported} new articles`);
+      } else {
+        toast.info("No new articles to import");
+      }
     },
-    onError: (err) => toast.error(`Sync failed: ${err.message}`),
+    onError: (error) => {
+      toast.error(`Sync failed: ${error.message}`);
+    },
+    onSettled: () => {
+      setSyncingFeedId(null);
+    },
   });
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'bg-green-500/10 text-green-700';
-      case 'paused': return 'bg-yellow-500/10 text-yellow-700';
-      case 'error': return 'bg-red-500/10 text-red-700';
-      default: return '';
+  const handleBulkSync = async () => {
+    const activeFeeds = feeds?.filter(feed => feed.status === "active") || [];
+    if (activeFeeds.length === 0) {
+      toast.info("No active feeds to sync");
+      return;
+    }
+
+    setIsBulkSyncing(true);
+    setBulkSyncProgress({ current: 0, total: activeFeeds.length, currentFeedName: "" });
+    let successCount = 0;
+    let totalImported = 0;
+
+    try {
+      for (let i = 0; i < activeFeeds.length; i++) {
+        const feed = activeFeeds[i];
+        setBulkSyncProgress({ 
+          current: i + 1, 
+          total: activeFeeds.length, 
+          currentFeedName: feed.name 
+        });
+        
+        try {
+          const { data, error } = await supabase.functions.invoke("sync-rss-feed", {
+            body: { feedId: feed.id },
+          });
+          if (error) {
+            console.error(`Failed to sync ${feed.name}:`, error);
+          } else {
+            successCount++;
+            totalImported += data?.articlesImported || 0;
+          }
+        } catch (err) {
+          console.error(`Failed to sync ${feed.name}:`, err);
+        }
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["rss-feeds"] });
+      queryClient.invalidateQueries({ queryKey: ["feed-article-counts"] });
+
+      if (totalImported > 0) {
+        toast.success(`Synced ${successCount}/${activeFeeds.length} feeds. Imported ${totalImported} new articles.`);
+      } else {
+        toast.info(`Synced ${successCount}/${activeFeeds.length} feeds. No new articles found.`);
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      toast.error(`Bulk sync failed: ${errorMessage}`);
+    } finally {
+      setIsBulkSyncing(false);
+      setBulkSyncProgress(null);
     }
   };
 
+  const toggleFeedStatus = (feed: RssFeed) => {
+    const newStatus: FeedStatus = feed.status === "active" ? "paused" : "active";
+    updateFeedMutation.mutate({
+      id: feed.id,
+      data: { status: newStatus } as Partial<FeedFormData>,
+    });
+  };
+
+  const handleDeleteFeedArticles = async () => {
+    if (!deletingArticlesFeed) return;
+    
+    setIsDeletingArticles(true);
+    try {
+      const { data: syncLogs, error: logsError } = await supabase
+        .from("feed_sync_logs")
+        .select("article_id")
+        .eq("feed_id", deletingArticlesFeed.id)
+        .not("article_id", "is", null);
+      
+      if (logsError) throw logsError;
+      
+      const articleIds = syncLogs?.map(log => log.article_id).filter(Boolean) as string[];
+      
+      if (articleIds.length === 0) {
+        toast.info("No articles to delete for this feed");
+        setDeletingArticlesFeed(null);
+        setIsDeletingArticles(false);
+        return;
+      }
+      
+      const { error: deleteError } = await supabase
+        .from("articles")
+        .delete()
+        .in("id", articleIds);
+      
+      if (deleteError) throw deleteError;
+      
+      const { error: logsDeleteError } = await supabase
+        .from("feed_sync_logs")
+        .delete()
+        .eq("feed_id", deletingArticlesFeed.id);
+      
+      if (logsDeleteError) throw logsDeleteError;
+      
+      queryClient.invalidateQueries({ queryKey: ["feed-article-counts"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-article-count"] });
+      
+      toast.success(`Deleted ${articleIds.length} articles from "${deletingArticlesFeed.name}"`);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      toast.error(`Failed to delete articles: ${errorMessage}`);
+    } finally {
+      setDeletingArticlesFeed(null);
+      setIsDeletingArticles(false);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (mode === "edit" && editFeedId) {
+      updateFeedMutation.mutate({ id: editFeedId, data: formData });
+    } else {
+      createFeedMutation.mutate(formData);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be less than 5MB");
+      return;
+    }
+
+    setIsUploadingImage(true);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `feed-default-${Date.now()}.${fileExt}`;
+      const filePath = `defaults/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("article-images")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("article-images")
+        .getPublicUrl(filePath);
+
+      setFormData({ ...formData, default_image_url: publicUrl });
+      toast.success("Image uploaded successfully");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      toast.error(`Failed to upload image: ${errorMessage}`);
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
+  const getStatusBadge = (status: FeedStatus) => {
+    switch (status) {
+      case "active":
+        return <Badge variant="default" className="bg-green-600">Active</Badge>;
+      case "paused":
+        return <Badge variant="secondary">Paused</Badge>;
+      case "error":
+        return <Badge variant="destructive">Error</Badge>;
+    }
+  };
+
+  // Render the form for add/edit modes
+  if (mode === "add" || mode === "edit") {
+    if (mode === "edit" && editFeedLoading) {
+      return (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={onBack}>
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <div>
+            <h2 className="text-2xl font-bold text-foreground">
+              {mode === "edit" ? "Edit RSS Feed" : "Add New RSS Feed"}
+            </h2>
+            <p className="text-muted-foreground">
+              {mode === "edit" 
+                ? "Update the feed configuration" 
+                : "Configure your RSS feed to automatically import articles"}
+            </p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-3">
+          {/* Card 1: Basic Information */}
+          <Collapsible defaultOpen>
+            <Card>
+              <CollapsibleTrigger asChild>
+                <CardHeader className="pb-4 cursor-pointer hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Rss className="w-5 h-5 text-primary" />
+                      <div>
+                        <CardTitle className="text-lg">Basic Information</CardTitle>
+                        <CardDescription className="mt-1">
+                          Feed identity and target settings
+                        </CardDescription>
+                      </div>
+                    </div>
+                    <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Feed Name *</Label>
+                      <Input
+                        id="name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        placeholder="e.g., TechCrunch AI"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="feed_url">RSS Feed URL *</Label>
+                      <Input
+                        id="feed_url"
+                        type="url"
+                        value={formData.feed_url}
+                        onChange={(e) => setFormData({ ...formData, feed_url: e.target.value })}
+                        placeholder="https://example.com/feed.xml"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="vertical_slug">Target Vertical *</Label>
+                      <Select
+                        value={formData.vertical_slug}
+                        onValueChange={(value) => setFormData({ ...formData, vertical_slug: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a vertical" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {verticals?.map((vertical: string) => (
+                            <SelectItem key={vertical} value={vertical}>
+                              {vertical}
+                            </SelectItem>
+                          ))}
+                          <SelectItem value="__new__">+ Add custom...</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {formData.vertical_slug === "__new__" && (
+                        <Input
+                          placeholder="Enter custom vertical slug"
+                          onChange={(e) => setFormData({ ...formData, vertical_slug: e.target.value })}
+                          className="mt-2"
+                        />
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="default_author">Default Author</Label>
+                      <Select
+                        value={formData.default_author || "__none__"}
+                        onValueChange={(value) => setFormData({ ...formData, default_author: value === "__none__" ? "" : value === "__custom__" ? "" : value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select an author" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="__none__">No default author</SelectItem>
+                          {existingAuthors?.map((author) => (
+                            <SelectItem key={author} value={author}>
+                              {author}
+                            </SelectItem>
+                          ))}
+                          <SelectItem value="__custom__">+ Add custom...</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {formData.default_author === "" && (
+                        <Input
+                          id="default_author_custom"
+                          value=""
+                          onChange={(e) => setFormData({ ...formData, default_author: e.target.value })}
+                          placeholder="Enter custom author name"
+                          className="mt-2"
+                        />
+                      )}
+                      {formData.default_author && !existingAuthors?.includes(formData.default_author) && (
+                        <Input
+                          value={formData.default_author}
+                          onChange={(e) => setFormData({ ...formData, default_author: e.target.value })}
+                          placeholder="Enter custom author name"
+                          className="mt-2"
+                        />
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
+
+          {/* Card 2: Import Settings */}
+          <Collapsible defaultOpen>
+            <Card>
+              <CollapsibleTrigger asChild>
+                <CardHeader className="pb-4 cursor-pointer hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Settings className="w-5 h-5 text-primary" />
+                      <div>
+                        <CardTitle className="text-lg">Import Settings</CardTitle>
+                        <CardDescription className="mt-1">
+                          How content is imported and published
+                        </CardDescription>
+                      </div>
+                    </div>
+                    <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="import_mode">Import Mode</Label>
+                      <Select
+                        value={formData.import_mode}
+                        onValueChange={(value: ImportMode) => setFormData({ ...formData, import_mode: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="full_content">Full Content</SelectItem>
+                          <SelectItem value="excerpt_with_link">Excerpt + Link</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="publish_status">Article Status</Label>
+                      <Select
+                        value={formData.publish_status}
+                        onValueChange={(value: PublishStatus) => setFormData({ ...formData, publish_status: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="draft">Save as Draft</SelectItem>
+                          <SelectItem value="publish">Publish Immediately</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="max_articles">Max Per Sync</Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          id="max_articles"
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={formData.max_articles_per_sync}
+                          onChange={(e) => setFormData({ ...formData, max_articles_per_sync: parseInt(e.target.value) || 0 })}
+                        />
+                        <span className="text-sm text-muted-foreground whitespace-nowrap">articles</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Duplicate Checking</Label>
+                    <div className="flex flex-col sm:flex-row gap-3 p-3 bg-muted/30 rounded-lg border">
+                      <div className="flex items-center justify-between flex-1 p-3 bg-background rounded-md border">
+                        <div className="space-y-0.5">
+                          <Label htmlFor="check_duplicate_title" className="text-sm font-medium">Check by Title</Label>
+                          <p className="text-xs text-muted-foreground">Skip matching titles</p>
+                        </div>
+                        <Switch
+                          id="check_duplicate_title"
+                          checked={formData.check_duplicate_title}
+                          onCheckedChange={(checked) => setFormData({ ...formData, check_duplicate_title: checked })}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between flex-1 p-3 bg-background rounded-md border">
+                        <div className="space-y-0.5">
+                          <Label htmlFor="check_duplicate_link" className="text-sm font-medium">Check by Link</Label>
+                          <p className="text-xs text-muted-foreground">Skip matching URLs</p>
+                        </div>
+                        <Switch
+                          id="check_duplicate_link"
+                          checked={formData.check_duplicate_link}
+                          onCheckedChange={(checked) => setFormData({ ...formData, check_duplicate_link: checked })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
+
+          {/* Card 3: Sync Schedule */}
+          <Collapsible defaultOpen={false}>
+            <Card>
+              <CollapsibleTrigger asChild>
+                <CardHeader className="pb-4 cursor-pointer hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <RefreshCw className="w-5 h-5 text-primary" />
+                      <div>
+                        <CardTitle className="text-lg">Sync Schedule</CardTitle>
+                        <CardDescription className="mt-1">
+                          Automation settings for this feed
+                        </CardDescription>
+                      </div>
+                    </div>
+                    <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border">
+                      <div className="space-y-0.5">
+                        <Label htmlFor="auto_sync" className="text-sm font-medium">Enable Auto-sync</Label>
+                        <p className="text-xs text-muted-foreground">
+                          Automatically check for new articles
+                        </p>
+                      </div>
+                      <Switch
+                        id="auto_sync"
+                        checked={formData.auto_sync}
+                        onCheckedChange={(checked) => setFormData({ ...formData, auto_sync: checked })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="sync_interval">Sync Interval</Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          id="sync_interval"
+                          type="number"
+                          min="1"
+                          max="168"
+                          value={formData.sync_interval_hours}
+                          onChange={(e) => setFormData({ ...formData, sync_interval_hours: parseInt(e.target.value) || 24 })}
+                          disabled={!formData.auto_sync}
+                        />
+                        <span className="text-sm text-muted-foreground whitespace-nowrap">hours</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {formData.auto_sync 
+                          ? `Check every ${formData.sync_interval_hours} hour${formData.sync_interval_hours !== 1 ? 's' : ''}`
+                          : "Enable auto-sync to configure"}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
+
+          {/* Card 4: Content & Media */}
+          <Collapsible defaultOpen={false}>
+            <Card>
+              <CollapsibleTrigger asChild>
+                <CardHeader className="pb-4 cursor-pointer hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <ImageIcon className="w-5 h-5 text-primary" />
+                      <div>
+                        <CardTitle className="text-lg">Content & Media</CardTitle>
+                        <CardDescription className="mt-1">
+                          Processing options and media settings
+                        </CardDescription>
+                      </div>
+                    </div>
+                    <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Content Processing</Label>
+                    <div className="flex flex-col sm:flex-row gap-3 p-3 bg-muted/30 rounded-lg border">
+                      <div className="flex items-center justify-between flex-1 p-3 bg-background rounded-md border">
+                        <div className="space-y-0.5">
+                          <Label htmlFor="strip_images" className="text-sm font-medium">Strip Images</Label>
+                          <p className="text-xs text-muted-foreground">Remove embedded images</p>
+                        </div>
+                        <Switch
+                          id="strip_images"
+                          checked={formData.strip_images}
+                          onCheckedChange={(checked) => setFormData({ ...formData, strip_images: checked })}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between flex-1 p-3 bg-background rounded-md border">
+                        <div className="space-y-0.5">
+                          <Label htmlFor="strip_inline_styles" className="text-sm font-medium">Strip Inline Styles</Label>
+                          <p className="text-xs text-muted-foreground">For theme compatibility</p>
+                        </div>
+                        <Switch
+                          id="strip_inline_styles"
+                          checked={formData.strip_inline_styles}
+                          onCheckedChange={(checked) => setFormData({ ...formData, strip_inline_styles: checked })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="add_source_link">Source Attribution</Label>
+                      <Switch
+                        id="add_source_link"
+                        checked={formData.add_source_link}
+                        onCheckedChange={(checked) => setFormData({ ...formData, add_source_link: checked })}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Add source link at the end of each article
+                    </p>
+                    {formData.add_source_link && (
+                      <div className="p-3 bg-muted/30 rounded-lg border space-y-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="source_label" className="text-xs">Label Text</Label>
+                          <Input
+                            id="source_label"
+                            value={formData.source_label}
+                            onChange={(e) => setFormData({ ...formData, source_label: e.target.value })}
+                            placeholder="Source"
+                            className="text-sm"
+                          />
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-2">Preview:</p>
+                          <div className="p-2 bg-background rounded border text-sm">
+                            <span className="font-semibold">{formData.source_label || "Source"} : </span>
+                            <a 
+                              href="#" 
+                              className="text-primary underline"
+                              onClick={(e) => e.preventDefault()}
+                            >
+                              https://example.com/article-url
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Default Featured Image</Label>
+                    <div className="flex items-start gap-4 p-4 bg-muted/30 rounded-lg border">
+                      {formData.default_image_url ? (
+                        <div className="relative w-28 h-20 rounded-lg border border-border overflow-hidden flex-shrink-0 shadow-sm">
+                          <img 
+                            src={formData.default_image_url} 
+                            alt="Default featured" 
+                            className="w-full h-full object-cover"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-1 right-1 h-5 w-5 shadow-lg"
+                            onClick={() => setFormData({ ...formData, default_image_url: "" })}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="w-28 h-20 rounded-lg border-2 border-dashed border-muted-foreground/25 flex flex-col items-center justify-center bg-background flex-shrink-0">
+                          <ImageIcon className="w-6 h-6 text-muted-foreground/50" />
+                        </div>
+                      )}
+                      <div className="flex-1 space-y-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="default_image_url" className="text-xs">Image URL</Label>
+                          <Input
+                            id="default_image_url"
+                            type="url"
+                            value={formData.default_image_url}
+                            onChange={(e) => setFormData({ ...formData, default_image_url: e.target.value })}
+                            placeholder="https://example.com/image.jpg"
+                            className="text-sm"
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          disabled={isUploadingImage}
+                          onClick={() => document.getElementById("image_upload")?.click()}
+                        >
+                          {isUploadingImage ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : (
+                            <Upload className="w-4 h-4 mr-2" />
+                          )}
+                          Upload
+                        </Button>
+                        <input
+                          id="image_upload"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleImageUpload}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Used when feed articles don't have an image
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
+
+          {/* Actions */}
+          <div className="flex items-center justify-between pt-2">
+            <Button type="button" variant="ghost" onClick={onBack}>
+              Cancel
+            </Button>
+            <Button 
+              type="submit" 
+              size="lg"
+              disabled={createFeedMutation.isPending || updateFeedMutation.isPending}
+            >
+              {(createFeedMutation.isPending || updateFeedMutation.isPending) && (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              )}
+              {mode === "edit" ? "Save Changes" : "Add Feed"}
+            </Button>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
+  // Render the list view
+  const activeFeedsCount = feeds?.filter(f => f.status === "active").length || 0;
+  
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Feed Syndicator</h2>
-          <p className="text-muted-foreground">{feeds?.length || 0} feeds configured</p>
+          <h2 className="text-2xl font-bold text-foreground">Feeds Syndicator</h2>
+          <p className="text-muted-foreground">
+            Import and republish articles from RSS feeds
+          </p>
         </div>
-        <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-          <DialogTrigger asChild>
-            <Button><Plus className="mr-2 h-4 w-4" /> Add Feed</Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Add RSS Feed</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Feed Name</Label>
-                <Input value={newFeed.name} onChange={(e) => setNewFeed({ ...newFeed, name: e.target.value })} />
-              </div>
-              <div className="space-y-2">
-                <Label>Feed URL</Label>
-                <Input value={newFeed.feed_url} onChange={(e) => setNewFeed({ ...newFeed, feed_url: e.target.value })} placeholder="https://example.com/feed.xml" />
-              </div>
-              <div className="space-y-2">
-                <Label>Vertical</Label>
-                <Input value={newFeed.vertical_slug} onChange={(e) => setNewFeed({ ...newFeed, vertical_slug: e.target.value })} placeholder="e.g. cannabis" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Import Mode</Label>
-                  <Select value={newFeed.import_mode} onValueChange={(v: any) => setNewFeed({ ...newFeed, import_mode: v })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="full_content">Full Content</SelectItem>
-                      <SelectItem value="excerpt_with_link">Excerpt + Link</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Publish Status</Label>
-                  <Select value={newFeed.publish_status} onValueChange={(v: any) => setNewFeed({ ...newFeed, publish_status: v })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="draft">Draft</SelectItem>
-                      <SelectItem value="publish">Publish</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <Label>Auto Sync</Label>
-                <Switch checked={newFeed.auto_sync} onCheckedChange={(c) => setNewFeed({ ...newFeed, auto_sync: c })} />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button onClick={() => addFeed.mutate()} disabled={!newFeed.name || !newFeed.feed_url || !newFeed.vertical_slug || addFeed.isPending}>
-                {addFeed.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-                Add Feed
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <div className="flex items-center gap-2">
+          {activeFeedsCount > 0 && (
+            <Button
+              variant="outline"
+              onClick={handleBulkSync}
+              disabled={isBulkSyncing || syncingFeedId !== null}
+            >
+              {isBulkSyncing ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <RefreshCw className="w-4 h-4 mr-2" />
+              )}
+              Sync All ({activeFeedsCount})
+            </Button>
+          )}
+          <Button onClick={onAddFeed}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Feed
+          </Button>
+        </div>
       </div>
 
-      {isLoading ? (
-        <div className="space-y-3">
-          {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-20 w-full" />)}
-        </div>
-      ) : (
-        <div className="grid gap-4">
-          {feeds?.map((feed) => (
-            <Card key={feed.id}>
-              <CardContent className="flex items-center gap-4 p-4">
-                <Rss className="h-8 w-8 text-muted-foreground flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="font-medium truncate">{feed.name}</p>
-                    <Badge className={getStatusColor(feed.status)}>{feed.status}</Badge>
-                    {feed.auto_sync && <Badge variant="outline">Auto</Badge>}
-                  </div>
-                  <p className="text-xs text-muted-foreground truncate">{feed.feed_url}</p>
-                  <div className="flex gap-2 text-xs text-muted-foreground mt-1">
-                    <span>{feed.vertical_slug}</span>
-                    {feed.last_synced_at && <span>• Synced {new Date(feed.last_synced_at).toLocaleString()}</span>}
-                  </div>
+      {bulkSyncProgress && (
+        <Card className="border-primary/20 bg-primary/5">
+          <CardContent className="py-4">
+            <div className="flex items-center gap-4">
+              <Loader2 className="w-5 h-5 animate-spin text-primary flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-foreground truncate">
+                    Syncing: {bulkSyncProgress.currentFeedName}
+                  </span>
+                  <span className="text-sm text-muted-foreground flex-shrink-0 ml-2">
+                    {bulkSyncProgress.current} of {bulkSyncProgress.total}
+                  </span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Button variant="outline" size="sm" onClick={() => syncFeed.mutate(feed.id)} disabled={syncFeed.isPending}>
-                    {syncFeed.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
-                  </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="ghost" size="sm"><Trash2 className="h-4 w-4 text-destructive" /></Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Feed</AlertDialogTitle>
-                        <AlertDialogDescription>Delete "{feed.name}"? Sync logs will also be removed.</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => deleteFeed.mutate(feed.id)}>Delete</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-primary transition-all duration-300 ease-out"
+                    style={{ 
+                      width: `${(bulkSyncProgress.current / bulkSyncProgress.total) * 100}%` 
+                    }}
+                  />
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-          {!feeds?.length && (
-            <Card>
-              <CardContent className="p-8 text-center text-muted-foreground">
-                <Rss className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                <p>No feeds configured yet</p>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       )}
+
+      {feedsLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      ) : feeds && feeds.length > 0 ? (
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Feed</TableHead>
+                  <TableHead>Vertical</TableHead>
+                  <TableHead>Articles</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Import Mode</TableHead>
+                  <TableHead>Last Synced</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {feeds.map((feed) => (
+                  <TableRow key={feed.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        {feed.default_image_url ? (
+                          <img 
+                            src={feed.default_image_url} 
+                            alt={feed.name || "Feed icon"} 
+                            className="w-8 h-8 rounded object-cover"
+                          />
+                        ) : (
+                          <Rss className="w-4 h-4 text-muted-foreground" />
+                        )}
+                        <div>
+                          <p className="font-medium">{feed.name}</p>
+                          <p className="text-xs text-muted-foreground truncate max-w-[200px]">
+                            {feed.feed_url}
+                          </p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{feed.vertical_slug}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      {(feedArticleCounts?.[feed.id] || 0) > 0 ? (
+                        <button
+                          onClick={() => onViewArticles?.(feed.id)}
+                          className="font-medium text-primary hover:underline cursor-pointer"
+                        >
+                          {feedArticleCounts?.[feed.id] || 0}
+                        </button>
+                      ) : (
+                        <span className="font-medium text-muted-foreground">0</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col gap-1">
+                        {getStatusBadge(feed.status)}
+                        {feed.auto_sync && (
+                          <span className="text-xs text-muted-foreground">
+                            Auto: every {feed.sync_interval_hours}h
+                          </span>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm capitalize">
+                        {feed.import_mode.replace("_", " ")}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      {feed.last_synced_at ? (
+                        <div className="flex flex-col">
+                          <span className="text-sm">
+                            {format(new Date(feed.last_synced_at), "MMM d, yyyy")}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {format(new Date(feed.last_synced_at), "HH:mm")}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">Never</span>
+                      )}
+                      {feed.last_error && (
+                        <div className="flex items-center gap-1 text-destructive text-xs mt-1">
+                          <AlertCircle className="w-3 h-3" />
+                          <span className="truncate max-w-[100px]">{feed.last_error}</span>
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => syncFeedMutation.mutate(feed.id)}
+                          disabled={syncingFeedId === feed.id}
+                          title="Sync now"
+                        >
+                          {syncingFeedId === feed.id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <RefreshCw className="w-4 h-4" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => toggleFeedStatus(feed)}
+                          title={feed.status === "active" ? "Pause" : "Resume"}
+                        >
+                          {feed.status === "active" ? (
+                            <Pause className="w-4 h-4" />
+                          ) : (
+                            <Play className="w-4 h-4" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => onEditFeed?.(feed.id)}
+                          title="Edit"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" title="More actions">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem asChild>
+                              <a href={feed.feed_url} target="_blank" rel="noopener noreferrer" className="flex items-center cursor-pointer">
+                                <ExternalLink className="w-4 h-4 mr-2" />
+                                Open Feed URL
+                              </a>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => setDeletingArticlesFeed(feed)}
+                              disabled={(feedArticleCounts?.[feed.id] || 0) === 0}
+                              className="text-destructive focus:text-destructive"
+                            >
+                              <FileX className="w-4 h-4 mr-2" />
+                              Delete All Articles ({feedArticleCounts?.[feed.id] || 0})
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => {
+                                if (confirm("Are you sure you want to delete this feed?")) {
+                                  deleteFeedMutation.mutate(feed.id);
+                                }
+                              }}
+                              className="text-destructive focus:text-destructive"
+                            >
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              Delete Feed
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardHeader className="text-center">
+            <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+              <Rss className="w-6 h-6 text-primary" />
+            </div>
+            <CardTitle>No RSS Feeds Yet</CardTitle>
+            <CardDescription>
+              Add your first RSS feed to start importing articles automatically
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center">
+            <Button onClick={onAddFeed}>
+              <Plus className="w-4 h-4 mr-2" />
+              Add Your First Feed
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Delete Articles Confirmation Dialog */}
+      <AlertDialog open={!!deletingArticlesFeed} onOpenChange={(open) => !open && setDeletingArticlesFeed(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete All Articles from Feed</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <p>
+                Are you sure you want to delete all <strong>{feedArticleCounts?.[deletingArticlesFeed?.id || ""] || 0}</strong> articles 
+                imported from <strong>"{deletingArticlesFeed?.name}"</strong>?
+              </p>
+              <p className="text-destructive">
+                This action cannot be undone. All articles and their sync logs will be permanently removed.
+              </p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeletingArticles}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteFeedArticles}
+              disabled={isDeletingArticles}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeletingArticles ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete All Articles"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

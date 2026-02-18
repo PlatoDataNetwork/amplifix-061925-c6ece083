@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,6 +14,7 @@ import {
 
 const DefaultFeaturedImages = () => {
   const queryClient = useQueryClient();
+  const [uploadValue, setUploadValue] = useState('');
 
   const { data: images, isLoading } = useQuery({
     queryKey: ['default-featured-images'],
@@ -59,9 +61,13 @@ const DefaultFeaturedImages = () => {
       </div>
 
       <ImageUpload
-        onUpload={(url) => addImage.mutate(url)}
-        bucket="article-images"
-        folder="defaults"
+        value={uploadValue}
+        onChange={(url) => {
+          if (url) {
+            addImage.mutate(url);
+            setUploadValue('');
+          }
+        }}
       />
 
       {isLoading ? (
