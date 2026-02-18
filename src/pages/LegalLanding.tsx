@@ -8,6 +8,7 @@ import {
   MessageSquare, Briefcase, Lock, Eye, Star, Quote, Menu, X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 /* ─── tiny helpers ─── */
 const scrollTo = (id: string) => {
@@ -161,6 +162,7 @@ const LegalLanding = () => {
           </nav>
 
           <div className="hidden lg:flex items-center gap-3">
+            <LanguageSwitcher />
             <button onClick={() => scrollTo("contact")} className="text-sm text-zinc-300 hover:text-white transition-colors">Distribute a Release</button>
             <button onClick={() => scrollTo("contact")} className="text-sm px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white font-semibold hover:brightness-110 transition">Launch a Campaign</button>
           </div>
@@ -175,6 +177,9 @@ const LegalLanding = () => {
             {NAV.map(n => (
               <button key={n} onClick={() => { scrollTo(n.toLowerCase().replace(/ /g, "-")); setMobileNav(false); }} className="block text-sm text-zinc-400 hover:text-white transition-colors py-1">{n}</button>
             ))}
+            <div className="py-2">
+              <LanguageSwitcher isMobile />
+            </div>
             <button onClick={() => { scrollTo("contact"); setMobileNav(false); }} className="block w-full text-center text-sm px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white font-semibold">Launch a Campaign</button>
           </nav>
         )}

@@ -242,6 +242,7 @@ const App = () => (
           <Route path="/reports/:campaignId/:reportId" element={<ReportDetail />} />
            <Route path="/showcase/fynn-ai" element={<FynnAIShowcase />} />
            <Route path="/legal" element={<LegalLanding />} />
+           <Route path="/:lang/legal" element={<LegalLanding />} />
           <Route path="/Pitch" element={<InvestorPitch />} />
 
               {/* Language-prefixed routes (e.g., /ar/, /fr/) */}

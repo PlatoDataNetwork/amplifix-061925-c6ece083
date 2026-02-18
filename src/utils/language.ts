@@ -25,9 +25,6 @@ export const getLanguageFromPath = (): string | null => {
   const potentialLang = segments[0];
   if (SUPPORTED.has(potentialLang)) return potentialLang;
 
-  // Back-compat: accept any 2-letter code
-  if (potentialLang.length === 2) return potentialLang;
-
   return null;
 };
 
@@ -41,7 +38,7 @@ export const buildLanguageUrl = (
 
   if (segments.length > 0) {
     const first = segments[0];
-    if (SUPPORTED.has(first) || first.length === 2) {
+    if (SUPPORTED.has(first)) {
       pathWithoutLang = "/" + segments.slice(1).join("/");
     }
   }
@@ -63,5 +60,5 @@ export const hasLanguagePrefix = (path: string): boolean => {
   const segments = path.split("/").filter(Boolean);
   if (segments.length === 0) return false;
   const first = segments[0];
-  return SUPPORTED.has(first) || first.length === 2;
+  return SUPPORTED.has(first);
 };
