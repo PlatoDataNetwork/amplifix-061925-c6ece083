@@ -117,6 +117,7 @@ import TagsManagement from "./pages/TagsManagement";
 import VerticalsManagement from "./pages/VerticalsManagement";
 import FeedsManagement from "./pages/FeedsManagement";
 import DefaultImagesManagement from "./pages/DefaultImagesManagement";
+import LegalLanding from "./pages/LegalLanding";
 
 const queryClient = new QueryClient();
 
@@ -239,7 +240,8 @@ const App = () => (
           <Route path="/admin/default-images" element={<AdminRoute><DefaultImagesManagement /></AdminRoute>} />
           <Route path="/reports" element={<ReportsDashboard />} />
           <Route path="/reports/:campaignId/:reportId" element={<ReportDetail />} />
-          <Route path="/showcase/fynn-ai" element={<FynnAIShowcase />} />
+           <Route path="/showcase/fynn-ai" element={<FynnAIShowcase />} />
+           <Route path="/legal" element={<LegalLanding />} />
           <Route path="/Pitch" element={<InvestorPitch />} />
 
               {/* Language-prefixed routes (e.g., /ar/, /fr/) */}
