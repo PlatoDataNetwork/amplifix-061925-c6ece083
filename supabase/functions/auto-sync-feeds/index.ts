@@ -218,6 +218,12 @@ async function syncFeed(supabase: ReturnType<typeof createClient>, feed: RSSFeed
 
     const itemsToProcess = items.slice(0, feed.max_articles_per_sync || 50);
 
+    // Fetch default featured images pool for random assignment
+    const { data: defaultImages } = await supabase
+      .from('default_featured_images')
+      .select('image_url');
+    const defaultImagePool = defaultImages?.map(img => img.image_url) || [];
+
     let imported = 0;
     let skipped = 0;
     let errors = 0;
@@ -300,7 +306,15 @@ async function syncFeed(supabase: ReturnType<typeof createClient>, feed: RSSFeed
             return exc;
           })(),
           author: item.author || feed.default_author || null,
-          image_url: feed.strip_images ? (feed.default_image_url || null) : (item.imageUrl || feed.default_image_url || null),
+          image_url: (() => {
+            if (feed.strip_images || !item.imageUrl) {
+              if (defaultImagePool.length > 0) {
+                return defaultImagePool[Math.floor(Math.random() * defaultImagePool.length)];
+              }
+              return feed.default_image_url || null;
+            }
+            return item.imageUrl || (defaultImagePool.length > 0 ? defaultImagePool[Math.floor(Math.random() * defaultImagePool.length)] : feed.default_image_url || null);
+          })(),
           external_url: item.link || null,
           vertical_slug: feed.vertical_slug,
           published_at: parseDate(item.pubDate).toISOString(),

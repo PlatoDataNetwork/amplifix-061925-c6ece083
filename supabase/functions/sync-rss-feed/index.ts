@@ -310,6 +310,13 @@ Deno.serve(async (req) => {
 
     console.log(`Parsed ${items.length} items from feed`);
 
+    // Fetch default featured images pool for random assignment
+    const { data: defaultImages } = await supabase
+      .from('default_featured_images')
+      .select('image_url');
+    const defaultImagePool = defaultImages?.map(img => img.image_url) || [];
+    console.log(`Loaded ${defaultImagePool.length} default featured images`);
+
     // Limit to max articles per sync
     const itemsToProcess = items.slice(0, feed.max_articles_per_sync);
 
@@ -429,7 +436,16 @@ Deno.serve(async (req) => {
             return exc;
           })(),
           author: item.author || feed.default_author || null,
-          image_url: feed.strip_images ? (feed.default_image_url || null) : (item.imageUrl || feed.default_image_url || null),
+          image_url: (() => {
+            if (feed.strip_images || !item.imageUrl) {
+              // Pick a random image from the default images pool, or fall back to feed default
+              if (defaultImagePool.length > 0) {
+                return defaultImagePool[Math.floor(Math.random() * defaultImagePool.length)];
+              }
+              return feed.default_image_url || null;
+            }
+            return item.imageUrl || (defaultImagePool.length > 0 ? defaultImagePool[Math.floor(Math.random() * defaultImagePool.length)] : feed.default_image_url || null);
+          })(),
           external_url: item.link || null,
           vertical_slug: feed.vertical_slug,
           published_at: parseDate(item.pubDate).toISOString(),
