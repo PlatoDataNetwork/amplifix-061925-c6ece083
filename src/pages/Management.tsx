@@ -309,7 +309,7 @@ const Management = () => {
       case "new-feed":
         return <FeedsSyndicator mode="add" onBack={() => setCurrentView("feeds-syndicator")} />;
       case "edit-feed":
-        return <FeedsSyndicator mode="edit" editFeedId={editingFeedId} onBack={() => setCurrentView("feeds-syndicator")} />;
+        return <FeedsSyndicator mode="edit" editFeedId={editingFeedId || undefined} onBack={() => setCurrentView("feeds-syndicator")} />;
       case "feeds-logs":
         return <FeedSyncLogs />;
       case "default-images":

@@ -1,98 +1,238 @@
-import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
-import { Upload, Loader2, ImageIcon, X } from 'lucide-react';
+import { useState, useRef } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { Upload, X, Loader2, Link as LinkIcon } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+// Target dimensions for optimal social media previews (WhatsApp, Facebook, LinkedIn, Twitter)
+const TARGET_WIDTH = 1200;
+const TARGET_HEIGHT = 630;
 
 interface ImageUploadProps {
-  onUpload?: (url: string) => void;
-  bucket?: string;
-  folder?: string;
+  value: string;
+  onChange: (url: string) => void;
+  label?: string;
 }
 
-const ImageUpload = ({ onUpload, bucket = 'article-images', folder = 'uploads' }: ImageUploadProps) => {
-  const [preview, setPreview] = useState<string | null>(null);
-  const [file, setFile] = useState<File | null>(null);
+/**
+ * Resize an image file to exactly 1200x630 pixels for optimal OG image display.
+ * Uses canvas to resize and crop to the target aspect ratio.
+ */
+const resizeImageToOG = (file: File): Promise<Blob> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
 
-  const uploadMutation = useMutation({
-    mutationFn: async (file: File) => {
-      const ext = file.name.split('.').pop();
-      const filename = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    if (!ctx) {
+      reject(new Error("Failed to get canvas context"));
+      return;
+    }
 
-      const { error } = await supabase.storage
-        .from(bucket)
-        .upload(filename, file, { cacheControl: '3600', upsert: false });
-      if (error) throw error;
+    img.onload = () => {
+      canvas.width = TARGET_WIDTH;
+      canvas.height = TARGET_HEIGHT;
 
-      const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(filename);
-      return urlData.publicUrl;
-    },
-    onSuccess: (url) => {
-      toast.success('Image uploaded');
-      onUpload?.(url);
-      setPreview(null);
-      setFile(null);
-    },
-    onError: (err) => toast.error(`Upload failed: ${err.message}`),
+      const targetAspect = TARGET_WIDTH / TARGET_HEIGHT;
+      const sourceAspect = img.width / img.height;
+
+      let sourceX = 0;
+      let sourceY = 0;
+      let sourceWidth = img.width;
+      let sourceHeight = img.height;
+
+      if (sourceAspect > targetAspect) {
+        sourceWidth = img.height * targetAspect;
+        sourceX = (img.width - sourceWidth) / 2;
+      } else {
+        sourceHeight = img.width / targetAspect;
+        sourceY = (img.height - sourceHeight) / 2;
+      }
+
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, TARGET_WIDTH, TARGET_HEIGHT);
+
+      ctx.drawImage(
+        img,
+        sourceX,
+        sourceY,
+        sourceWidth,
+        sourceHeight,
+        0,
+        0,
+        TARGET_WIDTH,
+        TARGET_HEIGHT
+      );
+
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error("Failed to create image blob"));
+          }
+        },
+        "image/jpeg",
+        0.9
+      );
+    };
+
+    img.onerror = () => {
+      reject(new Error("Failed to load image"));
+    };
+
+    img.src = URL.createObjectURL(file);
   });
+};
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = e.target.files?.[0];
-    if (!selected) return;
-    setFile(selected);
-    const reader = new FileReader();
-    reader.onload = () => setPreview(reader.result as string);
-    reader.readAsDataURL(selected);
+const ImageUpload = ({ value, onChange, label = "Image" }: ImageUploadProps) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const [urlInput, setUrlInput] = useState(value);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Image must be less than 10MB");
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const resizedBlob = await resizeImageToOG(file);
+
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.jpg`;
+      const filePath = `articles/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("article-images")
+        .upload(filePath, resizedBlob, {
+          contentType: "image/jpeg",
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from("article-images")
+        .getPublicUrl(filePath);
+
+      onChange(urlData.publicUrl);
+      setUrlInput(urlData.publicUrl);
+      toast.success("Image uploaded and resized to 1200×630");
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      toast.error(`Upload failed: ${error.message}`);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleUrlSubmit = () => {
+    if (urlInput.trim()) {
+      onChange(urlInput.trim());
+    }
+  };
+
+  const handleRemove = () => {
+    onChange("");
+    setUrlInput("");
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
-          <ImageIcon className="h-4 w-4" />
-          Image Upload
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {preview ? (
-          <div className="relative">
-            <img src={preview} alt="Preview" className="w-full max-h-48 object-cover rounded-md" />
-            <Button
-              variant="destructive"
-              size="icon"
-              className="absolute top-2 right-2 h-6 w-6"
-              onClick={() => { setPreview(null); setFile(null); }}
-            >
-              <X className="h-3 w-3" />
-            </Button>
-          </div>
-        ) : (
-          <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-8 cursor-pointer hover:bg-muted/50 transition-colors">
-            <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-            <span className="text-sm text-muted-foreground">Click to select image</span>
-            <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-          </label>
-        )}
-        {file && (
+    <div className="space-y-3">
+      {value ? (
+        <div className="relative group">
+          <img
+            src={value}
+            alt="Preview"
+            className="w-full h-48 object-cover rounded-lg border border-border"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "/placeholder.svg";
+            }}
+          />
           <Button
-            onClick={() => uploadMutation.mutate(file)}
-            disabled={uploadMutation.isPending}
-            className="w-full"
+            type="button"
+            variant="destructive"
+            size="icon"
+            className="absolute top-2 right-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={handleRemove}
           >
-            {uploadMutation.isPending ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Upload className="mr-2 h-4 w-4" />
-            )}
-            Upload
+            <X className="w-4 h-4" />
           </Button>
-        )}
-      </CardContent>
-    </Card>
+          <p className="text-xs text-muted-foreground mt-2 truncate">{value}</p>
+        </div>
+      ) : (
+        <Tabs defaultValue="upload" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="upload">Upload</TabsTrigger>
+            <TabsTrigger value="url">URL</TabsTrigger>
+          </TabsList>
+          <TabsContent value="upload" className="mt-3">
+            <div
+              className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors cursor-pointer"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileSelect}
+                disabled={isUploading}
+              />
+              {isUploading ? (
+                <div className="flex flex-col items-center gap-2">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  <p className="text-sm text-muted-foreground">Uploading...</p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-2">
+                  <Upload className="w-8 h-8 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">
+                    Click to upload or drag and drop
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Auto-resized to 1200×630 for optimal previews
+                  </p>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+          <TabsContent value="url" className="mt-3">
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  value={urlInput}
+                  onChange={(e) => setUrlInput(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
+                  className="pl-10"
+                  onKeyDown={(e) => e.key === "Enter" && handleUrlSubmit()}
+                />
+              </div>
+              <Button type="button" onClick={handleUrlSubmit}>
+                Add
+              </Button>
+            </div>
+          </TabsContent>
+        </Tabs>
+      )}
+    </div>
   );
 };
 
