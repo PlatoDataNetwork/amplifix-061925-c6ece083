@@ -1,92 +1,30 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Loader2, Save, BarChart3 } from 'lucide-react';
-import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
+import { Save, BarChart3, Code } from "lucide-react";
 
 const AnalyticsSettings = () => {
-  const { settings, isLoading, updateSettings, isUpdating } = useSiteSettings();
-  const [form, setForm] = useState({
-    gaTrackingId: '',
-    gaMeasurementId: '',
-    gaPropertyId: '',
-  });
+  const queryClient = useQueryClient();
+  const [googleAnalyticsId, setGoogleAnalyticsId] = useState("");
+  const [customHeaderScripts, setCustomHeaderScripts] = useState("");
+  const { data: settings, isLoading } = useQuery({ queryKey: ["site-settings", "analytics"], queryFn: async () => { const { data, error } = await supabase.from("site_settings").select("key, value").in("key", ["google_analytics_id", "custom_header_scripts"]); if (error) throw error; const m: Record<string, string> = {}; data?.forEach(s => { m[s.key] = s.value || ""; }); return m; } });
+  useEffect(() => { if (settings) { setGoogleAnalyticsId(settings.google_analytics_id || ""); setCustomHeaderScripts(settings.custom_header_scripts || ""); } }, [settings]);
+  const saveMutation = useMutation({ mutationFn: async () => { for (const u of [{ key: "google_analytics_id", value: googleAnalyticsId }, { key: "custom_header_scripts", value: customHeaderScripts }]) { const { error } = await supabase.from("site_settings").update({ value: u.value }).eq("key", u.key); if (error) throw error; } }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["site-settings"] }); toast.success("Analytics settings saved"); }, onError: (e) => toast.error(`Failed: ${e.message}`) });
 
-  useEffect(() => {
-    if (settings) {
-      setForm({
-        gaTrackingId: settings.gaTrackingId,
-        gaMeasurementId: settings.gaMeasurementId,
-        gaPropertyId: settings.gaPropertyId,
-      });
-    }
-  }, [settings]);
-
-  const handleSave = async () => {
-    await updateSettings(form);
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-12">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
+  if (isLoading) return <div className="space-y-6"><Skeleton className="h-8 w-48" /><Skeleton className="h-10 w-full" /><Skeleton className="h-32 w-full" /></div>;
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold">Analytics Settings</h2>
-        <p className="text-muted-foreground">Configure Google Analytics integration</p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BarChart3 className="h-5 w-5" />
-            Google Analytics
-          </CardTitle>
-          <CardDescription>Connect your GA4 property for traffic tracking</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="gaTrackingId">GA Tracking ID</Label>
-            <Input
-              id="gaTrackingId"
-              placeholder="UA-XXXXXXXXX-X"
-              value={form.gaTrackingId}
-              onChange={(e) => setForm({ ...form, gaTrackingId: e.target.value })}
-            />
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="gaMeasurementId">Measurement ID (GA4)</Label>
-              <Input
-                id="gaMeasurementId"
-                placeholder="G-XXXXXXXXXX"
-                value={form.gaMeasurementId}
-                onChange={(e) => setForm({ ...form, gaMeasurementId: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="gaPropertyId">Property ID</Label>
-              <Input
-                id="gaPropertyId"
-                placeholder="504421609"
-                value={form.gaPropertyId}
-                onChange={(e) => setForm({ ...form, gaPropertyId: e.target.value })}
-              />
-            </div>
-          </div>
-          <Button onClick={handleSave} disabled={isUpdating}>
-            {isUpdating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-            Save Changes
-          </Button>
-        </CardContent>
-      </Card>
+      <div><h2 className="text-2xl font-bold text-foreground">Analytics & Scripts</h2><p className="text-muted-foreground text-sm">Configure tracking and custom header scripts</p></div>
+      <div className="bg-card border border-border rounded-lg p-6 space-y-4"><div className="flex items-start gap-3"><BarChart3 className="w-5 h-5 text-primary mt-0.5" /><div className="flex-1"><p className="text-sm text-foreground font-medium">Google Analytics</p><p className="text-sm text-muted-foreground mt-1">Add your GA measurement ID to track visitors.</p></div></div><div className="space-y-2"><Label htmlFor="gaId">Measurement ID</Label><Input id="gaId" value={googleAnalyticsId} onChange={(e) => setGoogleAnalyticsId(e.target.value)} placeholder="G-XXXXXXXXXX" /><p className="text-xs text-muted-foreground">Find this in your GA4 property settings.</p></div></div>
+      <div className="bg-card border border-border rounded-lg p-6 space-y-4"><div className="flex items-start gap-3"><Code className="w-5 h-5 text-primary mt-0.5" /><div className="flex-1"><p className="text-sm text-foreground font-medium">Custom Header Scripts</p><p className="text-sm text-muted-foreground mt-1">Add custom scripts for the {"<head>"} section.</p></div></div><div className="space-y-2"><Label htmlFor="customScripts">Scripts</Label><Textarea id="customScripts" value={customHeaderScripts} onChange={(e) => setCustomHeaderScripts(e.target.value)} placeholder="<!-- Add your custom scripts here -->" rows={8} className="font-mono text-sm" /><p className="text-xs text-muted-foreground">Include complete {"<script>"} tags.</p></div></div>
+      <div className="flex justify-end"><Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}><Save className="w-4 h-4 mr-2" />{saveMutation.isPending ? "Saving..." : "Save Changes"}</Button></div>
     </div>
   );
 };

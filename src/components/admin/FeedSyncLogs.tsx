@@ -1,122 +1,88 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Search, ScrollText, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Loader2, FileText, ExternalLink, CheckCircle, XCircle, Rss, ChevronLeft, ChevronRight, CalendarIcon, X } from "lucide-react";
+import { format, startOfDay, endOfDay } from "date-fns";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+
+interface FeedSyncLog { id: string; feed_id: string; article_id: string | null; original_guid: string; original_url: string | null; synced_at: string; feed_name?: string; post_id?: number | null; }
+interface RssFeed { id: string; name: string; }
+const PAGE_SIZE = 50;
 
 const FeedSyncLogs = () => {
-  const [feedFilter, setFeedFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [selectedFeed, setSelectedFeed] = useState<string>("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
-  const { data: feeds } = useQuery({
-    queryKey: ['rss-feeds-list'],
-    queryFn: async () => {
-      const { data, error } = await supabase.from('rss_feeds').select('id, name').order('name');
-      if (error) throw error;
-      return data;
-    },
+  const { data: feeds } = useQuery({ queryKey: ["rss-feeds-list"], queryFn: async () => { const { data, error } = await supabase.from("rss_feeds").select("id, name").order("name"); if (error) throw error; return data as RssFeed[]; } });
+
+  const getDateFilters = () => { const filters: { start?: string; end?: string } = {}; if (startDate) filters.start = startOfDay(startDate).toISOString(); if (endDate) filters.end = endOfDay(endDate).toISOString(); return filters; };
+
+  const { data: totalCount } = useQuery({
+    queryKey: ["feed-sync-logs-count", selectedFeed, startDate?.toISOString(), endDate?.toISOString()],
+    queryFn: async () => { let query = supabase.from("feed_sync_logs").select("*", { count: "exact", head: true }); if (selectedFeed !== "all") query = query.eq("feed_id", selectedFeed); const df = getDateFilters(); if (df.start) query = query.gte("synced_at", df.start); if (df.end) query = query.lte("synced_at", df.end); const { count, error } = await query; if (error) throw error; return count || 0; },
+  });
+
+  const { data: stats } = useQuery({
+    queryKey: ["feed-sync-logs-stats", selectedFeed, startDate?.toISOString(), endDate?.toISOString()],
+    queryFn: async () => { let query = supabase.from("feed_sync_logs").select("article_id"); if (selectedFeed !== "all") query = query.eq("feed_id", selectedFeed); const df = getDateFilters(); if (df.start) query = query.gte("synced_at", df.start); if (df.end) query = query.lte("synced_at", df.end); const { data, error } = await query; if (error) throw error; return { total: data?.length || 0, successful: data?.filter(l => l.article_id !== null).length || 0, skipped: data?.filter(l => l.article_id === null).length || 0 }; },
   });
 
   const { data: logs, isLoading } = useQuery({
-    queryKey: ['feed-sync-logs', feedFilter, statusFilter],
+    queryKey: ["feed-sync-logs", selectedFeed, currentPage, startDate?.toISOString(), endDate?.toISOString()],
     queryFn: async () => {
-      let query = supabase
-        .from('feed_sync_logs')
-        .select('*')
-        .order('synced_at', { ascending: false })
-        .limit(100);
-
-      if (feedFilter !== 'all') query = query.eq('feed_id', feedFilter);
-      if (statusFilter !== 'all') query = query.eq('status', statusFilter);
-
-      const { data, error } = await query;
-      if (error) throw error;
-      return data;
+      const from = (currentPage - 1) * PAGE_SIZE; const to = from + PAGE_SIZE - 1;
+      let query = supabase.from("feed_sync_logs").select(`id, feed_id, article_id, original_guid, original_url, synced_at, articles ( post_id )`).order("synced_at", { ascending: false }).range(from, to);
+      if (selectedFeed !== "all") query = query.eq("feed_id", selectedFeed);
+      const df = getDateFilters(); if (df.start) query = query.gte("synced_at", df.start); if (df.end) query = query.lte("synced_at", df.end);
+      const { data, error } = await query; if (error) throw error;
+      return (data?.map(log => { const feed = feeds?.find(f => f.id === log.feed_id); const ad = log.articles as { post_id: number | null } | null; return { ...log, feed_name: feed?.name || "Unknown Feed", post_id: ad?.post_id ?? null }; }) || []) as FeedSyncLog[];
     },
+    enabled: !!feeds,
   });
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'imported': return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'error': return <XCircle className="h-4 w-4 text-destructive" />;
-      case 'skipped': return <AlertCircle className="h-4 w-4 text-yellow-500" />;
-      default: return null;
-    }
-  };
+  const totalPages = Math.ceil((totalCount || 0) / PAGE_SIZE);
+  const startRecord = (currentPage - 1) * PAGE_SIZE + 1;
+  const endRecord = Math.min(currentPage * PAGE_SIZE, totalCount || 0);
+  const hasDateFilters = startDate || endDate;
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold">Sync Logs</h2>
-        <p className="text-muted-foreground">Recent RSS feed sync history</p>
+      <div><h2 className="text-2xl font-bold text-foreground">Feed Sync Logs</h2><p className="text-muted-foreground">View the history of all RSS feed synchronization activities</p></div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card><CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Total Syncs</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold text-primary">{stats?.total ?? "--"}</p></CardContent></Card>
+        <Card><CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Successful Imports</CardTitle></CardHeader><CardContent><div className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-green-500" /><p className="text-2xl font-bold text-green-600">{stats?.successful ?? "--"}</p></div></CardContent></Card>
+        <Card><CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Skipped (Duplicates)</CardTitle></CardHeader><CardContent><div className="flex items-center gap-2"><XCircle className="w-5 h-5 text-muted-foreground" /><p className="text-2xl font-bold text-muted-foreground">{stats?.skipped ?? "--"}</p></div></CardContent></Card>
       </div>
-
-      <div className="flex gap-3">
-        <Select value={feedFilter} onValueChange={setFeedFilter}>
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="All Feeds" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Feeds</SelectItem>
-            {feeds?.map((f) => (
-              <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="All Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="imported">Imported</SelectItem>
-            <SelectItem value="skipped">Skipped</SelectItem>
-            <SelectItem value="error">Error</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
       <Card>
+        <CardHeader>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div><CardTitle className="text-lg flex items-center gap-2"><Rss className="w-5 h-5 text-primary" />Sync History</CardTitle><CardDescription>{totalCount !== undefined && totalCount > 0 ? `Showing ${startRecord}-${endRecord} of ${totalCount} records` : "No records found"}</CardDescription></div>
+              <Select value={selectedFeed} onValueChange={(v) => { setSelectedFeed(v); setCurrentPage(1); }}><SelectTrigger className="w-[200px]"><SelectValue placeholder="Filter by feed" /></SelectTrigger><SelectContent><SelectItem value="all">All Feeds</SelectItem>{feeds?.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}</SelectContent></Select>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2"><span className="text-sm text-muted-foreground">From:</span><Popover><PopoverTrigger asChild><Button variant="outline" size="sm" className={cn("w-[140px] justify-start text-left font-normal", !startDate && "text-muted-foreground")}><CalendarIcon className="mr-2 h-4 w-4" />{startDate ? format(startDate, "MMM d, yyyy") : "Start date"}</Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={startDate} onSelect={(d) => { setStartDate(d); setCurrentPage(1); }} disabled={(date) => (endDate ? date > endDate : false) || date > new Date()} initialFocus className={cn("p-3 pointer-events-auto")} /></PopoverContent></Popover></div>
+              <div className="flex items-center gap-2"><span className="text-sm text-muted-foreground">To:</span><Popover><PopoverTrigger asChild><Button variant="outline" size="sm" className={cn("w-[140px] justify-start text-left font-normal", !endDate && "text-muted-foreground")}><CalendarIcon className="mr-2 h-4 w-4" />{endDate ? format(endDate, "MMM d, yyyy") : "End date"}</Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={endDate} onSelect={(d) => { setEndDate(d); setCurrentPage(1); }} disabled={(date) => (startDate ? date < startDate : false) || date > new Date()} initialFocus className={cn("p-3 pointer-events-auto")} /></PopoverContent></Popover></div>
+              {hasDateFilters && <Button variant="ghost" size="sm" onClick={() => { setStartDate(undefined); setEndDate(undefined); setCurrentPage(1); }} className="text-muted-foreground hover:text-foreground"><X className="w-4 h-4 mr-1" />Clear dates</Button>}
+            </div>
+          </div>
+        </CardHeader>
         <CardContent className="p-0">
-          {isLoading ? (
-            <div className="p-4 space-y-3">
-              {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
-            </div>
-          ) : (
-            <div className="divide-y">
-              {logs?.map((log) => (
-                <div key={log.id} className="flex items-center gap-3 p-3 text-sm">
-                  {getStatusIcon(log.status)}
-                  <div className="flex-1 min-w-0">
-                    <p className="truncate font-medium">{log.original_title || log.original_guid}</p>
-                    {log.error_message && (
-                      <p className="text-xs text-destructive truncate">{log.error_message}</p>
-                    )}
-                  </div>
-                  <Badge variant="outline" className="text-xs">{log.status}</Badge>
-                  <span className="text-xs text-muted-foreground whitespace-nowrap">
-                    {log.synced_at ? new Date(log.synced_at).toLocaleString() : ''}
-                  </span>
-                </div>
-              ))}
-              {!logs?.length && (
-                <div className="p-8 text-center text-muted-foreground">
-                  <ScrollText className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                  <p>No sync logs found</p>
-                </div>
-              )}
-            </div>
-          )}
+          {isLoading ? <div className="flex items-center justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div> : logs && logs.length > 0 ? (<>
+            <Table><TableHeader><TableRow><TableHead>Feed</TableHead><TableHead>Status</TableHead><TableHead>Post ID</TableHead><TableHead>Original URL</TableHead><TableHead>Synced At</TableHead></TableRow></TableHeader><TableBody>
+              {logs.map((log) => (<TableRow key={log.id}><TableCell><div className="flex items-center gap-2"><Rss className="w-4 h-4 text-muted-foreground" /><span className="font-medium">{log.feed_name}</span></div></TableCell><TableCell>{log.article_id ? <Badge variant="default" className="bg-green-600"><FileText className="w-3 h-3 mr-1" />Imported</Badge> : <Badge variant="secondary"><XCircle className="w-3 h-3 mr-1" />Skipped</Badge>}</TableCell><TableCell>{log.post_id ? <Badge variant="outline" className="font-mono">#{log.post_id}</Badge> : <span className="text-muted-foreground">-</span>}</TableCell><TableCell>{log.original_url ? <a href={log.original_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1 max-w-[300px] truncate">{log.original_url}<ExternalLink className="w-3 h-3 flex-shrink-0" /></a> : <span className="text-muted-foreground">-</span>}</TableCell><TableCell><span className="text-muted-foreground">{format(new Date(log.synced_at), "MMM d, yyyy HH:mm")}</span></TableCell></TableRow>))}
+            </TableBody></Table>
+            {totalPages > 1 && <div className="flex items-center justify-between px-4 py-4 border-t"><div className="text-sm text-muted-foreground">Page {currentPage} of {totalPages}</div><div className="flex items-center gap-2"><Button variant="outline" size="sm" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}><ChevronLeft className="w-4 h-4 mr-1" />Previous</Button><Button variant="outline" size="sm" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>Next<ChevronRight className="w-4 h-4 ml-1" /></Button></div></div>}
+          </>) : <div className="flex flex-col items-center justify-center py-12 text-muted-foreground"><Rss className="w-12 h-12 mb-4 opacity-50" /><p className="text-lg font-medium">No sync logs yet</p><p className="text-sm">Sync logs will appear here after you sync your feeds</p></div>}
         </CardContent>
       </Card>
     </div>
