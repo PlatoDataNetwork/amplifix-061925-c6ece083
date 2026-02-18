@@ -68,7 +68,7 @@ const Showcase = () => {
           .from("showcase_companies")
           .select("*")
           .eq("disabled", false)
-          .order("created_at", { ascending: false });
+          .order("display_order", { ascending: true });
 
         if (error) throw error;
         
