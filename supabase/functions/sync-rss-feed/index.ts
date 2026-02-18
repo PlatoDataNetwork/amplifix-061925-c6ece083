@@ -216,20 +216,26 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     
-    // Use service role client to verify user token
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+    // Decode JWT to get user ID (avoids session-dependent auth calls)
     const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token);
-    
-    if (userError || !user) {
-      console.error('Auth error:', userError?.message);
+    let userId: string;
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const payload = JSON.parse(atob(payloadBase64));
+      userId = payload.sub;
+      if (!userId) throw new Error('No sub claim');
+      // Check token expiry
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
+        throw new Error('Token expired');
+      }
+    } catch (e) {
+      console.error('Token decode error:', e);
       return new Response(
-        JSON.stringify({ error: 'Unauthorized', details: userError?.message }),
+        JSON.stringify({ error: 'Unauthorized', details: 'Invalid token' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
     
-    const userId = user.id;
     
     // Use service role client for database operations
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
