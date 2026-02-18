@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json().catch(() => ({}));
-    const batchSize = body.batchSize || 1000;
+    const batchSize = body.batchSize || 500;
     const offset = body.offset || 0;
 
     // Call the DB function
