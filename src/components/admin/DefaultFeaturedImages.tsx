@@ -69,7 +69,7 @@ const DefaultFeaturedImages = () => {
   const handleBulkAssign = useCallback(async () => {
     setBulkAssigning(true);
     setBulkProgress({ updated: 0, total: articleCount || 0 });
-    const batchSize = 5000;
+    const batchSize = 200;
     let offset = 0;
     let totalUpdated = 0;
 
