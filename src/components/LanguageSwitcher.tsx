@@ -83,6 +83,19 @@ const LanguageSwitcher = ({ isMobile = false }: LanguageSwitcherProps) => {
       // Build new path-based URL
       const newPath = buildLanguageUrl(langCode, location.pathname);
       console.log('Navigating to:', newPath);
+
+      // When switching TO English or FROM a non-English language back to English,
+      // GTranslate's in-memory translation state doesn't reliably reset with
+      // doGTranslate("en|en"). A full page reload is the only reliable way to
+      // clear the translated DOM and cookies.
+      if (langCode === 'en') {
+        // Clear cookies before reload so index.html script sees clean state
+        const { setGoogTransCookie } = await import('@/utils/gtranslate');
+        setGoogTransCookie('en');
+        window.location.href = newPath || '/';
+        return;
+      }
+
       navigate(newPath);
 
       // Translation is applied globally by GTranslateController on navigation.
