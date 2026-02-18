@@ -98,13 +98,13 @@ const AnalyticsDashboard = () => {
   const totalEvents = realtimeData?.totals?.[0]?.metricValues?.[3]?.value || "0";
 
   const chartData = (historicalData?.rows || []).map((row) => ({
-    label: historicalDimension === "date" ? formatDateLabel(row.dimensionValues[0].value) : row.dimensionValues[0].value,
-    sessions: parseInt(row.metricValues[0]?.value || "0", 10),
-    totalUsers: parseInt(row.metricValues[1]?.value || "0", 10),
-    screenPageViews: parseInt(row.metricValues[2]?.value || "0", 10),
-    eventCount: parseInt(row.metricValues[3]?.value || "0", 10),
-    bounceRate: parseFloat(row.metricValues[4]?.value || "0") * 100,
-    avgDuration: parseFloat(row.metricValues[5]?.value || "0"),
+    label: historicalDimension === "date" ? formatDateLabel(row?.dimensionValues?.[0]?.value || "") : (row?.dimensionValues?.[0]?.value || ""),
+    sessions: parseInt(row?.metricValues?.[0]?.value || "0", 10),
+    totalUsers: parseInt(row?.metricValues?.[1]?.value || "0", 10),
+    screenPageViews: parseInt(row?.metricValues?.[2]?.value || "0", 10),
+    eventCount: parseInt(row?.metricValues?.[3]?.value || "0", 10),
+    bounceRate: parseFloat(row?.metricValues?.[4]?.value || "0") * 100,
+    avgDuration: parseFloat(row?.metricValues?.[5]?.value || "0"),
   }));
 
   const histTotalSessions = historicalData?.totals?.[0]?.metricValues?.[0]?.value || "0";
@@ -115,8 +115,8 @@ const AnalyticsDashboard = () => {
   const histAvgDuration = parseFloat(historicalData?.totals?.[0]?.metricValues?.[5]?.value || "0");
   const formatDuration = (seconds: number) => { const m = Math.floor(seconds / 60); const s = Math.round(seconds % 60); return m > 0 ? `${m}m ${s}s` : `${s}s`; };
 
-  const pagesChartData = (historicalPages?.rows || []).map((row) => ({ page: row.dimensionValues[0].value?.substring(0, 40) || "(not set)", sessions: parseInt(row.metricValues[0]?.value || "0", 10), pageViews: parseInt(row.metricValues[1]?.value || "0", 10) })).sort((a, b) => b.pageViews - a.pageViews).slice(0, 10);
-  const countriesChartData = (historicalCountries?.rows || []).map((row) => ({ country: row.dimensionValues[0].value || "(not set)", sessions: parseInt(row.metricValues[0]?.value || "0", 10), users: parseInt(row.metricValues[1]?.value || "0", 10) })).sort((a, b) => b.users - a.users).slice(0, 10);
+  const pagesChartData = (historicalPages?.rows || []).map((row) => ({ page: row?.dimensionValues?.[0]?.value?.substring(0, 40) || "(not set)", sessions: parseInt(row?.metricValues?.[0]?.value || "0", 10), pageViews: parseInt(row?.metricValues?.[1]?.value || "0", 10) })).sort((a, b) => b.pageViews - a.pageViews).slice(0, 10);
+  const countriesChartData = (historicalCountries?.rows || []).map((row) => ({ country: row?.dimensionValues?.[0]?.value || "(not set)", sessions: parseInt(row?.metricValues?.[0]?.value || "0", 10), users: parseInt(row?.metricValues?.[1]?.value || "0", 10) })).sort((a, b) => b.users - a.users).slice(0, 10);
 
   const tooltipStyle = { backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", color: "hsl(var(--card-foreground))" };
 
@@ -161,13 +161,13 @@ const AnalyticsDashboard = () => {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="md:col-span-1"><CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><FileText className="w-4 h-4" />Top Pages</CardTitle></CardHeader><CardContent>
-              {realtimeLoading ? <div className="space-y-3">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-8 w-full" />)}</div> : realtimeData?.rows?.length ? <div className="space-y-2 max-h-[300px] overflow-y-auto">{realtimeData.rows.map((row, i) => (<div key={i} className="flex justify-between items-center py-1.5 px-2 rounded hover:bg-muted/50 text-sm"><span className="truncate flex-1 mr-2 text-foreground">{row.dimensionValues[0].value}</span><Badge variant="secondary" className="text-xs shrink-0">{row.metricValues[0].value}</Badge></div>))}</div> : <p className="text-sm text-muted-foreground">No active pages</p>}
+              {realtimeLoading ? <div className="space-y-3">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-8 w-full" />)}</div> : realtimeData?.rows?.length ? <div className="space-y-2 max-h-[300px] overflow-y-auto">{realtimeData.rows.map((row, i) => (<div key={i} className="flex justify-between items-center py-1.5 px-2 rounded hover:bg-muted/50 text-sm"><span className="truncate flex-1 mr-2 text-foreground">{row?.dimensionValues?.[0]?.value || "(not set)"}</span><Badge variant="secondary" className="text-xs shrink-0">{row?.metricValues?.[0]?.value || "0"}</Badge></div>))}</div> : <p className="text-sm text-muted-foreground">No active pages</p>}
             </CardContent></Card>
             <Card><CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Monitor className="w-4 h-4" />Devices</CardTitle></CardHeader><CardContent>
-              {deviceLoading ? <div className="space-y-3">{[...Array(3)].map((_, i) => <Skeleton key={i} className="h-8 w-full" />)}</div> : deviceData?.rows?.length ? <div className="space-y-2">{deviceData.rows.map((row, i) => (<div key={i} className="flex justify-between items-center py-1.5 px-2 rounded hover:bg-muted/50 text-sm"><div className="flex items-center gap-2"><DeviceIcon device={row.dimensionValues[0].value} /><span className="capitalize text-foreground">{row.dimensionValues[0].value}</span></div><Badge variant="secondary" className="text-xs">{row.metricValues[0].value}</Badge></div>))}</div> : <p className="text-sm text-muted-foreground">No device data</p>}
+              {deviceLoading ? <div className="space-y-3">{[...Array(3)].map((_, i) => <Skeleton key={i} className="h-8 w-full" />)}</div> : deviceData?.rows?.length ? <div className="space-y-2">{deviceData.rows.map((row, i) => (<div key={i} className="flex justify-between items-center py-1.5 px-2 rounded hover:bg-muted/50 text-sm"><div className="flex items-center gap-2"><DeviceIcon device={row?.dimensionValues?.[0]?.value || ""} /><span className="capitalize text-foreground">{row?.dimensionValues?.[0]?.value || "unknown"}</span></div><Badge variant="secondary" className="text-xs">{row?.metricValues?.[0]?.value || "0"}</Badge></div>))}</div> : <p className="text-sm text-muted-foreground">No device data</p>}
             </CardContent></Card>
             <Card><CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Globe className="w-4 h-4" />Countries</CardTitle></CardHeader><CardContent>
-              {countryLoading ? <div className="space-y-3">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-8 w-full" />)}</div> : countryData?.rows?.length ? <div className="space-y-2 max-h-[300px] overflow-y-auto">{countryData.rows.map((row, i) => (<div key={i} className="flex justify-between items-center py-1.5 px-2 rounded hover:bg-muted/50 text-sm"><span className="text-foreground">{row.dimensionValues[0].value}</span><Badge variant="secondary" className="text-xs">{row.metricValues[0].value}</Badge></div>))}</div> : <p className="text-sm text-muted-foreground">No country data</p>}
+              {countryLoading ? <div className="space-y-3">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-8 w-full" />)}</div> : countryData?.rows?.length ? <div className="space-y-2 max-h-[300px] overflow-y-auto">{countryData.rows.map((row, i) => (<div key={i} className="flex justify-between items-center py-1.5 px-2 rounded hover:bg-muted/50 text-sm"><span className="text-foreground">{row?.dimensionValues?.[0]?.value || "(not set)"}</span><Badge variant="secondary" className="text-xs">{row?.metricValues?.[0]?.value || "0"}</Badge></div>))}</div> : <p className="text-sm text-muted-foreground">No country data</p>}
             </CardContent></Card>
           </div>
         </TabsContent>
