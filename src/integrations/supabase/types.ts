@@ -357,6 +357,24 @@ export type Database = {
           },
         ]
       }
+      default_featured_images: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+        }
+        Relationships: []
+      }
       feed_sync_logs: {
         Row: {
           article_id: string | null
@@ -737,6 +755,30 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          created_at: string
+          id: string
+          key: string
+          updated_at: string
+          value: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key: string
+          updated_at?: string
+          value?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: string | null
+        }
+        Relationships: []
+      }
       tags: {
         Row: {
           created_at: string | null
@@ -847,6 +889,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_article_verticals: {
+        Args: never
+        Returns: {
+          article_count: number
+          vertical_slug: string
+        }[]
+      }
       get_backup_summary: {
         Args: never
         Returns: {
@@ -855,6 +904,12 @@ export type Database = {
           backup_name: string
           created_at: string
           size_bytes: number
+        }[]
+      }
+      get_user_roles: {
+        Args: { _user_id: string }
+        Returns: {
+          role: Database["public"]["Enums"]["app_role"]
         }[]
       }
       get_vertical_article_counts: {
