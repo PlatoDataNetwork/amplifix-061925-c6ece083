@@ -29,6 +29,18 @@ const RobotsSettings = () => {
         <p className="text-xs text-muted-foreground">Common directives: <code className="bg-muted px-1 rounded">User-agent</code>, <code className="bg-muted px-1 rounded ml-1">Allow</code>, <code className="bg-muted px-1 rounded ml-1">Disallow</code>, <code className="bg-muted px-1 rounded ml-1">Sitemap</code></p>
       </div>
       <div className="flex justify-between"><Button variant="outline" onClick={() => setRobotsTxt(DEFAULT_ROBOTS_TXT)}><RotateCcw className="w-4 h-4 mr-2" />Reset to Default</Button><Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}><Save className="w-4 h-4 mr-2" />{saveMutation.isPending ? "Saving..." : "Save Changes"}</Button></div>
+      <div className="bg-muted/50 border border-border rounded-lg p-6 space-y-4">
+        <h3 className="text-xl font-semibold text-foreground">Common Examples</h3>
+        <div className="space-y-3 text-sm font-mono text-muted-foreground">
+          <p className="text-foreground"># Allow all crawlers</p>
+          <p>User-agent: *</p>
+          <p>Allow: /</p>
+          <p className="text-foreground mt-4"># Block a specific directory</p>
+          <p>Disallow: /admin/</p>
+          <p className="text-foreground mt-4"># Add sitemap location</p>
+          <p>Sitemap: https://example.com/sitemap.xml</p>
+        </div>
+      </div>
     </div>
   );
 };
