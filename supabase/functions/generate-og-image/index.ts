@@ -1,3 +1,5 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -9,9 +11,36 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { title, subtitle } = await req.json();
+    const body = await req.json();
+    const { articleId, title, subtitle } = body;
 
-    if (!title) {
+    let resolvedTitle = title;
+    let resolvedSubtitle = subtitle;
+
+    // If articleId is provided, look up the article from the database
+    if (articleId && !resolvedTitle) {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      const supabase = createClient(supabaseUrl, supabaseKey);
+
+      const { data: article, error } = await supabase
+        .from("articles")
+        .select("title, excerpt, vertical_slug")
+        .eq("id", articleId)
+        .single();
+
+      if (error || !article) {
+        return new Response(JSON.stringify({ error: "Article not found" }), {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      resolvedTitle = article.title;
+      resolvedSubtitle = resolvedSubtitle || article.excerpt || article.vertical_slug;
+    }
+
+    if (!resolvedTitle) {
       return new Response(JSON.stringify({ error: "Title is required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -30,15 +59,14 @@ Deno.serve(async (req) => {
   <rect width="1200" height="630" fill="url(#bg)" />
   <rect x="40" y="40" width="4" height="550" fill="#3b82f6" rx="2" />
   <text x="80" y="280" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white">
-    ${escapeXml(title.substring(0, 50))}
+    ${escapeXml(resolvedTitle.substring(0, 50))}
   </text>
-  ${title.length > 50 ? `<text x="80" y="340" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white">${escapeXml(title.substring(50, 100))}</text>` : ""}
-  ${subtitle ? `<text x="80" y="${title.length > 50 ? 400 : 340}" font-family="Arial, sans-serif" font-size="24" fill="#94a3b8">${escapeXml(subtitle.substring(0, 80))}</text>` : ""}
+  ${resolvedTitle.length > 50 ? `<text x="80" y="340" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white">${escapeXml(resolvedTitle.substring(50, 100))}</text>` : ""}
+  ${resolvedSubtitle ? `<text x="80" y="${resolvedTitle.length > 50 ? 400 : 340}" font-family="Arial, sans-serif" font-size="24" fill="#94a3b8">${escapeXml(resolvedSubtitle.substring(0, 80))}</text>` : ""}
   <text x="80" y="570" font-family="Arial, sans-serif" font-size="20" fill="#3b82f6" font-weight="bold">AmplifiX</text>
   <text x="210" y="570" font-family="Arial, sans-serif" font-size="18" fill="#64748b">Intelligence Platform</text>
 </svg>`;
 
-    // Return SVG as the image (can be converted to PNG with a service)
     return new Response(svg, {
       headers: { ...corsHeaders, "Content-Type": "image/svg+xml" },
     });
