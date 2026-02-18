@@ -286,12 +286,6 @@ async function syncFeed(supabase: ReturnType<typeof createClient>, feed: RSSFeed
             content = stripInlineStyles(content);
           }
 
-          if (feed.source_link_text && feed.source_link_url) {
-            const sourceUrl = feed.source_link_url.replace('{url}', item.link || '');
-            content += `<p>Source: <a href="${sourceUrl}" target="_blank" rel="noopener">${feed.source_link_text}</a></p>`;
-          } else if (item.link) {
-            content += `<p>Source: <a href="${item.link}" target="_blank" rel="noopener">${item.link}</a></p>`;
-          }
         }
 
         const articleData = {
