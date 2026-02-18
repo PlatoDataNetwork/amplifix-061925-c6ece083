@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
-import { Image, Trash2, Upload } from 'lucide-react';
+import { Image, Trash2, Shuffle, Loader2 } from 'lucide-react';
 import ImageUpload from './ImageUpload';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -15,6 +16,8 @@ import {
 const DefaultFeaturedImages = () => {
   const queryClient = useQueryClient();
   const [uploadValue, setUploadValue] = useState('');
+  const [bulkAssigning, setBulkAssigning] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState({ updated: 0, total: 0 });
 
   const { data: images, isLoading } = useQuery({
     queryKey: ['default-featured-images'],
@@ -25,6 +28,18 @@ const DefaultFeaturedImages = () => {
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data;
+    },
+  });
+
+  // Fetch total article count for progress
+  const { data: articleCount } = useQuery({
+    queryKey: ['articles-count'],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('articles')
+        .select('*', { count: 'exact', head: true });
+      if (error) throw error;
+      return count || 0;
     },
   });
 
@@ -50,6 +65,37 @@ const DefaultFeaturedImages = () => {
       toast.success('Image removed');
     },
   });
+
+  const handleBulkAssign = useCallback(async () => {
+    setBulkAssigning(true);
+    setBulkProgress({ updated: 0, total: articleCount || 0 });
+    const batchSize = 5000;
+    let offset = 0;
+    let totalUpdated = 0;
+
+    try {
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const { data, error } = await supabase.functions.invoke('assign-random-images', {
+          body: { batchSize, offset },
+        });
+
+        if (error) throw error;
+
+        totalUpdated += data.updated || 0;
+        setBulkProgress({ updated: totalUpdated, total: articleCount || 0 });
+
+        if (!data.hasMore) break;
+        offset = data.nextOffset;
+      }
+
+      toast.success(`Assigned random images to ${totalUpdated.toLocaleString()} articles`);
+    } catch (err: any) {
+      toast.error(`Bulk assign failed: ${err.message}`);
+    } finally {
+      setBulkAssigning(false);
+    }
+  }, [articleCount]);
 
   return (
     <div className="space-y-6">
@@ -85,6 +131,54 @@ const DefaultFeaturedImages = () => {
           </p>
         </CardContent>
       </Card>
+
+      {/* Bulk assign section */}
+      {images && images.length > 0 && (
+        <Card className="bg-card border-border">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Shuffle className="h-5 w-5" />
+              Assign to All Articles
+            </CardTitle>
+            <CardDescription>
+              Randomly assign images from the pool to all {articleCount?.toLocaleString() || '...'} published articles.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {bulkAssigning && (
+              <div className="space-y-2">
+                <Progress value={bulkProgress.total > 0 ? (bulkProgress.updated / bulkProgress.total) * 100 : 0} />
+                <p className="text-sm text-muted-foreground text-center">
+                  {bulkProgress.updated.toLocaleString()} / {bulkProgress.total.toLocaleString()} articles updated
+                </p>
+              </div>
+            )}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button disabled={bulkAssigning} className="w-full">
+                  {bulkAssigning ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Assigning...</>
+                  ) : (
+                    <><Shuffle className="h-4 w-4 mr-2" /> Assign Random Images to All Articles</>
+                  )}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Assign Random Images</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will overwrite the featured image of all {articleCount?.toLocaleString()} articles with a random image from the pool. This action cannot be undone. Continue?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleBulkAssign}>Yes, Assign All</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardContent>
+        </Card>
+      )}
 
       <div>
         <h3 className="text-xl font-semibold text-foreground mb-1">Image Pool</h3>

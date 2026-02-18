@@ -889,6 +889,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_random_default_images: {
+        Args: { batch_offset?: number; batch_size?: number }
+        Returns: {
+          has_more: boolean
+          updated_count: number
+        }[]
+      }
       get_article_verticals: {
         Args: never
         Returns: {
