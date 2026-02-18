@@ -419,7 +419,7 @@ Deno.serve(async (req) => {
           content: content,
           excerpt: item.description?.substring(0, 500) || null,
           author: item.author || feed.default_author || null,
-          image_url: item.imageUrl || feed.default_image_url || null,
+          image_url: feed.strip_images ? (feed.default_image_url || null) : (item.imageUrl || feed.default_image_url || null),
           external_url: item.link || null,
           vertical_slug: feed.vertical_slug,
           published_at: parseDate(item.pubDate).toISOString(),
