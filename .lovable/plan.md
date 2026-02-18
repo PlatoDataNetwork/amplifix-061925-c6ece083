@@ -1,110 +1,102 @@
 
 
-# Plan: Port PlatoData Management System to AmplifiX
+## Migration Plan: PlatoData Management Changes to Current Project
 
-## Overview
-Replace the current simple `/management` page with PlatoData's full admin management system, including 14 admin components, 4 settings components, 8 edge functions, missing database tables, and a new hook.
+This plan replaces the current simplified management system with the full-featured version from the PlatoData source project, incorporating all recent changes including the Analytics dashboard, SEO fixes, ArticleEditor, and enhanced sidebar navigation.
 
-## What Changes
+---
 
-### 1. Upgrade `useAuth` hook (modify `src/hooks/useAuth.ts`)
-PlatoData's Management.tsx expects `useAuth()` to return `{ user, isAdmin, isLoading, signOut }` as a React Context. The current hook is a simple non-context hook without `isAdmin`. 
+### What Changed in the Source Project
 
-**Approach**: Convert to Context pattern (AuthProvider + useAuth) matching PlatoData's version, with `isAdmin` built in via `has_role` RPC. Update `src/App.tsx` to wrap the app in `<AuthProvider>`. Update `AdminRoute.tsx` to use the new `isAdmin` from `useAuth` instead of the separate `useAdminCheck` hook.
+The source project has a significantly more advanced management system compared to what was initially ported. Key differences:
 
-### 2. Create 14 admin component files (new files, no conflicts)
-Copy from PlatoData `src/components/admin/`:
-- `AdminSidebar.tsx`
-- `AnalyticsDashboard.tsx`
-- `ArticleEditor.tsx`
-- `ArticleManagement.tsx`
-- `BatchImageResizer.tsx`
-- `DefaultFeaturedImages.tsx`
-- `FeedSyncLogs.tsx`
-- `FeedsSyndicator.tsx`
-- `ImageUpload.tsx`
-- `OGImageGenerator.tsx`
-- `RichTextEditor.tsx`
-- `SocialPreviewDebugger.tsx`
-- `TagsManagement.tsx`
-- `VerticalsManagement.tsx`
+1. **Management page** uses `useAuth`, `useNavigate`, `react-helmet-async`, and has a fixed header with sign-out -- the current project uses a simpler wrapper
+2. **AdminSidebar** replaces `ManagementSidebar` with richer navigation (collapsible sections, Analytics tab, sub-menus for Articles/Feeds/Settings, Users placeholder)
+3. **ArticleEditor** component exists in source admin folder but not in the current admin folder (inline editing)
+4. **ArticleManagement** is completely different -- source version has inline create/edit via ArticleEditor, feed-based filtering, and different props
+5. **All admin components** are the complete source versions (1353-line FeedsSyndicator, 743-line AnalyticsDashboard, etc.) vs simplified stubs
+6. **SEO fixes** applied to admin components (image alt attributes)
 
-None of these conflict with existing files in `src/components/admin/`.
+---
 
-### 3. Create 4 settings component files (new directory)
-Copy from PlatoData `src/components/admin/settings/`:
-- `GeneralSettings.tsx`
-- `AnalyticsSettings.tsx`
-- `SitemapsSettings.tsx`
-- `RobotsSettings.tsx`
+### Files to Replace (Full Replacement with Source Versions)
 
-### 4. Replace `src/pages/Management.tsx`
-Replace with PlatoData's version (adapted to use this project's brand name "AmplifiX" instead of "Platodata").
+These files will be completely replaced with the source project versions:
 
-### 5. Add `src/hooks/useSiteSettings.ts`
-Copy from PlatoData, update default values from "Platodata" to "AmplifiX".
+| File | Lines | Key Changes |
+|------|-------|-------------|
+| `src/pages/Management.tsx` | 424 | Full auth checks, fixed header, dashboard stats, feed sync status, recent articles, inline routing for new-article/edit-feed views |
+| `src/components/management/ManagementSidebar.tsx` | Will be replaced by `src/components/admin/AdminSidebar.tsx` (317 lines) | Collapsible sections, Analytics link, sub-menus |
+| `src/components/admin/ArticleManagement.tsx` | 455 | Inline create/edit via ArticleEditor, feed-based filtering, vertical filtering, pagination |
+| `src/components/admin/FeedsSyndicator.tsx` | 1353 | Full CRUD with collapsible form cards, bulk sync, delete feed articles, image upload, source link support |
+| `src/components/admin/FeedSyncLogs.tsx` | 504 | Date range filters, pagination, post ID column, stats cards |
+| `src/components/admin/AnalyticsDashboard.tsx` | 743 | Full GA4 real-time + historical data, charts (Area, Line, Bar), date ranges, device/country breakdowns |
+| `src/components/admin/TagsManagement.tsx` | 342 | Complete CRUD with dialogs |
+| `src/components/admin/VerticalsManagement.tsx` | 248 | Click-to-navigate to articles, pagination |
+| `src/components/admin/DefaultFeaturedImages.tsx` | 443 | Drag-and-drop upload, auto-resize to 1200x630, image preview modal |
+| `src/components/admin/OGImageGenerator.tsx` | 257 | Batch generation with progress, SEO alt attributes |
+| `src/components/admin/SocialPreviewDebugger.tsx` | 524 | Facebook/Twitter/LinkedIn/WhatsApp previews, raw HTML, validation |
+| `src/components/admin/BatchImageResizer.tsx` | 334 | Full batch processing with progress, results log |
+| `src/components/admin/RichTextEditor.tsx` | 371 | TipTap editor with image upload to Supabase Storage |
+| `src/components/admin/ImageUpload.tsx` | 254 | Upload with auto-resize to 1200x630, URL input |
+| `src/components/admin/settings/GeneralSettings.tsx` | 147 | Site name/description with save |
+| `src/components/admin/settings/AnalyticsSettings.tsx` | 159 | GA ID + custom header scripts |
+| `src/components/admin/settings/SitemapsSettings.tsx` | 79 | Sitemap URL with copy + instructions |
+| `src/components/admin/settings/RobotsSettings.tsx` | 160 | Robots.txt editor with reset |
 
-### 6. Delete old management components
-- `src/components/management/ManagementSidebar.tsx`
-- `src/components/management/DashboardView.tsx`
+### New File to Create
 
-### 7. Create 8 edge functions
-Copy from PlatoData: `articles-api`, `generate-og-image`, `robots-txt`, `rss-feed`, `json-feed`, `sitemap-xsl`, `ga-realtime`, `migrate-articles`. Add entries to `supabase/config.toml`.
+| File | Lines | Purpose |
+|------|-------|---------|
+| `src/components/admin/ArticleEditor.tsx` | 473 | Full article create/edit form with TipTap rich text editor, tag management, image upload, vertical selection |
 
-### 8. Database migrations
-Create missing tables and functions:
+### File to Delete
 
-**Tables:**
-- `site_settings` (key/value store for site configuration) with admin-only RLS
-- `default_featured_images` (pool of fallback images) with admin-only write, public read RLS
+| File | Reason |
+|------|--------|
+| `src/components/management/DashboardView.tsx` | Dashboard is now rendered inline in Management.tsx |
+| `src/components/management/ManagementSidebar.tsx` | Replaced by `AdminSidebar.tsx` in the admin folder |
 
-**Functions:**
-- `get_article_verticals()` — returns distinct vertical slugs from articles
-- `get_user_roles()` — returns roles for a given user
+---
 
-The `has_role` function, `app_role` enum, `article_translations`, and `translations` tables already exist. The `article-images` storage bucket already exists and is public.
+### Technical Details
 
-### 9. Install TipTap dependencies
-Add: `@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extension-image`, `@tiptap/extension-link`
+**Management.tsx Architecture Change**:
+- Adds `useAuth`, `useNavigate`, `react-helmet-async` for auth guards and SEO
+- Adds fixed header with sidebar trigger, shield icon, user email, and sign-out button
+- Dashboard view is rendered inline (stat cards, quick actions, feed sync status, recent articles)
+- New view types: `analytics`, `new-article`, `new-feed`, `edit-feed`
+- State management for `initialVerticalFilter`, `initialFeedIdFilter`, `editingFeedId`
 
-## Technical Details
+**AdminSidebar Architecture**:
+- Uses the `View` type union for type safety
+- Collapsible sections for Articles (All Articles, New Article, Tags, Verticals), Feeds (All Feeds, Add Feed, Logs), and Settings
+- Top-level items: Dashboard, Analytics
+- Standalone items: Default Images, Batch Resize, OG Image Generator, Social Preview
+- Disabled "Users" placeholder
 
-### Auth refactor
-The current `useAuth` returns `{ user, session, loading, signIn, signUp, signOut }`. The new version wraps this in a React Context and adds `isAdmin` (checked via `supabase.rpc('has_role', ...)`). The property name changes from `loading` to `isLoading`. All existing consumers of `useAuth` will need minor updates.
+**Component Props Changes**:
+- `ArticleManagement`: `onBack`, `initialVertical`, `initialFeedId` (instead of `onEditArticle`)
+- `VerticalsManagement`: adds `onNavigateToArticles` callback
+- `FeedsSyndicator`: adds `mode`, `editFeedId`, `onAddFeed`, `onEditFeed`, `onViewArticles`, `onBack`
 
-### Files affected summary
-- **New files**: 14 admin components + 4 settings components + 1 hook + 8 edge functions = 27 new files
-- **Modified files**: `Management.tsx`, `useAuth.ts`, `AdminRoute.tsx`, `App.tsx`, `config.toml`
-- **Deleted files**: `ManagementSidebar.tsx`, `DashboardView.tsx`
+**Site-specific strings to update**:
+- `SitemapsSettings.tsx`: Update `platodata.io` URLs to this project's domain
+- `RobotsSettings.tsx`: Update `platodata.io` URLs to this project's domain  
+- `SocialPreviewDebugger.tsx`: Update `SITE_URL` constant
+- `Management.tsx Helmet title`: Update "Platodata" to this project's name
 
-### Database changes
-```sql
--- site_settings table
-CREATE TABLE public.site_settings (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  key text UNIQUE NOT NULL,
-  value text,
-  created_at timestamptz DEFAULT now(),
-  updated_at timestamptz DEFAULT now()
-);
+**No database or edge function changes needed** -- all the same tables and edge functions are already in place.
 
--- default_featured_images table
-CREATE TABLE public.default_featured_images (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  url text NOT NULL,
-  filename text,
-  created_at timestamptz DEFAULT now()
-);
+---
 
--- get_article_verticals function
-CREATE OR REPLACE FUNCTION public.get_article_verticals()
-RETURNS TABLE(vertical_slug text, article_count bigint)
-LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public
-AS $$ SELECT vertical_slug, COUNT(*) FROM articles GROUP BY vertical_slug ORDER BY article_count DESC; $$;
-```
+### Implementation Order
 
-RLS policies: admin-only CRUD on `site_settings`, admin-only write + public read on `default_featured_images`.
-
-### No existing admin routes touched
-All `/admin/*` routes and existing admin components remain untouched.
+1. Create `src/components/admin/ArticleEditor.tsx` (new file)
+2. Replace `src/components/admin/AdminSidebar.tsx` (rename from ManagementSidebar concept)
+3. Replace `src/pages/Management.tsx` with the full source version
+4. Replace all 14 admin component files with their source versions
+5. Replace all 4 settings component files with their source versions
+6. Delete `src/components/management/DashboardView.tsx` and `ManagementSidebar.tsx`
+7. Update site-specific URLs in SitemapsSettings, RobotsSettings, SocialPreviewDebugger
 
