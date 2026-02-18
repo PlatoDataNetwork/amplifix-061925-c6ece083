@@ -39,10 +39,29 @@ export async function ensureGTranslateReady(timeoutMs: number = 8000): Promise<b
 export function setGoogTransCookie(langCode: string) {
   const target = getGTranslateCode(langCode);
 
-  // Clear any previously-set variants to avoid duplicate googtrans cookies
+  // Clear ALL cookie domain variants to prevent stale cookies from persisting
+  // This must match the clearing logic in index.html
   const expire = "Thu, 01 Jan 1970 00:00:00 GMT";
-  document.cookie = `googtrans=; expires=${expire}; path=/`;
-  document.cookie = `googtrans=; expires=${expire}; path=/; domain=${window.location.hostname}`;
+  const host = window.location.hostname;
+  const base = host.startsWith('www.') ? host.slice(4) : host;
+  const domains = new Set(['', host, '.' + host]);
+  if (base !== host) {
+    domains.add(base);
+    domains.add('.' + base);
+  }
+  domains.forEach(domain => {
+    const domainAttr = domain ? `; domain=${domain}` : '';
+    document.cookie = `googtrans=; expires=${expire}; path=/${domainAttr}`;
+  });
+
+  // Also clear localStorage variants
+  try {
+    localStorage.removeItem('googtrans');
+    localStorage.removeItem('google_translate_element');
+  } catch (e) {}
+
+  // For English, only clear — do NOT set a new cookie
+  if (target === 'en') return;
 
   // In Lovable Preview the app runs inside an iframe; modern browsers often block
   // third-party cookies unless they're SameSite=None; Secure.
