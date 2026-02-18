@@ -92,10 +92,13 @@ const AnalyticsDashboard = () => {
 
   const handleRefreshAll = () => { refetchRealtime(); refetchDevice(); refetchCountry(); refetchHistorical(); };
 
-  const totalActiveUsers = realtimeData?.totals?.[0]?.metricValues?.[0]?.value || "0";
-  const totalPageViews = realtimeData?.totals?.[0]?.metricValues?.[1]?.value || "0";
-  const totalConversions = realtimeData?.totals?.[0]?.metricValues?.[2]?.value || "0";
-  const totalEvents = realtimeData?.totals?.[0]?.metricValues?.[3]?.value || "0";
+  // Compute realtime totals by summing rows (GA4 realtime API doesn't return totals)
+  const sumMetric = (data: GAReport | undefined, metricIndex: number) =>
+    (data?.rows || []).reduce((sum, row) => sum + parseInt(row?.metricValues?.[metricIndex]?.value || "0", 10), 0).toString();
+  const totalActiveUsers = realtimeData?.totals?.[0]?.metricValues?.[0]?.value || sumMetric(realtimeData, 0);
+  const totalPageViews = realtimeData?.totals?.[0]?.metricValues?.[1]?.value || sumMetric(realtimeData, 1);
+  const totalConversions = realtimeData?.totals?.[0]?.metricValues?.[2]?.value || sumMetric(realtimeData, 2);
+  const totalEvents = realtimeData?.totals?.[0]?.metricValues?.[3]?.value || sumMetric(realtimeData, 3);
 
   const chartData = (historicalData?.rows || []).map((row) => ({
     label: historicalDimension === "date" ? formatDateLabel(row?.dimensionValues?.[0]?.value || "") : (row?.dimensionValues?.[0]?.value || ""),
@@ -107,12 +110,19 @@ const AnalyticsDashboard = () => {
     avgDuration: parseFloat(row?.metricValues?.[5]?.value || "0"),
   }));
 
-  const histTotalSessions = historicalData?.totals?.[0]?.metricValues?.[0]?.value || "0";
-  const histTotalUsers = historicalData?.totals?.[0]?.metricValues?.[1]?.value || "0";
-  const histTotalPageViews = historicalData?.totals?.[0]?.metricValues?.[2]?.value || "0";
-  const histTotalEvents = historicalData?.totals?.[0]?.metricValues?.[3]?.value || "0";
-  const histBounceRate = parseFloat(historicalData?.totals?.[0]?.metricValues?.[4]?.value || "0") * 100;
-  const histAvgDuration = parseFloat(historicalData?.totals?.[0]?.metricValues?.[5]?.value || "0");
+  // Compute historical totals by summing rows (GA4 runReport may not return totals)
+  const sumHistMetric = (metricIndex: number) =>
+    (historicalData?.rows || []).reduce((sum, row) => sum + parseFloat(row?.metricValues?.[metricIndex]?.value || "0"), 0);
+  const histTotalSessions = historicalData?.totals?.[0]?.metricValues?.[0]?.value || sumHistMetric(0).toString();
+  const histTotalUsers = historicalData?.totals?.[0]?.metricValues?.[1]?.value || sumHistMetric(1).toString();
+  const histTotalPageViews = historicalData?.totals?.[0]?.metricValues?.[2]?.value || sumHistMetric(2).toString();
+  const histTotalEvents = historicalData?.totals?.[0]?.metricValues?.[3]?.value || sumHistMetric(3).toString();
+  const histBounceRate = historicalData?.totals?.[0]?.metricValues?.[4]?.value
+    ? parseFloat(historicalData.totals[0].metricValues[4].value) * 100
+    : chartData.length > 0 ? chartData.reduce((sum, d) => sum + d.bounceRate, 0) / chartData.length : 0;
+  const histAvgDuration = historicalData?.totals?.[0]?.metricValues?.[5]?.value
+    ? parseFloat(historicalData.totals[0].metricValues[5].value)
+    : chartData.length > 0 ? chartData.reduce((sum, d) => sum + d.avgDuration, 0) / chartData.length : 0;
   const formatDuration = (seconds: number) => { const m = Math.floor(seconds / 60); const s = Math.round(seconds % 60); return m > 0 ? `${m}m ${s}s` : `${s}s`; };
 
   const pagesChartData = (historicalPages?.rows || []).map((row) => ({ page: row?.dimensionValues?.[0]?.value?.substring(0, 40) || "(not set)", sessions: parseInt(row?.metricValues?.[0]?.value || "0", 10), pageViews: parseInt(row?.metricValues?.[1]?.value || "0", 10) })).sort((a, b) => b.pageViews - a.pageViews).slice(0, 10);
