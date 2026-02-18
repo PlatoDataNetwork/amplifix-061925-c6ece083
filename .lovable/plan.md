@@ -1,51 +1,54 @@
 
 
-# Create `export-articles` Edge Function
+# Add VerifyMe Showcase Page
 
 ## Overview
-Create a new Supabase Edge Function that exports articles with their translations and tags as JSON, secured by an API key. This enables data migration between Supabase projects.
+Create a new showcase page for VerifyMe (Nasdaq: VRME) at `/showcase/verifyme`, following the OpenWorld showcase page pattern -- black background, transparent white-bordered cards, hero with background image, animated orbs, and colorful icon-accented sections.
 
 ## What will be built
 
-### 1. Edge Function: `export-articles`
-A GET endpoint that exports articles from the database in paginated JSON format.
+### 1. New Page: `src/pages/VerifyMeShowcase.tsx`
+A full showcase page modeled after OpenWorld's structure with VerifyMe-specific content:
 
-**Security**: Validated via `X-API-Key` header against a `PLATOAI_KEY` secret.
+- **Hero Section**: Badge "Public Company -- Nasdaq: VRME", company name, subtitle "Logistics & Security Solutions", description about VerifyMe's authentication and brand protection technology. Two CTA buttons: "Visit Website" (links to https://verifyme.com) and "AmplifiX Research" (Bing Copilot search link).
+- **About Section**: Company overview covering their patented authentication technologies, supply chain traceability, and anti-counterfeiting solutions. Sidebar with company details (Website, Industry: Logistics & Security, Ticker: NASDAQ: VRME, Founded year).
+- **Market Stats**: Key metrics related to VerifyMe's impact (e.g., counterfeit market size, products authenticated, supply chain visibility improvement).
+- **Core Solutions Section**: Cards for their key product areas -- Authentication Technologies, Supply Chain Traceability, Brand Protection, Serialization & Track-and-Trace, Anti-Counterfeiting, Compliance Solutions -- each with colored icons matching OpenWorld's style.
+- **Benefits Section**: Key advantages like Enhanced Security, Global Traceability, Regulatory Compliance, Cost Savings, Brand Protection, Real-Time Visibility.
+- **How It Works Section**: Step-by-step process (Product Registration, Authentication Integration, Supply Chain Tracking, Verification & Reporting).
+- **Technology Stack Section**: 3-card grid (Patented Technology, Cloud Platform, Enterprise Integration).
+- **Use Cases Section**: Industry applications (Pharmaceuticals, Consumer Goods, Government/Defense, Cannabis Compliance).
+- **CTA Section**: Dark gradient background with "Partner with VerifyMe" heading and buttons to visit website and AmplifiX Research.
 
-**Query Parameters**:
-- `vertical` -- which vertical to export (default: `artificial-intelligence`)
-- `page` / `page_size` -- pagination (default: 1 / 1000, max page_size: 2000)
-- `count_only` -- returns just the count and suggested pages
-- `include_tags` -- include tags data (default: true)
-- `include_translations` -- include translations data (default: true)
+### 2. Route Registration in `src/App.tsx`
+- Import `VerifyMeShowcase` component
+- Add route: `/showcase/verifyme`
 
-**Response modes**:
-- Count only: `{ vertical, total, suggested_pages, page_size }`
-- Full export: `{ articles, translations?, tags?, article_tags?, meta: { ... } }` with a `Content-Disposition` header for download
+### 3. Database Record
+- Add VerifyMe to `showcase_companies` table via the showcase admin or inline insert:
+  - company_name: "VerifyMe"
+  - ticker: "VRME"
+  - subtitle: "NAS:VRME"
+  - type: "stock"
+  - main_sector: "LOGISTICS & SECURITY"
+  - tags: ["Logistics", "Security", "Authentication"]
+  - link: "/showcase/verifyme"
+  - website: "https://verifyme.com"
+  - stock_url: "https://www.tradingview.com/symbols/NASDAQ-VRME/"
+  - search_url: "https://www.bing.com/copilotsearch?q=VerifyMe+NASDAQ+VRME"
+  - button_text: "View Showcase"
+  - thumbnail: AmplifiX search link for the thumbnail button
+  - disabled: false
 
-### 2. Configuration
-- Add `verify_jwt = false` to `supabase/config.toml` (API key auth is handled in code)
-- CORS headers will include `x-api-key`
+## Design Details
 
-### 3. Secret Setup
-- Will prompt you to add the `PLATOAI_KEY` secret for API key validation
+- **Theme**: Black background (`bg-black text-white`), transparent cards with `border-white/20`, matching OpenWorld exactly
+- **Color accents**: Blue for primary, green for security, purple for technology, orange for supply chain, amber for authentication
+- **Animations**: Glowing orb pulses, hover scale effects on cards, grid background pattern
+- **SEO**: Full Helmet meta tags for title, description, OG and Twitter cards
+- **Translation**: `useGTranslateRefresh(true)` hook included
 
-## Technical Details
-
-**Files to create/modify**:
-- `supabase/functions/export-articles/index.ts` -- new edge function
-- `supabase/config.toml` -- add function config entry
-
-**Implementation approach**:
-- Uses `SUPABASE_SERVICE_ROLE_KEY` to bypass RLS
-- Fetches articles filtered by `vertical_slug`, ordered by `published_at` desc
-- Uses `.range()` for pagination
-- Batches translation/tag lookups in chunks of 500 article IDs
-- Returns complete count via a separate count query for accurate pagination
-
-**Testing**: After deployment, test with:
-```
-curl -H "X-API-Key: YOUR_KEY" \
-  "https://rfkdcmvzvxcsoecoeddi.supabase.co/functions/v1/export-articles?vertical=artificial-intelligence&count_only=true"
-```
+## Files to create/modify
+1. **Create**: `src/pages/VerifyMeShowcase.tsx` (approx 800 lines, following OpenWorld template)
+2. **Modify**: `src/App.tsx` -- add import and route
 
