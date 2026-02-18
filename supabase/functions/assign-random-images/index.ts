@@ -16,7 +16,6 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    // Decode JWT
     const token = authHeader.replace('Bearer ', '');
     let userId: string;
     try {
@@ -40,53 +39,26 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const batchSize = body.batchSize || 1000;
     const offset = body.offset || 0;
-    const verticalSlug = body.verticalSlug || null; // optional filter
 
-    // Fetch default images pool
-    const { data: defaultImages } = await supabase.from('default_featured_images').select('image_url');
-    const pool = defaultImages?.map(img => img.image_url) || [];
+    // Call the DB function
+    const { data, error } = await supabase.rpc('assign_random_default_images', {
+      batch_size: batchSize,
+      batch_offset: offset,
+    });
 
-    if (pool.length === 0) {
-      return new Response(JSON.stringify({ error: 'No default images found' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-    }
+    if (error) throw error;
 
-    // Fetch a batch of article IDs
-    let query = supabase.from('articles').select('id').range(offset, offset + batchSize - 1).order('published_at', { ascending: false });
-    if (verticalSlug) {
-      query = query.eq('vertical_slug', verticalSlug);
-    }
-    const { data: articles, error: fetchError } = await query;
+    const result = data?.[0] || { updated_count: 0, has_more: false };
 
-    if (fetchError) throw fetchError;
-    if (!articles || articles.length === 0) {
-      return new Response(JSON.stringify({ done: true, updated: 0, message: 'No more articles to update' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-    }
-
-    let updated = 0;
-    // Update each article with a random image
-    for (const article of articles) {
-      const randomImage = pool[Math.floor(Math.random() * pool.length)];
-      const { error: updateError } = await supabase
-        .from('articles')
-        .update({ image_url: randomImage })
-        .eq('id', article.id);
-
-      if (!updateError) updated++;
-    }
-
-    const hasMore = articles.length === batchSize;
-
-    console.log(`Updated ${updated}/${articles.length} articles (offset: ${offset}, hasMore: ${hasMore})`);
+    console.log(`Batch done: updated=${result.updated_count}, offset=${offset}, hasMore=${result.has_more}`);
 
     return new Response(
       JSON.stringify({
-        done: !hasMore,
-        updated,
+        updated: result.updated_count,
+        hasMore: result.has_more,
+        nextOffset: result.has_more ? offset + batchSize : null,
         batchSize,
         offset,
-        nextOffset: hasMore ? offset + batchSize : null,
-        totalInBatch: articles.length,
-        imagePoolSize: pool.length,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
