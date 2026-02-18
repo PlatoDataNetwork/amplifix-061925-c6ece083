@@ -97,6 +97,7 @@ import MobileGlobalEsportsShowcase from "./pages/MobileGlobalEsportsShowcase";
 import AIEraCorpShowcase from "./pages/AIEraCorpShowcase";
 import IONDigitalShowcase from "./pages/IONDigitalShowcase";
 import BioxytranShowcase from "./pages/BioxytranShowcase";
+import VerifyMeShowcase from "./pages/VerifyMeShowcase";
 import ShowcaseAdmin from "./pages/ShowcaseAdmin";
 import SecurityDashboard from "./pages/SecurityDashboard";
 import JsonTester from "./pages/JsonTester";
@@ -184,6 +185,7 @@ const App = () => (
               <Route path="/showcase/ai-era-corp" element={<AIEraCorpShowcase />} />
               <Route path="/showcase/ion-digital" element={<IONDigitalShowcase />} />
               <Route path="/showcase/bioxytran" element={<BioxytranShowcase />} />
+              <Route path="/showcase/verifyme" element={<VerifyMeShowcase />} />
               <Route path="/solutions/advisory" element={<Advisory />} />
               <Route path="/solutions/research" element={<Research />} />
               <Route path="/solutions/analytics" element={<AnalyticsSolutions />} />
@@ -284,6 +286,7 @@ const App = () => (
               <Route path="/:lang/showcase/filmology" element={<FilmologyShowcase />} />
               <Route path="/:lang/showcase/22x-ventures" element={<TwentyTwoXVenturesShowcase />} />
               <Route path="/:lang/showcase/bioxytran" element={<BioxytranShowcase />} />
+              <Route path="/:lang/showcase/verifyme" element={<VerifyMeShowcase />} />
               <Route path="/:lang/solutions/advisory" element={<Advisory />} />
               <Route path="/:lang/solutions/research" element={<Research />} />
               <Route path="/:lang/solutions/analytics" element={<AnalyticsSolutions />} />
