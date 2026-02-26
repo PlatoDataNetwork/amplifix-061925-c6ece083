@@ -5,7 +5,7 @@ import DOMPurify from 'dompurify';
  */
 export const ALLOWED_HTML_TAGS = [
   'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-  'p', 'br',
+  'p', 'br', 'div', 'span',
   'strong', 'b', 'em', 'i', 'u', 's', 'mark',
   'ul', 'ol', 'li',
   'blockquote', 'pre', 'code',
