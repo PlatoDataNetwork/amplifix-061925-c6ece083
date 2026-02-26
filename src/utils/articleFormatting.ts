@@ -25,7 +25,7 @@ export const sanitizeHTML = (html: string): string => {
   
   return DOMPurify.sanitize(html, {
     ALLOWED_TAGS: ALLOWED_HTML_TAGS,
-    ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'class'],
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'class', 'style'],
     ALLOW_DATA_ATTR: false,
     // Prevent javascript: URLs and other dangerous protocols
     ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
