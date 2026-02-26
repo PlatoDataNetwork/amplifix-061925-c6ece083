@@ -54,8 +54,8 @@ export const sanitizeText = (text?: string | null): string => {
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     // Convert markdown italic to em
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    // Remove div and span tags (keep content)
-    .replace(/<\/?(div|span)[^>]*>/gi, "")
+    // Remove div tags (keep content) but preserve span tags
+    .replace(/<\/?(div)[^>]*>/gi, "")
     // Convert br tags to newlines for processing
     .replace(/<br\s*\/?>/gi, "\n")
     // Normalize line endings
