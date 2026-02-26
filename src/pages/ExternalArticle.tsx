@@ -409,6 +409,14 @@ if (!article) {
                   decodedContent = textarea.value;
                 }
                 
+                // Fix malformed anchor tags where href contains nested <a> tags
+                // Pattern: <a href="<a ...href="REAL_URL"...>TEXT</a> REST
+                // Fix to: <a href="REAL_URL">REST
+                decodedContent = decodedContent.replace(
+                  /<a\s+href="<a[^>]*href="([^"]*)"[^>]*>[^<]*<\/a>\s*/gi,
+                  '<a href="$1">'
+                );
+                
                 const contentWithoutSourceLinks = decodedContent;
 
                 // Remove existing Published footer paragraph to avoid duplication
