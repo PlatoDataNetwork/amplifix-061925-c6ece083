@@ -401,7 +401,15 @@ if (!article) {
                 // Use translated content if available
                 const rawContent = displayContent || displayExcerpt || "";
                 
-                const contentWithoutSourceLinks = rawContent;
+                // Decode double-encoded HTML entities (e.g. &lt;b&gt; → <b>)
+                let decodedContent = rawContent;
+                if (/&lt;[a-z/]/i.test(decodedContent)) {
+                  const textarea = document.createElement('textarea');
+                  textarea.innerHTML = decodedContent;
+                  decodedContent = textarea.value;
+                }
+                
+                const contentWithoutSourceLinks = decodedContent;
 
                 // Remove existing Published footer paragraph to avoid duplication
                 const contentWithoutPublished = contentWithoutSourceLinks.replace(
