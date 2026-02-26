@@ -5,7 +5,7 @@ import DOMPurify from 'dompurify';
  */
 export const ALLOWED_HTML_TAGS = [
   'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-  'p', 'br',
+  'p', 'br', 'div', 'span',
   'strong', 'b', 'em', 'i', 'u', 's', 'mark',
   'ul', 'ol', 'li',
   'blockquote', 'pre', 'code',
@@ -25,7 +25,7 @@ export const sanitizeHTML = (html: string): string => {
   
   return DOMPurify.sanitize(html, {
     ALLOWED_TAGS: ALLOWED_HTML_TAGS,
-    ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'class'],
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'class', 'style'],
     ALLOW_DATA_ATTR: false,
     // Prevent javascript: URLs and other dangerous protocols
     ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
@@ -54,8 +54,8 @@ export const sanitizeText = (text?: string | null): string => {
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     // Convert markdown italic to em
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    // Remove div and span tags (keep content)
-    .replace(/<\/?(div|span)[^>]*>/gi, "")
+    // Remove div tags (keep content) but preserve span tags
+    .replace(/<\/?(div)[^>]*>/gi, "")
     // Convert br tags to newlines for processing
     .replace(/<br\s*\/?>/gi, "\n")
     // Normalize line endings

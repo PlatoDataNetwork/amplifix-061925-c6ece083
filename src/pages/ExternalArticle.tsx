@@ -401,7 +401,19 @@ if (!article) {
                 // Use translated content if available
                 const rawContent = displayContent || displayExcerpt || "";
                 
-                const contentWithoutSourceLinks = rawContent;
+                // Fix corrupted content: strip actual <a> tags embedded in encoded content
+                // (artifacts from import where URLs got wrapped in real anchor tags)
+                let decodedContent = rawContent;
+                if (/&lt;[a-z/]/i.test(decodedContent)) {
+                  // First, remove real <a> tags that are mixed into encoded content, keeping text
+                  decodedContent = decodedContent.replace(/<a[^>]*>([^<]*)<\/a>/g, '$1');
+                  // Then decode HTML entities
+                  const textarea = document.createElement('textarea');
+                  textarea.innerHTML = decodedContent;
+                  decodedContent = textarea.value;
+                }
+                
+                const contentWithoutSourceLinks = decodedContent;
 
                 // Remove existing Published footer paragraph to avoid duplication
                 const contentWithoutPublished = contentWithoutSourceLinks.replace(
