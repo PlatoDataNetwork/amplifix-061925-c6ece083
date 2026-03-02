@@ -23,9 +23,11 @@ i18n
     defaultNS: 'common',
     
     detection: {
-      order: ['path', 'localStorage', 'navigator'],
+      // URL path is the single source of truth for language selection.
+      // No prefix (e.g. /legal) must always resolve to English.
+      order: ['path'],
       lookupFromPathIndex: 0,
-      caches: ['localStorage'],
+      caches: [],
     },
 
     backend: {
