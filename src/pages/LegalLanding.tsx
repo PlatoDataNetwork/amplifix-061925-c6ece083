@@ -202,7 +202,8 @@ const LegalLanding = () => {
             <Sparkles size={14} className="text-blue-400" /> A division of AmplifiX.net
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6">
-            Turn Cases into Campaigns.{" "}
+            Turn Cases into Campaigns.
+            <br />
             <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-blue-400 bg-clip-text text-transparent">
               Turn Campaigns into Claimants.
             </span>
