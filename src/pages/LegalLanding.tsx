@@ -176,9 +176,6 @@ const LegalLanding = () => {
           <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-violet-600/10 blur-[140px] animate-pulse" style={{ animationDelay: "1s" }} />
         </div>
         <div className="relative max-w-5xl mx-auto px-5 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs text-zinc-400 mb-8">
-            <Sparkles size={14} className="text-blue-400" /> A division of AmplifiX.net
-          </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6">
             Turn Cases into Campaigns.
             <br />
@@ -187,7 +184,7 @@ const LegalLanding = () => {
             </span>
           </h1>
           <p className="max-w-2xl mx-auto text-lg text-zinc-400 mb-10 leading-relaxed">
-            Press releases, multi-channel syndication, and programmatic recruitment funnels — purpose-built for class action campaigns involving publicly traded companies.
+            Press releases, multi-channel syndication, and programmatic recruitment funnels. Built for high-performance class action campaign recruitment.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <button onClick={() => scrollTo("contact")} className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white font-semibold text-base hover:brightness-110 transition shadow-lg shadow-blue-600/20">
