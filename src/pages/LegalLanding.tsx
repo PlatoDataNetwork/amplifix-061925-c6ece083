@@ -151,8 +151,13 @@ const LegalLanding = () => {
       <header className="fixed top-0 inset-x-0 z-40 border-b border-white/5 bg-[#07090F]/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-5 h-16">
           <button onClick={() => scrollTo("hero")} className="flex items-center gap-2 font-bold text-lg tracking-tight">
-            <span className="bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">AmplifiX</span>
-            <span className="text-zinc-400 font-normal">Legal</span>
+            <img 
+              src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
+              alt="AmplifiX Logo"
+              className="w-8 h-8 md:w-10 md:h-10"
+            />
+            <span className="bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent text-xl md:text-2xl font-extrabold">AmplifiX</span>
+            <span className="text-zinc-400 font-normal text-xl md:text-2xl">Legal</span>
           </button>
 
           <nav className="hidden lg:flex items-center gap-7 text-sm text-zinc-400">
@@ -538,6 +543,11 @@ const LegalLanding = () => {
         <div className="max-w-6xl mx-auto px-5">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2">
+              <img 
+                src="/lovable-uploads/27fcb1ac-666f-4a63-a383-b63576970769.png" 
+                alt="AmplifiX Logo"
+                className="w-6 h-6"
+              />
               <span className="font-bold bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">AmplifiX</span>
               <span className="text-zinc-500 text-sm">Legal</span>
             </div>
