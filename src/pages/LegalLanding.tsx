@@ -135,7 +135,7 @@ const LegalLanding = () => {
               className="w-8 h-8 md:w-10 md:h-10"
             />
             <span className="bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent text-xl md:text-2xl font-extrabold">AmplifiX</span>
-            <span className="text-zinc-400 font-normal text-xl md:text-2xl">Legal</span>
+            <span className="text-zinc-400 font-extrabold text-xl md:text-2xl">Legal</span>
           </button>
 
           <nav className="hidden lg:flex items-center gap-7 text-sm text-zinc-400">
