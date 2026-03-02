@@ -16,7 +16,7 @@ const scrollTo = (id: string) => {
 };
 
 /* ─── data ─── */
-const NAV = ["Solutions", "How It Works", "Campaign Types", "Case Spotlight", "Trust", "FAQ", "Contact"];
+const NAV = ["Solutions", "How It Works", "Campaign Types", "Trust", "FAQ", "Contact"];
 
 const PILLARS = [
   {
@@ -58,33 +58,15 @@ const CAMPAIGN_TYPES = [
   { title: "Product Liability", desc: "Defective products, medical devices, and pharmaceutical claims.", icon: Eye },
 ];
 
-const CASES = [
-  { company: "ACME Corp", ticker: "ACME", type: "Securities", status: "Active", summary: "Alleged misleading financial disclosures Q3 2025", updated: "Feb 12, 2026" },
-  { company: "DataVault Inc", ticker: "DVT", type: "Data Breach", status: "Active", summary: "Breach affecting 2.1M user records", updated: "Feb 10, 2026" },
-  { company: "GreenLeaf Holdings", ticker: "GLH", type: "Securities", status: "Monitoring", summary: "Under investigation for accounting irregularities", updated: "Feb 8, 2026" },
-  { company: "MedPharma Corp", ticker: "MPH", type: "Product Liability", status: "Active", summary: "Recall of cardiac implant devices", updated: "Feb 15, 2026" },
-];
-
 const FAQS = [
-  { q: "How is AmplifiX Legal different from a PR wire?", a: "Traditional wires blast and forget. We combine press distribution with programmatic recruitment funnels, multi-channel engagement, and real-time attribution — turning every release into a measurable campaign." },
-  { q: "Can you build a funnel per case and per company/ticker?", a: "Absolutely. Every campaign gets its own landing page ecosystem — segmented by ticker, case type, and audience persona — with independent tracking and reporting." },
-  { q: "What channels do you support?", a: "Press syndication, search (SEO/SEM), social media, email, SMS, display/retargeting, partner placements, and direct publisher integrations." },
-  { q: "How do you handle compliance and consent?", a: "Compliance is baked into every workflow. We support TCPA-compliant capture, configurable consent language, opt-in/opt-out controls, and full audit trails." },
-  { q: "Do you work directly with law firms only?", a: "No. We work with law firms, litigation finance groups, case marketers, PR/IR teams, and media partners — anyone involved in class action awareness and recruitment." },
-  { q: "Can you support multi-language campaigns?", a: "Yes. We support multi-language releases, landing pages, and capture forms to reach diverse claimant populations." },
-  { q: "What reporting do we get?", a: "Real-time dashboards with impressions, clicks, conversions, lead quality scores, channel attribution, funnel drop-off analysis, and exportable reports." },
-  { q: "What's the typical launch timeline?", a: "Most campaigns go from intake to live in 3–5 business days. Urgent filings can be turned around in 24–48 hours." },
+  { q: "What types of cases does AmplifiX Legal support?", a: "We specialize in securities class actions, data breach litigation, product liability, and environmental / mass tort campaigns involving publicly traded companies." },
+  { q: "Is AmplifiX Legal a law firm?", a: "No. AmplifiX Legal is a marketing and press distribution platform. We help law firms and litigation funders reach potential claimants through compliant syndication, programmatic advertising, and recruitment funnels." },
+  { q: "How quickly can a campaign go live?", a: "Most campaigns launch within 3–5 business days from kickoff, including landing page build, press release drafting, and syndication setup." },
+  { q: "What compliance standards do you follow?", a: "All campaigns comply with state bar advertising rules, TCPA, CAN-SPAM, GDPR, and CCPA. Every asset is reviewed before distribution." },
+  { q: "How do you measure campaign performance?", a: "We provide real-time dashboards tracking impressions, click-through rates, qualified lead captures, cost-per-claimant, and conversion attribution." },
+  { q: "Can we integrate with our existing CRM or case management system?", a: "Yes. We offer API integrations and webhook support for Salesforce, Litify, FileVine, and custom platforms." },
 ];
 
-/* ─── StatusBadge ─── */
-const StatusBadge = ({ status }: { status: string }) => {
-  const colors: Record<string, string> = {
-    Active: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-    Monitoring: "bg-amber-500/20 text-amber-400 border-amber-500/30",
-    Closed: "bg-zinc-500/20 text-zinc-400 border-zinc-500/30",
-  };
-  return <span className={cn("text-xs font-medium px-2.5 py-0.5 rounded-full border", colors[status] || colors.Closed)}>{status}</span>;
-};
 
 /* ─── GlassCard ─── */
 const GlassCard = ({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
@@ -119,11 +101,7 @@ const LegalLanding = () => {
   const [activeModal, setActiveModal] = useState<number | null>(null);
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
   const [formTab, setFormTab] = useState(0);
-  const [caseTab, setCaseTab] = useState<"spotlight" | "releases">("spotlight");
   const [submitted, setSubmitted] = useState(false);
-  const [statusFilter, setStatusFilter] = useState("All");
-
-  const filteredCases = statusFilter === "All" ? CASES : CASES.filter(c => c.status === statusFilter);
 
   return (
     <div className="min-h-screen bg-[#07090F] text-zinc-100 font-sans antialiased">
@@ -303,54 +281,6 @@ const LegalLanding = () => {
         {activeModal !== null && <CampaignModal item={CAMPAIGN_TYPES[activeModal]} onClose={() => setActiveModal(null)} />}
       </section>
 
-      {/* ── 6. CASE SPOTLIGHT ── */}
-      <section id="case-spotlight" className="py-24 bg-white/[0.01]">
-        <div className="max-w-6xl mx-auto px-5">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center mb-4">Case Spotlight</h2>
-          <p className="text-zinc-400 text-center max-w-xl mx-auto mb-10">Active campaigns and press releases — updated in real time.</p>
-
-          {/* tabs */}
-          <div className="flex justify-center gap-3 mb-8">
-            {(["spotlight", "releases"] as const).map(t => (
-              <button key={t} onClick={() => setCaseTab(t)} className={cn("px-5 py-2 rounded-xl text-sm font-medium transition-all", caseTab === t ? "bg-blue-600/20 text-blue-400 border border-blue-500/30" : "text-zinc-500 border border-white/5 hover:text-zinc-300")}>
-                {t === "spotlight" ? "Campaign Pages" : "Press Releases"}
-              </button>
-            ))}
-          </div>
-
-          {/* filter */}
-          <div className="flex gap-2 mb-6 justify-center">
-            {["All", "Active", "Monitoring", "Closed"].map(s => (
-              <button key={s} onClick={() => setStatusFilter(s)} className={cn("px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all", statusFilter === s ? "bg-white/10 text-white" : "text-zinc-500 hover:text-zinc-300")}>
-                {s}
-              </button>
-            ))}
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-5">
-            {filteredCases.map((c, i) => (
-              <GlassCard key={i} className="p-6">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h4 className="font-semibold">{c.company} <span className="text-zinc-500 font-normal text-sm">({c.ticker})</span></h4>
-                    <span className="text-xs text-zinc-500">{c.type}</span>
-                  </div>
-                  <StatusBadge status={c.status} />
-                </div>
-                <p className="text-sm text-zinc-400 mb-3">{c.summary}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-zinc-600">Updated {c.updated}</span>
-                  <div className="flex gap-2">
-                    <button className="text-xs text-blue-400 hover:text-blue-300 transition">See Updates</button>
-                    <button className="text-xs px-3 py-1 rounded-lg bg-blue-600/20 text-blue-400 border border-blue-500/20 hover:bg-blue-600/30 transition">Check Eligibility</button>
-                  </div>
-                </div>
-              </GlassCard>
-            ))}
-          </div>
-          <p className="text-xs text-zinc-600 text-center mt-6">* Sample entries for demonstration purposes. Actual cases populated upon engagement.</p>
-        </div>
-      </section>
 
       {/* ── 7. TRUST / PROOF ── */}
       <section id="trust" className="py-24">
