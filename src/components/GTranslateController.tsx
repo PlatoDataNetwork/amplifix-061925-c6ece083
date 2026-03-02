@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { removeGTranslateUI } from "@/utils/gtranslate";
+import i18n from "@/i18n/config";
+import { removeGTranslateUI, applyClientSideTranslation } from "@/utils/gtranslate";
 import { getLanguageFromPath } from "@/utils/language";
 
 /**
@@ -29,20 +30,23 @@ export default function GTranslateController() {
     const scrubInterval = window.setInterval(removeGTranslateUI, 500);
     const scrubTimeout = window.setTimeout(() => window.clearInterval(scrubInterval), 10000);
 
-    // Only trigger translation on language CHANGE (not initial load - cookie handles that)
+    // Keep i18next synced with URL language for routes without LanguageSwitcher (e.g. /legal)
+    if (i18n.language !== lang) {
+      void i18n.changeLanguage(lang);
+    }
+
     const prevLang = prevLangRef.current;
+    const isInitialMount = prevLang === null;
     prevLangRef.current = lang;
 
-    if (prevLang !== null && prevLang !== lang && typeof window.doGTranslate === "function") {
-      const targetCode = lang === "zh" ? "zh-CN" : lang === "he" ? "iw" : lang;
-      
-      if (lang === "en") {
-        // Reset to English
-        window.doGTranslate("en|en");
-      } else {
-        // Apply translation once
-        window.doGTranslate(`en|${targetCode}`);
-      }
+    // On first mount with an English URL, force-reset stale translated state (e.g. persisted Arabic cookie)
+    if (isInitialMount && lang === "en") {
+      void applyClientSideTranslation("en");
+    }
+
+    // Trigger translation only when URL language changes
+    if (prevLang !== null && prevLang !== lang) {
+      void applyClientSideTranslation(lang);
     }
 
     return () => {
