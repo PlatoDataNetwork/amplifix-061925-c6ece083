@@ -168,6 +168,8 @@
           try {
             localStorage.removeItem('googtrans');
             localStorage.removeItem('google_translate_element');
+            // Clear i18next cached language so it doesn't override English default
+            localStorage.removeItem('i18nextLng');
           } catch(e) {}
         }
         // CASE 2: Language URL but cookie has different language - fix the mismatch
