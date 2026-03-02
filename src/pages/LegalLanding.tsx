@@ -16,7 +16,7 @@ const scrollTo = (id: string) => {
 };
 
 /* ─── data ─── */
-const NAV = ["Solutions", "How It Works", "Campaign Types", "Trust", "FAQ", "Contact"];
+const NAV = ["How It Works", "Campaign Types", "Solutions", "Trust", "FAQ", "Contact"];
 
 const PILLARS = [
   {
