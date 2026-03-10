@@ -70,9 +70,13 @@
       .VIpgJd-ZVi9od-ORHb-OEVmcd,
       #VIpgJd-ZVi9od-ORHb-OEVmcd,
       [class*="VIpgJd"],
+      [class*="goog-te-"],
+      [id*="goog-gt"],
+      .skiptranslate,
       iframe[src*="translate.google"],
       iframe.goog-te-menu-frame,
-      iframe.goog-te-banner-frame {
+      iframe.goog-te-banner-frame,
+      iframe.skiptranslate {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
@@ -84,6 +88,7 @@
         left: -99999px !important;
         top: -99999px !important;
       }
+      body { top: 0 !important; }
     </style>
     <script id="gtranslate-dwf" src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
 
