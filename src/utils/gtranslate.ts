@@ -137,17 +137,22 @@ export function removeGTranslateUI() {
       ".goog-logo-link",
       ".goog-te-gadget-icon",
       ".goog-text-highlight",
-      // Additional GTranslate selectors for the floating pill/button
+      ".goog-te-spinner-pos",
+      ".goog-te-ftab-float",
       ".gt-current-lang",
       ".gt_selector",
       '[onclick*="doGTranslate"]',
-      ".VIpgJd-ZVi9od-l4eHX-hSRGPd", // Google Translate bar
+      // Known auto-generated classes
+      ".VIpgJd-ZVi9od-l4eHX-hSRGPd",
       ".VIpgJd-ZVi9od-ORHb-OEVmcd",
       "#VIpgJd-ZVi9od-ORHb-OEVmcd",
-      ".goog-te-spinner-pos",
-      ".goog-te-ftab-float",
-      // Catch-all for Google Translate auto-generated popup/loader classes
+      // Wildcard attribute selectors for future-proofing
       '[class*="VIpgJd"]',
+      '[class*="goog-te-"]',
+      '[id*="goog-gt"]',
+      // Google Translate's skip-translate wrapper
+      ".skiptranslate",
+    ];
     ];
 
     const isInternalContainer = (el: Element) => {
