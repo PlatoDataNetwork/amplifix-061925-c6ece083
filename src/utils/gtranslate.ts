@@ -153,7 +153,6 @@ export function removeGTranslateUI() {
       // Google Translate's skip-translate wrapper
       ".skiptranslate",
     ];
-    ];
 
     const isInternalContainer = (el: Element) => {
       // Keep the offscreen container and anything inside it so doGTranslate keeps working.
