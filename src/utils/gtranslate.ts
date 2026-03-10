@@ -146,6 +146,8 @@ export function removeGTranslateUI() {
       "#VIpgJd-ZVi9od-ORHb-OEVmcd",
       ".goog-te-spinner-pos",
       ".goog-te-ftab-float",
+      // Catch-all for Google Translate auto-generated popup/loader classes
+      '[class*="VIpgJd"]',
     ];
 
     const isInternalContainer = (el: Element) => {
