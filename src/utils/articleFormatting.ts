@@ -38,7 +38,7 @@ export const sanitizeHTML = (html: string): string => {
         iframePlaceholders.push(
           `<iframe src="${safeSrc}" width="100%" height="400" frameborder="0" allowfullscreen loading="lazy" style="aspect-ratio:16/9;width:100%;border-radius:12px;"></iframe>`
         );
-        return `<!--IFRAME_PLACEHOLDER_${index}-->`;
+        return `<div data-iframe-placeholder="${index}"></div>`;
       }
       return ''; // Strip unsafe iframes
     }
@@ -46,13 +46,13 @@ export const sanitizeHTML = (html: string): string => {
 
   const sanitized = DOMPurify.sanitize(htmlWithPlaceholders, {
     ALLOWED_TAGS: ALLOWED_HTML_TAGS,
-    ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'class', 'style', 'width', 'height'],
-    ALLOW_DATA_ATTR: false,
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'class', 'style', 'width', 'height', 'data-iframe-placeholder'],
+    ALLOW_DATA_ATTR: true,
     ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
   });
   
   // Re-insert safe iframes
-  return sanitized.replace(/<!--IFRAME_PLACEHOLDER_(\d+)-->/g, (_, index) => {
+  return sanitized.replace(/<div data-iframe-placeholder="(\d+)"><\/div>/g, (_, index) => {
     return iframePlaceholders[parseInt(index)] || '';
   });
 };
