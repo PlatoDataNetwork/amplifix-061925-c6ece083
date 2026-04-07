@@ -34,8 +34,8 @@ export const sanitizeHTML = (html: string): string => {
       const isSafe = SAFE_IFRAME_ORIGINS.some(origin => src.startsWith(origin));
       if (isSafe) {
         const index = iframePlaceholders.length;
-        // Build a clean, safe iframe
-        const safeSrc = DOMPurify.sanitize(src, { ALLOWED_TAGS: [], KEEP_CONTENT: false });
+        // Sanitize the src URL by encoding dangerous characters
+        const safeSrc = src.replace(/["<>]/g, '');
         iframePlaceholders.push(
           `<iframe src="${safeSrc}" width="100%" height="400" frameborder="0" allowfullscreen loading="lazy" style="aspect-ratio:16/9;width:100%;border-radius:12px;"></iframe>`
         );
