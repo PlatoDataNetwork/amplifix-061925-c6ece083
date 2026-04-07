@@ -394,6 +394,7 @@ if (!article) {
               [&_figcaption]:text-sm [&_figcaption]:text-muted-foreground [&_figcaption]:mt-3 [&_figcaption]:text-center [&_figcaption]:italic
               [&_mark]:bg-highlight-blue/20 [&_mark]:px-1 [&_mark]:rounded
               [&_sup]:text-xs [&_sub]:text-xs
+              [&_iframe]:max-w-full [&_iframe]:my-6 [&_iframe]:rounded-xl [&_iframe]:shadow-md [&_iframe]:aspect-video [&_iframe]:w-full
               [&_abbr]:underline [&_abbr]:decoration-dotted [&_abbr]:underline-offset-2 [&_abbr]:cursor-help
             `}
             dangerouslySetInnerHTML={{
