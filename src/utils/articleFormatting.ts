@@ -12,8 +12,7 @@ export const ALLOWED_HTML_TAGS = [
   'a',
   'table', 'thead', 'tbody', 'tr', 'th', 'td',
   'figure', 'figcaption', 'img',
-  'hr', 'sup', 'sub',
-  'iframe'
+  'hr', 'sup', 'sub'
 ];
 
 /**
@@ -24,14 +23,37 @@ export const ALLOWED_HTML_TAGS = [
 export const sanitizeHTML = (html: string): string => {
   if (!html) return '';
   
-  return DOMPurify.sanitize(html, {
+  // Extract YouTube/Vimeo iframes before sanitization (DOMPurify strips iframes by default)
+  const iframePlaceholders: string[] = [];
+  const SAFE_IFRAME_ORIGINS = ['https://www.youtube.com', 'https://youtube.com', 'https://player.vimeo.com', 'https://www.youtube-nocookie.com'];
+  
+  const htmlWithPlaceholders = html.replace(
+    /<iframe\s[^>]*src=["']([^"']+)["'][^>]*>[\s\S]*?<\/iframe>/gi,
+    (match, src) => {
+      const isSafe = SAFE_IFRAME_ORIGINS.some(origin => src.startsWith(origin));
+      if (isSafe) {
+        const index = iframePlaceholders.length;
+        // Sanitize the src URL by encoding dangerous characters
+        const safeSrc = src.replace(/["<>]/g, '');
+        iframePlaceholders.push(
+          `<iframe src="${safeSrc}" width="100%" height="400" frameborder="0" allowfullscreen loading="lazy" style="aspect-ratio:16/9;width:100%;border-radius:12px;"></iframe>`
+        );
+        return `<div data-iframe-placeholder="${index}"></div>`;
+      }
+      return ''; // Strip unsafe iframes
+    }
+  );
+
+  const sanitized = DOMPurify.sanitize(htmlWithPlaceholders, {
     ALLOWED_TAGS: ALLOWED_HTML_TAGS,
-    ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'class', 'style', 'width', 'height', 'frameborder', 'allowfullscreen', 'allow', 'loading'],
-    ADD_TAGS: ['iframe'],
-    ADD_ATTR: ['allowfullscreen', 'frameborder', 'allow'],
-    ALLOW_DATA_ATTR: false,
-    // Prevent javascript: URLs and other dangerous protocols
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'class', 'style', 'width', 'height', 'data-iframe-placeholder'],
+    ALLOW_DATA_ATTR: true,
     ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
+  });
+  
+  // Re-insert safe iframes
+  return sanitized.replace(/<div data-iframe-placeholder="(\d+)"><\/div>/g, (_, index) => {
+    return iframePlaceholders[parseInt(index)] || '';
   });
 };
 
