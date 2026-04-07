@@ -445,17 +445,8 @@ if (!article) {
                   '$1'
                 );
                 
-                // Debug: log iframe presence
-                if (/<iframe/i.test(processedContent)) {
-                  console.log('[Article] iframe found in processedContent before sanitize');
-                }
-                const sanitized = sanitizeHTML(processedContent);
-                if (/<iframe/i.test(sanitized)) {
-                  console.log('[Article] iframe preserved after sanitize');
-                } else if (/<iframe/i.test(processedContent)) {
-                  console.log('[Article] iframe STRIPPED by sanitize');
-                }
-                return sanitized;
+                // Sanitize to prevent XSS attacks
+                return sanitizeHTML(processedContent);
               })(),
             }}
           />
