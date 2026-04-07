@@ -439,6 +439,12 @@ if (!article) {
                   processedContent = contentWithoutPublished;
                 }
                 
+                // Fix iframes nested inside <p> tags (invalid HTML that browsers strip)
+                processedContent = processedContent.replace(
+                  /<p>\s*(<iframe[\s\S]*?<\/iframe>)\s*<\/p>/gi,
+                  '$1'
+                );
+                
                 // Sanitize to prevent XSS attacks
                 return sanitizeHTML(processedContent);
               })(),
