@@ -12,8 +12,7 @@ export const ALLOWED_HTML_TAGS = [
   'a',
   'table', 'thead', 'tbody', 'tr', 'th', 'td',
   'figure', 'figcaption', 'img',
-  'hr', 'sup', 'sub',
-  'iframe'
+  'hr', 'sup', 'sub'
 ];
 
 /**
