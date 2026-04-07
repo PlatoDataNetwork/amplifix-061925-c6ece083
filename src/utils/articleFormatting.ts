@@ -12,7 +12,8 @@ export const ALLOWED_HTML_TAGS = [
   'a',
   'table', 'thead', 'tbody', 'tr', 'th', 'td',
   'figure', 'figcaption', 'img',
-  'hr', 'sup', 'sub'
+  'hr', 'sup', 'sub',
+  'iframe'
 ];
 
 /**
@@ -25,7 +26,9 @@ export const sanitizeHTML = (html: string): string => {
   
   return DOMPurify.sanitize(html, {
     ALLOWED_TAGS: ALLOWED_HTML_TAGS,
-    ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'class', 'style'],
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'title', 'class', 'style', 'width', 'height', 'frameborder', 'allowfullscreen', 'allow', 'loading'],
+    ADD_TAGS: ['iframe'],
+    ADD_ATTR: ['allowfullscreen', 'frameborder', 'allow'],
     ALLOW_DATA_ATTR: false,
     // Prevent javascript: URLs and other dangerous protocols
     ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
