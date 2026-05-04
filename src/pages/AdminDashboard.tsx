@@ -47,15 +47,16 @@ const AdminDashboard = () => {
           .from('articles')
           .select('*', { count: 'exact', head: true });
 
-        // Fetch recent users (last 5)
-        const { data: recentUsersData } = await supabase.auth.admin.listUsers();
-        const recentUsers = (recentUsersData?.users || [])
-          .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-          .slice(0, 5)
-          .map(user => ({
-            email: user.email || 'Unknown',
-            created_at: user.created_at
-          }));
+        // Fetch recent users (last 5) from user_profiles (admin-readable via RLS)
+        const { data: recentUsersData } = await supabase
+          .from('user_profiles')
+          .select('email, created_at')
+          .order('created_at', { ascending: false })
+          .limit(5);
+        const recentUsers = (recentUsersData || []).map((u: any) => ({
+          email: u.email || 'Unknown',
+          created_at: u.created_at,
+        }));
 
         setStats({
           totalUsers: totalUsers || 0,
