@@ -12,17 +12,28 @@
       "view_all_articles": "View all articles"
     },
     "featured_post": {
-      "badge": "Featured",
-      "category": "AI",
-      "title": "Introducing AmplifiX 2.0: Next-Gen AI Intelligence",
-      "description": "We're excited to announce the launch of AmplifiX 2.0, featuring enhanced AI capabilities, improved analytics, and revolutionary intelligence features that set new standards for corporate communications.",
-      "author": "AmplifiX",
-      "date": "Sept 1, 2025",
+      "badge": "New Analysis",
+      "category": "Sector Research",
+      "title": "MicroStrategy's Bitcoin Holdings: A Leveraged Bet on BTC",
+      "description": "MicroStrategy (now 'Strategy') has amassed 818,334 BTC worth ~$63.7B against a $61.81B cost basis — a deep dive into the funding strategy, Bitcoin yield, and risks of the world's largest corporate BTC proxy.",
+      "author": "AmplifiX Research",
+      "date": "May 2, 2026",
       "button_text": "Read Full Article",
-      "link": "/intel/amplifi-x-2-0-article",
-      "icon": "shield"
+      "link": "/intel/mstr-bitcoin-holdings",
+      "icon": "trending"
     },
     "featured_posts": [
+      {
+        "badge": "Featured",
+        "category": "AI",
+        "title": "Introducing AmplifiX 2.0: Next-Gen AI Intelligence",
+        "description": "We're excited to announce the launch of AmplifiX 2.0, featuring enhanced AI capabilities, improved analytics, and revolutionary intelligence features that set new standards for corporate communications.",
+        "author": "AmplifiX",
+        "date": "Sept 1, 2025",
+        "button_text": "Read Full Article",
+        "link": "/intel/amplifi-x-2-0-article",
+        "icon": "shield"
+      },
       {
         "badge": "New Research",
         "category": "Sector Research",
