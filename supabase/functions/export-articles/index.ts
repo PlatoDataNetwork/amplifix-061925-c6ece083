@@ -11,6 +11,35 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const userClient = createClient(supabaseUrl, anonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await userClient.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    const adminClient = createClient(supabaseUrl, serviceKey);
+    const { data: isAdmin } = await adminClient.rpc('has_role', {
+      _user_id: claimsData.claims.sub, _role: 'admin'
+    });
+    if (!isAdmin) {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     const url = new URL(req.url);
     const vertical = url.searchParams.get('vertical') || 'artificial-intelligence';
     const page = Math.max(1, parseInt(url.searchParams.get('page') || '1'));
@@ -19,10 +48,7 @@ Deno.serve(async (req) => {
     const includeTags = url.searchParams.get('include_tags') !== 'false';
     const includeTranslations = url.searchParams.get('include_translations') !== 'false';
 
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    );
+    const supabase = adminClient;
 
     // Get total count
     const { count: total, error: countError } = await supabase
