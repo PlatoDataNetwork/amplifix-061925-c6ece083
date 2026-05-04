@@ -522,11 +522,6 @@ export type Database = {
         Row: {
           base_feed_url: string
           created_at: string | null
-          db_host: string | null
-          db_name: string | null
-          db_password: string | null
-          db_port: number | null
-          db_user: string | null
           frequency_minutes: number | null
           id: number
           is_active: boolean | null
@@ -541,11 +536,6 @@ export type Database = {
         Insert: {
           base_feed_url: string
           created_at?: string | null
-          db_host?: string | null
-          db_name?: string | null
-          db_password?: string | null
-          db_port?: number | null
-          db_user?: string | null
           frequency_minutes?: number | null
           id?: number
           is_active?: boolean | null
@@ -560,11 +550,6 @@ export type Database = {
         Update: {
           base_feed_url?: string
           created_at?: string | null
-          db_host?: string | null
-          db_name?: string | null
-          db_password?: string | null
-          db_port?: number | null
-          db_user?: string | null
           frequency_minutes?: number | null
           id?: number
           is_active?: boolean | null
