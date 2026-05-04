@@ -1,0 +1,2 @@
+DROP POLICY IF EXISTS "Import history is viewable by everyone" ON public.import_history;
+CREATE POLICY "Admins can view import history" ON public.import_history FOR SELECT USING (public.has_role(auth.uid(), 'admin'::app_role));

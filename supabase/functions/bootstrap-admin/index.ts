@@ -15,10 +15,11 @@ serve(async (req) => {
 
     const { email, password, secretKey, action } = await req.json();
 
-    // Simple secret key check for one-time bootstrap
-    if (secretKey !== 'BOOTSTRAP_PLATO_2024') {
+    // Bootstrap secret must be configured via env var; no hardcoded fallback.
+    const bootstrapSecret = Deno.env.get('BOOTSTRAP_SECRET');
+    if (!bootstrapSecret || !secretKey || secretKey !== bootstrapSecret) {
       return new Response(
-        JSON.stringify({ error: 'Invalid secret key' }),
+        JSON.stringify({ error: 'Forbidden' }),
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
