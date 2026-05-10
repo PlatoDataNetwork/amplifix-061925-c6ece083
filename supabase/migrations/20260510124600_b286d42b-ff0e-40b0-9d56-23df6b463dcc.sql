@@ -1,0 +1,1 @@
+TRUNCATE TABLE public.article_tags, public.article_translations, public.article_backups, public.feed_sync_logs, public.articles RESTART IDENTITY;
